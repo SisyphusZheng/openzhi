@@ -1,0 +1,17 @@
+{
+  "name": "@kiss/docs-site",
+  "version": "0.0.1",
+  "lock": false,
+  "imports": {
+    "@kiss/vite": "npm:@kiss/vite@^0.0.1",
+    "@kiss/rpc": "npm:@kiss/rpc@^0.0.1",
+    "lit": "npm:lit@^3.0.0",
+    "hono": "npm:hono@^4.0.0",
+    "webawesome": "npm:webawesome@^3.5.0"
+  },
+  "tasks": {
+    "dev": "deno run -A npm:vite",
+    "build": "deno run -A npm:vite build",
+    "preview": "deno run -A npm:vite preview"
+  }
+}
