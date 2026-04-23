@@ -50,7 +50,7 @@ export function devServerPlugin(options: FrameworkOptions = {}): Plugin {
       // Debug endpoint
       app.get('/__kiss', (c) => {
         return c.json({
-          version: '0.1.0',
+          version: '0.0.1',
           routes: cachedRoutes
             .filter(r => !r.special)
             .map(r => ({

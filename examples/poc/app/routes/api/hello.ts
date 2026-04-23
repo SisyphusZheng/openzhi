@@ -10,7 +10,7 @@ app.get('/', (c) => {
     data: {
       message: 'Hello from KISS API!',
       framework: 'Hono + Vite + Lit',
-      version: '0.1.0',
+      version: '0.0.1',
     },
   })
 })

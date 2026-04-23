@@ -239,7 +239,7 @@ declare module '#imports' {
 
 ```json
 {
-  "version": "0.1.0",
+  "version": "0.0.1",
   "routes": [
     { "path": "/", "file": "index.ts", "type": "page" },
     { "path": "/about", "file": "about.ts", "type": "page" },

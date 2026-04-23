@@ -315,7 +315,7 @@ location / {
 
 ```typescript
 // 健康检查端点（框架自动注册）
-app.get('/health', (c) => c.json({ status: 'ok', version: '1.0.0' }))
+app.get('/health', (c) => c.json({ status: 'ok', version: '0.0.1' }))
 app.get('/ready', async (c) => {
   // 检查数据库连接等
   const checks = { database: await checkDb() }

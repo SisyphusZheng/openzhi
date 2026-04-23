@@ -1,6 +1,6 @@
 {
   "name": "@kiss/vite",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "description": "KISS core Vite plugin - Hono + Vite + Lit fullstack framework",
   "type": "module",
   "module": "./dist/index.js",
