@@ -3,7 +3,8 @@
   "workspace": [
     "./packages/kiss-vite",
     "./packages/kiss-rpc",
-    "./examples/poc"
+    "./examples/poc",
+    "./docs-site"
   ],
   "tasks": {
     "dev": "cd examples/poc && deno task dev",

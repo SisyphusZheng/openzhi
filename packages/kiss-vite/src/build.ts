@@ -17,6 +17,7 @@ import type { Plugin, ResolvedConfig } from 'vite'
 import type { FrameworkOptions } from './types.js'
 import { build as viteBuild, type InlineConfig } from 'vite'
 import { resolve, join } from 'node:path'
+import { existsSync } from 'node:fs'
 
 /** SSR noExternal packages — Lit must be bundled into SSR output */
 const DEFAULT_SSR_NO_EXTERNAL = [
@@ -62,8 +63,7 @@ export function buildPlugin(options: FrameworkOptions = {}): Plugin {
 
       // === Step 1: SSR Build ===
       // Only run if serverEntry exists
-      const fs = await import('node:fs')
-      if (fs.existsSync(serverEntry)) {
+      if (existsSync(serverEntry)) {
         console.log('[KISS] Building SSR bundle...')
         try {
           const ssrConfig: InlineConfig = {
@@ -100,7 +100,7 @@ export function buildPlugin(options: FrameworkOptions = {}): Plugin {
 
       // === Step 2: Client Build (Islands only) ===
       // Only run if clientEntry exists
-      if (fs.existsSync(clientEntry)) {
+      if (existsSync(clientEntry)) {
         console.log('[KISS] Building client bundle (islands)...')
         try {
           const clientConfig: InlineConfig = {
@@ -109,32 +109,35 @@ export function buildPlugin(options: FrameworkOptions = {}): Plugin {
             build: {
               outDir: resolve(root, outDir, 'client'),
               rollupOptions: {
-              input: {
-                client: clientEntry,
-              },
-              output: {
-                format: 'esm',
-                entryFileNames: '[name].js',
-                chunkFileNames: 'islands/[name]-[hash].js',
-                // Split each island into its own chunk for per-page loading
-                manualChunks(id) {
-                  if (id.includes(`/${islandsDir}/`)) {
-                    const match = id.match(/\/([^/]+)\.(ts|js)$/)
-                    if (match) {
-                      return `island-${match[1]}`
+                input: {
+                  client: clientEntry,
+                },
+                output: {
+                  format: 'esm',
+                  entryFileNames: '[name].js',
+                  chunkFileNames: 'islands/[name]-[hash].js',
+                  // Split each island into its own chunk for per-page loading
+                  manualChunks(id: string) {
+                    if (id.includes(`/${islandsDir}/`)) {
+                      const match = id.match(/\/([^/]+)\.(ts|js)$/)
+                      if (match) {
+                        return `island-${match[1]}`
+                      }
                     }
-                  }
+                  },
                 },
               },
             },
-          },
-        }
+          }
 
-        await viteBuild(clientConfig)
-        console.log('[KISS] Client bundle built →', resolve(root, outDir, 'client'))
-      } catch (error) {
-        console.error('[KISS] Client build failed:', error)
-        throw error
+          await viteBuild(clientConfig)
+          console.log('[KISS] Client bundle built →', resolve(root, outDir, 'client'))
+        } catch (error) {
+          console.error('[KISS] Client build failed:', error)
+          throw error
+        }
+      } else {
+        console.log('[KISS] No client entry found, skipping client build')
       }
 
       console.log('[KISS] Build complete!')

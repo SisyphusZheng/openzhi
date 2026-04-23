@@ -102,8 +102,8 @@ export class WebAwesomePage extends LitElement {
 &lt;wa-badge type="primary"&gt;Primary&lt;/wa-badge&gt;</code></pre>
           </div>
 
-          <wa-button href="/styling/open-props">
-            ← Compare: Open Props
+          <wa-button href="/">
+            ← Back to Home
           </wa-button>
         </div>
       </main>
