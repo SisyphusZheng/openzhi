@@ -1,0 +1,11 @@
+{
+  "name": "@kiss/vite",
+  "version": "0.0.1",
+  "exports": {
+    "./client": "./dist/client.js",
+    "./package.json": "./package.json"
+  },
+  "publish": {
+    "include": ["dist/**"]
+  }
+}
