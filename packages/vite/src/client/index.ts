@@ -13,6 +13,14 @@ declare module 'virtual:hvl-routes' {
   }>
   export const pageRoutes: typeof routes
   export const apiRoutes: typeof routes
+  export const renderers: Array<{
+    scope: string
+    module: any
+  }>
+  export const middlewares: Array<{
+    scope: string
+    module: any
+  }>
 }
 
 declare module 'virtual:hvl-islands' {

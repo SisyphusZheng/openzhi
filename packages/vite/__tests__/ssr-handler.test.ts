@@ -1,66 +1,109 @@
-import { describe, it, expect } from 'vitest'
-import { wrapInDocument, renderSSRError, collectIslands } from '../src/ssr-handler.js'
-import type { RouteEntry, IslandMeta } from '../src/types.js'
+/**
+ * @hvl/vite - ssr-handler.ts tests (Deno)
+ */
+import { assertEquals, assertNotEquals } from 'jsr:@std/assert'
+import { wrapInDocument, renderSSRError, collectIslands } from '../src/ssr-handler.ts'
+import type { RouteEntry } from '../src/types.ts'
 
-describe('ssr-handler', () => {
-  describe('wrapInDocument', () => {
-    it('wraps body in full HTML document', () => {
-      const html = wrapInDocument('<h1>Hello</h1>', { title: 'Test' })
-      expect(html).toContain('<!DOCTYPE html>')
-      expect(html).toContain('<title>Test</title>')
-      expect(html).toContain('<h1>Hello</h1>')
-    })
-
-    it('includes hydration script', () => {
-      const html = wrapInDocument('<h1>Hello</h1>', {
-        hydrateScript: '<script type="module">hydrate()</script>',
-      })
-      expect(html).toContain('<script type="module">hydrate()</script>')
-    })
+Deno.test('ssr-handler - wrapInDocument', async (t) => {
+  await t.step('wraps body in full HTML document', () => {
+    const html = wrapInDocument('<h1>Hello</h1>', { title: 'Test' })
+    assertEquals(html.includes('<!DOCTYPE html>'), true)
+    assertEquals(html.includes('<title>Test</title>'), true)
+    assertEquals(html.includes('<h1>Hello</h1>'), true)
   })
 
-  describe('renderSSRError', () => {
-    const route: RouteEntry = {
-      path: '/broken',
-      filePath: 'broken.ts',
-      type: 'page',
-      varName: 'Route_Broken',
-    }
-
-    it('shows error details in dev mode', () => {
-      const error = new Error('Something went wrong')
-      const html = renderSSRError(error, route, true)
-      expect(html).toContain('SSR Render Error')
-      expect(html).toContain('Something went wrong')
+  await t.step('includes hydration script', () => {
+    const html = wrapInDocument('<h1>Hello</h1>', {
+      hydrateScript: '<script type="module">hydrate()</script>',
     })
-
-    it('shows generic message in production', () => {
-      const error = new Error('Something went wrong')
-      const html = renderSSRError(error, route, false)
-      expect(html).toContain('Something went wrong')
-      expect(html).not.toContain('SSR Render Error')
-    })
+    assertEquals(html.includes('<script type="module">hydrate()</script>'), true)
   })
 
-  describe('collectIslands', () => {
-    it('collects known island tags from HTML', () => {
-      const knownIslands = new Map([
-        ['my-counter', '/app/islands/my-counter.ts'],
-        ['theme-toggle', '/app/islands/theme-toggle.ts'],
-      ])
-      const html = '<div><my-counter></my-counter><p>hello</p></div>'
-      const islands = collectIslands(html, knownIslands)
-      expect(islands).toHaveLength(1)
-      expect(islands[0].tagName).toBe('my-counter')
-    })
+  await t.step('supports custom lang attribute', () => {
+    const html = wrapInDocument('<h1>Hello</h1>', { lang: 'zh-CN' })
+    assertEquals(html.includes('lang="zh-CN"'), true)
+  })
 
-    it('returns empty array when no islands found', () => {
-      const knownIslands = new Map([
-        ['my-counter', '/app/islands/my-counter.ts'],
-      ])
-      const html = '<div><p>hello</p></div>'
-      const islands = collectIslands(html, knownIslands)
-      expect(islands).toHaveLength(0)
+  await t.step('supports meta tags', () => {
+    const html = wrapInDocument('<h1>Hello</h1>', {
+      meta: { description: 'Test page' },
     })
+    assertEquals(html.includes('name="description"'), true)
+    assertEquals(html.includes('content="Test page"'), true)
+  })
+})
+
+Deno.test('ssr-handler - renderSSRError', async (t) => {
+  const route: RouteEntry = {
+    path: '/broken',
+    filePath: 'broken.ts',
+    type: 'page',
+    varName: 'Route_Broken',
+  }
+
+  await t.step('shows error details in dev mode', () => {
+    const error = new Error('Something went wrong')
+    const html = renderSSRError(error, route, true)
+    assertEquals(html.includes('SSR Render Error'), true)
+    assertEquals(html.includes('Something went wrong'), true)
+  })
+
+  await t.step('shows generic message in production', () => {
+    const error = new Error('Something went wrong')
+    const html = renderSSRError(error, route, false)
+    assertEquals(html.includes('Something went wrong'), true)
+    // Production error page should NOT contain "SSR Render Error"
+    assertEquals(html.includes('SSR Render Error'), false)
+  })
+})
+
+Deno.test('ssr-handler - collectIslands', async (t) => {
+  await t.step('collects known island tags from HTML using precise map', () => {
+    const knownIslands = new Map([
+      ['my-counter', '/app/islands/my-counter.ts'],
+      ['theme-toggle', '/app/islands/theme-toggle.ts'],
+    ])
+    const html = '<div><my-counter></my-counter><p>hello</p></div>'
+    const islands = collectIslands(html, knownIslands)
+    assertEquals(islands.length, 1)
+    assertEquals(islands[0].tagName, 'my-counter')
+  })
+
+  await t.step('returns empty array when no islands found', () => {
+    const knownIslands = new Map([
+      ['my-counter', '/app/islands/my-counter.ts'],
+    ])
+    const html = '<div><p>hello</p></div>'
+    const islands = collectIslands(html, knownIslands)
+    assertEquals(islands.length, 0)
+  })
+
+  await t.step('does not match non-island custom elements', () => {
+    const knownIslands = new Map([
+      ['my-counter', '/app/islands/my-counter.ts'],
+    ])
+    const html = '<my-header></my-header><div>hello</div>'
+    const islands = collectIslands(html, knownIslands)
+    assertEquals(islands.length, 0)
+  })
+
+  await t.step('collects multiple islands', () => {
+    const knownIslands = new Map([
+      ['my-counter', '/app/islands/my-counter.ts'],
+      ['theme-toggle', '/app/islands/theme-toggle.ts'],
+    ])
+    const html = '<my-counter count="5"></my-counter><theme-toggle></theme-toggle>'
+    const islands = collectIslands(html, knownIslands)
+    assertEquals(islands.length, 2)
+  })
+
+  await t.step('deduplicates islands', () => {
+    const knownIslands = new Map([
+      ['my-counter', '/app/islands/my-counter.ts'],
+    ])
+    const html = '<my-counter></my-counter><my-counter></my-counter>'
+    const islands = collectIslands(html, knownIslands)
+    assertEquals(islands.length, 1)
   })
 })

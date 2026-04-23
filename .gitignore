@@ -30,6 +30,7 @@ Thumbs.db
 
 # Testing
 coverage/
+__test_fixtures__/
 
 # Framework internals
 .hvl/

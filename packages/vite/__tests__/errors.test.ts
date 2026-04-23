@@ -1,4 +1,7 @@
-import { describe, it, expect } from 'vitest'
+/**
+ * @hvl/vite - errors.ts tests (Deno)
+ */
+import { assertEquals } from 'jsr:@std/assert'
 import {
   HvlError,
   NotFoundError,
@@ -9,73 +12,73 @@ import {
   RateLimitError,
   SsrRenderError,
   HydrationError,
-} from '../src/errors.js'
+} from '../src/errors.ts'
 
-describe('errors', () => {
-  it('HvlError has code and statusCode', () => {
+Deno.test('errors', async (t) => {
+  await t.step('HvlError has code and statusCode', () => {
     const err = new HvlError('test', 'TEST_ERROR', 400)
-    expect(err.code).toBe('TEST_ERROR')
-    expect(err.statusCode).toBe(400)
-    expect(err.isOperational).toBe(true)
-    expect(err.name).toBe('HvlError')
+    assertEquals(err.code, 'TEST_ERROR')
+    assertEquals(err.statusCode, 400)
+    assertEquals(err.isOperational, true)
+    assertEquals(err.name, 'HvlError')
   })
 
-  it('NotFoundError maps to 404', () => {
+  await t.step('NotFoundError maps to 404', () => {
     const err = new NotFoundError('Post', 'abc123')
-    expect(err.statusCode).toBe(404)
-    expect(err.code).toBe('NOT_FOUND')
-    expect(err.message).toContain('Post')
-    expect(err.message).toContain('abc123')
+    assertEquals(err.statusCode, 404)
+    assertEquals(err.code, 'NOT_FOUND')
+    assertEquals(err.message.includes('Post'), true)
+    assertEquals(err.message.includes('abc123'), true)
   })
 
-  it('UnauthorizedError maps to 401', () => {
+  await t.step('UnauthorizedError maps to 401', () => {
     const err = new UnauthorizedError()
-    expect(err.statusCode).toBe(401)
-    expect(err.code).toBe('UNAUTHORIZED')
+    assertEquals(err.statusCode, 401)
+    assertEquals(err.code, 'UNAUTHORIZED')
   })
 
-  it('ForbiddenError maps to 403', () => {
+  await t.step('ForbiddenError maps to 403', () => {
     const err = new ForbiddenError()
-    expect(err.statusCode).toBe(403)
+    assertEquals(err.statusCode, 403)
   })
 
-  it('ValidationError includes details', () => {
+  await t.step('ValidationError includes details', () => {
     const details = [{ field: 'title', message: 'Required' }]
     const err = new ValidationError('Validation failed', details)
-    expect(err.statusCode).toBe(422)
-    expect(err.details).toEqual(details)
+    assertEquals(err.statusCode, 422)
+    assertEquals(err.details, details)
   })
 
-  it('ConflictError maps to 409', () => {
+  await t.step('ConflictError maps to 409', () => {
     const err = new ConflictError('Already exists')
-    expect(err.statusCode).toBe(409)
+    assertEquals(err.statusCode, 409)
   })
 
-  it('RateLimitError includes retryAfter', () => {
+  await t.step('RateLimitError includes retryAfter', () => {
     const err = new RateLimitError(60)
-    expect(err.statusCode).toBe(429)
-    expect(err.retryAfter).toBe(60)
+    assertEquals(err.statusCode, 429)
+    assertEquals(err.retryAfter, 60)
   })
 
-  it('SsrRenderError is not operational', () => {
+  await t.step('SsrRenderError is not operational', () => {
     const cause = new Error('render failed')
     const err = new SsrRenderError('app/routes/index.ts', cause)
-    expect(err.statusCode).toBe(500)
-    expect(err.isOperational).toBe(false)
-    expect(err.cause).toBe(cause)
+    assertEquals(err.statusCode, 500)
+    assertEquals(err.isOperational, false)
+    assertEquals(err.cause, cause)
   })
 
-  it('HydrationError is not operational', () => {
+  await t.step('HydrationError is not operational', () => {
     const cause = new Error('already defined')
     const err = new HydrationError('my-counter', cause)
-    expect(err.statusCode).toBe(500)
-    expect(err.isOperational).toBe(false)
+    assertEquals(err.statusCode, 500)
+    assertEquals(err.isOperational, false)
   })
 
-  it('toJSON returns structured error', () => {
+  await t.step('toJSON returns structured error', () => {
     const err = new NotFoundError('Post', '123')
     const json = err.toJSON()
-    expect(json).toEqual({
+    assertEquals(json, {
       error: {
         code: 'NOT_FOUND',
         message: 'Post not found: 123',

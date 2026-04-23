@@ -2,11 +2,22 @@
  * @hvl/vite - Route scanner
  * Scans the routes directory and generates a route map.
  * Produces the virtual:routes module.
+ *
+ * Phase 1 enhancement: support for _renderer.ts (layout) and
+ * _middleware.ts (Hono middleware) special files.
+ *
+ * Convention (minimal augmentation):
+ * - _renderer.ts: exports a LitElement class used as the page layout wrapper
+ * - _middleware.ts: exports a Hono middleware function applied before the route
+ * - Files starting with _ are not route handlers but are loaded by the framework
  */
 
 import type { RouteEntry } from './types.js'
 import { readdir, stat } from 'node:fs/promises'
 import { join, sep, posix } from 'node:path'
+
+/** Special file types in the routes directory */
+export type SpecialFileType = 'renderer' | 'middleware'
 
 /**
  * Convert a file path to a URL path pattern.
@@ -56,15 +67,32 @@ function pathToVarName(path: string): string {
 }
 
 /**
- * Check if a file should be ignored for routing.
- * Files starting with _ are special (layout, middleware, etc.)
+ * Identify special file types by name.
+ * _renderer.ts → renderer, _middleware.ts → middleware
  */
-function isSpecialFile(fileName: string): boolean {
-  return fileName.startsWith('_') || fileName.startsWith('.')
+function getSpecialFileType(fileName: string): SpecialFileType | null {
+  const baseName = fileName.replace(/\.[^.]+$/, '')
+  switch (baseName) {
+    case '_renderer':
+      return 'renderer'
+    case '_middleware':
+      return 'middleware'
+    default:
+      return null
+  }
+}
+
+/**
+ * Check if a file should be ignored for routing.
+ * Dot-files are always ignored.
+ */
+function isIgnoredFile(fileName: string): boolean {
+  return fileName.startsWith('.')
 }
 
 /**
  * Recursively scan a directory for route files.
+ * Also collects _renderer.ts and _middleware.ts special files.
  */
 export async function scanRoutes(
   routesDir: string,
@@ -81,7 +109,7 @@ export async function scanRoutes(
   }
 
   for (const file of files) {
-    if (file.startsWith('.')) continue
+    if (isIgnoredFile(file)) continue
 
     const fullPath = join(routesDir, file)
     const relativePath = baseDir ? join(baseDir, file) : file
@@ -91,23 +119,42 @@ export async function scanRoutes(
       // Recurse into subdirectories
       const subEntries = await scanRoutes(fullPath, relativePath)
       entries.push(...subEntries)
-    } else if (isSpecialFile(file)) {
-      // Skip _renderer.ts, _middleware.ts, etc.
-      continue
     } else if (/\.(ts|tsx|js|jsx)$/.test(file)) {
-      // It's a route file
-      const routePath = filePathToRoutePath(relativePath)
-      entries.push({
-        path: routePath,
-        filePath: relativePath.split(sep).join(posix.sep),
-        type: getRouteType(relativePath),
-        varName: pathToVarName(routePath),
-      })
+      // Check for special files
+      const specialType = getSpecialFileType(file)
+      if (specialType) {
+        // Add as a special entry — not a route handler, but loadable
+        entries.push({
+          path: filePathToRoutePath(
+            relativePath.replace(/^_renderer/, '_renderer').replace(/^_middleware/, '_middleware')
+          ),
+          filePath: relativePath.split(sep).join(posix.sep),
+          type: 'page', // Same type, but flagged
+          varName: `Special_${specialType}_${baseDir.replace(/[\\/]/g, '_') || 'root'}`,
+          special: specialType,
+        })
+      } else if (!file.startsWith('_')) {
+        // Regular route file
+        const routePath = filePathToRoutePath(relativePath)
+        entries.push({
+          path: routePath,
+          filePath: relativePath.split(sep).join(posix.sep),
+          type: getRouteType(relativePath),
+          varName: pathToVarName(routePath),
+        })
+      }
+      // Other _-prefixed files (not _renderer/_middleware) are silently skipped
     }
   }
 
   // Sort routes: static paths first, then dynamic
   entries.sort((a, b) => {
+    // Special files go to the end
+    if (a.special || b.special) {
+      if (a.special && !b.special) return 1
+      if (!a.special && b.special) return -1
+      return 0
+    }
     const aDynamic = a.path.includes(':')
     const bDynamic = b.path.includes(':')
     if (aDynamic !== bDynamic) return aDynamic ? 1 : -1
@@ -119,17 +166,48 @@ export async function scanRoutes(
 
 /**
  * Generate the virtual:routes module code.
+ * Includes special file imports (_renderer, _middleware).
  */
 export function generateRoutesModule(routes: RouteEntry[], routesDir: string): string {
+  const regularRoutes = routes.filter(r => !r.special)
+  const specialFiles = routes.filter(r => r.special)
+
   const imports = routes
-    .map(r => `import * as ${r.varName} from '/${routesDir}/${r.filePath}';`)
+    .map(r => {
+      if (r.special) {
+        // Special files are imported but not added to the routes array
+        const varName = r.varName
+        return `import * as ${varName} from '/${routesDir}/${r.filePath}';`
+      }
+      return `import * as ${r.varName} from '/${routesDir}/${r.filePath}';`
+    })
     .join('\n')
 
-  const routeDefs = routes
+  const routeDefs = regularRoutes
     .map(
       r =>
         `  { path: '${r.path}', filePath: '${r.filePath}', type: '${r.type}', module: ${r.varName} },`
     )
+    .join('\n')
+
+  // Generate special file mappings
+  const rendererDefs = specialFiles
+    .filter(r => r.special === 'renderer')
+    .map(r => {
+      // The renderer applies to the directory it's in
+      const dir = r.filePath.replace(/\/_renderer\.[^.]+$/, '').replace(/_renderer\.[^.]+$/, '')
+      const scope = dir ? `/${dir}` : '/'
+      return `  { scope: '${scope}', module: ${r.varName} },`
+    })
+    .join('\n')
+
+  const middlewareDefs = specialFiles
+    .filter(r => r.special === 'middleware')
+    .map(r => {
+      const dir = r.filePath.replace(/\/_middleware\.[^.]+$/, '').replace(/_middleware\.[^.]+$/, '')
+      const scope = dir ? `/${dir}` : '/'
+      return `  { scope: '${scope}', module: ${r.varName} },`
+    })
     .join('\n')
 
   return `// Auto-generated by @hvl/vite route-scanner
@@ -143,6 +221,14 @@ ${routeDefs}
 
 export const pageRoutes = routes.filter(r => r.type === 'page');
 export const apiRoutes = routes.filter(r => r.type === 'api');
+
+export const renderers = [
+${rendererDefs || '  // No _renderer.ts files found'}
+];
+
+export const middlewares = [
+${middlewareDefs || '  // No _middleware.ts files found'}
+];
 `
 }
 

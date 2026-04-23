@@ -66,7 +66,7 @@ export class RateLimitError extends HvlError {
 export class SsrRenderError extends HvlError {
   constructor(
     public readonly componentPath: string,
-    public readonly cause: Error,
+    public override readonly cause: Error,
   ) {
     super(`SSR render failed: ${componentPath}`, 'SSR_RENDER_ERROR', 500, false)
   }
@@ -75,7 +75,7 @@ export class SsrRenderError extends HvlError {
 export class HydrationError extends HvlError {
   constructor(
     public readonly tagName: string,
-    public readonly cause: Error,
+    public override readonly cause: Error,
   ) {
     super(`Hydration failed for <${tagName}>`, 'HYDRATION_ERROR', 500, false)
   }

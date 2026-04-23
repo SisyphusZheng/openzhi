@@ -1,12 +1,26 @@
 /**
  * @hvl/vite - Island transform plugin
  * Detects island components and injects hydration markers.
+ *
+ * Phase 1 fix: The original CJS-style registration code
+ * (`exports.default || module.exports?.default`) doesn't work in ESM.
+ * Now we use a simple, correct approach: the hydration script (generated
+ * by generateHydrationScript) handles ALL customElements.define() calls.
+ * The transform only injects metadata markers (__island, __tagName).
+ *
+ * This is the "minimal augmentation" approach:
+ * - SSR transform: only inject metadata (zero runtime overhead)
+ * - Hydration script: handles registration (standard customElements API)
+ * - No framework runtime between SSR and hydration
+ *
+ * Web Standards alignment:
+ * - Uses standard customElements.define() API
+ * - No framework runtime — just native Custom Elements v1
+ * - Declarative Shadow DOM provides the fallback (Level 0)
  */
 
 import type { Plugin } from 'vite'
 import { fileToTagName } from './route-scanner.js'
-
-const VIRTUAL_ISLAND_REGISTRY = '\0virtual:hvl-island-registry'
 
 export function islandTransformPlugin(islandsDir: string): Plugin {
   const normalizedIslandsDir = islandsDir.replace(/\\/g, '/')
@@ -34,20 +48,13 @@ export function islandTransformPlugin(islandsDir: string): Plugin {
         return null
       }
 
-      // Inject island markers and client-side registration
+      // Inject only metadata markers. The hydration script handles
+      // customElements.define() — no registration code here.
+      // This keeps the transform lightweight and ESM-safe.
       const injected = `
-// --- HVL Island Markers (auto-injected) ---
+// --- HVL Island Markers (auto-injected by @hvl/vite) ---
 export const __island = true;
 export const __tagName = '${tagName}';
-
-// Client-side: auto-register Custom Element
-if (typeof customElements !== 'undefined' && !customElements.get('${tagName}')) {
-  // Will be defined after module evaluation
-  const __HVL_IslandClass = typeof exports !== 'undefined' ? (exports.default || module.exports?.default) : undefined;
-  if (__HVL_IslandClass) {
-    customElements.define('${tagName}', __HVL_IslandClass);
-  }
-}
 // --- End HVL Island Markers ---
 `
 
@@ -59,6 +66,12 @@ if (typeof customElements !== 'undefined' && !customElements.get('${tagName}')) 
 /**
  * Generate the client-side island hydration script.
  * This is injected into the HTML for island hydration.
+ *
+ * This is the ONLY place where customElements.define() is called for islands.
+ * It uses standard dynamic import() to load island modules and register them.
+ *
+ * Progressive enhancement: SSR HTML (with DSD) is visible even if
+ * this script fails. The island components degrade to static HTML.
  */
 export function generateHydrationScript(
   islands: Array<{ tagName: string; modulePath: string }>,
@@ -130,6 +143,7 @@ export function generateHydrationScript(
 
   return `<script type="module" data-hvl-hydrate>
 // HVL Island Hydration Script
+// Progressive enhancement: SSR HTML is visible even if this fails.
 (function() {
   const islandLoaders = {
 ${islandDefs}
@@ -150,7 +164,7 @@ ${islandDefs}
       await customElements.whenDefined(tagName);
     } catch (error) {
       console.warn('[HVL] Island <' + tagName + '> hydration failed:', error);
-      // Mark as failed — SSR HTML still visible
+      // Progressive enhancement: SSR HTML still visible
       document.querySelectorAll(tagName).forEach(el => {
         el.setAttribute('data-hvl-hydration-error', 'true');
       });

@@ -68,6 +68,9 @@ export interface FrameworkOptions {
   }
 }
 
+/** Special file types in the routes directory */
+export type SpecialFileType = 'renderer' | 'middleware'
+
 /** Resolved route entry from file-based routing */
 export interface RouteEntry {
   /** URL path pattern (e.g., '/', '/about', '/posts/:id') */
@@ -78,6 +81,8 @@ export interface RouteEntry {
   type: 'page' | 'api'
   /** Variable name for module import */
   varName: string
+  /** Special file type (renderer or middleware), if applicable */
+  special?: SpecialFileType
 }
 
 /** Island metadata collected during SSR */
@@ -104,6 +109,10 @@ export interface SsrContext {
   islands: IslandMeta[]
   /** HTTP status code */
   status: number
+  /** Custom data bag — for loaders, middleware, etc. */
+  data: Record<string, unknown>
+  /** Request ID for tracing */
+  requestId?: string
 }
 
 /** The main framework() function signature */

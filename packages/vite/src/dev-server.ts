@@ -2,6 +2,12 @@
  * @hvl/vite - Dev server plugin
  * Integrates Hono as Vite middleware in dev mode.
  * Handles page SSR rendering and API routing.
+ *
+ * Phase 1 improvements:
+ * - SsrContext integration: params/query flow through render pipeline
+ * - Precise Island collection via knownIslandsMap
+ * - Renderer/middleware loading from _renderer.ts / _middleware.ts
+ * - Route module loader() support
  */
 
 import type { Plugin, ViteDevServer } from 'vite'
@@ -10,6 +16,8 @@ import { createHonoApp } from './hono-app.js'
 import { scanRoutes, scanIslands, generateRoutesModule, generateIslandsModule, fileToTagName } from './route-scanner.js'
 import { renderPageToString, renderSSRError, wrapInDocument } from './ssr-handler.js'
 import { generateHydrationScript } from './island-transform.js'
+import { getKnownIslandsMap } from './island-extractor.js'
+import { extractRouteMeta } from './html-template.js'
 import { join } from 'node:path'
 
 const VIRTUAL_ROUTES = 'virtual:hvl-routes'
@@ -25,6 +33,7 @@ export function devServerPlugin(options: FrameworkOptions = {}): Plugin {
   let server: ViteDevServer
   let cachedRoutes: RouteEntry[] = []
   let cachedIslandFiles: string[] = []
+  let knownIslandsMap: Map<string, string> = new Map()
 
   return {
     name: 'hvl:dev-server',
@@ -39,11 +48,19 @@ export function devServerPlugin(options: FrameworkOptions = {}): Plugin {
       app.get('/__hvl', (c) => {
         return c.json({
           version: '0.1.0',
-          routes: cachedRoutes.map(r => ({
-            path: r.path,
-            file: r.filePath,
-            type: r.type,
-          })),
+          routes: cachedRoutes
+            .filter(r => !r.special)
+            .map(r => ({
+              path: r.path,
+              file: r.filePath,
+              type: r.type,
+            })),
+          specialFiles: cachedRoutes
+            .filter(r => r.special)
+            .map(r => ({
+              type: r.special,
+              file: r.filePath,
+            })),
           islands: cachedIslandFiles.map(f => ({
             tag: fileToTagName(f),
             file: f,
@@ -91,12 +108,18 @@ export function devServerPlugin(options: FrameworkOptions = {}): Plugin {
         }
 
         try {
-          const { html, islands } = await renderPageToString(
+          // Render with SsrContext and precise Island collection
+          const { html, islands, context } = await renderPageToString(
             viteServer,
             route,
             url,
-            routesDir
+            routesDir,
+            knownIslandsMap
           )
+
+          // Extract route meta for SEO
+          const module = await viteServer.ssrLoadModule(`/${routesDir}/${route.filePath}`)
+          const routeMeta = extractRouteMeta(module)
 
           // Generate hydration script if islands detected
           const hydrateScript = islands.length > 0
@@ -105,10 +128,14 @@ export function devServerPlugin(options: FrameworkOptions = {}): Plugin {
 
           // Wrap in full HTML document
           const fullHtml = wrapInDocument(html, {
+            title: routeMeta.title,
             hydrateScript,
+            meta: routeMeta.description
+              ? { description: routeMeta.description }
+              : undefined,
           })
 
-          return c.html(fullHtml)
+          return c.html(fullHtml, context.status)
         } catch (error) {
           console.error('[HVL] SSR Error:', error)
           const isDev = viteServer.config.mode === 'development'
@@ -185,6 +212,8 @@ export function devServerPlugin(options: FrameworkOptions = {}): Plugin {
       if (id === RESOLVED_ISLANDS) {
         const root = server?.config.root || process.cwd()
         cachedIslandFiles = await scanIslands(join(root, islandsDir))
+        // Rebuild the known islands map for precise collection
+        knownIslandsMap = getKnownIslandsMap(cachedIslandFiles, islandsDir)
         return generateIslandsModule(islandsDir, cachedIslandFiles)
       }
     },
@@ -196,12 +225,12 @@ export function devServerPlugin(options: FrameworkOptions = {}): Plugin {
  */
 function matchPageRoute(routes: RouteEntry[], pathname: string): RouteEntry | null {
   // Try exact match first
-  const exact = routes.find(r => r.type === 'page' && r.path === pathname)
+  const exact = routes.find(r => !r.special && r.type === 'page' && r.path === pathname)
   if (exact) return exact
 
   // Try dynamic match
   for (const route of routes) {
-    if (route.type !== 'page') continue
+    if (route.special || route.type !== 'page') continue
     if (!route.path.includes(':')) continue
 
     const pattern = route.path.replace(/:[^/]+/g, '[^/]+')
@@ -217,16 +246,16 @@ function matchPageRoute(routes: RouteEntry[], pathname: string): RouteEntry | nu
  */
 function matchApiRoute(routes: RouteEntry[], pathname: string): RouteEntry | null {
   // Try exact match
-  const exact = routes.find(r => r.type === 'api' && `/api${r.path}` === pathname)
+  const exact = routes.find(r => !r.special && r.type === 'api' && `/api${r.path}` === pathname)
   if (exact) return exact
 
   // The route path already includes /api prefix from file path
-  const byPath = routes.find(r => r.type === 'api' && r.path === pathname)
+  const byPath = routes.find(r => !r.special && r.type === 'api' && r.path === pathname)
   if (byPath) return byPath
 
   // Try prefix match for nested API routes
   for (const route of routes) {
-    if (route.type !== 'api') continue
+    if (route.special || route.type !== 'api') continue
     if (pathname.startsWith(route.path)) return route
   }
 

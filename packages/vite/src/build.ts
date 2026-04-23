@@ -1,25 +1,38 @@
 /**
  * @hvl/vite - Build plugin
  * Handles dual-end build (SSR + Client) for production.
+ *
+ * Phase 1: Actually executes Vite builds instead of just logging config.
+ *
+ * Build strategy (Web Standards aligned):
+ * - SSR build: produces ESM bundle for server runtimes (Deno/Node/CF Workers)
+ * - Client build: produces minimal JS — only island components + hydration
+ * - Zero-JS pages output nothing to client (Level 0 progressive enhancement)
+ *
+ * The build happens in `closeBundle` so Vite's own build runs first,
+ * then we kick off the secondary build(s).
  */
 
 import type { Plugin, ResolvedConfig } from 'vite'
 import type { FrameworkOptions } from './types.js'
-import { build as viteBuild, type BuildOptions } from 'vite'
+import { build as viteBuild, type InlineConfig } from 'vite'
 import { resolve, join } from 'node:path'
+
+/** SSR noExternal packages — Lit must be bundled into SSR output */
+const DEFAULT_SSR_NO_EXTERNAL = [
+  'lit',
+  'lit-html',
+  'lit-element',
+  '@lit/reactive-element',
+  '@lit-labs/ssr',
+  '@lit-labs/ssr-client',
+]
 
 export function buildPlugin(options: FrameworkOptions = {}): Plugin {
   const routesDir = options.routesDir || 'app/routes'
   const islandsDir = options.islandsDir || 'app/islands'
   const outDir = options.build?.outDir || 'dist'
-  const ssrNoExternal = options.ssr?.noExternal || [
-    'lit',
-    'lit-html',
-    'lit-element',
-    '@lit/reactive-element',
-    '@lit-labs/ssr',
-    '@lit-labs/ssr-client',
-  ]
+  const ssrNoExternal = options.ssr?.noExternal || DEFAULT_SSR_NO_EXTERNAL
 
   let config: ResolvedConfig
 
@@ -31,58 +44,93 @@ export function buildPlugin(options: FrameworkOptions = {}): Plugin {
     },
 
     async closeBundle() {
-      // Only run in build mode
+      // Only run in build mode (not dev)
       if (config.command !== 'build') return
 
       const root = config.root
 
-      // Step 1: SSR build
+      // Check if SSR entry exists
+      const serverEntry = resolve(root, 'app/server.ts')
+      const clientEntry = resolve(root, 'app/client.ts')
+
+      // === Step 1: SSR Build ===
       console.log('[HVL] Building SSR bundle...')
-      const ssrBuildOptions: BuildOptions = {
-        ssr: true,
-        outDir: resolve(root, outDir, 'server'),
-        rollupOptions: {
-          input: {
-            server: resolve(root, 'app/server.ts'),
+      try {
+        const ssrConfig: InlineConfig = {
+          root,
+          build: {
+            ssr: true,
+            outDir: resolve(root, outDir, 'server'),
+            rollupOptions: {
+              input: {
+                server: serverEntry,
+              },
+              output: {
+                format: 'esm',
+                entryFileNames: '[name].js',
+              },
+            },
+            // Don't minify SSR output for debuggability
+            minify: false,
           },
-          output: {
-            format: 'esm',
+          ssr: {
+            noExternal: ssrNoExternal,
           },
-        },
+        }
+
+        await viteBuild(ssrConfig)
+        console.log('[HVL] SSR bundle built →', resolve(root, outDir, 'server'))
+      } catch (error) {
+        console.error('[HVL] SSR build failed:', error)
+        throw error
       }
 
-      // Step 2: Client build (only islands + hydration)
+      // === Step 2: Client Build (Islands only) ===
       console.log('[HVL] Building client bundle (islands)...')
-      const clientBuildOptions: BuildOptions = {
-        outDir: resolve(root, outDir, 'client'),
-        rollupOptions: {
-          input: {
-            client: resolve(root, 'app/client.ts'),
-          },
-          output: {
-            format: 'esm',
-            manualChunks(id) {
-              // Split each island into its own chunk
-              if (id.includes(`/${islandsDir}/`)) {
-                const match = id.match(/\/([^/]+)\.(ts|js)$/)
-                return match ? `island-${match[1]}` : undefined
-              }
+      try {
+        const clientConfig: InlineConfig = {
+          root,
+          build: {
+            outDir: resolve(root, outDir, 'client'),
+            rollupOptions: {
+              input: {
+                client: clientEntry,
+              },
+              output: {
+                format: 'esm',
+                entryFileNames: '[name].js',
+                chunkFileNames: 'islands/[name]-[hash].js',
+                // Split each island into its own chunk for per-page loading
+                manualChunks(id) {
+                  if (id.includes(`/${islandsDir}/`)) {
+                    const match = id.match(/\/([^/]+)\.(ts|js)$/)
+                    if (match) {
+                      return `island-${match[1]}`
+                    }
+                  }
+                },
+              },
             },
           },
-        },
+        }
+
+        await viteBuild(clientConfig)
+        console.log('[HVL] Client bundle built →', resolve(root, outDir, 'client'))
+      } catch (error) {
+        console.error('[HVL] Client build failed:', error)
+        throw error
       }
 
-      // Note: In a real implementation, we'd need to run these builds
-      // through Vite's build API. For PoC, this demonstrates the structure.
-      console.log('[HVL] Build configuration ready')
-      console.log('[HVL]   SSR output:', resolve(root, outDir, 'server'))
-      console.log('[HVL]   Client output:', resolve(root, outDir, 'client'))
+      console.log('[HVL] Build complete!')
+      console.log('[HVL]   Server:  ', resolve(root, outDir, 'server'))
+      console.log('[HVL]   Client:  ', resolve(root, outDir, 'client'))
     },
   }
 }
 
 /**
  * Generate the SSR entry point file content.
+ * This is used when no custom server.ts is provided.
  */
 export function generateServerEntry(routesDir: string): string {
   return `// HVL Server Entry (auto-generated)
@@ -103,10 +151,12 @@ export default app
 
 /**
  * Generate the client entry point file content.
+ * This is used when no custom client.ts is provided.
+ * It imports all island components and registers them as custom elements.
  */
 export function generateClientEntry(islandsDir: string, islandFiles: string[]): string {
   if (islandFiles.length === 0) {
-    return '// HVL Client Entry — No islands detected\n'
+    return '// HVL Client Entry — No islands detected, zero client JS needed\n'
   }
 
   const imports = islandFiles

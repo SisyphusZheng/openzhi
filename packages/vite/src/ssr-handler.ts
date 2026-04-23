@@ -1,15 +1,24 @@
 /**
  * @hvl/vite - SSR Handler
- * Coordinates Vite SSR loading + Lit rendering + Island collection
+ * Coordinates Vite SSR loading + Lit rendering + Island collection.
+ *
+ * Key Phase 1 improvements:
+ * - SsrContext injection: params/query/status flow through the render pipeline
+ * - Precise Island collection: match against known Island map instead of
+ *   regex-scraping all hyphenated tags from HTML (which would false-match
+ *   non-Island custom elements like <my-header> from app/components/)
+ * - Proper Lit SSR with Declarative Shadow DOM
  */
 
 import type { ViteDevServer } from 'vite'
 import type { RouteEntry, IslandMeta, SsrContext } from './types.js'
+import { createSsrContext, extractParams, parseQuery } from './context.js'
 import { fileToTagName } from './route-scanner.js'
 
 /**
- * Collect islands from rendered HTML.
- * Looks for custom element tags that correspond to island components.
+ * Collect islands from rendered HTML by matching against a known Island map.
+ * This is precise — only tags we know are Islands get hydrated.
+ * Non-Island custom elements (from app/components/) are left as pure SSR HTML.
  */
 export function collectIslands(
   html: string,
@@ -19,14 +28,12 @@ export function collectIslands(
   const seen = new Set<string>()
 
   for (const [tagName, modulePath] of knownIslands) {
-    // Check if the tag appears in the rendered HTML
-    const openTag = `<${tagName}`
-    const selfClose = `<${tagName}`
-    if (html.includes(openTag) || html.includes(selfClose)) {
-      if (!seen.has(tagName)) {
-        seen.add(tagName)
-        islands.push({ tagName, modulePath })
-      }
+    // Check if the tag appears in the rendered HTML (opening tag form)
+    // Match `<tag-name` — covers both `<tag-name>` and `<tag-name attr="...">`
+    const pattern = new RegExp(`<${tagName}[\\s>/]`, 'i')
+    if (pattern.test(html) && !seen.has(tagName)) {
+      seen.add(tagName)
+      islands.push({ tagName, modulePath })
     }
   }
 
@@ -34,61 +41,19 @@ export function collectIslands(
 }
 
 /**
- * Render a Lit component to HTML with Declarative Shadow DOM.
- * Uses @lit-labs/ssr for server-side rendering.
- */
-export async function renderLitComponent(
-  componentModule: any,
-  props: Record<string, any> = {}
-): Promise<string> {
-  // Dynamic import to handle SSR environment
-  const { render } = await import('@lit-labs/ssr')
-  const { html } = await import('lit')
-
-  const Component = componentModule.default
-  if (!Component) {
-    throw new Error('[HVL] Route module has no default export')
-  }
-
-  // Create an instance to render
-  // For SSR, we use the render function with the component's template
-  const tagName = Component.hasOwnProperty('__tagName')
-    ? (Component as any).__tagName
-    : toKebabCase(Component.name)
-
-  // Build attributes string from props
-  const attrs = Object.entries(props)
-    .map(([k, v]) => {
-      if (typeof v === 'boolean') return v ? k : ''
-      return `${k}="${String(v)}"`
-    })
-    .filter(Boolean)
-    .join(' ')
-
-  const attrStr = attrs ? ' ' + attrs : ''
-
-  // Use Lit SSR to render the component
-  // @lit-labs/ssr renders with Declarative Shadow DOM
-  const templateResult = html`<${tagName}${attrStr}></${tagName}>`
-
-  let rendered = ''
-  for await (const chunk of render(templateResult)) {
-    rendered += chunk
-  }
-
-  return rendered
-}
-
-/**
- * Simple SSR rendering using direct @lit-labs/ssr render.
- * This is the core rendering path.
+ * Render a page route to HTML string via Vite SSR + Lit.
+ * Returns the rendered HTML and a list of collected islands.
  */
 export async function renderPageToString(
   vite: ViteDevServer,
   route: RouteEntry,
   url: URL,
-  routesDir: string
-): Promise<{ html: string; islands: IslandMeta[] }> {
+  routesDir: string,
+  knownIslands?: Map<string, string>
+): Promise<{ html: string; islands: IslandMeta[]; context: SsrContext }> {
+  // Create the per-request SSR context
+  const context = createSsrContext(route, url)
+
   // Load the route module via Vite SSR
   const module = await vite.ssrLoadModule(`/${routesDir}/${route.filePath}`)
   const PageComponent = module.default
@@ -97,51 +62,43 @@ export async function renderPageToString(
     throw new Error(`[HVL] Route ${route.path} has no default export`)
   }
 
+  // Call the loader function if exported
+  if (typeof module.loader === 'function') {
+    try {
+      const loaderData = await module.loader(context)
+      context.data = { ...context.data, ...loaderData }
+    } catch (error) {
+      console.error('[HVL] Loader error for route', route.path, error)
+    }
+  }
+
   // Render using @lit-labs/ssr
   const { render } = await import('@lit-labs/ssr')
   const { html } = await import('lit')
 
-  // Determine tag name
+  // Determine tag name for the page component
   const tagName = module.__tagName || toKebabCase(PageComponent.name)
 
-  // Build the page template
-  const templateResult = html`<${tagName}></${tagName}>`
+  // Build the page template — pass context data as properties
+  const propsAttr = Object.keys(context.data).length > 0
+    ? ' data-ssr="true"'
+    : ''
+  const templateResult = html`<${tagName}${propsAttr}></${tagName}>`
 
-  // Render to string
+  // Render to string — @lit-labs/ssr outputs Declarative Shadow DOM
   let renderedBody = ''
   for await (const chunk of render(templateResult)) {
     renderedBody += chunk
   }
 
-  // Collect islands from the rendered output
-  const islands = collectIslandsFromHTML(renderedBody)
+  // Collect islands — precise match against known map
+  const islands = knownIslands
+    ? collectIslands(renderedBody, knownIslands)
+    : []
 
-  return { html: renderedBody, islands }
-}
+  context.islands = islands
 
-/**
- * Extract island custom element names from rendered HTML.
- */
-function collectIslandsFromHTML(html: string): IslandMeta[] {
-  const islands: IslandMeta[] = []
-  const seen = new Set<string>()
-
-  // Match custom element opening tags (must contain a hyphen)
-  const regex = /<([a-z][a-z0-9]*-[a-z0-9-]+)/g
-  let match: RegExpExecArray | null
-
-  while ((match = regex.exec(html)) !== null) {
-    const tagName = match[1]
-    if (!seen.has(tagName)) {
-      seen.add(tagName)
-      islands.push({
-        tagName,
-        modulePath: `/app/islands/${tagName}.ts`,
-      })
-    }
-  }
-
-  return islands
+  return { html: renderedBody, islands, context }
 }
 
 /**
@@ -157,23 +114,37 @@ function toKebabCase(str: string): string {
 
 /**
  * Wrap rendered body in a full HTML document.
+ * Web Standards: plain HTML5 document, no framework runtime needed for Level 0.
  */
 export function wrapInDocument(
   body: string,
   options: {
     title?: string
+    lang?: string
     head?: string
     hydrateScript?: string
+    meta?: Record<string, string>
   } = {}
 ): string {
-  const { title = 'HVL App', head = '', hydrateScript = '' } = options
+  const {
+    title = 'HVL App',
+    lang = 'en',
+    head = '',
+    hydrateScript = '',
+    meta = {},
+  } = options
+
+  const metaTags = Object.entries(meta)
+    .map(([name, content]) => `  <meta name="${name}" content="${content}">`)
+    .join('\n')
 
   return `<!DOCTYPE html>
-<html lang="en">
+<html lang="${lang}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${title}</title>
+${metaTags}
   ${head}
 </head>
 <body>
@@ -185,6 +156,8 @@ ${hydrateScript}
 
 /**
  * Render an error page for SSR failures.
+ * Dev mode: shows detailed error with stack trace.
+ * Production: shows generic error message.
  */
 export function renderSSRError(
   error: Error,
@@ -194,7 +167,7 @@ export function renderSSRError(
   const message = isDev
     ? `
 <div style="font-family: system-ui; padding: 2rem; color: #c00;">
-  <h2>⚠️ SSR Render Error</h2>
+  <h2>SSR Render Error</h2>
   <p><strong>Route:</strong> ${route.path}</p>
   <p><strong>File:</strong> ${route.filePath}</p>
   <p><strong>Error:</strong> ${escapeHtml(error.message)}</p>
