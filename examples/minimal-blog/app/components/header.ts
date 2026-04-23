@@ -5,39 +5,47 @@ import { LitElement, html, css } from 'lit'
  *
  * This is a static component (no JS needed).
  * It's rendered on the server and shipped as HTML only (0 KB JS).
+ *
+ * Uses Open Props for design tokens:
+ * https://open-props.com/
  */
+import '../../open-props.css'
+
 export class Header extends LitElement {
   static styles = css`
     header {
-      padding: 1rem 2rem;
-      border-bottom: 1px solid #eaeaea;
+      padding: var(--size-4) var(--size-6);
+      border-bottom: 1px solid var(--gray-3);
       display: flex;
       justify-content: space-between;
       align-items: center;
+      background: var(--gray-0);
     }
 
     .logo {
-      font-size: 1.5rem;
-      font-weight: bold;
-      color: inherit;
+      font-size: var(--font-size-3);
+      font-weight: var(--font-weight-7);
+      color: var(--gray-9);
       text-decoration: none;
     }
 
     nav a {
-      margin-left: 1.5rem;
-      color: inherit;
+      margin-left: var(--size-5);
+      color: var(--gray-7);
       text-decoration: none;
+      font-weight: var(--font-weight-5);
     }
 
     nav a:hover {
+      color: var(--blue-6);
       text-decoration: underline;
     }
 
     /* Theme toggle button - will be hydrated as Island */
     .theme-toggle-container {
-      margin-left: 1.5rem;
+      margin-left: var(--size-5);
     }
-  `
+  `;
 
   render() {
     return html`
