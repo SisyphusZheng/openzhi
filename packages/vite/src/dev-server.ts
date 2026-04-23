@@ -2,12 +2,6 @@
  * @hvl/vite - Dev server plugin
  * Integrates Hono as Vite middleware in dev mode.
  * Handles page SSR rendering and API routing.
- *
- * Phase 1 improvements:
- * - SsrContext integration: params/query flow through render pipeline
- * - Precise Island collection via knownIslandsMap
- * - Renderer/middleware loading from _renderer.ts / _middleware.ts
- * - Route module loader() support
  */
 
 import type { Plugin, ViteDevServer } from 'vite'
@@ -38,8 +32,17 @@ export function devServerPlugin(options: FrameworkOptions = {}): Plugin {
   return {
     name: 'hvl:dev-server',
 
-    configureServer(viteServer) {
+    async configureServer(viteServer) {
       server = viteServer
+
+      // Scan routes and islands immediately at startup
+      const root = viteServer.config.root
+      cachedRoutes = await scanRoutes(join(root, routesDir))
+      cachedIslandFiles = await scanIslands(join(root, islandsDir))
+      knownIslandsMap = getKnownIslandsMap(cachedIslandFiles, islandsDir)
+
+      console.log(`[HVL] Routes: ${cachedRoutes.filter(r => !r.special).map(r => r.path).join(', ') || '(none)'}`)
+      console.log(`[HVL] Islands: ${cachedIslandFiles.map(f => `<${fileToTagName(f)}>`).join(', ') || '(none)'}`)
 
       // Create Hono app with middleware
       const app = createHonoApp(options)
@@ -70,45 +73,49 @@ export function devServerPlugin(options: FrameworkOptions = {}): Plugin {
       })
 
       // API routes: forward to route modules that export Hono instances
-      app.all('/api/*', async (c) => {
-        const url = new URL(c.req.url)
-        const route = matchApiRoute(cachedRoutes, url.pathname)
-        if (!route) {
-          return c.json({ error: { code: 'NOT_FOUND', message: 'API route not found' } }, 404)
-        }
-
-        try {
-          const module = await viteServer.ssrLoadModule(`/${routesDir}/${route.filePath}`)
-          const apiApp = module.default
-          if (apiApp && typeof apiApp.fetch === 'function') {
-            // Forward the request to the Hono sub-app
-            return apiApp.fetch(c.req.raw)
-          }
-          return c.json({ error: { code: 'INVALID_API', message: 'API route must export a Hono instance' } }, 500)
-        } catch (error) {
-          console.error('[HVL] API Error:', error)
-          return c.json({ error: { code: 'INTERNAL_ERROR', message: 'Internal server error' } }, 500)
-        }
+      // Must be registered before the catch-all page route
+      app.get('/api/*', async (c) => {
+        return handleApiRoute(c, cachedRoutes, viteServer, routesDir)
+      })
+      app.post('/api/*', async (c) => {
+        return handleApiRoute(c, cachedRoutes, viteServer, routesDir)
+      })
+      app.put('/api/*', async (c) => {
+        return handleApiRoute(c, cachedRoutes, viteServer, routesDir)
+      })
+      app.delete('/api/*', async (c) => {
+        return handleApiRoute(c, cachedRoutes, viteServer, routesDir)
+      })
+      app.patch('/api/*', async (c) => {
+        return handleApiRoute(c, cachedRoutes, viteServer, routesDir)
       })
 
       // Page routes: SSR rendering
       app.get('*', async (c) => {
         const url = new URL(c.req.url)
 
+        console.log(`[HVL DEBUG] Hono GET * matched: ${url.pathname}`)
+
         // Skip Vite internal requests
         if (url.pathname.startsWith('/@') || url.pathname.startsWith('/__vite')) {
-          return c.notFound()
+          return new Response(null, { status: 404 })
+        }
+
+        // Skip requests for static assets (files with extensions)
+        const lastSegment = url.pathname.split('/').pop() || ''
+        if (lastSegment.includes('.') && !url.pathname.endsWith('/')) {
+          // Likely a static file request — let Vite handle it
+          return new Response(null, { status: 404 })
         }
 
         // Try to match a page route
         const route = matchPageRoute(cachedRoutes, url.pathname)
         if (!route) {
-          // Let Vite handle static assets and 404
-          return c.notFound()
+          // Not our route — let Vite handle it
+          return new Response(null, { status: 404 })
         }
 
         try {
-          // Render with SsrContext and precise Island collection
           const { html, islands, context } = await renderPageToString(
             viteServer,
             route,
@@ -117,16 +124,13 @@ export function devServerPlugin(options: FrameworkOptions = {}): Plugin {
             knownIslandsMap
           )
 
-          // Extract route meta for SEO
           const module = await viteServer.ssrLoadModule(`/${routesDir}/${route.filePath}`)
           const routeMeta = extractRouteMeta(module)
 
-          // Generate hydration script if islands detected
           const hydrateScript = islands.length > 0
             ? generateHydrationScript(islands, hydrationStrategy)
             : ''
 
-          // Wrap in full HTML document
           const fullHtml = wrapInDocument(html, {
             title: routeMeta.title,
             hydrateScript,
@@ -144,55 +148,62 @@ export function devServerPlugin(options: FrameworkOptions = {}): Plugin {
         }
       })
 
-      // Inject Hono as Vite middleware (after Vite's built-in middleware)
-      return () => {
-        viteServer.middlewares.use(async (req, res, next) => {
-          try {
-            // Convert Node.js IncomingMessage to Web Request
-            const protocol = req.headers['x-forwarded-proto'] || 'http'
-            const host = req.headers.host || 'localhost:3000'
-            const url = `${protocol}://${host}${req.url}`
+      // Register as Vite middleware — direct registration (pre-hook)
+      // so our middleware runs BEFORE Vite's built-in middleware stack.
+      // We only handle routes we know about; everything else passes through to Vite.
+      viteServer.middlewares.use(async (req, res, next) => {
+        try {
+          const protocol = req.headers['x-forwarded-proto'] || 'http'
+          const host = req.headers.host || 'localhost:3000'
+          const url = `${protocol}://${host}${req.url}`
 
-            const headers = new Headers()
-            for (const [key, value] of Object.entries(req.headers)) {
-              if (value) headers.set(key, Array.isArray(value) ? value[0] : value)
-            }
+          console.log(`[HVL DEBUG] ${req.method} ${req.url} → ${url}`)
 
-            const init: RequestInit = {
-              method: req.method || 'GET',
-              headers,
-            }
-
-            // Handle request body for POST/PUT/PATCH
-            if (req.method !== 'GET' && req.method !== 'HEAD') {
-              const chunks: Buffer[] = []
-              for await (const chunk of req) {
-                chunks.push(chunk)
-              }
-              if (chunks.length > 0) {
-                init.body = Buffer.concat(chunks)
-              }
-            }
-
-            const request = new Request(url, init)
-            const response = await app.fetch(request)
-
-            if (response) {
-              res.statusCode = response.status
-              response.headers.forEach((value, key) => {
-                res.setHeader(key, value)
-              })
-              const body = await response.arrayBuffer()
-              res.end(Buffer.from(body))
-            } else {
-              next()
-            }
-          } catch (error) {
-            console.error('[HVL] Middleware error:', error)
-            next()
+          const headers = new Headers()
+          for (const [key, value] of Object.entries(req.headers)) {
+            if (value) headers.set(key, Array.isArray(value) ? value[0] : value)
           }
-        })
-      }
+
+          const init: RequestInit = {
+            method: req.method || 'GET',
+            headers,
+          }
+
+          if (req.method !== 'GET' && req.method !== 'HEAD') {
+            const chunks: Buffer[] = []
+            for await (const chunk of req) {
+              chunks.push(chunk)
+            }
+            if (chunks.length > 0) {
+              init.body = Buffer.concat(chunks)
+            }
+          }
+
+          const request = new Request(url, init)
+          const response = await app.fetch(request)
+
+          // If Hono returned 404 with empty body, pass through to Vite
+          if (response.status === 404) {
+            const contentType = response.headers.get('content-type') || ''
+            // Our 404s are JSON; empty 404 means "not our route"
+            if (!contentType) {
+              next()
+              return
+            }
+          }
+
+          // Write Hono's response
+          res.statusCode = response.status
+          response.headers.forEach((value, key) => {
+            res.setHeader(key, value)
+          })
+          const body = await response.arrayBuffer()
+          res.end(Buffer.from(body))
+        } catch (error) {
+          console.error('[HVL] Middleware error:', error)
+          next()
+        }
+      })
     },
 
     // Virtual module: routes
@@ -203,7 +214,6 @@ export function devServerPlugin(options: FrameworkOptions = {}): Plugin {
 
     async load(id) {
       if (id === RESOLVED_ROUTES) {
-        // Re-scan routes on each load (in dev, for HMR)
         const root = server?.config.root || process.cwd()
         cachedRoutes = await scanRoutes(join(root, routesDir))
         return generateRoutesModule(cachedRoutes, routesDir)
@@ -212,7 +222,6 @@ export function devServerPlugin(options: FrameworkOptions = {}): Plugin {
       if (id === RESOLVED_ISLANDS) {
         const root = server?.config.root || process.cwd()
         cachedIslandFiles = await scanIslands(join(root, islandsDir))
-        // Rebuild the known islands map for precise collection
         knownIslandsMap = getKnownIslandsMap(cachedIslandFiles, islandsDir)
         return generateIslandsModule(islandsDir, cachedIslandFiles)
       }
@@ -220,19 +229,13 @@ export function devServerPlugin(options: FrameworkOptions = {}): Plugin {
   }
 }
 
-/**
- * Match a page route from the route table.
- */
 function matchPageRoute(routes: RouteEntry[], pathname: string): RouteEntry | null {
-  // Try exact match first
   const exact = routes.find(r => !r.special && r.type === 'page' && r.path === pathname)
   if (exact) return exact
 
-  // Try dynamic match
   for (const route of routes) {
     if (route.special || route.type !== 'page') continue
     if (!route.path.includes(':')) continue
-
     const pattern = route.path.replace(/:[^/]+/g, '[^/]+')
     const regex = new RegExp(`^${pattern}$`)
     if (regex.test(pathname)) return route
@@ -241,17 +244,11 @@ function matchPageRoute(routes: RouteEntry[], pathname: string): RouteEntry | nu
   return null
 }
 
-/**
- * Match an API route from the route table.
- */
 function matchApiRoute(routes: RouteEntry[], pathname: string): RouteEntry | null {
-  // Try exact match
-  const exact = routes.find(r => !r.special && r.type === 'api' && `/api${r.path}` === pathname)
+  // The route path from scanRoutes already includes /api prefix
+  // e.g., api/hello.ts → path = '/api/hello'
+  const exact = routes.find(r => !r.special && r.type === 'api' && r.path === pathname)
   if (exact) return exact
-
-  // The route path already includes /api prefix from file path
-  const byPath = routes.find(r => !r.special && r.type === 'api' && r.path === pathname)
-  if (byPath) return byPath
 
   // Try prefix match for nested API routes
   for (const route of routes) {
@@ -260,4 +257,44 @@ function matchApiRoute(routes: RouteEntry[], pathname: string): RouteEntry | nul
   }
 
   return null
+}
+
+/**
+ * Handle API route requests — load the route module and forward to its Hono sub-app.
+ */
+async function handleApiRoute(
+  c: any,
+  cachedRoutes: RouteEntry[],
+  viteServer: ViteDevServer,
+  routesDir: string
+) {
+  // Use Hono's req.path which is just the pathname
+  const pathname = c.req.path
+  console.log(`[HVL] API route handler: pathname=${pathname}`)
+  const route = matchApiRoute(cachedRoutes, pathname)
+  if (!route) {
+    console.log(`[HVL] No API route matched for: ${pathname}`)
+    console.log(`[HVL] Available API routes:`, cachedRoutes.filter(r => r.type === 'api').map(r => r.path))
+    return c.json({ error: { code: 'NOT_FOUND', message: 'API route not found' } }, 404)
+  }
+
+  try {
+    const module = await viteServer.ssrLoadModule(`/${routesDir}/${route.filePath}`)
+    const apiApp = module.default
+    if (apiApp && typeof apiApp.fetch === 'function') {
+      // Rewrite the URL to strip the API prefix for the sub-app
+      // The sub-app defines routes relative to its own root (e.g., '/' for GET /api/hello)
+      // But the incoming request has the full path (e.g., '/api/hello')
+      // We need to strip the route's path prefix so the sub-app sees '/' 
+      const subPath = pathname.slice(route.path.length) || '/'
+      const newUrl = new URL(c.req.url)
+      newUrl.pathname = subPath
+      const newRequest = new Request(newUrl.toString(), c.req.raw)
+      return apiApp.fetch(newRequest)
+    }
+    return c.json({ error: { code: 'INVALID_API', message: 'API route must export a Hono instance' } }, 500)
+  } catch (error) {
+    console.error('[HVL] API Error:', error)
+    return c.json({ error: { code: 'INTERNAL_ERROR', message: 'Internal server error' } }, 500)
+  }
 }

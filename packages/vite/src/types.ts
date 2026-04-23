@@ -95,25 +95,7 @@ export interface IslandMeta {
   estimatedSize?: string
 }
 
-/** SSR render context passed through the rendering pipeline */
-export interface SsrContext {
-  /** Matched route */
-  route: RouteEntry
-  /** Request URL */
-  url: URL
-  /** Request params (e.g., { id: '123' }) */
-  params: Record<string, string>
-  /** Request query parameters */
-  query: Record<string, string>
-  /** Islands collected during render */
-  islands: IslandMeta[]
-  /** HTTP status code */
-  status: number
-  /** Custom data bag — for loaders, middleware, etc. */
-  data: Record<string, unknown>
-  /** Request ID for tracing */
-  requestId?: string
-}
+export type { SsrContext } from './context.js'
 
 /** The main framework() function signature */
 export type FrameworkPlugin = (options?: FrameworkOptions) => Plugin[]

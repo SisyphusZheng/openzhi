@@ -7,16 +7,6 @@
  * - CSS stylesheet links
  * - Meta tags from route module exports
  * - The island hydration script (only when islands are detected)
- *
- * Web Standards alignment:
- * - Standard <link rel="preload"> for resource hints
- * - Standard <meta> tags for SEO
- * - No framework-specific headers or attributes
- * - Hydration script uses standard ES modules
- *
- * Progressive enhancement:
- * - Level 0 pages get zero injected scripts
- * - Level 1 pages get only the hydration script + island imports
  */
 
 import type { Plugin, HtmlTagDescriptor } from 'vite'
@@ -28,9 +18,9 @@ export function htmlTemplatePlugin(options: FrameworkOptions = {}): Plugin {
 
     transformIndexHtml: {
       // Run after Vite's built-in HTML transforms
-      enforce: 'post',
+      order: 'post',
 
-      transform(html, ctx) {
+      handler(html, ctx) {
         const tags: HtmlTagDescriptor[] = []
 
         // Get the route-specific data from server context if available

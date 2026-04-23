@@ -177,7 +177,7 @@ serve({
 ### 5.2 PM2
 
 ```javascript
-// ecosystem.config.js
+// ecosystem.config.cjs
 module.exports = {
   apps: [{
     name: 'my-hvl-app',

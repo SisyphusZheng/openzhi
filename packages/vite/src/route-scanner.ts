@@ -12,12 +12,9 @@
  * - Files starting with _ are not route handlers but are loaded by the framework
  */
 
-import type { RouteEntry } from './types.js'
+import type { RouteEntry, SpecialFileType } from './types.js'
 import { readdir, stat } from 'node:fs/promises'
 import { join, sep, posix } from 'node:path'
-
-/** Special file types in the routes directory */
-export type SpecialFileType = 'renderer' | 'middleware'
 
 /**
  * Convert a file path to a URL path pattern.

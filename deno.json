@@ -6,9 +6,9 @@
     "./examples/poc"
   ],
   "tasks": {
-    "dev": "deno task -C examples/poc dev",
-    "build:vite": "deno task -C packages/vite build",
-    "build:rpc": "deno task -C packages/rpc build",
+    "dev": "cd examples/poc && deno task dev",
+    "build:vite": "cd packages/vite && deno task build",
+    "build:rpc": "cd packages/rpc && deno task build",
     "build": "deno task build:rpc && deno task build:vite",
     "test": "deno test --allow-read --allow-write --allow-env --allow-net",
     "test:watch": "deno test --allow-read --allow-write --allow-env --allow-net --watch",

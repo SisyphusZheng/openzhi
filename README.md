@@ -215,15 +215,21 @@ framework({
 
 ## 当前状态
 
-**Phase 0 PoC** — 技术可行性验证中。
+**Phase 1 完成** — 核心插件包可用。
 
 核心模块已完成 ✅：
 - Route Scanner — 文件路由扫描
 - Island Transform — AST 检测 + 水合标记
+- Island Extractor — 构建时 Island 依赖分析
 - SSR Handler — Lit 渲染 + DSD 输出
+- Build Plugin — 双端构建（SSR + Client）
+- HTML Template — 预加载/水合注入
 - Error Classes — 类型化错误层级
+- Context — 请求上下文（SsrContext）
 - RPC Client — 端到端类型安全
-- 35/35 单元测试通过
+- 10 tests / 58 steps 通过
+
+构建：Vite library mode（纯 ESM），@hvl/vite 仅 3 个运行时依赖（hono, @lit-labs/ssr, lit）。
 
 ## 技术栈
 

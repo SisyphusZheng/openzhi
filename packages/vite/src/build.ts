@@ -25,7 +25,6 @@ const DEFAULT_SSR_NO_EXTERNAL = [
   'lit-element',
   '@lit/reactive-element',
   '@lit-labs/ssr',
-  '@lit-labs/ssr-client',
 ]
 
 export function buildPlugin(options: FrameworkOptions = {}): Plugin {
@@ -35,6 +34,7 @@ export function buildPlugin(options: FrameworkOptions = {}): Plugin {
   const ssrNoExternal = options.ssr?.noExternal || DEFAULT_SSR_NO_EXTERNAL
 
   let config: ResolvedConfig
+  let built = false
 
   return {
     name: 'hvl:build',
@@ -44,6 +44,10 @@ export function buildPlugin(options: FrameworkOptions = {}): Plugin {
     },
 
     async closeBundle() {
+      // Prevent infinite recursion — closeBundle is called for each viteBuild() too
+      if (built) return
+      built = true
+
       // Only run in build mode (not dev)
       if (config.command !== 'build') return
 

@@ -6,14 +6,12 @@
     "./client": "./src/client/index.ts"
   },
   "tasks": {
-    "build": "deno run -A npm:tsup",
-    "dev": "deno run -A npm:tsup --watch",
+    "build": "deno run -A npm:vite build --config vite.config.build.ts",
+    "dev": "deno run -A npm:vite build --config vite.config.build.ts --watch",
     "test": "deno test --allow-read --allow-write --allow-env --allow-net __tests__/"
   },
   "compilerOptions": {
-    "outDir": "./dist",
-    "rootDir": "./src",
-    "declarationDir": "./dist"
+    "skipLibCheck": true
   },
   "include": ["src"],
   "exclude": ["node_modules", "dist"]

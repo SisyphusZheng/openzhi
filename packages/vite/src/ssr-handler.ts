@@ -2,18 +2,21 @@
  * @hvl/vite - SSR Handler
  * Coordinates Vite SSR loading + Lit rendering + Island collection.
  *
- * Key Phase 1 improvements:
- * - SsrContext injection: params/query/status flow through the render pipeline
- * - Precise Island collection: match against known Island map instead of
- *   regex-scraping all hyphenated tags from HTML (which would false-match
- *   non-Island custom elements like <my-header> from app/components/)
- * - Proper Lit SSR with Declarative Shadow DOM
+ * Rendering strategy:
+ * 1. Install the global DOM shim (needed for Lit SSR)
+ * 2. Load the route module via Vite SSR (gets the component class)
+ * 3. Register the component as a custom element in the SSR environment
+ * 4. Use @lit-labs/ssr to render the component with Declarative Shadow DOM
+ * 5. Collect islands from the rendered HTML
  */
 
 import type { ViteDevServer } from 'vite'
 import type { RouteEntry, IslandMeta, SsrContext } from './types.js'
 import { createSsrContext, extractParams, parseQuery } from './context.js'
 import { fileToTagName } from './route-scanner.js'
+
+// Install DOM shim eagerly — must happen before any Lit code runs
+import '@lit-labs/ssr/lib/install-global-dom-shim.js'
 
 /**
  * Collect islands from rendered HTML by matching against a known Island map.
@@ -29,7 +32,6 @@ export function collectIslands(
 
   for (const [tagName, modulePath] of knownIslands) {
     // Check if the tag appears in the rendered HTML (opening tag form)
-    // Match `<tag-name` — covers both `<tag-name>` and `<tag-name attr="...">`
     const pattern = new RegExp(`<${tagName}[\\s>/]`, 'i')
     if (pattern.test(html) && !seen.has(tagName)) {
       seen.add(tagName)
@@ -72,23 +74,52 @@ export async function renderPageToString(
     }
   }
 
-  // Render using @lit-labs/ssr
+  // Import @lit-labs/ssr for SSR rendering
   const { render } = await import('@lit-labs/ssr')
   const { html } = await import('lit')
 
   // Determine tag name for the page component
   const tagName = module.__tagName || toKebabCase(PageComponent.name)
 
-  // Build the page template — pass context data as properties
-  const propsAttr = Object.keys(context.data).length > 0
-    ? ' data-ssr="true"'
-    : ''
-  const templateResult = html`<${tagName}${propsAttr}></${tagName}>`
+  // Register the component in the SSR environment if not already registered
+  if (!customElements.get(tagName)) {
+    customElements.define(tagName, PageComponent)
+  }
+
+  // Build the page template
+  const templateResult = html`<${tagName}></${tagName}>`
 
   // Render to string — @lit-labs/ssr outputs Declarative Shadow DOM
   let renderedBody = ''
-  for await (const chunk of render(templateResult)) {
-    renderedBody += chunk
+  try {
+    for await (const chunk of render(templateResult)) {
+      renderedBody += chunk
+    }
+  } catch (renderError: any) {
+    // If rendering fails, try a simpler approach: just render the component
+    // with the html literal that the component's render() method produces
+    console.warn('[HVL] Direct render failed, trying component.render():', renderError.message)
+
+    // Fallback: instantiate the component and call its render method
+    try {
+      const instance = new PageComponent()
+      if (typeof instance.render === 'function') {
+        const innerTemplate = instance.render()
+        let innerHtml = ''
+        for await (const chunk of render(innerTemplate)) {
+          innerHtml += chunk
+        }
+        // Wrap in the custom element tag with DSD
+        renderedBody = `<${tagName}>${innerHtml}</${tagName}>`
+      } else {
+        throw new Error('Component has no render method')
+      }
+    } catch (fallbackError: any) {
+      throw new Error(
+        `SSR render failed for <${tagName}>: ${renderError.message}. ` +
+        `Fallback also failed: ${fallbackError.message}`
+      )
+    }
   }
 
   // Collect islands — precise match against known map

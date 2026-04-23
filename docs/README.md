@@ -346,30 +346,26 @@ framework/                              # 框架仓库根目录
 │   ├── vite/                           # [核心] Vite 插件包（框架本体）
 │   │   ├── src/
 │   │   │   ├── index.ts                # 插件主入口，导出 framework() 函数
-│   │   │   ├── plugin.ts               # Vite 插件组合（合并所有子插件）
 │   │   │   ├── dev-server.ts           # configureServer：Hono 中间件注入
 │   │   │   ├── ssr-handler.ts          # Vite SSR 加载 + Lit 渲染协调
 │   │   │   ├── route-scanner.ts        # resolveId/load：virtual:routes 虚拟模块
 │   │   │   ├── island-transform.ts     # transform：Island AST 检测 + 注册
 │   │   │   ├── island-extractor.ts     # 构建时 Island 提取与映射表生成
-│   │   │   ├── build-ssr.ts            # 服务端构建配置
-│   │   │   ├── build-client.ts         # 客户端构建配置（仅 Islands）
+│   │   │   ├── build.ts               # 双端构建（SSR + Client）
 │   │   │   ├── html-template.ts        # transformIndexHtml：HTML 文档模板
-│   │   │   ├── ssg.ts                  # SSG 构建插件（可选）
-│   │   │   ├── hono-app.ts             # Hono 应用创建与路由注册
 │   │   │   ├── context.ts              # 请求上下文（跨 SSR/Island）
+│   │   │   ├── errors.ts              # 类型化错误层级
 │   │   │   └── types.ts                # 公共类型定义
-│   │   ├── package.json                # name: @hvl/vite
-│   │   └── tsconfig.json
+│   │   ├── vite.config.build.ts        # Vite library mode 构建配置
+│   │   ├── deno.json
+│   │   └── package.json                # name: @hvl/vite
 │   │
 │   ├── rpc/                            # [独立] RPC 客户端包
 │   │   ├── src/
-│   │   │   ├── client.ts               # 封装 hc()，自动类型推断
-│   │   │   ├── controller.ts           # Lit ReactiveController 集成
-│   │   │   ├── types.ts                # InferRequest/ResponseType 工具
-│   │   │   └── index.ts
-│   │   ├── package.json                # name: @hvl/rpc
-│   │   └── tsconfig.json
+│   │   │   └── index.ts                # hc() + RpcError + RpcController + rpcFetch
+│   │   ├── vite.config.build.ts        # Vite library mode 构建配置
+│   │   ├── deno.json
+│   │   └── package.json                # name: @hvl/rpc
 │   │
 │   └── create/                         # [脚手架] 项目创建工具
 │       ├── src/
@@ -388,8 +384,6 @@ framework/                              # 框架仓库根目录
 │
 ├── deno.json
 ├── package.json
-├── tsconfig.base.json
-├── turbo.json
 └── README.md
 ```
 
