@@ -465,6 +465,23 @@ my-app/                                 # 用户项目
 
 ---
 
+## 十三、文档索引
+
+| 文档 | 说明 |
+|------|------|
+| [架构设计](./architecture.md) | 架构总览、Mermaid 流程图、请求生命周期、Island 原理、类型安全链路 |
+| [实现路线图](./roadmap.md) | Phase 0~4 详细任务、里程碑、成功标准 |
+| [风险矩阵](./risk-matrix.md) | 关键挑战、风险评级、兼容性降级、错误处理、性能指标、日志规范 |
+| [API 设计规范](./api-design.md) | 路由约定、Zod 验证、响应格式、Hono RPC、中间件栈、认证、分页 |
+| [错误处理体系](./error-handling.md) | 类型化错误层级、全局错误处理器、SSR/水合/RPC 三层错误、跨边界映射 |
+| [配置管理](./configuration.md) | 框架配置项、环境变量、启动验证、多环境策略、部署平台配置 |
+| [测试策略](./testing-strategy.md) | 测试分层、框架测试矩阵、用户项目测试模板、CI 配置、质量门禁 |
+| [安全与中间件](./security-middleware.md) | 中间件链、安全头、CORS、限流、输入验证、认证、安全清单 |
+| [开发者体验](./dev-dx.md) | CLI 设计、dev 模式、错误覆盖层、编辑器集成、调试端点、DX 约定 |
+| [部署指南](./deployment.md) | Cloudflare/Vercel/Deno/Node/Bun 部署、Docker、SSG 静态托管、部署检查清单 |
+
+---
+
 ## License
 
 MIT
