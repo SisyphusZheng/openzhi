@@ -13,8 +13,16 @@ export interface FrameworkOptions {
   /** Directory for shared Lit components (default: 'app/components') */
   componentsDir?: string
 
-  /** Extra HTML to inject into <head> (e.g. CDN links from kissUI) */
+  /** Extra HTML to inject into <head> (e.g. CDN links) — auto-generated when ui.cdn is true */
   headExtras?: string
+
+  /** UI framework configuration (WebAwesome CDN injection) */
+  ui?: {
+    /** Enable WebAwesome CDN injection (default: false) */
+    cdn?: boolean
+    /** WebAwesome version (default: '3.5.0') */
+    version?: string
+  }
 
   /** SSR configuration */
   ssr?: {

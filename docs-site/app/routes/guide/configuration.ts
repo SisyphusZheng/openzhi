@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit'
+import { LitElement, html, css } from '@kissjs/core'
 import '../../components/layout.js'
 
 export class ConfigurationPage extends LitElement {
@@ -37,9 +37,8 @@ export class ConfigurationPage extends LitElement {
 
           <h2>Full Config Example</h2>
           <pre><code>// vite.config.ts
-import { defineConfig } from 'vite'
 import { kiss } from '@kissjs/core'
-import { kissUI } from '@kissjs/ui'
+import { defineConfig } from 'vite'
 
 export default defineConfig({
   base: '/',         // set '/repo/' for GitHub Pages
@@ -49,17 +48,18 @@ export default defineConfig({
       islandsDir: 'app/islands',
       componentsDir: 'app/components',
       middleware: 'app/middleware.ts',
+      ui: { cdn: true, version: '3.5.0' },
     }),
-    kissUI({ version: '3.5.0', cdn: true }),
   ],
 })</code></pre>
 
-          <h2>kissUI() Options</h2>
+          <h2>UI Options</h2>
+          <p>The <span class="inline-code">ui</span> option in <span class="inline-code">kiss()</span> controls WebAwesome CDN injection.</p>
           <table>
             <thead><tr><th>Option</th><th>Default</th><th>Description</th></tr></thead>
             <tbody>
-              <tr><td><span class="inline-code">version</span></td><td><span class="inline-code">'3.5.0'</span></td><td>Web Awesome version from CDN</td></tr>
-              <tr><td><span class="inline-code">cdn</span></td><td><span class="inline-code">true</span></td><td>Use CDN injection (set false for npm)</td></tr>
+              <tr><td><span class="inline-code">ui.cdn</span></td><td><span class="inline-code">false</span></td><td>Enable WebAwesome CDN injection</td></tr>
+              <tr><td><span class="inline-code">ui.version</span></td><td><span class="inline-code">'3.5.0'</span></td><td>Web Awesome version from CDN</td></tr>
             </tbody>
           </table>
 

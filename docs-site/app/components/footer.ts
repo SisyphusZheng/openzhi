@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit'
+import { LitElement, html, css } from '@kissjs/core'
 
 export class DocsFooter extends LitElement {
   static styles = css`
@@ -35,7 +35,7 @@ export class DocsFooter extends LitElement {
       <footer>
         <p>Built with <a href="https://github.com/SisyphusZheng/kiss" target="_blank">KISS Framework</a> — Web Standards all the way down</p>
         <p>
-          Self-bootstrapped: this site uses @kissjs/core, @kissjs/ui, @kissjs/rpc from JSR.
+          Self-bootstrapped: this site uses @kissjs/core from JSR.
           UI by <a href="https://webawesome.com/" target="_blank">Web Awesome</a>.
         </p>
       </footer>

@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit'
+import { LitElement, html, css } from '@kissjs/core'
 import '../../components/layout.js'
 
 export class GettingStartedPage extends LitElement {
@@ -34,23 +34,22 @@ export class GettingStartedPage extends LitElement {
 
           <div class="step">
             <h2>3. Add dependencies</h2>
-            <pre><code>deno add jsr:@kissjs/core jsr:@kissjs/ui jsr:@kissjs/rpc lit hono</code></pre>
+            <pre><code>deno add jsr:@kissjs/core</code></pre>
           </div>
 
           <div class="step">
             <h2>4. Configure Vite</h2>
             <pre><code>// vite.config.ts
-import { defineConfig } from 'vite'
 import { kiss } from '@kissjs/core'
-import { kissUI } from '@kissjs/ui'
+import { defineConfig } from 'vite'
 
 export default defineConfig({
   plugins: [
     kiss({
       routesDir: 'app/routes',
       islandsDir: 'app/islands',
+      ui: { cdn: true },
     }),
-    kissUI(),
   ]
 })</code></pre>
           </div>
@@ -58,7 +57,7 @@ export default defineConfig({
           <div class="step">
             <h2>5. Create your first page</h2>
             <pre><code>// app/routes/index.ts
-import { LitElement, html, css } from 'lit'
+import { LitElement, html, css } from '@kissjs/core'
 
 export class HomePage extends LitElement {
   static styles = css\`:host { display: block; padding: 2rem; }\`

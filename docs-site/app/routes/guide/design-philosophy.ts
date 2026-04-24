@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit'
+import { LitElement, html, css } from '@kissjs/core'
 import '../../components/layout.js'
 
 export class DesignPhilosophyPage extends LitElement {

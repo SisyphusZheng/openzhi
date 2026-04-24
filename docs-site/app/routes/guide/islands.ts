@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit'
+import { LitElement, html, css } from '@kissjs/core'
 import '../../components/layout.js'
 
 export class IslandsGuidePage extends LitElement {
@@ -65,7 +65,7 @@ export class IslandsGuidePage extends LitElement {
           <h2>Creating an Island</h2>
           <p>Create a file in <span class="inline-code">app/islands/</span>:</p>
           <pre><code>// app/islands/counter.ts
-import { LitElement, html } from 'lit'
+import { LitElement, html } from '@kissjs/core'
 
 export class CounterIsland extends LitElement {
   @property({ type: Number }) count = 0

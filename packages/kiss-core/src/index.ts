@@ -47,6 +47,15 @@ export { collectIslands, renderSsrError, wrapInDocument } from './ssr-handler.js
 export { generateHydrationScript } from './island-transform.js'
 export { getKnownIslandsMap } from './island-extractor.js'
 
+// --- Re-export runtime APIs for zero-config user experience ---
+// Users import everything from @kissjs/core — no need to add lit/hono to their deno.json
+export { LitElement, html, css, nothing, svg } from 'lit'
+export { unsafeHTML } from 'lit/directives/unsafe-html.js'
+export { classMap } from 'lit/directives/class-map.js'
+export { styleMap } from 'lit/directives/style-map.js'
+export { ref, createRef } from 'lit/directives/ref.js'
+export { Hono } from 'hono'
+
 // --- Hono 官方 Vite 插件（静态 import，package.json 已声明依赖）---
 import honoDevServer from '@hono/vite-dev-server'
 // @hono/vite-ssg 不再直接使用——SSG 由 kiss:ssg 自定义插件实现
@@ -72,11 +81,23 @@ import honoDevServer from '@hono/vite-dev-server'
  */
 
 export function kiss(options: FrameworkOptions = {}): Plugin[] {
+  // Auto-generate headExtras from ui.cdn option
+  let headExtras = options.headExtras
+  if (options.ui?.cdn && !headExtras) {
+    const version = options.ui.version || '3.5.0'
+    const cdnBase = `https://ka-f.webawesome.com/webawesome@${version}`
+    headExtras = [
+      `<link rel="stylesheet" href="${cdnBase}/styles/webawesome.css" />`,
+      `<script type="module" src="${cdnBase}/webawesome.loader.js"></script>`,
+    ].join('\n  ')
+  }
+
   const resolvedOptions: FrameworkOptions = {
+    ...options,
     routesDir:     options.routesDir     || 'app/routes',
     islandsDir:    options.islandsDir    || 'app/islands',
     componentsDir: options.componentsDir || 'app/components',
-    ...options,
+    headExtras,    // computed value takes precedence (auto-generated from ui.cdn or user-provided)
   }
 
   const VIRTUAL_ENTRY_ID   = 'virtual:kiss-hono-entry'

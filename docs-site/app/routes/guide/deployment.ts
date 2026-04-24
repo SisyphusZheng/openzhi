@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit'
+import { LitElement, html, css } from '@kissjs/core'
 import '../../components/layout.js'
 
 export class DeploymentPage extends LitElement {
@@ -63,7 +63,7 @@ export class DeploymentPage extends LitElement {
           <pre><code>// vite.config.ts
 export default defineConfig({
   base: '/my-repo/',
-  plugins: [kiss(), kissUI()],
+  plugins: [kiss({ ui: { cdn: true } })],
 })</code></pre>
 
           <p>Add a GitHub Actions workflow to build and deploy on push to main. See the <span class="inline-code">.github/workflows/deploy.yml</span> in this repo for a working example.</p>

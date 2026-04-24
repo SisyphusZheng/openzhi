@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit'
+import { LitElement, html, css } from '@kissjs/core'
 import '../../components/layout.js'
 
 export class SSGGuidePage extends LitElement {
@@ -28,12 +28,14 @@ export class SSGGuidePage extends LitElement {
           <p>SSG is built into <span class="inline-code">kiss()</span>. No extra plugin needed:</p>
           <pre><code>// vite.config.ts
 import { kiss } from '@kissjs/core'
-import { kissUI } from '@kissjs/ui'
+import { defineConfig } from 'vite'
 
 export default defineConfig({
   plugins: [
-    kiss({ routesDir: 'app/routes' }),
-    kissUI(),
+    kiss({
+      routesDir: 'app/routes',
+      ui: { cdn: true },
+    }),
   ]
 })</code></pre>
 
@@ -52,7 +54,7 @@ export default defineConfig({
           <pre><code>// vite.config.ts
 export default defineConfig({
   base: '/my-repo/',
-  plugins: [kiss(), kissUI()],
+  plugins: [kiss({ ui: { cdn: true } })],
 })</code></pre>
 
           <h2>Build &amp; Deploy</h2>

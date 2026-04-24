@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit'
+import { LitElement, html, css } from '@kissjs/core'
 import '../../components/layout.js'
 
 export class WebAwesomePage extends LitElement {
@@ -26,7 +26,7 @@ export class WebAwesomePage extends LitElement {
 
           <h2>How It Works</h2>
           <p>
-            The <span class="inline-code">kissUI()</span> plugin injects Web Awesome's CSS and loader
+            Set <span class="inline-code">ui: { cdn: true }</span> in your <span class="inline-code">kiss()</span> config to inject Web Awesome's CSS and loader
             into your <span class="inline-code">&lt;head&gt;</span>. All <span class="inline-code">&lt;wa-*&gt;</span>
             custom elements are available globally — no per-component imports.
           </p>
@@ -70,12 +70,16 @@ export class WebAwesomePage extends LitElement {
           </div>
 
           <h2>Setup</h2>
-          <p>Add <span class="inline-code">kissUI()</span> to your Vite config:</p>
-          <pre><code>import { kissUI } from '@kissjs/ui'
+          <p>Enable <span class="inline-code">ui.cdn</span> in your <span class="inline-code">kiss()</span> config:</p>
+          <pre><code>import { kiss } from '@kissjs/core'
+import { defineConfig } from 'vite'
 
 export default defineConfig({
   plugins: [
-    kissUI({ version: '3.5.0', cdn: true }),
+    kiss({
+      routesDir: 'app/routes',
+      ui: { cdn: true },
+    }),
   ]
 })</code></pre>
 
