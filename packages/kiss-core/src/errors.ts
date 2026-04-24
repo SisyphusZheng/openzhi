@@ -11,8 +11,8 @@ export class KissError extends Error {
     public readonly statusCode: number,
     public readonly isOperational: boolean = true,
   ) {
-    super(message)
-    this.name = 'KissError'
+    super(message);
+    this.name = 'KissError';
   }
 
   toJSON(): { error: { code: string; message: string } } {
@@ -21,28 +21,28 @@ export class KissError extends Error {
         code: this.code,
         message: this.message,
       },
-    }
+    };
   }
 }
 
 /** Resource not found (HTTP 404) */
 export class NotFoundError extends KissError {
   constructor(resource: string, id: string) {
-    super(`${resource} not found: ${id}`, 'NOT_FOUND', 404)
+    super(`${resource} not found: ${id}`, 'NOT_FOUND', 404);
   }
 }
 
 /** Authentication required (HTTP 401) */
 export class UnauthorizedError extends KissError {
   constructor(message = 'Authentication required') {
-    super(message, 'UNAUTHORIZED', 401)
+    super(message, 'UNAUTHORIZED', 401);
   }
 }
 
 /** Insufficient permissions (HTTP 403) */
 export class ForbiddenError extends KissError {
   constructor(message = 'Insufficient permissions') {
-    super(message, 'FORBIDDEN', 403)
+    super(message, 'FORBIDDEN', 403);
   }
 }
 
@@ -52,21 +52,21 @@ export class ValidationError extends KissError {
     message: string,
     public readonly details: Array<{ field: string; message: string }>,
   ) {
-    super(message, 'VALIDATION_ERROR', 422)
+    super(message, 'VALIDATION_ERROR', 422);
   }
 }
 
 /** Resource conflict (HTTP 409) */
 export class ConflictError extends KissError {
   constructor(message: string) {
-    super(message, 'CONFLICT', 409)
+    super(message, 'CONFLICT', 409);
   }
 }
 
 /** Rate limit exceeded (HTTP 429) */
 export class RateLimitError extends KissError {
   constructor(public readonly retryAfter: number) {
-    super('Too many requests', 'RATE_LIMITED', 429)
+    super('Too many requests', 'RATE_LIMITED', 429);
   }
 }
 
@@ -76,7 +76,7 @@ export class SsrRenderError extends KissError {
     public readonly componentPath: string,
     public override readonly cause: Error,
   ) {
-    super(`SSR render failed: ${componentPath}`, 'SSR_RENDER_ERROR', 500, false)
+    super(`SSR render failed: ${componentPath}`, 'SSR_RENDER_ERROR', 500, false);
   }
 }
 
@@ -86,6 +86,6 @@ export class HydrationError extends KissError {
     public readonly tagName: string,
     public override readonly cause: Error,
   ) {
-    super(`Hydration failed for <${tagName}>`, 'HYDRATION_ERROR', 500, false)
+    super(`Hydration failed for <${tagName}>`, 'HYDRATION_ERROR', 500, false);
   }
 }

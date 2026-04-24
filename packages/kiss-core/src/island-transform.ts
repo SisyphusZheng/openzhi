@@ -19,34 +19,34 @@
  * - Declarative Shadow DOM provides the fallback (Level 0)
  */
 
-import type { Plugin } from 'vite'
-import { fileToTagName } from './route-scanner.js'
+import type { Plugin } from 'vite';
+import { fileToTagName } from './route-scanner.js';
 
 /** Vite plugin that injects `__island` and `__tagName` markers into island components */
 export function islandTransformPlugin(islandsDir: string): Plugin {
-  const normalizedIslandsDir = islandsDir.replace(/\\/g, '/')
+  const normalizedIslandsDir = islandsDir.replace(/\\/g, '/');
 
   return {
     name: 'kiss:island-transform',
 
     transform(code, id) {
-      const normalizedId = id.replace(/\\/g, '/')
+      const normalizedId = id.replace(/\\/g, '/');
 
       // Only transform files in the islands directory
-      if (!normalizedId.includes(`/${normalizedIslandsDir}/`)) return null
+      if (!normalizedId.includes(`/${normalizedIslandsDir}/`)) return null;
 
       // Extract tag name from file name
-      const parts = normalizedId.split('/')
-      const fileName = parts[parts.length - 1]
-      const tagName = fileToTagName(fileName)
+      const parts = normalizedId.split('/');
+      const fileName = parts[parts.length - 1];
+      const tagName = fileToTagName(fileName);
 
       // Validate tag name (must contain a hyphen for Custom Elements)
       if (!tagName.includes('-')) {
         this.warn(
           `Island file "${fileName}" must export a Custom Element with a hyphenated tag name. ` +
-            `Got: "${tagName}". Skipping island registration.`
-        )
-        return null
+            `Got: "${tagName}". Skipping island registration.`,
+        );
+        return null;
       }
 
       // Inject only metadata markers. The hydration script handles
@@ -57,11 +57,11 @@ export function islandTransformPlugin(islandsDir: string): Plugin {
 export const __island = true;
 export const __tagName = '${tagName}';
 // --- End KISS Island Markers ---
-`
+`;
 
-      return code + '\n' + injected
+      return code + '\n' + injected;
     },
-  }
+  };
 }
 
 /**
@@ -76,16 +76,15 @@ export const __tagName = '${tagName}';
  */
 export function generateHydrationScript(
   islands: Array<{ tagName: string; modulePath: string }>,
-  strategy: 'eager' | 'lazy' | 'idle' | 'visible' = 'lazy'
+  strategy: 'eager' | 'lazy' | 'idle' | 'visible' = 'lazy',
 ): string {
-  if (islands.length === 0) return ''
+  if (islands.length === 0) return '';
 
   const islandDefs = islands
     .map(
-      i =>
-        `  '${i.tagName}': () => import('${i.modulePath}')`
+      (i) => `  '${i.tagName}': () => import('${i.modulePath}')`,
     )
-    .join(',\n')
+    .join(',\n');
 
   const strategyCode = {
     eager: `
@@ -140,7 +139,7 @@ export function generateHydrationScript(
         document.querySelectorAll(tagName).forEach(el => observer.observe(el));
       }
     `,
-  }[strategy]
+  }[strategy];
 
   return `<script type="module" data-kiss-hydrate>
 // KISS Island Hydration Script
@@ -174,5 +173,5 @@ ${islandDefs}
 
 ${strategyCode}
 })();
-</script>`
+</script>`;
 }

@@ -8,7 +8,7 @@
  * - Minimal framework overhead — only what's needed for SSR + Islands
  */
 
-import type { RouteEntry, IslandMeta } from './types.js'
+import type { IslandMeta, RouteEntry } from './types.js';
 
 /**
  * Resolved SSR context passed through the rendering pipeline.
@@ -16,21 +16,21 @@ import type { RouteEntry, IslandMeta } from './types.js'
  */
 export interface SsrContext {
   /** Matched route entry */
-  route: RouteEntry
+  route: RouteEntry;
   /** The original request URL */
-  url: URL
+  url: URL;
   /** Route params extracted from dynamic segments (e.g., { id: '123' }) */
-  params: Record<string, string>
+  params: Record<string, string>;
   /** Parsed query/search parameters */
-  query: Record<string, string>
+  query: Record<string, string>;
   /** Islands collected during SSR rendering */
-  islands: IslandMeta[]
+  islands: IslandMeta[];
   /** HTTP status code (default: 200) */
-  status: number
+  status: number;
   /** Custom data bag — for loaders, middleware, etc. */
-  data: Record<string, unknown>
+  data: Record<string, unknown>;
   /** Request ID for tracing */
-  requestId?: string
+  requestId?: string;
 }
 
 /**
@@ -39,24 +39,24 @@ export interface SsrContext {
  */
 export function extractParams(
   pattern: string,
-  pathname: string
+  pathname: string,
 ): Record<string, string> {
-  const params: Record<string, string> = {}
+  const params: Record<string, string> = {};
 
-  const patternParts = pattern.split('/')
-  const pathParts = pathname.split('/')
+  const patternParts = pattern.split('/');
+  const pathParts = pathname.split('/');
 
   for (let i = 0; i < patternParts.length; i++) {
-    const part = patternParts[i]
+    const part = patternParts[i];
     if (part.startsWith(':')) {
-      const paramName = part.slice(1)
+      const paramName = part.slice(1);
       if (i < pathParts.length) {
-        params[paramName] = decodeURIComponent(pathParts[i])
+        params[paramName] = decodeURIComponent(pathParts[i]);
       }
     }
   }
 
-  return params
+  return params;
 }
 
 /**
@@ -64,11 +64,11 @@ export function extractParams(
  * Uses standard URLSearchParams — zero framework magic.
  */
 export function parseQuery(url: URL): Record<string, string> {
-  const query: Record<string, string> = {}
+  const query: Record<string, string> = {};
   url.searchParams.forEach((value, key) => {
-    query[key] = value
-  })
-  return query
+    query[key] = value;
+  });
+  return query;
 }
 
 /**
@@ -79,8 +79,8 @@ export function createSsrContext(
   route: RouteEntry,
   url: URL,
   options: {
-    requestId?: string
-  } = {}
+    requestId?: string;
+  } = {},
 ): SsrContext {
   return {
     route,
@@ -91,5 +91,5 @@ export function createSsrContext(
     status: 200,
     data: {},
     requestId: options.requestId,
-  }
+  };
 }

@@ -2,8 +2,8 @@
  * @kiss/ui - Vite library mode build config
  * Pure ESM output, no CJS.
  */
-import { defineConfig } from 'vite'
-import dts from 'vite-plugin-dts'
+import { defineConfig } from 'vite';
+import dts from 'vite-plugin-dts';
 
 export default defineConfig({
   plugins: [
@@ -22,8 +22,8 @@ export default defineConfig({
     },
     rollupOptions: {
       external: (id) => {
-        if (id === 'vite') return true
-        return false
+        if (id === 'vite') return true;
+        return false;
       },
       output: {
         entryFileNames: '[name].js',
@@ -34,4 +34,4 @@ export default defineConfig({
     minify: false,
     sourcemap: true,
   },
-})
+});

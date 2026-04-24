@@ -19,33 +19,33 @@ app.use('*', logger())
 // This will be populated by the build process based on scanned routes
 
 export default app
-`
+`;
 }
 
 /** Generate the client entry point file content (when no custom client.ts is provided).
  * Imports all island components and registers them as custom elements. */
 export function generateClientEntry(islandsDir: string, islandFiles: string[]): string {
   if (islandFiles.length === 0) {
-    return '// KISS Client Entry — No islands detected, zero client JS needed\n'
+    return '// KISS Client Entry — No islands detected, zero client JS needed\n';
   }
 
   const imports = islandFiles
     .map((f, i) => {
-      return `import Island_${i} from './${islandsDir}/${f}';`
+      return `import Island_${i} from './${islandsDir}/${f}';`;
     })
-    .join('\n')
+    .join('\n');
 
   const registrations = islandFiles
     .map((f, i) => {
-      const tagName = f.replace(/\.[^.]+$/, '')
-      return `if (!customElements.get('${tagName}')) customElements.define('${tagName}', Island_${i});`
+      const tagName = f.replace(/\.[^.]+$/, '');
+      return `if (!customElements.get('${tagName}')) customElements.define('${tagName}', Island_${i});`;
     })
-    .join('\n  ')
+    .join('\n  ');
 
   return `// KISS Client Entry (auto-generated)
 ${imports}
 
 // Register all island custom elements
 ${registrations}
-`
+`;
 }

@@ -12,34 +12,34 @@
  * ```
  */
 
-import type { Plugin } from 'vite'
+import type { Plugin } from 'vite';
 
 export interface KissUIOptions {
   /**
    * Web Awesome version (default: '3.5.0')
    */
-  version?: string
+  version?: string;
 
   /**
    * Use CDN (default: true)
    * Set to false to use npm package instead
    */
-  cdn?: boolean
+  cdn?: boolean;
 }
 
 /**
  * KISS UI Plugin - Injects Web Awesome CDN links
  */
 export function kissUI(options: KissUIOptions = {}): Plugin {
-  const { version = '3.5.0', cdn = true } = options
+  const { version = '3.5.0', cdn = true } = options;
 
   return {
     name: 'kiss:ui',
 
     transformIndexHtml(html) {
-      if (!cdn) return html
+      if (!cdn) return html;
 
-      const cdnBase = 'https://ka-f.webawesome.com/webawesome@' + version
+      const cdnBase = 'https://ka-f.webawesome.com/webawesome@' + version;
 
       return [
         // Prepend to <head>
@@ -59,9 +59,9 @@ export function kissUI(options: KissUIOptions = {}): Plugin {
             src: cdnBase + '/webawesome.loader.js',
           },
         },
-      ]
+      ];
     },
-  }
+  };
 }
 
-export default kissUI
+export default kissUI;

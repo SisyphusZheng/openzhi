@@ -11,24 +11,24 @@
  * - State is resettable (for testing and watch mode)
  */
 
-import type { ResolvedConfig } from 'vite'
-import type { FrameworkOptions } from './types.js'
+import type { ResolvedConfig } from 'vite';
+import type { FrameworkOptions } from './types.js';
 
 export class KissBuildContext {
   /** The generated Hono entry module code (virtual module content) */
-  honoEntryCode: string = ''
+  honoEntryCode: string = '';
 
   /** Island tag names discovered during route scanning */
-  islandTagNames: string[] = []
+  islandTagNames: string[] = [];
 
   /** Whether the SSR+client build has completed */
-  buildCompleted: boolean = false
+  buildCompleted: boolean = false;
 
   /** Whether the client-side build has been triggered (prevents re-entry across plugin instances) */
-  clientBuildTriggered: boolean = false
+  clientBuildTriggered: boolean = false;
 
   /** Vite resolved config (set in configResolved hook) */
-  resolvedConfig: ResolvedConfig | null = null
+  resolvedConfig: ResolvedConfig | null = null;
 
   /**
    * User-provided resolve.alias in its original format (Record<string, string>).
@@ -36,22 +36,22 @@ export class KissBuildContext {
    * (config.resolve.alias is Vite's internal Alias[] after resolution, which is
    * NOT compatible with createServer's resolve.alias input format.)
    */
-  userResolveAlias: Record<string, string> | null = null
+  userResolveAlias: Record<string, string> | null = null;
 
   /** Resolved framework options with defaults applied */
-  readonly options: FrameworkOptions
+  readonly options: FrameworkOptions;
 
   constructor(options: FrameworkOptions) {
-    this.options = options
+    this.options = options;
   }
 
   /** Reset all mutable state (for watch mode / testing) */
   reset(): void {
-    this.honoEntryCode = ''
-    this.islandTagNames = []
-    this.buildCompleted = false
-    this.clientBuildTriggered = false
-    this.resolvedConfig = null
-    this.userResolveAlias = null
+    this.honoEntryCode = '';
+    this.islandTagNames = [];
+    this.buildCompleted = false;
+    this.clientBuildTriggered = false;
+    this.resolvedConfig = null;
+    this.userResolveAlias = null;
   }
 }

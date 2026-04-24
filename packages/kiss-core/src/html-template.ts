@@ -9,13 +9,13 @@
  * - The island hydration script (only when islands are detected)
  */
 
-import type { Plugin, HtmlTagDescriptor } from 'vite'
-import type { FrameworkOptions, RouteMeta } from './types.js'
+import type { HtmlTagDescriptor, Plugin } from 'vite';
+import type { FrameworkOptions, RouteMeta } from './types.js';
 
 /** Extend Vite's transformIndexHtml context with KISS route metadata */
 declare module 'vite' {
   interface IndexHtmlTransformContext {
-    __kissRouteMeta?: RouteMeta
+    __kissRouteMeta?: RouteMeta;
   }
 }
 
@@ -29,10 +29,10 @@ export function htmlTemplatePlugin(_options: FrameworkOptions = {}): Plugin {
       order: 'post',
 
       handler(_html, ctx) {
-        const tags: HtmlTagDescriptor[] = []
+        const tags: HtmlTagDescriptor[] = [];
 
         // Get the route-specific data from server context if available
-        const routeMeta = ctx.__kissRouteMeta
+        const routeMeta = ctx.__kissRouteMeta;
 
         if (routeMeta) {
           // Inject meta tags
@@ -41,7 +41,7 @@ export function htmlTemplatePlugin(_options: FrameworkOptions = {}): Plugin {
               tag: 'title',
               children: routeMeta.title,
               injectTo: 'head',
-            })
+            });
           }
 
           if (routeMeta.description) {
@@ -49,7 +49,7 @@ export function htmlTemplatePlugin(_options: FrameworkOptions = {}): Plugin {
               tag: 'meta',
               attrs: { name: 'description', content: routeMeta.description },
               injectTo: 'head',
-            })
+            });
           }
 
           // Inject preload hints for island chunks
@@ -62,15 +62,15 @@ export function htmlTemplatePlugin(_options: FrameworkOptions = {}): Plugin {
                   href: chunk,
                 },
                 injectTo: 'head',
-              })
+              });
             }
           }
         }
 
-        return tags
+        return tags;
       },
     },
-  }
+  };
 }
 
 /**
@@ -78,23 +78,23 @@ export function htmlTemplatePlugin(_options: FrameworkOptions = {}): Plugin {
  * Looks for `meta` export or individual `title`/`description` exports.
  */
 export function extractRouteMeta(module: Record<string, unknown>): RouteMeta {
-  const meta: RouteMeta = {}
+  const meta: RouteMeta = {};
 
   // Check for a `meta` export object
-  const modMeta = module.meta
+  const modMeta = module.meta;
   if (modMeta && typeof modMeta === 'object' && modMeta !== null) {
-    const m = modMeta as Record<string, unknown>
-    if (m.title) meta.title = String(m.title)
-    if (m.description) meta.description = String(m.description)
+    const m = modMeta as Record<string, unknown>;
+    if (m.title) meta.title = String(m.title);
+    if (m.description) meta.description = String(m.description);
   }
 
   // Individual exports take precedence
   if (module.title && typeof module.title === 'string') {
-    meta.title = module.title
+    meta.title = module.title;
   }
   if (module.description && typeof module.description === 'string') {
-    meta.description = module.description
+    meta.description = module.description;
   }
 
-  return meta
+  return meta;
 }

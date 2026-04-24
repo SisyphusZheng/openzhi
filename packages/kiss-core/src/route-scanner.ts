@@ -12,9 +12,9 @@
  * - Files starting with _ are not route handlers but are loaded by the framework
  */
 
-import type { RouteEntry, SpecialFileType } from './types.js'
-import { readdir, stat } from 'node:fs/promises'
-import { join, sep, posix } from 'node:path'
+import type { RouteEntry, SpecialFileType } from './types.js';
+import { readdir, stat } from 'node:fs/promises';
+import { join, posix, sep } from 'node:path';
 
 /**
  * Convert a file path to a URL path pattern.
@@ -22,22 +22,22 @@ import { join, sep, posix } from 'node:path'
  */
 function filePathToRoutePath(filePath: string): string {
   // Normalize separators
-  let p = filePath.split(sep).join(posix.sep)
+  let p = filePath.split(sep).join(posix.sep);
 
   // Remove extension
-  p = p.replace(/\.[^.]+$/, '')
+  p = p.replace(/\.[^.]+$/, '');
 
   // Convert [param] to :param
-  p = p.replace(/\[([^\]]+)\]/g, ':$1')
+  p = p.replace(/\[([^\]]+)\]/g, ':$1');
 
   // Handle index
-  if (p === 'index') return '/'
-  if (p.endsWith('/index')) p = p.slice(0, -6) // Remove trailing /index
+  if (p === 'index') return '/';
+  if (p.endsWith('/index')) p = p.slice(0, -6); // Remove trailing /index
 
   // Ensure leading slash
-  if (!p.startsWith('/')) p = '/' + p
+  if (!p.startsWith('/')) p = '/' + p;
 
-  return p
+  return p;
 }
 
 /**
@@ -45,8 +45,8 @@ function filePathToRoutePath(filePath: string): string {
  * Files under 'api/' subdirectory are API routes.
  */
 function getRouteType(filePath: string): 'page' | 'api' {
-  const normalized = filePath.split(sep).join(posix.sep)
-  return normalized.startsWith('api/') || normalized.includes('/api/') ? 'api' : 'page'
+  const normalized = filePath.split(sep).join(posix.sep);
+  return normalized.startsWith('api/') || normalized.includes('/api/') ? 'api' : 'page';
 }
 
 /**
@@ -58,9 +58,9 @@ function pathToVarName(path: string): string {
     .replace(/^\//, '')
     .replace(/\/$/, '')
     .replace(/:([^/]+)/g, '$1')
-    .replace(/[^a-zA-Z0-9]/g, '_')
-  if (!name || name === '_') name = 'Index'
-  return 'Route_' + name.charAt(0).toUpperCase() + name.slice(1)
+    .replace(/[^a-zA-Z0-9]/g, '_');
+  if (!name || name === '_') name = 'Index';
+  return 'Route_' + name.charAt(0).toUpperCase() + name.slice(1);
 }
 
 /**
@@ -68,14 +68,14 @@ function pathToVarName(path: string): string {
  * _renderer.ts → renderer, _middleware.ts → middleware
  */
 function getSpecialFileType(fileName: string): SpecialFileType | null {
-  const baseName = fileName.replace(/\.[^.]+$/, '')
+  const baseName = fileName.replace(/\.[^.]+$/, '');
   switch (baseName) {
     case '_renderer':
-      return 'renderer'
+      return 'renderer';
     case '_middleware':
-      return 'middleware'
+      return 'middleware';
     default:
-      return null
+      return null;
   }
 }
 
@@ -84,7 +84,7 @@ function getSpecialFileType(fileName: string): SpecialFileType | null {
  * Dot-files are always ignored.
  */
 function isIgnoredFile(fileName: string): boolean {
-  return fileName.startsWith('.')
+  return fileName.startsWith('.');
 }
 
 /**
@@ -93,52 +93,52 @@ function isIgnoredFile(fileName: string): boolean {
  */
 export async function scanRoutes(
   routesDir: string,
-  baseDir: string = ''
+  baseDir: string = '',
 ): Promise<RouteEntry[]> {
-  const entries: RouteEntry[] = []
-  let files: string[]
+  const entries: RouteEntry[] = [];
+  let files: string[];
 
   try {
-    files = await readdir(routesDir)
+    files = await readdir(routesDir);
   } catch {
     // Directory doesn't exist yet — return empty
-    return entries
+    return entries;
   }
 
   for (const file of files) {
-    if (isIgnoredFile(file)) continue
+    if (isIgnoredFile(file)) continue;
 
-    const fullPath = join(routesDir, file)
-    const relativePath = baseDir ? join(baseDir, file) : file
-    const fileStat = await stat(fullPath)
+    const fullPath = join(routesDir, file);
+    const relativePath = baseDir ? join(baseDir, file) : file;
+    const fileStat = await stat(fullPath);
 
     if (fileStat.isDirectory()) {
       // Recurse into subdirectories
-      const subEntries = await scanRoutes(fullPath, relativePath)
-      entries.push(...subEntries)
+      const subEntries = await scanRoutes(fullPath, relativePath);
+      entries.push(...subEntries);
     } else if (/\.(ts|tsx|js|jsx)$/.test(file)) {
       // Check for special files
-      const specialType = getSpecialFileType(file)
+      const specialType = getSpecialFileType(file);
       if (specialType) {
         // Add as a special entry — not a route handler, but loadable
         entries.push({
           path: filePathToRoutePath(
-            relativePath.replace(/^_renderer/, '_renderer').replace(/^_middleware/, '_middleware')
+            relativePath.replace(/^_renderer/, '_renderer').replace(/^_middleware/, '_middleware'),
           ),
           filePath: relativePath.split(sep).join(posix.sep),
           type: 'page', // Same type, but flagged
           varName: `Special_${specialType}_${baseDir.replace(/[\\/]/g, '_') || 'root'}`,
           special: specialType,
-        })
+        });
       } else if (!file.startsWith('_')) {
         // Regular route file
-        const routePath = filePathToRoutePath(relativePath)
+        const routePath = filePathToRoutePath(relativePath);
         entries.push({
           path: routePath,
           filePath: relativePath.split(sep).join(posix.sep),
           type: getRouteType(relativePath),
           varName: pathToVarName(routePath),
-        })
+        });
       }
       // Other _-prefixed files (not _renderer/_middleware) are silently skipped
     }
@@ -148,17 +148,17 @@ export async function scanRoutes(
   entries.sort((a, b) => {
     // Special files go to the end
     if (a.special || b.special) {
-      if (a.special && !b.special) return 1
-      if (!a.special && b.special) return -1
-      return 0
+      if (a.special && !b.special) return 1;
+      if (!a.special && b.special) return -1;
+      return 0;
     }
-    const aDynamic = a.path.includes(':')
-    const bDynamic = b.path.includes(':')
-    if (aDynamic !== bDynamic) return aDynamic ? 1 : -1
-    return a.path.localeCompare(b.path)
-  })
+    const aDynamic = a.path.includes(':');
+    const bDynamic = b.path.includes(':');
+    if (aDynamic !== bDynamic) return aDynamic ? 1 : -1;
+    return a.path.localeCompare(b.path);
+  });
 
-  return entries
+  return entries;
 }
 
 /**
@@ -166,46 +166,49 @@ export async function scanRoutes(
  * Includes special file imports (_renderer, _middleware).
  */
 export function generateRoutesModule(routes: RouteEntry[], routesDir: string): string {
-  const regularRoutes = routes.filter(r => !r.special)
-  const specialFiles = routes.filter(r => r.special)
+  const regularRoutes = routes.filter((r) => !r.special);
+  const specialFiles = routes.filter((r) => r.special);
 
   const imports = routes
-    .map(r => {
+    .map((r) => {
       if (r.special) {
         // Special files are imported but not added to the routes array
-        const varName = r.varName
-        return `import * as ${varName} from '/${routesDir}/${r.filePath}';`
+        const varName = r.varName;
+        return `import * as ${varName} from '/${routesDir}/${r.filePath}';`;
       }
-      return `import * as ${r.varName} from '/${routesDir}/${r.filePath}';`
+      return `import * as ${r.varName} from '/${routesDir}/${r.filePath}';`;
     })
-    .join('\n')
+    .join('\n');
 
   const routeDefs = regularRoutes
     .map(
-      r =>
-        `  { path: '${r.path}', filePath: '${r.filePath}', type: '${r.type}', module: ${r.varName} },`
+      (r) =>
+        `  { path: '${r.path}', filePath: '${r.filePath}', type: '${r.type}', module: ${r.varName} },`,
     )
-    .join('\n')
+    .join('\n');
 
   // Generate special file mappings
   const rendererDefs = specialFiles
-    .filter(r => r.special === 'renderer')
-    .map(r => {
+    .filter((r) => r.special === 'renderer')
+    .map((r) => {
       // The renderer applies to the directory it's in
-      const dir = r.filePath.replace(/\/_renderer\.[^.]+$/, '').replace(/_renderer\.[^.]+$/, '')
-      const scope = dir ? `/${dir}` : '/'
-      return `  { scope: '${scope}', module: ${r.varName} },`
+      const dir = r.filePath.replace(/\/_renderer\.[^.]+$/, '').replace(/_renderer\.[^.]+$/, '');
+      const scope = dir ? `/${dir}` : '/';
+      return `  { scope: '${scope}', module: ${r.varName} },`;
     })
-    .join('\n')
+    .join('\n');
 
   const middlewareDefs = specialFiles
-    .filter(r => r.special === 'middleware')
-    .map(r => {
-      const dir = r.filePath.replace(/\/_middleware\.[^.]+$/, '').replace(/_middleware\.[^.]+$/, '')
-      const scope = dir ? `/${dir}` : '/'
-      return `  { scope: '${scope}', module: ${r.varName} },`
+    .filter((r) => r.special === 'middleware')
+    .map((r) => {
+      const dir = r.filePath.replace(/\/_middleware\.[^.]+$/, '').replace(
+        /_middleware\.[^.]+$/,
+        '',
+      );
+      const scope = dir ? `/${dir}` : '/';
+      return `  { scope: '${scope}', module: ${r.varName} },`;
     })
-    .join('\n')
+    .join('\n');
 
   return `// Auto-generated by @kissjs/core route-scanner
 // DO NOT EDIT — changes will be overwritten
@@ -226,7 +229,7 @@ ${rendererDefs || '  // No _renderer.ts files found'}
 export const middlewares = [
 ${middlewareDefs || '  // No _middleware.ts files found'}
 ];
-`
+`;
 }
 
 /**
@@ -234,20 +237,20 @@ ${middlewareDefs || '  // No _middleware.ts files found'}
  */
 export function generateIslandsModule(
   islandsDir: string,
-  islandFiles: string[]
+  islandFiles: string[],
 ): string {
   const imports = islandFiles
     .map((f, i) => {
-      return `import * as Island_${i} from '/${islandsDir}/${f}';`
+      return `import * as Island_${i} from '/${islandsDir}/${f}';`;
     })
-    .join('\n')
+    .join('\n');
 
   const islandDefs = islandFiles
     .map((f, i) => {
-      const tagName = fileToTagName(f)
-      return `  { tagName: '${tagName}', modulePath: '/${islandsDir}/${f}', module: Island_${i} },`
+      const tagName = fileToTagName(f);
+      return `  { tagName: '${tagName}', modulePath: '/${islandsDir}/${f}', module: Island_${i} },`;
     })
-    .join('\n')
+    .join('\n');
 
   return `// Auto-generated by @kissjs/core island-scanner
 // DO NOT EDIT — changes will be overwritten
@@ -259,7 +262,7 @@ ${islandDefs}
 ];
 
 export const islandTagNames = islands.map(i => i.tagName);
-`
+`;
 }
 
 /**
@@ -267,28 +270,28 @@ export const islandTagNames = islands.map(i => i.tagName);
  * e.g., 'my-counter.ts' → 'my-counter', 'theme-toggle.ts' → 'theme-toggle'
  */
 export function fileToTagName(fileName: string): string {
-  return fileName.replace(/\.[^.]+$/, '')
+  return fileName.replace(/\.[^.]+$/, '');
 }
 
 /**
  * Scan islands directory for island files.
  */
 export async function scanIslands(islandsDir: string): Promise<string[]> {
-  const files: string[] = []
-  let entries: string[]
+  const files: string[] = [];
+  let entries: string[];
 
   try {
-    entries = await readdir(islandsDir)
+    entries = await readdir(islandsDir);
   } catch {
-    return files
+    return files;
   }
 
   for (const entry of entries) {
-    if (entry.startsWith('.')) continue
+    if (entry.startsWith('.')) continue;
     if (/\.(ts|tsx|js|jsx)$/.test(entry)) {
-      files.push(entry)
+      files.push(entry);
     }
   }
 
-  return files.sort()
+  return files.sort();
 }

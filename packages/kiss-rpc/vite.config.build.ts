@@ -3,8 +3,8 @@
  * Replaces tsup with native Vite lib mode.
  * Pure ESM output, no CJS.
  */
-import { defineConfig } from 'vite'
-import dts from 'vite-plugin-dts'
+import { defineConfig } from 'vite';
+import dts from 'vite-plugin-dts';
 
 export default defineConfig({
   plugins: [
@@ -22,9 +22,9 @@ export default defineConfig({
     },
     rollupOptions: {
       external: (id) => {
-        if (id === 'hono' || id.startsWith('hono/')) return true
-        if (id === 'zod') return true
-        return false
+        if (id === 'hono' || id.startsWith('hono/')) return true;
+        if (id === 'zod') return true;
+        return false;
       },
     },
     outDir: 'dist',
@@ -32,4 +32,4 @@ export default defineConfig({
     minify: false,
     sourcemap: true,
   },
-})
+});

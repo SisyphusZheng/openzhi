@@ -30,7 +30,7 @@
  * ```
  */
 
-import type { ReactiveController, ReactiveElement } from 'lit'
+import type { ReactiveController, ReactiveElement } from 'lit';
 
 /**
  * RPC Error - thrown when API call fails
@@ -40,8 +40,8 @@ export class RpcError extends Error {
     public readonly status: number,
     message: string,
   ) {
-    super(message)
-    this.name = 'RpcError'
+    super(message);
+    this.name = 'RpcError';
   }
 }
 
@@ -51,21 +51,25 @@ export class RpcError extends Error {
  * Handles loading/error states and triggers re-renders automatically.
  */
 export class RpcController implements ReactiveController {
-  private _loading = false
-  private _error: RpcError | null = null
+  private _loading = false;
+  private _error: RpcError | null = null;
 
-  get loading(): boolean { return this._loading }
-  get error(): RpcError | null { return this._error }
+  get loading(): boolean {
+    return this._loading;
+  }
+  get error(): RpcError | null {
+    return this._error;
+  }
 
   constructor(private host: ReactiveElement) {
-    host.addController(this)
+    host.addController(this);
   }
 
   hostConnected() {}
 
   hostDisconnected() {
-    this._loading = false
-    this._error = null
+    this._loading = false;
+    this._error = null;
   }
 
   /**
@@ -79,25 +83,25 @@ export class RpcController implements ReactiveController {
    * ```
    */
   async call<T>(fn: () => Promise<T>): Promise<T | null> {
-    this._loading = true
-    this._error = null
-    this.host.requestUpdate()
+    this._loading = true;
+    this._error = null;
+    this.host.requestUpdate();
 
     try {
-      const result = await fn()
-      return result
+      const result = await fn();
+      return result;
     } catch (err) {
       if (err instanceof RpcError) {
-        this._error = err
+        this._error = err;
       } else if (err instanceof Error) {
-        this._error = new RpcError(0, err.message)
+        this._error = new RpcError(0, err.message);
       } else {
-        this._error = new RpcError(0, 'Unknown error')
+        this._error = new RpcError(0, 'Unknown error');
       }
-      return null
+      return null;
     } finally {
-      this._loading = false
-      this.host.requestUpdate()
+      this._loading = false;
+      this.host.requestUpdate();
     }
   }
 }

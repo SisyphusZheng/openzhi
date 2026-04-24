@@ -14,24 +14,24 @@
  *   - renderEntry: snapshot test the generated code
  */
 
-import type { RouteEntry, FrameworkOptions } from './types.js'
-import { buildEntryDescriptor } from './entry-descriptor.js'
-import { renderEntry } from './entry-renderer.js'
+import type { FrameworkOptions, RouteEntry } from './types.js';
+import { buildEntryDescriptor } from './entry-descriptor.js';
+import { renderEntry } from './entry-renderer.js';
 
-export { buildEntryDescriptor } from './entry-descriptor.js'
-export { renderEntry } from './entry-renderer.js'
-export type { EntryDescriptor } from './entry-descriptor.js'
+export { buildEntryDescriptor } from './entry-descriptor.js';
+export { renderEntry } from './entry-renderer.js';
+export type { EntryDescriptor } from './entry-descriptor.js';
 
 /** Options for the Hono entry code generator */
 export interface HonoEntryOptions {
-  routesDir?: string
-  islandsDir?: string
-  componentsDir?: string
-  middleware?: FrameworkOptions['middleware']
-  ssg?: boolean
-  islandTagNames?: string[]
-  headExtras?: string
-  html?: { lang?: string; title?: string }
+  routesDir?: string;
+  islandsDir?: string;
+  componentsDir?: string;
+  middleware?: FrameworkOptions['middleware'];
+  ssg?: boolean;
+  islandTagNames?: string[];
+  headExtras?: string;
+  html?: { lang?: string; title?: string };
 }
 
 /**
@@ -47,6 +47,6 @@ export function generateHonoEntryCode(
   routes: RouteEntry[],
   options: HonoEntryOptions = {},
 ): string {
-  const descriptor = buildEntryDescriptor(routes, options)
-  return renderEntry(descriptor)
+  const descriptor = buildEntryDescriptor(routes, options);
+  return renderEntry(descriptor);
 }
