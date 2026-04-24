@@ -17,6 +17,7 @@ import { fileToTagName } from './route-scanner.js'
 
 // ─── Import declarations ───────────────────────────────────────
 
+/** Import declaration for the generated entry module */
 export interface ImportDecl {
   /** Module specifier (e.g. 'hono', 'hono/cors') */
   from: string
@@ -28,11 +29,13 @@ export interface ImportDecl {
 
 // ─── Middleware declarations ────────────────────────────────────
 
+/** CORS origin configuration — string, array of strings, or serialized function body */
 export type CorsOriginConfig =
   | string
   | string[]
   | { type: 'function'; body: string }
 
+/** Middleware registration declaration for the Hono entry */
 export interface MiddlewareDecl {
   kind: 'requestId' | 'logger' | 'cors' | 'securityHeaders'
   /** Comments to emit before the middleware registration */
@@ -45,6 +48,7 @@ export interface MiddlewareDecl {
 
 // ─── Route declarations ────────────────────────────────────────
 
+/** API route declaration (e.g. /api/hello) */
 export interface ApiRouteDecl {
   kind: 'api'
   /** URL path pattern (e.g. '/api/hello') */
@@ -57,6 +61,7 @@ export interface ApiRouteDecl {
   importPath: string
 }
 
+/** Page route declaration (e.g. /about) with SSR rendering */
 export interface PageRouteDecl {
   kind: 'page'
   /** URL path pattern */
@@ -71,10 +76,12 @@ export interface PageRouteDecl {
   importPath: string
 }
 
+/** Union type for all route declarations */
 export type RouteDecl = ApiRouteDecl | PageRouteDecl
 
 // ─── Island declarations ───────────────────────────────────────
 
+/** Island component declaration for runtime hydration detection */
 export interface IslandDecl {
   /** Custom element tag name */
   tagName: string
@@ -84,6 +91,7 @@ export interface IslandDecl {
 
 // ─── Document config ───────────────────────────────────────────
 
+/** HTML document wrapping configuration */
 export interface DocumentConfig {
   /** <html> lang attribute (default: 'en') */
   lang: string
@@ -95,6 +103,7 @@ export interface DocumentConfig {
 
 // ─── Top-level descriptor ──────────────────────────────────────
 
+/** Complete structured descriptor of the Hono entry module to be generated */
 export interface EntryDescriptor {
   /** Whether this is an SSG build (injects DOM shim) */
   isSSG: boolean

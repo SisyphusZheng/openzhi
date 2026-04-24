@@ -2,7 +2,7 @@
  * @kissjs/core - ssr-handler.ts tests (Deno)
  */
 import { assertEquals, assertNotEquals } from 'jsr:@std/assert'
-import { wrapInDocument, renderSSRError, collectIslands } from '../src/ssr-handler.ts'
+import { wrapInDocument, renderSsrError, collectIslands } from '../src/ssr-handler.ts'
 import type { RouteEntry } from '../src/types.ts'
 
 Deno.test('ssr-handler - wrapInDocument', async (t) => {
@@ -34,24 +34,17 @@ Deno.test('ssr-handler - wrapInDocument', async (t) => {
   })
 })
 
-Deno.test('ssr-handler - renderSSRError', async (t) => {
-  const route: RouteEntry = {
-    path: '/broken',
-    filePath: 'broken.ts',
-    type: 'page',
-    varName: 'Route_Broken',
-  }
-
+Deno.test('ssr-handler - renderSsrError', async (t) => {
   await t.step('shows error details in dev mode', () => {
     const error = new Error('Something went wrong')
-    const html = renderSSRError(error, route, true)
+    const html = renderSsrError(error, 500, true)
     assertEquals(html.includes('SSR Render Error'), true)
     assertEquals(html.includes('Something went wrong'), true)
   })
 
   await t.step('shows generic message in production', () => {
     const error = new Error('Something went wrong')
-    const html = renderSSRError(error, route, false)
+    const html = renderSsrError(error, 500, false)
     assertEquals(html.includes('Something went wrong'), true)
     // Production error page should NOT contain "SSR Render Error"
     assertEquals(html.includes('SSR Render Error'), false)

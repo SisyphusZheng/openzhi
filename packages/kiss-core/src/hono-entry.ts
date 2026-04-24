@@ -22,6 +22,7 @@ export { buildEntryDescriptor } from './entry-descriptor.js'
 export { renderEntry } from './entry-renderer.js'
 export type { EntryDescriptor } from './entry-descriptor.js'
 
+/** Options for the Hono entry code generator */
 export interface HonoEntryOptions {
   routesDir?: string
   islandsDir?: string

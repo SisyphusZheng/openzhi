@@ -22,6 +22,7 @@
 import type { Plugin } from 'vite'
 import { fileToTagName } from './route-scanner.js'
 
+/** Vite plugin that injects `__island` and `__tagName` markers into island components */
 export function islandTransformPlugin(islandsDir: string): Plugin {
   const normalizedIslandsDir = islandsDir.replace(/\\/g, '/')
 

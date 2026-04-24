@@ -61,7 +61,7 @@ Deno.test('island-transform - generateHydrationScript', async (t) => {
       { tagName: 'theme-toggle', modulePath: '/app/islands/theme-toggle.ts' },
     ]
     const script = generateHydrationScript(islands, 'lazy')
-    assertEquals(script.includes('<script type="module" data-kiss-hydration>'), true)
+    assertEquals(script.includes('<script type="module" data-kiss-hydrate>'), true)
     assertEquals(script.includes("'my-counter'"), true)
     assertEquals(script.includes("'theme-toggle'"), true)
     assertEquals(script.includes('hydrateIsland'), true)

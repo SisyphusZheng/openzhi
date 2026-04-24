@@ -58,8 +58,9 @@
 
 ### 测试覆盖
 
-- 5 个测试文件：context, errors, island-transform, route-scanner, ssr-handler
-- 未覆盖：build.ts, hono-entry.ts, html-template.ts
+- 6 个测试文件：context, errors, island-transform, route-scanner, ssr-handler, entry-descriptor
+- 29 个测试全部通过
+- 未覆盖：build.ts, html-template.ts
 
 ---
 
@@ -67,15 +68,28 @@
 
 > 🎯 目标：修已知问题，补齐工程化短板
 
-### P0 修复
+### P0 修复 ✅
 
-- [ ] **删除悬空的 ./client 导出** — package.json 声明了但 src/client/ 为空
-- [ ] **修正 CORS process.env** — 改用跨运行时兼容方式（Deno.env.get / env 参数）
-- [ ] **清理 JSR 废弃包** — @kissjs/vite (v0.0.3) 和 @kissjs/ssg (v0.1.0) 添加废弃提示
+- [x] **删除悬空的 ./client 导出** — package.json 声明了但 src/client/ 为空 → 已删除
+- [x] **修正 CORS process.env** — 改用配置驱动 `middleware.corsOrigin`（Web Standards 兼容，零环境变量）
+- [x] **/__kiss debug 端点** — SSG 构建不再包含，仅 dev 模式生效
+- [x] **wrapDocument 硬编码** — `lang` 和 `title` 改为可配置（`options.html.lang` / `options.html.title`）
+- [x] **源文件注释统一** — @kiss/vite → @kissjs/core（11 个文件）
+- [ ] **JSR 废弃包** — @kissjs/vite (v0.0.3) 和 @kissjs/ssg (v0.1.0) 添加废弃提示（用户已手动处理）
+
+### P1 架构重构 ✅
+
+- [x] **hono-entry.ts 模板化** — 270 行字符串拼接 → EntryDescriptor 数据模型 + renderEntry 纯函数 + 薄层组合
+- [x] **KissBuildContext** — 替代闭包共享可变状态（honoEntryCode/islandTagNames/resolvedConfig/clientBuildTriggered）
+- [x] **GLOBAL_BUILT 双层检查** — ctx.clientBuildTriggered + 模块级安全网
+- [x] **renderSsrError dev/prod** — 支持 dev 模式详细错误 + prod 模式安全错误
+- [x] **wrapInDocument lang** — 支持 `lang` 选项，不再硬编码 `en`
 
 ### 测试补齐
 
-- [ ] **hono-entry.ts 集成测试** — 核心管道目前零测试，是最大测试盲区
+- [x] **hono-entry.ts 集成测试** — 19 个新测试（9 buildEntryDescriptor + 9 renderEntry + 1 集成）
+- [x] **修复 2 个坏测试** — ssr-handler.test.ts（import 名称+签名）+ island-transform.test.ts（属性名对齐）
+- [x] **全量测试通过** — 29 passed / 0 failed
 - [ ] **build.ts 测试** — 双端构建流程测试
 - [ ] **@kissjs/rpc 功能测试** — RpcController 集成测试
 
@@ -87,9 +101,7 @@
 
 ### 代码质量
 
-- [ ] **减少类型断言** — 消除 `as any` / `as unknown as Plugin`
-- [ ] **GLOBAL_BUILT 替代方案** — 改用配置传递或 Vite 内置机制防递归
-- [ ] **/__kiss debug 端点** — 生产构建中移除或加保护
+- [ ] **减少类型断言** — 消除 `as any` / `as unknown as Plugin`（2 处）
 - [ ] **JSDoc 文档** — 为所有导出符号添加文档注释，提升 JSR 评分到 80%+
 
 ---
@@ -142,12 +154,13 @@ cd my-app && deno task dev
 
 ## 已知技术债
 
-| 问题 | 影响 | 优先级 |
-|------|------|--------|
-| hono-entry.ts 全字符串拼接代码生成 | 不可测试/不可调试/不可类型检查 | 高 |
-| 8 插件闭包共享可变状态 | 无法独立测试插件 | 中 |
-| Island 正则匹配 HTML 检测 | 注释/属性中 tag name 会误判 | 中 |
-| wrapDocument 硬编码标题和语言 | 不可配置 | 低 |
+| 问题 | 影响 | 优先级 | 状态 |
+|------|------|--------|------|
+| ~~hono-entry.ts 全字符串拼接代码生成~~ | ~~不可测试/不可调试/不可类型检查~~ | ~~高~~ | ✅ 已重构为模板化 |
+| ~~8 插件闭包共享可变状态~~ | ~~无法独立测试插件~~ | ~~中~~ | ✅ 已提取 KissBuildContext |
+| Island 正则匹配 HTML 检测 | 注释/属性中 tag name 会误判 | 中 | 待改用 AST |
+| ~~wrapDocument 硬编码标题和语言~~ | ~~不可配置~~ | ~~低~~ | ✅ 已可配置 |
+| 类型断言 `as any` / `as unknown` | 2 处，丢失类型安全 | 低 | 待修复 |
 
 ---
 
@@ -184,10 +197,13 @@ kiss/
 ├── packages/
 │   ├── kiss-core/          # @kissjs/core — 核心框架
 │   │   └── src/
-│   │       ├── index.ts         # 主入口，kiss() 函数
-│   │       ├── hono-entry.ts    # Hono app 虚拟模块生成
-│   │       ├── ssr-handler.ts   # Lit SSR 渲染协调
-│   │       ├── island-transform.ts  # Island AST 检测
+│   │       ├── index.ts             # 主入口，kiss() 函数
+│   │       ├── hono-entry.ts        # Hono app 虚拟模块生成（薄层）
+│   │       ├── entry-descriptor.ts  # EntryDescriptor 数据模型 + builder
+│   │       ├── entry-renderer.ts    # EntryDescriptor → 代码字符串（纯函数）
+│   │       ├── build-context.ts     # KissBuildContext 插件间共享状态
+│   │       ├── ssr-handler.ts       # Lit SSR 渲染协调
+│   │       ├── island-transform.ts  # Island AST 检测 + 水合脚本
 │   │       ├── island-extractor.ts  # Island 依赖分析
 │   │       ├── route-scanner.ts     # 文件路由扫描
 │   │       ├── build.ts            # 双端构建
@@ -210,4 +226,4 @@ kiss/
 
 ---
 
-*路线图版本：v2.0 | 更新日期：2026-04-24 | Phase 0-1 已完成，Phase 2 进行中*
+*路线图版本：v3.0 | 更新日期：2026-04-24 | Phase 0-1 已完成，Phase 2 P0+P1 已完成，工程化收尾中*

@@ -3,6 +3,7 @@
  * Type-safe error hierarchy for the KISS framework.
  */
 
+/** Base error class for all KISS framework errors */
 export class KissError extends Error {
   constructor(
     message: string,
@@ -24,24 +25,28 @@ export class KissError extends Error {
   }
 }
 
+/** Resource not found (HTTP 404) */
 export class NotFoundError extends KissError {
   constructor(resource: string, id: string) {
     super(`${resource} not found: ${id}`, 'NOT_FOUND', 404)
   }
 }
 
+/** Authentication required (HTTP 401) */
 export class UnauthorizedError extends KissError {
   constructor(message = 'Authentication required') {
     super(message, 'UNAUTHORIZED', 401)
   }
 }
 
+/** Insufficient permissions (HTTP 403) */
 export class ForbiddenError extends KissError {
   constructor(message = 'Insufficient permissions') {
     super(message, 'FORBIDDEN', 403)
   }
 }
 
+/** Input validation failed (HTTP 422) */
 export class ValidationError extends KissError {
   constructor(
     message: string,
@@ -51,18 +56,21 @@ export class ValidationError extends KissError {
   }
 }
 
+/** Resource conflict (HTTP 409) */
 export class ConflictError extends KissError {
   constructor(message: string) {
     super(message, 'CONFLICT', 409)
   }
 }
 
+/** Rate limit exceeded (HTTP 429) */
 export class RateLimitError extends KissError {
   constructor(public readonly retryAfter: number) {
     super('Too many requests', 'RATE_LIMITED', 429)
   }
 }
 
+/** SSR rendering failed (HTTP 500, non-operational) */
 export class SsrRenderError extends KissError {
   constructor(
     public readonly componentPath: string,
@@ -72,6 +80,7 @@ export class SsrRenderError extends KissError {
   }
 }
 
+/** Island hydration failed (HTTP 500, non-operational) */
 export class HydrationError extends KissError {
   constructor(
     public readonly tagName: string,

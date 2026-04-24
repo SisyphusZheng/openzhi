@@ -182,7 +182,7 @@ export function kiss(options: FrameworkOptions = {}): Plugin[] {
   const devServerPlugin = honoDevServer({
     entry: VIRTUAL_ENTRY_ID,
     injectClientScript: true,
-  }) as unknown as Plugin
+  })
 
   // --- 4. 自定义 SSG 插件（替代 @hono/vite-ssg）---
   const ssgPlugin: Plugin = {

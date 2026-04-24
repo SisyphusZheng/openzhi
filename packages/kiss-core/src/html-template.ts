@@ -12,6 +12,14 @@
 import type { Plugin, HtmlTagDescriptor } from 'vite'
 import type { FrameworkOptions, RouteMeta } from './types.js'
 
+/** Extend Vite's transformIndexHtml context with KISS route metadata */
+declare module 'vite' {
+  interface IndexHtmlTransformContext {
+    __kissRouteMeta?: RouteMeta
+  }
+}
+
+/** Vite plugin for HTML transform — injects preload hints, meta tags, and island hydration scripts */
 export function htmlTemplatePlugin(options: FrameworkOptions = {}): Plugin {
   return {
     name: 'kiss:html-template',
@@ -24,7 +32,7 @@ export function htmlTemplatePlugin(options: FrameworkOptions = {}): Plugin {
         const tags: HtmlTagDescriptor[] = []
 
         // Get the route-specific data from server context if available
-        const routeMeta = (ctx as any).__kissRouteMeta as RouteMeta | undefined
+        const routeMeta = ctx.__kissRouteMeta
 
         if (routeMeta) {
           // Inject meta tags
@@ -69,13 +77,15 @@ export function htmlTemplatePlugin(options: FrameworkOptions = {}): Plugin {
  * Extract route metadata from a module's exports.
  * Looks for `meta` export or individual `title`/`description` exports.
  */
-export function extractRouteMeta(module: Record<string, any>): RouteMeta {
+export function extractRouteMeta(module: Record<string, unknown>): RouteMeta {
   const meta: RouteMeta = {}
 
   // Check for a `meta` export object
-  if (module.meta && typeof module.meta === 'object') {
-    if (module.meta.title) meta.title = String(module.meta.title)
-    if (module.meta.description) meta.description = String(module.meta.description)
+  const modMeta = module.meta
+  if (modMeta && typeof modMeta === 'object' && modMeta !== null) {
+    const m = modMeta as Record<string, unknown>
+    if (m.title) meta.title = String(m.title)
+    if (m.description) meta.description = String(m.description)
   }
 
   // Individual exports take precedence

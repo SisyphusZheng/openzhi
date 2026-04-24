@@ -18,6 +18,7 @@ import type { KissBuildContext } from './build-context.js'
 import { build as viteBuild, type InlineConfig } from 'vite'
 import { resolve } from 'node:path'
 import { existsSync } from 'node:fs'
+import { generateServerEntry, generateClientEntry } from './entry-generators.js'
 
 /** SSR noExternal packages — Lit must be bundled into SSR output */
 const DEFAULT_SSR_NO_EXTERNAL = [
@@ -34,6 +35,7 @@ const DEFAULT_SSR_NO_EXTERNAL = [
 // plugin instance that doesn't share the same context object.
 let GLOBAL_BUILT = false
 
+/** Vite plugin for dual-end production build (SSR + Client islands) */
 export function buildPlugin(options: FrameworkOptions = {}, ctx?: KissBuildContext): Plugin {
   const islandsDir = options.islandsDir || 'app/islands'
   const outDir = options.build?.outDir || 'dist'
@@ -152,55 +154,4 @@ export function buildPlugin(options: FrameworkOptions = {}, ctx?: KissBuildConte
   }
 }
 
-/**
- * Generate the SSR entry point file content.
- * This is used when no custom server.ts is provided.
- */
-export function generateServerEntry(routesDir: string): string {
-  return `// KISS Server Entry (auto-generated)
-import { Hono } from 'hono'
-import { logger } from 'hono/logger'
-import { requestId } from 'hono/request-id'
 
-const app = new Hono()
-app.use('*', requestId())
-app.use('*', logger())
-
-// Import and register all route modules
-// This will be populated by the build process based on scanned routes
-
-export default app
-`
-}
-
-/**
- * Generate the client entry point file content.
- * This is used when no custom client.ts is provided.
- * It imports all island components and registers them as custom elements.
- */
-export function generateClientEntry(islandsDir: string, islandFiles: string[]): string {
-  if (islandFiles.length === 0) {
-    return '// KISS Client Entry — No islands detected, zero client JS needed\n'
-  }
-
-  const imports = islandFiles
-    .map((f, i) => {
-      const tagName = f.replace(/\.[^.]+$/, '')
-      return `import Island_${i} from './${islandsDir}/${f}';`
-    })
-    .join('\n')
-
-  const registrations = islandFiles
-    .map((f, i) => {
-      const tagName = f.replace(/\.[^.]+$/, '')
-      return `if (!customElements.get('${tagName}')) customElements.define('${tagName}', Island_${i});`
-    })
-    .join('\n  ')
-
-  return `// KISS Client Entry (auto-generated)
-${imports}
-
-// Register all island custom elements
-${registrations}
-`
-}
