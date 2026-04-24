@@ -121,7 +121,11 @@ export function kiss(options: FrameworkOptions = {}): Plugin[] {
   const corePlugin: Plugin = {
     name: 'kiss:core',
 
-    config() {
+    config(userConfig) {
+      // Save user-provided resolve.alias in original format for SSG internal server
+      if (userConfig.resolve?.alias && !Array.isArray(userConfig.resolve.alias)) {
+        ctx.userResolveAlias = userConfig.resolve.alias as Record<string, string>
+      }
       return {
         build: {
           rollupOptions: {
@@ -228,6 +232,9 @@ export function kiss(options: FrameworkOptions = {}): Plugin[] {
 
       try {
         const { createServer } = await import('vite')
+        // config.resolve.alias is Vite's internal Alias[] (with customResolver, etc.)
+        // which is NOT compatible with createServer's resolve.alias format.
+        // Use the saved original user-provided alias instead.
         const server = await createServer({
           configFile: false,
           root,
@@ -238,7 +245,7 @@ export function kiss(options: FrameworkOptions = {}): Plugin[] {
           resolve: {
             preserveSymlinks: true,
             extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
-            alias: config.resolve?.alias || [],
+            alias: ctx.userResolveAlias || undefined,
           },
         })
 

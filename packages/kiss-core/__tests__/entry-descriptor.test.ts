@@ -133,7 +133,7 @@ Deno.test('renderEntry: produces valid module code', () => {
   const code = renderEntry(desc)
 
   assertStringIncludes(code, "import { Hono } from 'hono'")
-  assertStringIncludes(code, "import { render } from '@lit-labs/ssr'")
+  assertStringIncludes(code, "import { render as litRender } from '@lit-labs/ssr'")
   assertStringIncludes(code, 'export default app')
   assertStringIncludes(code, 'const app = new Hono()')
 })

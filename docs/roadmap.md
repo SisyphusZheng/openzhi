@@ -6,13 +6,14 @@
 
 ## 里程碑概览
 
-| 阶段 | 名称 | 核心目标 | 时间 | 状态 |
-|------|------|----------|------|------|
-| **M0** | **PoC** | 技术可行性验证 | 1~2 天 | ✅ 完成 |
-| **M1** | **Alpha** | 核心插件包可用 | ~1 周 | ✅ 完成 |
-| **M2** | **Beta** | 工程化补齐 + 脚手架 | ~2 周 | 🔲 进行中 |
-| **M3** | **RC** | 示例 + 文档完善 | ~3 周 | 🔲 |
-| **M4** | **v1.0** | 生产可用 | ~4 周 | 🔲 |
+| 阶段 | 名称 | 核心目标 | 状态 |
+|------|------|----------|------|
+| **Phase 0** | **PoC** | 技术可行性验证 | ✅ 完成 |
+| **Phase 1** | **Alpha** | 核心插件包可用 | ✅ 完成 |
+| **Phase 2** | **工程化补齐** | P0/P1 修复 + 架构重构 + 测试 | ✅ 完成 |
+| **Phase 3** | **自举文档站** | docs-site 修复 + docs 整合 | 🔲 进行中 |
+| **Phase 4** | **生态验证** | examples + v0.2.0 发布 | 🔲 |
+| **Phase 5** | **高级功能** | Level 2~4 渐进增强 | 🔲 |
 
 ---
 
@@ -56,88 +57,93 @@
 - @kissjs/rpc@0.1.2 → JSR
 - @kissjs/ui@0.1.2 → JSR
 
-### 测试覆盖
-
-- 6 个测试文件：context, errors, island-transform, route-scanner, ssr-handler, entry-descriptor
-- 29 个测试全部通过
-- 未覆盖：build.ts, html-template.ts
-
 ---
 
-## Phase 2：工程化补齐 🔲
+## Phase 2：工程化补齐 ✅
 
 > 🎯 目标：修已知问题，补齐工程化短板
 
 ### P0 修复 ✅
 
 - [x] **删除悬空的 ./client 导出** — package.json 声明了但 src/client/ 为空 → 已删除
-- [x] **修正 CORS process.env** — 改用配置驱动 `middleware.corsOrigin`（Web Standards 兼容，零环境变量）
+- [x] **修正 CORS process.env** — 改用配置驱动 `middleware.corsOrigin`
 - [x] **/__kiss debug 端点** — SSG 构建不再包含，仅 dev 模式生效
-- [x] **wrapDocument 硬编码** — `lang` 和 `title` 改为可配置（`options.html.lang` / `options.html.title`）
+- [x] **wrapDocument 硬编码** — `lang` 和 `title` 改为可配置
 - [x] **源文件注释统一** — @kiss/vite → @kissjs/core（11 个文件）
-- [ ] **JSR 废弃包** — @kissjs/vite (v0.0.3) 和 @kissjs/ssg (v0.1.0) 添加废弃提示（用户已手动处理）
 
 ### P1 架构重构 ✅
 
 - [x] **hono-entry.ts 模板化** — 270 行字符串拼接 → EntryDescriptor 数据模型 + renderEntry 纯函数 + 薄层组合
-- [x] **KissBuildContext** — 替代闭包共享可变状态（honoEntryCode/islandTagNames/resolvedConfig/clientBuildTriggered）
+- [x] **KissBuildContext** — 替代闭包共享可变状态
 - [x] **GLOBAL_BUILT 双层检查** — ctx.clientBuildTriggered + 模块级安全网
 - [x] **renderSsrError dev/prod** — 支持 dev 模式详细错误 + prod 模式安全错误
 - [x] **wrapInDocument lang** — 支持 `lang` 选项，不再硬编码 `en`
 
-### 测试补齐
+### 测试补齐 ✅
 
-- [x] **hono-entry.ts 集成测试** — 19 个新测试（9 buildEntryDescriptor + 9 renderEntry + 1 集成）
-- [x] **修复 2 个坏测试** — ssr-handler.test.ts（import 名称+签名）+ island-transform.test.ts（属性名对齐）
-- [x] **全量测试通过** — 29 passed / 0 failed
+- [x] **hono-entry.ts 集成测试** — 19 个新测试
+- [x] **修复 2 个坏测试** — ssr-handler + island-transform
+- [x] **全量测试通过** — 31 passed / 0 failed
+
+### 未完成项（降级至后续 Phase）
+
 - [ ] **build.ts 测试** — 双端构建流程测试
 - [ ] **@kissjs/rpc 功能测试** — RpcController 集成测试
-
-### CI/CD
-
-- [ ] **测试 CI** — push/PR 时自动运行 `deno test`
-- [ ] **Lint/Format CI** — push 时运行 `deno lint` + `deno fmt --check`
-- [ ] **JSR 发布 CI** — tag push 自动发布到 JSR
-
-### 代码质量
-
-- [ ] **减少类型断言** — 消除 `as any` / `as unknown as Plugin`（2 处）
-- [ ] **JSDoc 文档** — 为所有导出符号添加文档注释，提升 JSR 评分到 80%+
+- [ ] **CI/CD** — lint/test/publish 工作流已创建，deploy 需修复
+- [ ] **减少类型断言** — 消除 `as any` / `as unknown`
+- [ ] **JSDoc 文档** — 为所有导出符号添加文档注释
 
 ---
 
-## Phase 3：`create-kiss` 脚手架 🔲
+## Phase 3：自举文档站 🔲
 
-> 🎯 目标：一行命令创建项目
+> 🎯 目标：docs-site 是 KISS 的门面和 dogfooding 证明，必须正常工作
+
+### 为什么这是最高优先级
+
+1. **文档站 = 门面** — CI 坏了，外部访问者看到 404
+2. **dogfooding** — docs-site 用 KISS 构建自身文档，是最有力的证明
+3. **信息分裂** — docs/ 有 16 个设计文档，docs-site 只有 9 个页面，且内容深度不够
 
 ### 任务清单
 
-- [ ] **CLI 入口** — 命令行参数解析（项目名、模板选择）
-- [ ] **项目模板**
-  - **minimal** — 纯 SSR（routes + components + server.ts）
-  - **standard** — SSR + Islands（routes + islands + client.ts）
-  - **full** — 全功能（standard + API routes + @kissjs/rpc）
+- [ ] **修复 docs-site CI** — `vite.config.ts` 中 `__dirname` 在 Deno ESM 不可用 → `import.meta.dirname`
+- [ ] **清理残留** — 删除 `main.ts` / `main_test.ts`（deno init 残留）
+- [ ] **新增路由页面** — 将 docs/ 中未迁移的文档创建为 docs-site 路由：
+  - `guide/error-handling.ts` — KissError 类型层级、全局错误处理器
+  - `guide/security-middleware.ts` — 安全头、CORS、中间件链
+  - `guide/testing.ts` — 测试分层策略、CI 集成
+  - `guide/api-design.ts` — Hono RPC 类型安全、Zod 验证
+- [ ] **更新导航** — header.ts 添加新页面链接
+- [ ] **更新首页** — 反映 Phase 2 完成后的新状态（去掉"进行中"标记，更新功能列表）
+- [ ] **docs/ 与 docs-site 对齐** — 确保两者内容同步，docs/ 保留为深度参考
 
-```bash
-deno run -A npm:create-kiss my-app --template standard
-cd my-app && deno task dev
-```
+### 为什么不需要 create-kiss 脚手架
+
+过五大支柱审查：
+
+| 支柱 | 判断 |
+|------|------|
+| **最小增幅** | ❌ 新增 npm 包、3 套模板 = 造轮子 |
+| **Web Standards** | ⚠️ 不违反，但不增益 |
+| **无框架绑定** | ✅ 不影响 |
+| **无Runtime绑定** | ✅ 不影响 |
+| **渐进增强** | ❌ 脚手架引导一步到位，与渐进增强精神背道而驰 |
+
+KISS 的核心体验是"从零开始，按需增强"。6 行命令就能创建项目，不需要脚手架喂饭。
+替代方案：getting-started 页面做好 + README 的 Copy-paste setup 代码块。
 
 ---
 
-## Phase 4：示例与文档完善 🔲
+## Phase 4：生态验证 🔲
 
-> 🎯 目标：展示框架能力，降低上手门槛
+> 🎯 目标：用真实场景验证框架能力，发布稳定版本
 
-### 示例应用
+### 任务清单
 
-- [ ] **blog** — SSG + Islands（Markdown 渲染、代码高亮 Island）
-- [ ] **dashboard** — SSR + RPC（数据可视化、实时更新）
-
-### 文档完善
-
-- [ ] **API 参考** — 自动生成（基于 JSDoc + api-extractor）
-- [ ] **迁移指南** — 从 Astro / Next.js / Nuxt 迁移
+- [ ] **blog 示例** — SSG + Islands，Markdown 渲染、代码高亮 Island（KISS 最核心场景）
+- [ ] **改进 poc 示例** — 让它能 `deno task dev` 直接跑起来
+- [ ] **发布 @kissjs/core@0.2.0** — Phase 2+3 完成后的稳定版本
 - [ ] **CHANGELOG.md** — 版本变更跟踪
 
 ---
@@ -161,6 +167,7 @@ cd my-app && deno task dev
 | Island 正则匹配 HTML 检测 | 注释/属性中 tag name 会误判 | 中 | 待改用 AST |
 | ~~wrapDocument 硬编码标题和语言~~ | ~~不可配置~~ | ~~低~~ | ✅ 已可配置 |
 | 类型断言 `as any` / `as unknown` | 2 处，丢失类型安全 | 低 | 待修复 |
+| docs-site CI 不可用 | GitHub Pages 无法自动部署 | 高 | Phase 3 修复 |
 
 ---
 
@@ -216,14 +223,13 @@ kiss/
 │   └── kiss-ui/             # @kissjs/ui — UI 插件
 │       └── src/index.ts         # WebAwesome CDN 注入
 ├── examples/
-│   ├── poc/                 # PoC 示例
-│   └── minimal-blog/        # 博客示例
+│   └── poc/                 # PoC 示例
 ├── docs-site/               # 自举文档站（用 KISS 构建）
-├── docs/                    # 设计文档
+├── docs/                    # 设计文档（深度参考）
 ├── deno.json                # Deno workspace 配置
 └── README.md
 ```
 
 ---
 
-*路线图版本：v3.0 | 更新日期：2026-04-24 | Phase 0-1 已完成，Phase 2 P0+P1 已完成，工程化收尾中*
+*路线图版本：v4.0 | 更新日期：2026-04-24 | Phase 0-2 已完成，Phase 3 进行中*

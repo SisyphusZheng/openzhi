@@ -30,6 +30,14 @@ export class KissBuildContext {
   /** Vite resolved config (set in configResolved hook) */
   resolvedConfig: ResolvedConfig | null = null
 
+  /**
+   * User-provided resolve.alias in its original format (Record<string, string>).
+   * Saved during the config() hook so SSG can pass it to the internal Vite SSR server.
+   * (config.resolve.alias is Vite's internal Alias[] after resolution, which is
+   * NOT compatible with createServer's resolve.alias input format.)
+   */
+  userResolveAlias: Record<string, string> | null = null
+
   /** Resolved framework options with defaults applied */
   readonly options: FrameworkOptions
 
@@ -44,5 +52,6 @@ export class KissBuildContext {
     this.buildCompleted = false
     this.clientBuildTriggered = false
     this.resolvedConfig = null
+    this.userResolveAlias = null
   }
 }

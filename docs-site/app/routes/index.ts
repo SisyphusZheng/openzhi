@@ -177,9 +177,9 @@ export class DocsHome extends LitElement {
         <div class="jsr-badges">
           <h3>Install from JSR</h3>
           <div class="badge-row">
-            <a class="jsr-badge" href="https://jsr.io/@kissjs/core">@kissjs/core@0.1.5</a>
-            <a class="jsr-badge" href="https://jsr.io/@kissjs/ui">@kissjs/ui@0.1.2</a>
-            <a class="jsr-badge" href="https://jsr.io/@kissjs/rpc">@kissjs/rpc@0.1.2</a>
+            <a class="jsr-badge" href="https://jsr.io/@kissjs/core">@kissjs/core</a>
+            <a class="jsr-badge" href="https://jsr.io/@kissjs/ui">@kissjs/ui</a>
+            <a class="jsr-badge" href="https://jsr.io/@kissjs/rpc">@kissjs/rpc</a>
           </div>
         </div>
 
@@ -213,6 +213,16 @@ export class DocsHome extends LitElement {
             <div class="icon">&#127758;</div>
             <h2>Multi-Runtime</h2>
             <p>Same code on Deno, Node, Bun, Cloudflare Workers.</p>
+          </div>
+          <div class="feature-card">
+            <div class="icon">&#9889;</div>
+            <h2>SSG Built-In</h2>
+            <p>Pre-render to static HTML at build time. Zero config.</p>
+          </div>
+          <div class="feature-card">
+            <div class="icon">&#128274;</div>
+            <h2>Zero Lock-In</h2>
+            <p>Your code works without KISS. Hono, Lit, Vite are all standard.</p>
           </div>
         </div>
       </app-layout>

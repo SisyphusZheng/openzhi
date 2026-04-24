@@ -70,6 +70,10 @@ export class DocsHeader extends LitElement {
           <a href="/kiss/guide/islands">Islands</a>
           <a href="/kiss/guide/ssg">SSG</a>
           <a href="/kiss/guide/api-routes">API</a>
+          <a href="/kiss/guide/api-design">API Design</a>
+          <a href="/kiss/guide/error-handling">Errors</a>
+          <a href="/kiss/guide/security-middleware">Security</a>
+          <a href="/kiss/guide/testing">Testing</a>
           <a href="/kiss/guide/design-philosophy">Philosophy</a>
           <a href="/kiss/guide/architecture">Architecture</a>
           <a href="/kiss/guide/configuration">Config</a>

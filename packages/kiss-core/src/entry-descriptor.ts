@@ -159,7 +159,7 @@ export function buildEntryDescriptor(
 
   // Always needed
   imports.push({ from: 'hono', names: ['Hono'] })
-  imports.push({ from: '@lit-labs/ssr', names: ['render'] })
+  imports.push({ from: '@lit-labs/ssr', names: ['render'], alias: 'litRender' })
   imports.push({ from: 'lit', names: ['html'] })
   imports.push({ from: 'lit/directives/unsafe-html.js', names: ['unsafeHTML'] })
   imports.push({ from: '@lit-labs/ssr/lib/render-result.js', names: ['collectResult'] })
