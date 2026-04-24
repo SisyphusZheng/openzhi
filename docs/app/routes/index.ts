@@ -8,90 +8,126 @@ export class DocsHome extends LitElement {
     .hero {
       max-width: 800px;
       margin: 0 auto;
-      padding: 4rem 1.5rem 2rem;
+      padding: 6rem 2rem 3rem;
       text-align: center;
     }
 
     .hero h1 {
-      font-size: 3rem;
-      font-weight: 800;
-      letter-spacing: -0.03em;
+      font-size: 4.5rem;
+      font-weight: 900;
+      letter-spacing: -0.04em;
       margin: 0;
-      background: linear-gradient(135deg, var(--wa-color-primary-600, #2563eb), var(--wa-color-primary-400, #60a5fa));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      color: #fff;
+      line-height: 1;
     }
 
     .hero .tagline {
-      font-size: 1.25rem;
-      color: var(--wa-color-neutral-500, #737373);
-      margin-top: 0.75rem;
-      line-height: 1.6;
+      font-size: 1.0625rem;
+      color: #777;
+      margin-top: 1.25rem;
+      line-height: 1.7;
+      font-weight: 400;
     }
 
     .hero .tagline strong {
-      color: var(--wa-color-neutral-700, #404040);
+      color: #ccc;
+      font-weight: 600;
+    }
+
+    .hero .equation {
+      margin-top: 2rem;
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .eq-item {
+      display: flex;
+      align-items: center;
+      gap: 0.375rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #fff;
+    }
+
+    .eq-item .eq-label {
+      color: #555;
+      font-weight: 400;
+    }
+
+    .eq-item .eq-val {
+      padding: 0.25rem 0.5rem;
+      border: 1px solid #222;
+      border-radius: 2px;
+      font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+      font-size: 0.8125rem;
+      color: #bbb;
     }
 
     .cta {
-      margin-top: 2rem;
+      margin-top: 2.5rem;
       display: flex;
-      gap: var(--wa-space-md, 1rem);
-      justify-content: center;
-    }
-
-    .features {
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: 2rem 1.5rem 3rem;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 1.25rem;
-    }
-
-    .feature-card {
-      padding: 1.5rem;
-      border: 1px solid var(--wa-color-neutral-200, #e5e7eb);
-      border-radius: var(--wa-border-radius-lg, 8px);
-      transition: border-color 0.15s, box-shadow 0.15s;
-    }
-
-    .feature-card:hover {
-      border-color: var(--wa-color-primary-300, #93c5fd);
-      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.08);
-    }
-
-    .feature-card .icon {
-      font-size: 1.5rem;
-      margin-bottom: 0.5rem;
-    }
-
-    .feature-card h2 {
-      font-size: 1rem;
-      font-weight: 600;
-      margin: 0 0 0.375rem;
-      color: var(--wa-color-neutral-800, #262626);
-    }
-
-    .feature-card p {
-      font-size: 0.875rem;
-      color: var(--wa-color-neutral-500, #737373);
-      margin: 0;
-      line-height: 1.5;
-    }
-
-    .standards-bar {
-      max-width: 800px;
-      margin: 0 auto 3rem;
-      padding: 0 1.5rem;
-      text-align: center;
-    }
-
-    .standards-bar .pill-row {
-      display: flex;
-      justify-content: center;
       gap: 0.75rem;
+      justify-content: center;
+    }
+
+    .cta a {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.625rem 1.5rem;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border-radius: 2px;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+    }
+
+    .cta-primary {
+      background: #fff;
+      color: #000;
+    }
+
+    .cta-primary:hover {
+      background: #ddd;
+    }
+
+    .cta-secondary {
+      background: transparent;
+      color: #777;
+      border: 1px solid #222;
+    }
+
+    .cta-secondary:hover {
+      color: #ccc;
+      border-color: #444;
+    }
+
+    /* Standards */
+    .standards {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2.5rem 2rem;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+
+    .standards .label {
+      text-align: center;
+      font-size: 0.6875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #444;
+      margin-bottom: 1rem;
+    }
+
+    .standards .pill-row {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
       flex-wrap: wrap;
     }
 
@@ -99,32 +135,140 @@ export class DocsHome extends LitElement {
       display: inline-flex;
       align-items: center;
       gap: 0.375rem;
-      padding: 0.375rem 0.875rem;
-      border-radius: 999px;
-      font-size: 0.8125rem;
+      padding: 0.375rem 0.75rem;
+      border-radius: 2px;
+      font-size: 0.75rem;
       font-weight: 500;
-      background: var(--wa-color-neutral-100, #f5f5f5);
-      color: var(--wa-color-neutral-700, #404040);
-      border: 1px solid var(--wa-color-neutral-200, #e5e7eb);
+      background: #111;
+      color: #999;
+      border: 1px solid #1a1a1a;
     }
 
     .pill .check {
-      color: var(--wa-color-success-600, #16a34a);
+      color: #fff;
+      font-size: 0.625rem;
     }
 
-    .jsr-badges {
-      max-width: 600px;
-      margin: 0 auto 2rem;
-      padding: 0 1.5rem;
-      text-align: center;
+    /* Features */
+    .features {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
     }
 
-    .jsr-badges h3 {
-      font-size: 0.8125rem;
+    .features .section-label {
+      font-size: 0.6875rem;
+      font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--wa-color-neutral-400, #a3a3a3);
-      margin: 0 0 0.75rem;
+      letter-spacing: 0.12em;
+      color: #444;
+      margin-bottom: 1.5rem;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1px;
+      background: #1a1a1a;
+      border: 1px solid #1a1a1a;
+    }
+
+    .feature-card {
+      padding: 1.5rem;
+      background: #0a0a0a;
+      transition: background 0.2s;
+    }
+
+    .feature-card:hover {
+      background: #0e0e0e;
+    }
+
+    .feature-card .icon {
+      font-size: 1.25rem;
+      margin-bottom: 0.625rem;
+      opacity: 0.6;
+    }
+
+    .feature-card h2 {
+      font-size: 0.9375rem;
+      font-weight: 600;
+      margin: 0 0 0.5rem;
+      color: #fff;
+      letter-spacing: -0.01em;
+    }
+
+    .feature-card p {
+      font-size: 0.8125rem;
+      color: #666;
+      margin: 0;
+      line-height: 1.6;
+    }
+
+    /* Comparison table */
+    .comparison {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+      border-top: 1px solid #1a1a1a;
+    }
+
+    .comparison .label {
+      font-size: 0.6875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #444;
+      margin-bottom: 1.5rem;
+    }
+
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: #1a1a1a;
+      border: 1px solid #1a1a1a;
+    }
+
+    .col-header {
+      padding: 0.625rem 1rem;
+      font-size: 0.6875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      background: #111;
+    }
+
+    .col-header.highlight { color: #fff; }
+    .col-header.dim { color: #444; }
+
+    .cell {
+      padding: 0.625rem 1rem;
+      background: #0a0a0a;
+      font-size: 0.8125rem;
+      color: #666;
+    }
+
+    .cell.highlight {
+      color: #bbb;
+      font-weight: 500;
+    }
+
+    /* JSR */
+    .jsr {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2rem 2rem 3rem;
+      border-top: 1px solid #1a1a1a;
+    }
+
+    .jsr .label {
+      text-align: center;
+      font-size: 0.6875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #444;
+      margin-bottom: 1rem;
     }
 
     .badge-row {
@@ -137,53 +281,47 @@ export class DocsHome extends LitElement {
     .jsr-badge {
       display: inline-flex;
       align-items: center;
-      gap: 0.25rem;
-      padding: 0.25rem 0.625rem;
-      background: #f0fdf4;
-      border: 1px solid #bbf7d0;
-      border-radius: 6px;
+      padding: 0.375rem 0.75rem;
+      background: #111;
+      border: 1px solid #1a1a1a;
+      border-radius: 2px;
       font-size: 0.75rem;
       font-weight: 600;
-      color: #166534;
+      color: #999;
       text-decoration: none;
-      transition: background 0.15s;
+      font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
     }
 
     .jsr-badge:hover {
-      background: #dcfce7;
+      background: #1a1a1a;
+      color: #ccc;
+      border-color: #333;
     }
   `
 
   render() {
     return html`
-      <app-layout>
+      <app-layout home>
         <div class="hero">
           <h1>KISS</h1>
           <p class="tagline">
             <strong>Keep It Simple, Stupid.</strong><br>
-            A minimal full-stack framework built on Web Standards.<br>
-            HTTP = Fetch API, UI = Web Components, Build = ESM.
+            A minimal full-stack framework built on Web Standards.
           </p>
+          <div class="equation">
+            <span class="eq-item"><span class="eq-label">HTTP =</span> <span class="eq-val">Fetch API</span></span>
+            <span class="eq-item"><span class="eq-label">UI =</span> <span class="eq-val">Web Components</span></span>
+            <span class="eq-item"><span class="eq-label">Build =</span> <span class="eq-val">ESM</span></span>
+          </div>
           <div class="cta">
-            <wa-button variant="brand" href="/kiss/guide/getting-started">
-              Get Started
-            </wa-button>
-            <wa-button href="https://github.com/SisyphusZheng/kiss">
-              GitHub
-            </wa-button>
+            <a class="cta-primary" href="/kiss/guide/getting-started">Get Started</a>
+            <a class="cta-secondary" href="https://github.com/SisyphusZheng/kiss">GitHub</a>
           </div>
         </div>
 
-        <div class="jsr-badges">
-          <h3>Install from JSR</h3>
-          <div class="badge-row">
-            <a class="jsr-badge" href="https://jsr.io/@kissjs/core">@kissjs/core</a>
-            <a class="jsr-badge" href="https://jsr.io/@kissjs/ui">@kissjs/ui</a>
-            <a class="jsr-badge" href="https://jsr.io/@kissjs/rpc">@kissjs/rpc</a>
-          </div>
-        </div>
-
-        <div class="standards-bar">
+        <div class="standards">
+          <div class="label">Web Standards Coverage</div>
           <div class="pill-row">
             <span class="pill"><span class="check">&#10003;</span> Fetch API</span>
             <span class="pill"><span class="check">&#10003;</span> Web Components</span>
@@ -194,35 +332,65 @@ export class DocsHome extends LitElement {
         </div>
 
         <div class="features">
-          <div class="feature-card">
-            <div class="icon">&#127760;</div>
-            <h2>Web Standards First</h2>
-            <p>No new abstractions. If you know the web platform, you know KISS.</p>
+          <div class="section-label">Why KISS</div>
+          <div class="features-grid">
+            <div class="feature-card">
+              <div class="icon">&#9672;</div>
+              <h2>Web Standards First</h2>
+              <p>No new abstractions. If you know the web platform, you know KISS.</p>
+            </div>
+            <div class="feature-card">
+              <div class="icon">&#9674;</div>
+              <h2>Islands Architecture</h2>
+              <p>Only interactive components load JS. Default homepage: 0 KB.</p>
+            </div>
+            <div class="feature-card">
+              <div class="icon">&#9670;</div>
+              <h2>Type-Safe RPC</h2>
+              <p>End-to-end type safety with Hono RPC. No codegen needed.</p>
+            </div>
+            <div class="feature-card">
+              <div class="icon">&#9651;</div>
+              <h2>Multi-Runtime</h2>
+              <p>Same code on Deno, Node, Bun, Cloudflare Workers.</p>
+            </div>
+            <div class="feature-card">
+              <div class="icon">&#9656;</div>
+              <h2>SSG Built-In</h2>
+              <p>Pre-render to static HTML at build time. Zero config.</p>
+            </div>
+            <div class="feature-card">
+              <div class="icon">&#9633;</div>
+              <h2>Zero Lock-In</h2>
+              <p>Your code works without KISS. Hono, Lit, Vite are all standard.</p>
+            </div>
           </div>
-          <div class="feature-card">
-            <div class="icon">&#127965;</div>
-            <h2>Islands Architecture</h2>
-            <p>Only interactive components load JS. Default homepage: 0 KB.</p>
+        </div>
+
+        <div class="comparison">
+          <div class="label">Full-Chain Web Standards</div>
+          <div class="comparison-grid">
+            <div class="col-header highlight">KISS</div>
+            <div class="col-header dim">Astro</div>
+            <div class="col-header dim">Next.js</div>
+            <div class="cell highlight">Fetch API</div>
+            <div class="cell">Fetch API</div>
+            <div class="cell">Custom API</div>
+            <div class="cell highlight">Web Components</div>
+            <div class="cell">Islands (custom)</div>
+            <div class="cell">React only</div>
+            <div class="cell highlight">ESM</div>
+            <div class="cell">ESM</div>
+            <div class="cell">ESM + Custom</div>
           </div>
-          <div class="feature-card">
-            <div class="icon">&#128268;</div>
-            <h2>Type-Safe RPC</h2>
-            <p>End-to-end type safety with Hono RPC. No codegen needed.</p>
-          </div>
-          <div class="feature-card">
-            <div class="icon">&#127758;</div>
-            <h2>Multi-Runtime</h2>
-            <p>Same code on Deno, Node, Bun, Cloudflare Workers.</p>
-          </div>
-          <div class="feature-card">
-            <div class="icon">&#9889;</div>
-            <h2>SSG Built-In</h2>
-            <p>Pre-render to static HTML at build time. Zero config.</p>
-          </div>
-          <div class="feature-card">
-            <div class="icon">&#128274;</div>
-            <h2>Zero Lock-In</h2>
-            <p>Your code works without KISS. Hono, Lit, Vite are all standard.</p>
+        </div>
+
+        <div class="jsr">
+          <div class="label">Install from JSR</div>
+          <div class="badge-row">
+            <a class="jsr-badge" href="https://jsr.io/@kissjs/core">@kissjs/core</a>
+            <a class="jsr-badge" href="https://jsr.io/@kissjs/ui">@kissjs/ui</a>
+            <a class="jsr-badge" href="https://jsr.io/@kissjs/rpc">@kissjs/rpc</a>
           </div>
         </div>
       </app-layout>

@@ -1,27 +1,27 @@
 import { LitElement, html, css } from '@kissjs/core'
+import { pageStyles } from '../../components/page-styles.js'
 import '../../components/layout.js'
 
 export class DesignPhilosophyPage extends LitElement {
-  static styles = css`
+  static styles = [pageStyles, css`
     :host { display: block; }
     .container { max-width: 720px; margin: 0 auto; padding: 2rem 1.5rem 3rem; }
-    h1 { font-size: 2rem; font-weight: 700; letter-spacing: -0.02em; margin: 0 0 0.5rem; }
-    .subtitle { color: var(--wa-color-neutral-500, #737373); margin-bottom: 2rem; }
-    h2 { font-size: 1.25rem; font-weight: 600; margin: 2rem 0 0.75rem; color: var(--wa-color-primary-700, #1d4ed8); }
-    h3 { font-size: 1rem; font-weight: 600; margin: 1.25rem 0 0.5rem; }
-    p { line-height: 1.7; margin: 0.5rem 0; }
-    .pillar { padding: 1.25rem; margin: 1rem 0; border-left: 3px solid var(--wa-color-primary-500, #3b82f6); background: var(--wa-color-neutral-50, #fafafa); border-radius: 0 var(--wa-border-radius-md, 6px) var(--wa-border-radius-md, 6px) 0; }
-    .pillar .num { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--wa-color-primary-500, #3b82f6); margin-bottom: 0.25rem; }
+    h1 { font-size: 2.25rem; font-weight: 800; letter-spacing: -0.03em; margin: 0 0 0.5rem; color: #fff; }
+    .subtitle { color: #666; margin-bottom: 2.5rem; font-size: 0.9375rem; line-height: 1.6; }
+    h2 { font-size: 1.25rem; font-weight: 600; margin: 2.5rem 0 0.75rem; color: #fff; letter-spacing: -0.01em; }
+    h3 { font-size: 1rem; font-weight: 600; margin: 1.5rem 0 0.5rem; color: #ccc; }
+    p { line-height: 1.7; margin: 0.5rem 0; color: #999; }
+    .pillar { padding: 1.25rem; margin: 1rem 0; border-left: 3px solid #333; background: #0f0f0f; border-radius: 0 3px 3px 0; }
+    .pillar .num { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #555; margin-bottom: 0.25rem; }
     .pillar h3 { margin: 0 0 0.5rem; font-size: 1.0625rem; }
-    .hard-constraint { display: inline-block; background: var(--wa-color-warning-50, #fffbeb); border: 1px solid var(--wa-color-warning-200, #fde68a); padding: 0.25rem 0.625rem; border-radius: 4px; font-size: 0.8125rem; margin: 0.125rem 0; }
+    .hard-constraint { display: inline-block; background: #111; border: 1px solid #222; padding: 0.25rem 0.625rem; border-radius: 4px; font-size: 0.8125rem; margin: 0.125rem 0; }
     table { width: 100%; border-collapse: collapse; margin: 0.75rem 0 1.5rem; font-size: 0.875rem; }
-    th, td { border: 1px solid var(--wa-color-neutral-200, #e5e7eb); padding: 0.5rem 0.75rem; text-align: left; }
-    th { background: var(--wa-color-neutral-50, #fafafa); font-weight: 600; }
-    pre { background: var(--wa-color-neutral-900, #171717); color: var(--wa-color-neutral-100, #f5f5f5); padding: 1rem 1.25rem; border-radius: var(--wa-border-radius-lg, 8px); overflow-x: auto; font-size: 0.8125rem; line-height: 1.6; margin: 0.75rem 0; }
+    th, td { border: 1px solid #1a1a1a; padding: 0.5rem 0.75rem; text-align: left; }
+    th { background: #111; font-weight: 600; color: #ccc; }
+    pre { background: #111; color: #c8c8c8; padding: 1rem 1.25rem; border-radius: 3px; overflow-x: auto; font-size: 0.8125rem; line-height: 1.6; margin: 0.75rem 0; }
     code { font-family: 'SF Mono', 'Fira Code', monospace; }
     .nav-row { margin-top: 2.5rem; display: flex; justify-content: space-between; }
-  `
-
+  `]
   render() {
     return html`
       <app-layout>

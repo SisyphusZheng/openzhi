@@ -7,87 +7,97 @@ export class DocsHeader extends LitElement {
       position: sticky;
       top: 0;
       z-index: 100;
-      background: var(--wa-color-neutral-0, #fff);
-      border-bottom: 1px solid var(--wa-color-neutral-200, #e5e7eb);
+      background: #0a0a0a;
+      border-bottom: 1px solid #1a1a1a;
     }
 
     .header-inner {
-      max-width: 1200px;
+      max-width: 1400px;
       margin: 0 auto;
-      padding: 0 var(--wa-space-md, 1rem);
+      padding: 0 1.5rem;
       display: flex;
       align-items: center;
       height: 56px;
-      gap: var(--wa-space-lg, 1.5rem);
+      gap: 2rem;
     }
 
     .logo {
-      font-size: 1.25rem;
-      font-weight: 700;
-      color: var(--wa-color-primary-600, #2563eb);
+      font-size: 1rem;
+      font-weight: 800;
+      color: #fff;
       text-decoration: none;
-      letter-spacing: -0.02em;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
     }
 
     .logo:hover {
-      color: var(--wa-color-primary-700, #1d4ed8);
+      color: #888;
+    }
+
+    .logo-sub {
+      font-size: 0.6875rem;
+      font-weight: 400;
+      color: #444;
+      margin-left: 0.375rem;
+      letter-spacing: 0.02em;
     }
 
     nav {
       display: flex;
-      gap: var(--wa-space-sm, 0.5rem);
+      gap: 0.25rem;
       flex: 1;
-      flex-wrap: wrap;
     }
 
     nav a {
-      color: var(--wa-color-neutral-600, #525252);
+      color: #666;
       text-decoration: none;
       font-size: 0.8125rem;
       font-weight: 500;
-      padding: var(--wa-space-xs, 0.25rem) var(--wa-space-sm, 0.5rem);
-      border-radius: var(--wa-border-radius-sm, 4px);
-      transition: color 0.15s, background 0.15s;
+      padding: 0.375rem 0.75rem;
+      letter-spacing: 0.01em;
+      transition: color 0.15s;
+      border-radius: 2px;
     }
 
     nav a:hover {
-      color: var(--wa-color-primary-600, #2563eb);
-      background: var(--wa-color-primary-50, #eff6ff);
+      color: #fff;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
     }
 
     .github-link {
-      font-size: 0.875rem;
+      color: #555;
+      text-decoration: none;
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      padding: 0.375rem 0.75rem;
+      border: 1px solid #222;
+      border-radius: 2px;
+      transition: color 0.15s, border-color 0.15s;
+    }
+
+    .github-link:hover {
+      color: #ccc;
+      border-color: #444;
     }
   `
 
   render() {
     return html`
       <header class="header-inner">
-        <a class="logo" href="/kiss/">KISS</a>
+        <a class="logo" href="/kiss/">KISS<span class="logo-sub">framework</span></a>
         <nav>
-          <a href="/kiss/guide/getting-started">Getting Started</a>
-          <a href="/kiss/guide/routing">Routing</a>
-          <a href="/kiss/guide/islands">Islands</a>
-          <a href="/kiss/guide/ssg">SSG</a>
-          <a href="/kiss/guide/api-routes">API</a>
-          <a href="/kiss/guide/api-design">API Design</a>
-          <a href="/kiss/guide/error-handling">Errors</a>
-          <a href="/kiss/guide/security-middleware">Security</a>
-          <a href="/kiss/guide/testing">Testing</a>
-          <a href="/kiss/guide/design-philosophy">Philosophy</a>
-          <a href="/kiss/guide/architecture">Architecture</a>
-          <a href="/kiss/guide/configuration">Config</a>
-          <a href="/kiss/guide/deployment">Deploy</a>
-          <a href="/kiss/styling/web-awesome">Components</a>
+          <a href="/kiss/guide/getting-started">Docs</a>
+          <a href="https://jsr.io/@kissjs/core">JSR</a>
         </nav>
-        <wa-button
-          class="github-link"
-          href="https://github.com/SisyphusZheng/kiss"
-          variant="default"
-          size="small"
-        >
-          GitHub
-        </wa-button>
+        <div class="header-right">
+          <a class="github-link" href="https://github.com/SisyphusZheng/kiss">GitHub</a>
+        </div>
       </header>
     `
   }

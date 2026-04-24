@@ -8,35 +8,48 @@ export class DocsFooter extends LitElement {
     }
 
     footer {
-      padding: var(--wa-space-lg, 1.5rem) var(--wa-space-xl, 2rem);
-      border-top: 1px solid var(--wa-color-neutral-200, #e5e7eb);
+      padding: 2rem 1.5rem;
+      border-top: 1px solid #222;
       text-align: center;
-      color: var(--wa-color-neutral-500, #737373);
-      font-size: 0.8125rem;
-      background: var(--wa-color-neutral-50, #fafafa);
+      color: #666;
+      font-size: 0.75rem;
+      letter-spacing: 0.02em;
+      background: #000;
     }
 
     p {
-      margin: var(--wa-space-xs, 0.25rem) 0;
+      margin: 0.25rem 0;
     }
 
     a {
-      color: var(--wa-color-primary-600, #2563eb);
+      color: #999;
       text-decoration: none;
+      transition: color 0.15s;
     }
 
     a:hover {
-      text-decoration: underline;
+      color: #fff;
+    }
+
+    .divider {
+      display: inline-block;
+      width: 1px;
+      height: 10px;
+      background: #333;
+      vertical-align: middle;
+      margin: 0 0.75rem;
     }
   `
 
   render() {
     return html`
       <footer>
-        <p>Built with <a href="https://github.com/SisyphusZheng/kiss" target="_blank">KISS Framework</a> — Web Standards all the way down</p>
         <p>
-          Self-bootstrapped: this site uses @kissjs/core from JSR.
-          UI by <a href="https://webawesome.com/" target="_blank">Web Awesome</a>.
+          Built with <a href="https://github.com/SisyphusZheng/kiss" target="_blank">KISS Framework</a>
+          <span class="divider"></span>
+          Self-bootstrapped from JSR
+          <span class="divider"></span>
+          UI by <a href="https://webawesome.com/" target="_blank">Web Awesome</a>
         </p>
       </footer>
     `
