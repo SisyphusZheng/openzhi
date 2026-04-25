@@ -17,13 +17,6 @@ import type { FrameworkOptions, RouteMeta } from './types.js';
 /** Route metadata key for Vite HTML transform context */
 const KISS_ROUTE_META_KEY = '__kissRouteMeta' as const;
 
-/** Extend Vite's transformIndexHtml context with KISS route metadata */
-declare module 'vite' {
-  interface IndexHtmlTransformContext {
-    [KISS_ROUTE_META_KEY]?: RouteMeta;
-  }
-}
-
 /** Vite plugin for HTML transform — injects preload hints, meta tags, and island hydration scripts */
 export function htmlTemplatePlugin(_options: FrameworkOptions = {}): Plugin {
   return {
@@ -37,7 +30,7 @@ export function htmlTemplatePlugin(_options: FrameworkOptions = {}): Plugin {
         const tags: HtmlTagDescriptor[] = [];
 
         // Get the route-specific data from server context if available
-        const routeMeta = ctx[KISS_ROUTE_META_KEY];
+        const routeMeta = (ctx as Record<string, unknown>)[KISS_ROUTE_META_KEY] as RouteMeta | undefined;
 
         if (routeMeta) {
           // Inject meta tags
