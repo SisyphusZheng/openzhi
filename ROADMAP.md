@@ -74,14 +74,15 @@
 - [x] **layout.ts 更新** — sidebar "KISS Architecture" + footer "K·I·S·S"
 - [x] **PIA 残留清零** — 全项目搜索确认无残留
 
-### 4E: Shadow DOM + DSD 恢复（待开始）
+### 4E: Shadow DOM + DSD 恢复（已完成）
 
-- [ ] **恢复 layout.ts Shadow DOM** — 移除 `createRenderRoot() { return this }`，恢复默认 Shadow DOM
-- [ ] **验证 SSG DSD 输出** — 确认 @lit-labs/ssr v3 输出 `<template shadowrootmode="open">`
-- [ ] **sidebar 折叠** — 用 `<details>/<summary>` 替代 JS 折叠（L0 分层原则）
-- [ ] **sidebar active 高亮** — 构建时输出 `aria-current="page"` + CSS（L0+L1 替代 active-highlight Island）
-- [ ] **删除 active-highlight Island** — 被 aria-current + CSS 替代
-- [ ] **重构 copy-code Island** — 改为 `<code-block>` Shadow DOM Island + Clipboard API
+- [x] **恢复 layout.ts Shadow DOM** — 已确认恢复（无 createRenderRoot hack）
+- [x] **验证 SSG DSD 输出** — 确认 @lit-labs/ssr v3 输出 `<template shadowrootmode="open">`
+- [x] **sidebar 折叠** — 用 `<details>/<summary>` 替代 JS 折叠（L0 分层原则）
+- [x] **sidebar active 高亮** — SSG post-processing 设置 `aria-current="page"` + CSS（K+S 约束）
+- [x] **删除 active-highlight Island** — 已被 aria-current + CSS 替代
+- [x] **code-block Island 验证** — Shadow DOM + Clipboard API + DSD 输出 + 客户端构建
+- [x] **Island 客户端构建** — 自动生成入口（无需 app/client.ts），SSG 后路径重写
 - [ ] **验证 DSD polyfill** — @webcomponents/template-shadowroot 在旧浏览器回退
 - [ ] **无 JS 降级测试** — 禁用 JS 验证 DSD 内容可见（S 约束验证）
 
