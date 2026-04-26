@@ -54,7 +54,20 @@ export class AppLayout extends LitElement {
                 title="Switch to light theme"
                 aria-label="Toggle theme"
               >
-                ☀
+                <svg class="icon-sun" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round">
+                  <circle cx="8" cy="8" r="3"/>
+                  <line x1="8" y1="1" x2="8" y2="3"/>
+                  <line x1="8" y1="13" x2="8" y2="15"/>
+                  <line x1="1" y1="8" x2="3" y2="8"/>
+                  <line x1="13" y1="8" x2="15" y2="8"/>
+                  <line x1="3.05" y1="3.05" x2="4.46" y2="4.46"/>
+                  <line x1="11.54" y1="11.54" x2="12.95" y2="12.95"/>
+                  <line x1="3.05" y1="12.95" x2="4.46" y2="11.54"/>
+                  <line x1="11.54" y1="4.46" x2="12.95" y2="3.05"/>
+                </svg>
+                <svg class="icon-moon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round">
+                  <path d="M13.5 9.14A5.5 5.5 0 0 1 6.86 2.5 5.5 5.5 0 1 0 13.5 9.14Z"/>
+                </svg>
               </button>
               <a class="github-link" href="https://github.com/SisyphusZheng/kiss">GitHub</a>
             </div>
@@ -63,7 +76,15 @@ export class AppLayout extends LitElement {
         <div class="layout-body">
           ${!this.home
             ? html`
-              <nav class="docs-sidebar" aria-label="Documentation navigation">
+              <details class="mobile-nav-wrapper">
+                <summary class="mobile-nav-btn" aria-label="Toggle navigation">
+                  <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+                    <line x1="3" y1="4.5" x2="15" y2="4.5"/>
+                    <line x1="3" y1="9" x2="15" y2="9"/>
+                    <line x1="3" y1="13.5" x2="15" y2="13.5"/>
+                  </svg>
+                </summary>
+                <nav class="docs-sidebar" aria-label="Documentation navigation">
                 <details class="nav-section" open>
                   <summary class="nav-section-title">Introduction</summary>
                   ${this._navLink('/guide/getting-started', 'Getting Started')} ${this
@@ -105,6 +126,7 @@ export class AppLayout extends LitElement {
                   ${this._navLink('/ui', 'Design System')}
                 </details>
               </nav>
+              </details>
             `
             : ''}
           <main class="layout-main">

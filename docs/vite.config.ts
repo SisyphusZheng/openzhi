@@ -20,7 +20,7 @@ export default defineConfig({
       islandsDir: 'app/islands',
       componentsDir: 'app/components',
       html: {
-        title: 'KISSJS',
+        title: 'KISS',
       },
       inject: {
         stylesheets: [
@@ -39,8 +39,9 @@ export default defineConfig({
           // Init theme from localStorage or prefers-color-scheme
           '<script>(function(){var s=localStorage.getItem("kiss-theme");var p=window.matchMedia("(prefers-color-scheme:light)").matches;var t=s||(p?"light":"dark");document.documentElement.setAttribute("data-theme",t)})()</script>',
           // Theme toggle: event delegation via composedPath() to penetrate Shadow DOM
+          // Also initializes button state on DOMContentLoaded
           // KISS Architecture: L2 (browser API), not L4 (Lit component hydration)
-          '<script>document.addEventListener("click",function(e){var p=e.composedPath();for(var i=0;i<p.length;i++){if(p[i].classList&&p[i].classList.contains("theme-toggle")){var c=document.documentElement.getAttribute("data-theme")||"dark";var n=c==="dark"?"light":"dark";document.documentElement.setAttribute("data-theme",n);localStorage.setItem("kiss-theme",n);p[i].textContent=n==="dark"?"☀":"☾";p[i].setAttribute("title","Switch to "+(n==="dark"?"light":"dark")+" theme");break}}})</script>',
+          '<script>(function(){function syncToggle(btn){var t=document.documentElement.getAttribute("data-theme")||"dark";if(t==="light"){btn.classList.add("is-light")}else{btn.classList.remove("is-light")}btn.setAttribute("title","Switch to "+(t==="dark"?"light":"dark")+" theme")}document.addEventListener("click",function(e){var p=e.composedPath();for(var i=0;i<p.length;i++){if(p[i].classList&&p[i].classList.contains("theme-toggle")){var c=document.documentElement.getAttribute("data-theme")||"dark";var n=c==="dark"?"light":"dark";document.documentElement.setAttribute("data-theme",n);localStorage.setItem("kiss-theme",n);syncToggle(p[i]);break}}});document.addEventListener("DOMContentLoaded",function(){document.querySelectorAll("app-layout").forEach(function(el){var sr=el.shadowRoot;if(sr){var b=sr.querySelector(".theme-toggle");if(b)syncToggle(b)}})})})()</script>',
         ],
       },
     }),

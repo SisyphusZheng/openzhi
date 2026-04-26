@@ -142,15 +142,15 @@ export const layoutStyles = css`
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 34px;
-    height: 34px;
+    width: 32px;
+    height: 32px;
     padding: 0;
     border: 1px solid var(--border);
     border-radius: 4px;
     background: transparent;
     color: var(--text-tertiary);
     cursor: pointer;
-    font-size: 1rem;
+    font-size: 0;
     line-height: 1;
     transition: color 0.15s, border-color 0.15s, background 0.15s;
   }
@@ -159,6 +159,30 @@ export const layoutStyles = css`
     color: var(--text-primary);
     border-color: var(--border-hover);
     background: var(--accent-subtle);
+  }
+
+  /* Sun/Moon SVG icons inside toggle */
+  .theme-toggle svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  /* Default (dark): show sun (click to go light), hide moon */
+  .theme-toggle .icon-sun {
+    display: block;
+  }
+
+  .theme-toggle .icon-moon {
+    display: none;
+  }
+
+  /* Light mode: show moon (click to go dark), hide sun */
+  .theme-toggle.is-light .icon-sun {
+    display: none;
+  }
+
+  .theme-toggle.is-light .icon-moon {
+    display: block;
   }
 
   /* === Sidebar === */
@@ -241,9 +265,52 @@ export const layoutStyles = css`
     font-weight: 500;
   }
 
-  /* === Mobile Sidebar === */
+  /* === Mobile Navigation === */
+  .mobile-nav-wrapper {
+    display: none; /* hidden on desktop */
+  }
+
+  .mobile-nav-btn {
+    display: none; /* hidden on desktop */
+  }
+
   @media (max-width: 900px) {
-    .docs-sidebar {
+    /* Hamburger button — always visible on mobile */
+    .mobile-nav-wrapper {
+      display: block;
+    }
+
+    .mobile-nav-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: transparent;
+      color: var(--text-tertiary);
+      cursor: pointer;
+      padding: 0;
+      list-style: none;
+      transition: color 0.15s, border-color 0.15s;
+    }
+
+    .mobile-nav-btn::-webkit-details-marker {
+      display: none;
+    }
+
+    .mobile-nav-btn:hover {
+      color: var(--text-primary);
+      border-color: var(--border-hover);
+    }
+
+    /* Sidebar hidden by default, shown when details is open */
+    .mobile-nav-wrapper:not([open]) .docs-sidebar {
+      display: none;
+    }
+
+    .mobile-nav-wrapper[open] .docs-sidebar {
       display: block;
       width: 100%;
       height: auto;
@@ -254,16 +321,31 @@ export const layoutStyles = css`
       padding: 1rem;
     }
 
-    .nav-section {
+    /* Collapse nav sections on mobile by default */
+    .mobile-nav-wrapper .nav-section {
       margin-bottom: 0.5rem;
     }
 
-    .nav-section summary {
+    .mobile-nav-wrapper .nav-section summary {
       padding: 0.25rem 0.5rem;
     }
 
-    .docs-sidebar a {
+    .mobile-nav-wrapper .docs-sidebar a {
       padding: 0.25rem 0.5rem 0.25rem 1.5rem;
+    }
+
+    /* Header adjustments */
+    .header-inner {
+      padding: 0 1rem;
+      gap: 0.75rem;
+    }
+
+    .app-header nav {
+      display: none;
+    }
+
+    .github-link {
+      display: none;
     }
   }
 
