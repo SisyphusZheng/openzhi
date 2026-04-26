@@ -19,11 +19,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `design-tokens` CSS custom properties for Swiss International Style
 - `examples/hello` minimal example demonstrating KISS basics
 - Documentation site dogfooding: `/ui` page uses real KISS UI components
+- SSR Compatibility documentation in `/guide/ssg` — explains why `static properties` is recommended over `@property` decorator
 
 ### Changed
 
 - @kissjs/ui version bumped to 0.1.4
 - Documentation site now imports @kissjs/ui components
+- Migrated all examples to `static properties + customElements.define()` pattern (Vite SSR compatible)
+- Removed `experimentalDecorators` config from `packages/kiss-ui/deno.json` (no longer needed)
 
 ## [0.1.6] - 2026-04-26
 

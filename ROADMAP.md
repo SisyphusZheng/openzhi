@@ -114,10 +114,13 @@
   - 核心组件：kiss-button, kiss-card, kiss-input, kiss-code-block, kiss-layout
   - KISS Architecture 合规：所有组件输出 DSD，Shadow DOM 封装
 - [x] **文档站用 @kissjs/ui 重写** — dogfooding，/ui 页面使用真实组件
+- [x] **SSR 兼容性文档** — `/guide/ssg` 添加 Vite SSR decorator 限制说明
+- [x] **迁移示例文件** — examples/minimal-blog + examples/hello 迁移到 static properties
+- [x] **清理 decorator 配置** — 移除 kiss-ui/deno.json 的 experimentalDecorators
+- [x] **CHANGELOG.md 更新**
+- [ ] **发布 @kissjs/ui@0.1.4** — JSR 发布
 - [ ] **全栈示例** — examples/fullstack，展示 SSG + API Routes + PWA
 - [ ] **Hello World 重写** — examples/hello，用新 UI 库
-- [ ] **发布 @kissjs/ui@0.1.4** — JSR 发布
-- [ ] **CHANGELOG.md 更新**
 
 ---
 

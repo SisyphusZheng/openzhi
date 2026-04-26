@@ -1,5 +1,4 @@
-import { LitElement, html, css } from 'lit'
-import { customElement } from 'lit/decorators.js'
+import { css, html, LitElement } from 'lit';
 
 /**
  * Theme Toggle Island
@@ -11,8 +10,10 @@ import { customElement } from 'lit/decorators.js'
  * - Interactive Island (hydrated on client)
  * - LocalStorage persistence
  * - CSS custom properties (Open Props compatible)
+ *
+ * Note: Uses static properties + customElements.define() for Vite SSR compatibility.
+ * See docs/app/routes/guide/ssg.ts for details.
  */
-@customElement('theme-toggle')
 export class ThemeToggle extends LitElement {
   static styles = css`
     :host {
@@ -32,47 +33,50 @@ export class ThemeToggle extends LitElement {
       background: #f5f5f5;
     }
 
-    :host([data-theme='dark']) button {
+    :host([data-theme="dark"]) button {
       border-color: #555;
       color: #fff;
       background: #333;
     }
-  `
+  `;
 
   static properties = {
     theme: { type: String },
-  }
+  };
 
   constructor() {
-    super()
-    this.theme = 'light'
+    super();
+    this.theme = 'light';
   }
 
   connectedCallback() {
-    super.connectedCallback()
+    super.connectedCallback();
     // Read saved theme from localStorage
-    const saved = localStorage.getItem('theme')
+    const saved = localStorage.getItem('theme');
     if (saved) {
-      this.theme = saved
-      this.applyTheme()
+      this.theme = saved;
+      this.applyTheme();
     }
   }
 
   toggleTheme() {
-    this.theme = this.theme === 'light' ? 'dark' : 'light'
-    localStorage.setItem('theme', this.theme)
-    this.applyTheme()
+    this.theme = this.theme === 'light' ? 'dark' : 'light';
+    localStorage.setItem('theme', this.theme);
+    this.applyTheme();
   }
 
   applyTheme() {
-    document.documentElement.setAttribute('data-theme', this.theme)
+    document.documentElement.setAttribute('data-theme', this.theme);
   }
 
   render() {
     return html`
-      <button @click=${this.toggleTheme}>
+      <button @click="${this.toggleTheme}">
         ${this.theme === 'light' ? '🌙 Dark' : '☀️ Light'}
       </button>
-    `
+    `;
   }
 }
+
+// Register component (Web Standards First - no decorator needed)
+customElements.define('theme-toggle', ThemeToggle);

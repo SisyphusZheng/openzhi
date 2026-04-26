@@ -5,15 +5,16 @@
  * - SSG with DSD
  * - KISS UI components
  * - Minimal setup
+ *
+ * Note: Uses static properties + customElements.define() for Vite SSR compatibility.
+ * See docs/app/routes/guide/ssg.ts for details.
  */
 import { html, LitElement } from 'lit';
-import { customElement } from 'lit/decorators.js';
 import '@kissjs/ui/kiss-button';
 import '@kissjs/ui/kiss-card';
 
 export const tagName = 'hello-page';
 
-@customElement(tagName)
 export class HelloPage extends LitElement {
   render() {
     return html`
@@ -100,5 +101,8 @@ export class HelloPage extends LitElement {
     `;
   }
 }
+
+// Register component (Web Standards First - no decorator needed)
+customElements.define(tagName, HelloPage);
 
 export default HelloPage;
