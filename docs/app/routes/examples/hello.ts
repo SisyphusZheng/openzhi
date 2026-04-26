@@ -1,0 +1,134 @@
+/**
+ * Hello World Demo — KISS Architecture
+ *
+ * K + S 约束演示：
+ * - SSG + DSD 输出
+ * - 内容在 JS 加载前可见
+ * - @kissjs/ui 组件
+ */
+import { css, html, LitElement } from '@kissjs/core';
+import { pageStyles } from '../../components/page-styles.js';
+import '../../components/layout.js';
+import '@kissjs/ui/kiss-card';
+import '@kissjs/ui/kiss-button';
+
+export class HelloDemoPage extends LitElement {
+  static styles = [
+    pageStyles,
+    css`
+      .demo-container {
+        padding: 2rem;
+        background: #000;
+        border-radius: 8px;
+        margin: 1.5rem 0;
+      }
+      .demo-container h1 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin: 0 0 1rem;
+        color: #fff;
+      }
+      .demo-container .subtitle {
+        color: #666;
+        font-size: 1rem;
+        margin-bottom: 1.5rem;
+      }
+      .demo-container .cards {
+        display: grid;
+        gap: 1rem;
+      }
+      kiss-card {
+        --kiss-bg-card: #0a0a0a;
+      }
+      .actions {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+      }
+    `,
+  ];
+
+  render() {
+    return html`
+      <app-layout currentPath="/examples/hello">
+        <div class="container">
+          <h1>Hello World Demo</h1>
+          <p class="subtitle">
+            K + S 约束：SSG + DSD 输出，内容在 JS 加载前可见
+          </p>
+
+          <h2>Live Demo</h2>
+          <div class="demo-container">
+            <h1>Hello, KISS!</h1>
+            <p class="subtitle">Minimal full-stack framework built entirely on Web Standards.</p>
+            <div class="actions">
+              <kiss-button variant="primary" href="https://jsr.io/@kissjs/core">Get Started</kiss-button>
+              <kiss-button href="https://github.com/SisyphusZheng/kiss">GitHub</kiss-button>
+            </div>
+            <div class="cards">
+              <kiss-card>
+                <h3 slot="header">SSG + DSD</h3>
+                <p>
+                  Static Site Generation with Declarative Shadow DOM. Content visible before JavaScript
+                  loads.
+                </p>
+              </kiss-card>
+              <kiss-card>
+                <h3 slot="header">Islands Architecture</h3>
+                <p>
+                  Interactive components hydrate on demand. Zero-JS by default, progressive enhancement.
+                </p>
+              </kiss-card>
+              <kiss-card>
+                <h3 slot="header">API Routes</h3>
+                <p>Serverless endpoints with Hono RPC. Type-safe from server to client.</p>
+              </kiss-card>
+            </div>
+          </div>
+
+          <h2>约束验证</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>约束</th>
+                <th>验证</th>
+                <th>实现</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>K</strong> — Knowledge</td>
+                <td>✓ 内容在构建时已知</td>
+                <td>SSG + DSD 输出</td>
+              </tr>
+              <tr>
+                <td><strong>I</strong> — Isolated</td>
+                <td>✓ 无交互 Island</td>
+                <td>纯静态页面</td>
+              </tr>
+              <tr>
+                <td><strong>S</strong> — Semantic</td>
+                <td>✓ DSD 内容可达</td>
+                <td>Shadow DOM 声明式渲染</td>
+              </tr>
+              <tr>
+                <td><strong>S</strong> — Static</td>
+                <td>✓ 纯静态文件</td>
+                <td>dist/index.html</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="nav-row">
+            <a href="/examples" class="nav-link">&larr; Examples</a>
+            <a href="/examples/minimal-blog" class="nav-link">Minimal Blog &rarr;</a>
+          </div>
+        </div>
+      </app-layout>
+    `;
+  }
+}
+
+customElements.define('page-hello-demo', HelloDemoPage);
+export default HelloDemoPage;
+export const tagName = 'page-hello-demo';
