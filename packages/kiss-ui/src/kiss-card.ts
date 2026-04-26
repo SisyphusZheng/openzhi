@@ -86,9 +86,3 @@ export class KissCard extends LitElement {
     `;
   }
 }
-
-declare global {
-  interface HTMLElementTagNameMap {
-    'kiss-card': KissCard;
-  }
-}

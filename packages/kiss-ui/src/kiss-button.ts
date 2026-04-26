@@ -156,9 +156,3 @@ export class KissButton extends LitElement {
     `;
   }
 }
-
-declare global {
-  interface HTMLElementTagNameMap {
-    'kiss-button': KissButton;
-  }
-}

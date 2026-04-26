@@ -630,9 +630,3 @@ export class KissLayout extends LitElement {
     `;
   }
 }
-
-declare global {
-  interface HTMLElementTagNameMap {
-    'kiss-layout': KissLayout;
-  }
-}

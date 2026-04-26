@@ -112,9 +112,3 @@ export class KissCodeBlock extends LitElement {
     }
   }
 }
-
-declare global {
-  interface HTMLElementTagNameMap {
-    'kiss-code-block': KissCodeBlock;
-  }
-}

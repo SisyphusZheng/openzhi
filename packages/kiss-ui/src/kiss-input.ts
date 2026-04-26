@@ -145,9 +145,3 @@ export class KissInput extends LitElement {
     );
   }
 }
-
-declare global {
-  interface HTMLElementTagNameMap {
-    'kiss-input': KissInput;
-  }
-}
