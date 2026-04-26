@@ -20,10 +20,10 @@ export class KissArchitecturePage extends LitElement {
         font-weight: 800;
         letter-spacing: -0.03em;
         margin: 0 0 0.5rem;
-        color: #fff;
+        color: var(--text-primary);
       }
       .subtitle {
-        color: #666;
+        color: var(--text-tertiary);
         margin-bottom: 2.5rem;
         font-size: 0.9375rem;
         line-height: 1.6;
@@ -32,46 +32,46 @@ export class KissArchitecturePage extends LitElement {
         font-size: 1.25rem;
         font-weight: 600;
         margin: 2.5rem 0 0.75rem;
-        color: #fff;
+        color: var(--text-primary);
         letter-spacing: -0.01em;
       }
       h3 {
         font-size: 1rem;
         font-weight: 600;
         margin: 1.5rem 0 0.5rem;
-        color: #ccc;
+        color: var(--accent-dim);
       }
       p {
         line-height: 1.7;
         margin: 0.5rem 0;
-        color: #999;
+        color: var(--text-secondary);
       }
       .constraint {
         padding: 1.25rem 1.5rem;
         margin: 1rem 0;
-        border-left: 3px solid #333;
-        background: #0f0f0f;
+        border-left: 3px solid var(--border-hover);
+        background: var(--bg-surface);
         border-radius: 0 3px 3px 0;
       }
       .constraint .letter {
         font-size: 1.75rem;
         font-weight: 800;
-        color: #fff;
+        color: var(--text-primary);
         display: inline-block;
         width: 2rem;
       }
       .constraint .constraint-name {
         font-size: 1.0625rem;
         font-weight: 600;
-        color: #fff;
+        color: var(--text-primary);
       }
       .constraint .constraint-cn {
         font-size: 0.8125rem;
-        color: #555;
+        color: var(--text-muted);
         margin-left: 0.5rem;
       }
       .constraint p {
-        color: #888;
+        color: var(--text-secondary);
         margin: 0.5rem 0 0 2.5rem;
       }
       .constraint .hard-constraint {
@@ -79,8 +79,8 @@ export class KissArchitecturePage extends LitElement {
       }
       .hard-constraint {
         display: inline-block;
-        background: #111;
-        border: 1px solid #222;
+        background: var(--code-bg);
+        border: 1px solid var(--border-hover);
         padding: 0.25rem 0.625rem;
         border-radius: 4px;
         font-size: 0.8125rem;
@@ -93,7 +93,7 @@ export class KissArchitecturePage extends LitElement {
         display: flex;
         align-items: center;
         padding: 0.625rem 1rem;
-        border: 1px solid #1a1a1a;
+        border: 1px solid var(--border);
         margin-bottom: -1px;
         font-size: 0.875rem;
       }
@@ -106,20 +106,20 @@ export class KissArchitecturePage extends LitElement {
       .layer .level {
         width: 2.5rem;
         font-weight: 700;
-        color: #666;
+        color: var(--text-tertiary);
         font-family: "SF Mono", "Fira Code", monospace;
       }
       .layer .name {
         width: 9rem;
         font-weight: 600;
-        color: #ccc;
+        color: var(--accent-dim);
       }
       .layer .desc {
         flex: 1;
-        color: #888;
+        color: var(--text-secondary);
       }
       .layer .example {
-        color: #666;
+        color: var(--text-tertiary);
         font-family: "SF Mono", "Fira Code", monospace;
         font-size: 0.8125rem;
       }
@@ -131,21 +131,21 @@ export class KissArchitecturePage extends LitElement {
       }
       th,
       td {
-        border: 1px solid #1a1a1a;
+        border: 1px solid var(--border);
         padding: 0.5rem 0.75rem;
         text-align: left;
       }
       th {
-        background: #111;
+        background: var(--code-bg);
         font-weight: 600;
-        color: #ccc;
+        color: var(--accent-dim);
       }
       td {
-        color: #888;
+        color: var(--text-secondary);
       }
       pre {
-        background: #111;
-        color: #c8c8c8;
+        background: var(--code-bg);
+        color: var(--text-secondary);
         padding: 1rem 1.25rem;
         border-radius: 3px;
         overflow-x: auto;
@@ -157,40 +157,40 @@ export class KissArchitecturePage extends LitElement {
         font-family: "SF Mono", "Fira Code", monospace;
       }
       .inline-code {
-        background: #111;
+        background: var(--code-bg);
         padding: 0.125rem 0.375rem;
         border-radius: 4px;
         font-size: 0.875em;
       }
       .decision-tree {
         padding: 1rem;
-        background: #0f0f0f;
-        border-left: 3px solid #444;
+        background: var(--bg-surface);
+        border-left: 3px solid var(--border-hover);
         border-radius: 0 3px 3px;
         margin: 0.75rem 0;
         font-size: 0.8125rem;
         line-height: 1.8;
-        color: #888;
+        color: var(--text-secondary);
         font-family: "SF Mono", "Fira Code", monospace;
         white-space: pre-wrap;
       }
       .dsd-diagram {
         padding: 1rem;
-        background: #0f0f0f;
-        border: 1px solid #1a1a1a;
+        background: var(--bg-surface);
+        border: 1px solid var(--border);
         border-radius: 3px;
         margin: 0.75rem 0;
         font-size: 0.8125rem;
         line-height: 1.7;
-        color: #888;
+        color: var(--text-secondary);
         font-family: "SF Mono", "Fira Code", monospace;
         white-space: pre-wrap;
       }
       .jamstack-map {
         padding: 1.25rem;
         margin: 1rem 0;
-        background: #0f0f0f;
-        border: 1px solid #1a1a1a;
+        background: var(--bg-surface);
+        border: 1px solid var(--border);
         border-radius: 3px;
       }
       .jamstack-map .jam-row {
@@ -202,38 +202,38 @@ export class KissArchitecturePage extends LitElement {
       .jamstack-map .jam-letter {
         font-size: 1.5rem;
         font-weight: 800;
-        color: #fff;
+        color: var(--text-primary);
         width: 2rem;
         text-align: center;
       }
       .jamstack-map .jam-label {
         font-weight: 600;
-        color: #ccc;
+        color: var(--accent-dim);
         width: 8rem;
       }
       .jamstack-map .jam-desc {
-        color: #888;
+        color: var(--text-secondary);
         flex: 1;
       }
       .jamstack-map .jam-kiss {
-        color: #999;
+        color: var(--text-secondary);
         font-family: "SF Mono", "Fira Code", monospace;
         font-size: 0.8125rem;
       }
       .quote-block {
         padding: 1.25rem 1.5rem;
         margin: 1.5rem 0;
-        border-left: 3px solid #444;
-        background: #0f0f0f;
+        border-left: 3px solid var(--border-hover);
+        background: var(--bg-surface);
         border-radius: 0 3px 3px 0;
         font-style: italic;
-        color: #aaa;
+        color: var(--text-muted);
         line-height: 1.7;
       }
       .quote-block .attribution {
         margin-top: 0.5rem;
         font-size: 0.8125rem;
-        color: #666;
+        color: var(--text-tertiary);
         font-style: normal;
       }
       .nav-row {
@@ -291,11 +291,11 @@ export class KissArchitecturePage extends LitElement {
             <span class="constraint-name">Knowledge</span>
             <span class="constraint-cn">知识</span>
             <p>
-              所有内容在构建时预渲染为语义 HTML
-              静态文件。页面骨架、正文、导航在 JS 执行前即可见。
+              所有内容在构建时预渲染为语义 HTML 静态文件。页面骨架、正文、导航在 JS 执行前即可见。
             </p>
             <p>
-              对应 Jamstack 的 M (Markup)：构建时渲染 = 内容的完整知识在构建时已确定，运行时不需要重新获取。
+              对应 Jamstack 的 M (Markup)：构建时渲染 =
+              内容的完整知识在构建时已确定，运行时不需要重新获取。
             </p>
             <p>
               <span class="hard-constraint">SSG + DSD output</span>
@@ -308,8 +308,8 @@ export class KissArchitecturePage extends LitElement {
             <span class="constraint-name">Isolated</span>
             <span class="constraint-cn">隔离</span>
             <p>
-              任何客户端 JS 只能存在于独立 Island 组件的 Shadow DOM
-              内部。一个 Island 的失败不影响其他部分。
+              任何客户端 JS 只能存在于独立 Island 组件的 Shadow DOM 内部。一个 Island
+              的失败不影响其他部分。
             </p>
             <p>
               对应 Jamstack 的 J
@@ -350,8 +350,8 @@ export class KissArchitecturePage extends LitElement {
               构建产物仅为纯静态文件，无持久服务端进程。可部署到任何 CDN 或静态托管，零运行时锁定。
             </p>
             <p>
-              对应 Jamstack 的部署模型：静态前端 + Serverless API。动态数据通过 API
-              Routes（Hono + RPC）获取，部署为 Serverless 函数。
+              对应 Jamstack 的部署模型：静态前端 + Serverless API。动态数据通过 API Routes（Hono +
+              RPC）获取，部署为 Serverless 函数。
             </p>
             <p>
               <span class="hard-constraint">No SSR runtime in production</span>
@@ -362,7 +362,8 @@ export class KissArchitecturePage extends LitElement {
 
           <h2>三范式继承</h2>
           <p>
-            KISS 架构不发明新的渲染算法或通信协议。它识别出三个范式各自领域中被验证有效的约束，将它们组合成一套严格、可验证、不可关闭的架构规则。
+            KISS
+            架构不发明新的渲染算法或通信协议。它识别出三个范式各自领域中被验证有效的约束，将它们组合成一套严格、可验证、不可关闭的架构规则。
           </p>
 
           <table>
@@ -383,16 +384,15 @@ export class KissArchitecturePage extends LitElement {
                 <td><strong>Islands Architecture</strong></td>
                 <td>静态海洋中的独立交互岛屿</td>
                 <td>
-                  要求所有 Island 必须是 Shadow DOM 内的 Web
-                  Component，跨岛通信只能通过声明式机制
+                  要求所有 Island 必须是 Shadow DOM 内的 Web Component，跨岛通信只能通过声明式机制
                 </td>
               </tr>
               <tr>
                 <td><strong>Progressive Enhancement</strong></td>
                 <td>内容优先，增强在后</td>
                 <td>
-                  从开发者最佳实践提升为框架层面的可验证约束——Island
-                  内部没有语义降级元素，就不符合 KISS 规范
+                  从开发者最佳实践提升为框架层面的可验证约束——Island 内部没有语义降级元素，就不符合 KISS
+                  规范
                 </td>
               </tr>
             </tbody>
@@ -407,13 +407,14 @@ export class KissArchitecturePage extends LitElement {
           </div>
 
           <p>
-            框架的 <span class="inline-code">kiss build</span> 命令就是这套规则的编译验证器——不满足架构约束的输出，不会产生。
+            框架的 <span class="inline-code">kiss build</span>
+            命令就是这套规则的编译验证器——不满足架构约束的输出，不会产生。
           </p>
 
           <h2>KISS = Jamstack</h2>
           <p>
-            KISS 架构与 Jamstack 天然 1:1 对齐。K·I·S·S
-            四约束覆盖了 Jamstack 的三个维度，但用 Web Standards 原生实现：
+            KISS 架构与 Jamstack 天然 1:1 对齐。K·I·S·S 四约束覆盖了 Jamstack 的三个维度，但用 Web
+            Standards 原生实现：
           </p>
 
           <div class="jamstack-map">
@@ -480,14 +481,14 @@ export class KissArchitecturePage extends LitElement {
           </table>
 
           <p>
-            <strong>KISS 是唯一全链路 Web Standards 的 Jamstack 架构。</strong>HTTP =
-            Fetch API，UI = Web Components，Build = ESM。3/3 标准覆盖。
+            <strong>KISS 是唯一全链路 Web Standards 的 Jamstack 架构。</strong>HTTP = Fetch API，UI = Web
+            Components，Build = ESM。3/3 标准覆盖。
           </p>
 
           <h2>DSD：KISS 的桥梁</h2>
           <p>
-            Declarative Shadow DOM 是 KISS Architecture 与 Web Components
-            之间的桥梁。它解决了"封装 vs 可达"的根本矛盾：
+            Declarative Shadow DOM 是 KISS Architecture 与 Web Components 之间的桥梁。它解决了"封装 vs
+            可达"的根本矛盾：
           </p>
 
           <table>
@@ -528,31 +529,21 @@ export class KissArchitecturePage extends LitElement {
           </table>
 
           <p>
-            DSD 让 K 约束（Knowledge）和 S 约束（Semantic）同时成立：内容在构建时已完整编码（K），且以声明式方式可达（S）。
+            DSD 让 K 约束（Knowledge）和 S
+            约束（Semantic）同时成立：内容在构建时已完整编码（K），且以声明式方式可达（S）。
           </p>
 
           <h3>SSG 输出示例</h3>
           <div class="dsd-diagram">
-app-layout (Shadow DOM + DSD):
-┌─────────────────────────────────────────────┐
-│ &lt;app-layout&gt;                                │
-│   &lt;template shadowrootmode="open"&gt;         │
-│     &lt;style&gt;/* scoped styles */&lt;/style&gt;     │
-│     &lt;header&gt;...&lt;/header&gt;                    │
-│     &lt;nav&gt;...&lt;/nav&gt;                          │
-│     &lt;main&gt;&lt;slot&gt;&lt;/slot&gt;&lt;/main&gt;              │
-│     &lt;footer&gt;...&lt;/footer&gt;                    │
-│   &lt;/template&gt;                                │
-│   &lt;!-- slotted content --&gt;                   │
-│   &lt;page-home&gt;...&lt;/page-home&gt;                │
-│ &lt;/app-layout&gt;                                │
-└─────────────────────────────────────────────┘
-
-浏览器行为：
-  DSD 支持：直接渲染 Shadow DOM 内容（零 JS）     ← K 约束
-  JS 加载后：Lit 组件 hydrate，恢复交互            ← I 约束
-  旧浏览器：polyfill 展开 template → 内容可见      ← S 约束
-  部署：纯静态文件，CDN 即可                       ← S 约束
+            app-layout (Shadow DOM + DSD): ┌─────────────────────────────────────────────┐ │
+            &lt;app-layout&gt; │ │ &lt;template shadowrootmode="open"&gt; │ │ &lt;style&gt;/* scoped
+            styles */&lt;/style&gt; │ │ &lt;header&gt;...&lt;/header&gt; │ │ &lt;nav&gt;...&lt;/nav&gt; │
+            │ &lt;main&gt;&lt;slot&gt;&lt;/slot&gt;&lt;/main&gt; │ │ &lt;footer&gt;...&lt;/footer&gt; │ │
+            &lt;/template&gt; │ │ &lt;!-- slotted content --&gt; │ │
+            &lt;page-home&gt;...&lt;/page-home&gt; │ │ &lt;/app-layout&gt; │
+            └─────────────────────────────────────────────┘ 浏览器行为： DSD 支持：直接渲染 Shadow DOM
+            内容（零 JS） ← K 约束 JS 加载后：Lit 组件 hydrate，恢复交互 ← I 约束 旧浏览器：polyfill 展开
+            template → 内容可见 ← S 约束 部署：纯静态文件，CDN 即可 ← S 约束
           </div>
 
           <h2>分层原则：能力下沉，依赖上移</h2>
@@ -593,16 +584,15 @@ app-layout (Shadow DOM + DSD):
 
           <h3>分层审查清单</h3>
           <code-block
-            ><pre><code>每写一行代码，问自己：
+          ><pre><code>每写一行代码，问自己：
 
-1. HTML5 能做吗？    → 用语义标签 + 属性
-2. CSS 能做吗？      → 用声明式样式
-3. 平台 API 能做吗？  → 用原生浏览器接口
-4. 框架能做吗？      → 用 Hono/Vite/Lit
-5. 都不行？         → 才写自研代码（Island）
+          1. HTML5 能做吗？    → 用语义标签 + 属性
+          2. CSS 能做吗？      → 用声明式样式
+          3. 平台 API 能做吗？  → 用原生浏览器接口
+          4. 框架能做吗？      → 用 Hono/Vite/Lit
+          5. 都不行？         → 才写自研代码（Island）
 
-跳过任何一层 = 违反 KISS 架构约束</code></pre></code-block
-          >
+          跳过任何一层 = 违反 KISS 架构约束</code></pre></code-block>
 
           <h2>Island 决策树</h2>
           <p>
@@ -610,19 +600,13 @@ app-layout (Shadow DOM + DSD):
             约束（Isolated）的执行工具。
           </p>
           <div class="decision-tree">
-需要交互？
-├─ 只需内容可见？     → L0: DSD 输出（零 JS）      ← K 约束
-├─ 只需视觉状态？     → L1: CSS（:hover, :focus-within, details[open]）
-├─ 只需浏览器能力？   → L2: 平台 API（Clipboard, IntersectionObserver）
-├─ 需要组件封装？     → L3: Lit 组件 + DSD（构建时渲染）
-└─ 以上都不行？       → L4: Island（Shadow DOM + 懒水合）← I 约束
-
-典型判定：
-  Sidebar 高亮  → aria-current + CSS (L0+L1, 非 Island)
-  Sidebar 折叠  → &lt;details&gt;/&lt;summary&gt; (L0, 非 Island)
-  代码复制按钮  → Island + Clipboard API (L2+L4, 合法 Island)
-  RPC 数据交互  → Island + RpcController (L4, 合法 Island)
-  主题切换      → color-scheme + CSS vars (L1, 非 Island)
+            需要交互？ ├─ 只需内容可见？ → L0: DSD 输出（零 JS） ← K 约束 ├─ 只需视觉状态？ → L1:
+            CSS（:hover, :focus-within, details[open]） ├─ 只需浏览器能力？ → L2: 平台 API（Clipboard,
+            IntersectionObserver） ├─ 需要组件封装？ → L3: Lit 组件 + DSD（构建时渲染） └─ 以上都不行？ →
+            L4: Island（Shadow DOM + 懒水合）← I 约束 典型判定： Sidebar 高亮 → aria-current + CSS (L0+L1,
+            非 Island) Sidebar 折叠 → &lt;details&gt;/&lt;summary&gt; (L0, 非 Island) 代码复制按钮 →
+            Island + Clipboard API (L2+L4, 合法 Island) RPC 数据交互 → Island + RpcController (L4, 合法
+            Island) 主题切换 → color-scheme + CSS vars (L1, 非 Island)
           </div>
 
           <h2>KISS vs 其他架构</h2>
@@ -719,18 +703,15 @@ app-layout (Shadow DOM + DSD):
 
           <h2>架构合规审查</h2>
           <code-block
-            ><pre><code>每次提交前，审查 K·I·S·S 四约束：
+          ><pre><code>每次提交前，审查 K·I·S·S 四约束：
 
-K — 新内容需要运行时获取？  → 应在构建时预渲染
-I — 新增了全局 JS？         → 必须封装为 Island Shadow DOM
-S — Island 禁用 JS 可用吗？  → 必须包裹语义 HTML 基线
-S — 引入了服务端进程？       → 只允许静态文件 + Serverless API</code></pre></code-block
-          >
+          K — 新内容需要运行时获取？  → 应在构建时预渲染
+          I — 新增了全局 JS？         → 必须封装为 Island Shadow DOM
+          S — Island 禁用 JS 可用吗？  → 必须包裹语义 HTML 基线
+          S — 引入了服务端进程？       → 只允许静态文件 + Serverless API</code></pre></code-block>
 
           <div class="nav-row">
-            <a href="/guide/design-philosophy" class="nav-link"
-              >&larr; Design Philosophy</a
-            >
+            <a href="/guide/design-philosophy" class="nav-link">&larr; Design Philosophy</a>
             <a href="/guide/routing" class="nav-link">Routing &rarr;</a>
           </div>
         </div>

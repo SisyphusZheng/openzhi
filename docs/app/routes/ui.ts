@@ -69,7 +69,7 @@ export class UIShowcase extends LitElement {
     }
 
     .palette-dark {
-      background: #000;
+      background: var(--bg-base);
     }
 
     .palette-light {
@@ -85,11 +85,11 @@ export class UIShowcase extends LitElement {
     }
 
     .palette-dark .palette-name {
-      color: #555;
+      color: var(--text-muted);
     }
 
     .palette-light .palette-name {
-      color: #999;
+      color: var(--text-secondary);
     }
 
     .swatch-grid {
@@ -125,11 +125,11 @@ export class UIShowcase extends LitElement {
     }
 
     .palette-dark .swatch-label {
-      color: #555;
+      color: var(--text-muted);
     }
 
     .palette-light .swatch-label {
-      color: #999;
+      color: var(--text-secondary);
     }
 
     .palette-desc {
@@ -138,19 +138,19 @@ export class UIShowcase extends LitElement {
     }
 
     .palette-dark .palette-desc {
-      color: #666;
+      color: var(--text-tertiary);
     }
 
     .palette-dark .palette-desc strong {
-      color: #fff;
+      color: var(--text-primary);
     }
 
     .palette-light .palette-desc {
-      color: #888;
+      color: var(--text-secondary);
     }
 
     .palette-light .palette-desc strong {
-      color: #000;
+      color: var(--text-primary);
     }
 
     /* ─── Typography ─── */
@@ -474,7 +474,9 @@ export class UIShowcase extends LitElement {
                     <div class="swatch-label">Muted</div>
                   </div>
                 </div>
-                <p class="palette-desc"><strong>Black</strong> foundation. White for emphasis. Gray for hierarchy.</p>
+                <p class="palette-desc">
+                  <strong>Black</strong> foundation. White for emphasis. Gray for hierarchy.
+                </p>
               </div>
               <div class="palette-card palette-light">
                 <div class="palette-name">Light</div>
@@ -504,7 +506,9 @@ export class UIShowcase extends LitElement {
                     <div class="swatch-label">Muted</div>
                   </div>
                 </div>
-                <p class="palette-desc"><strong>White</strong> foundation. Black for emphasis. Gray for hierarchy.</p>
+                <p class="palette-desc">
+                  <strong>White</strong> foundation. Black for emphasis. Gray for hierarchy.
+                </p>
               </div>
             </div>
           </div>
@@ -515,11 +519,13 @@ export class UIShowcase extends LitElement {
             <div class="type-scale">
               <div class="type-row">
                 <span class="type-label">Display</span>
-                <span class="type-sample" style="font-size:2.5rem;font-weight:900;letter-spacing:-0.04em">KISS UI</span>
+                <span class="type-sample" style="font-size:2.5rem;font-weight:900;letter-spacing:-0.04em"
+                >KISS UI</span>
               </div>
               <div class="type-row">
                 <span class="type-label">H1</span>
-                <span class="type-sample" style="font-size:1.75rem;font-weight:800;letter-spacing:-0.03em">Heading One</span>
+                <span class="type-sample" style="font-size:1.75rem;font-weight:800;letter-spacing:-0.03em"
+                >Heading One</span>
               </div>
               <div class="type-row">
                 <span class="type-label">H2</span>
@@ -527,15 +533,22 @@ export class UIShowcase extends LitElement {
               </div>
               <div class="type-row">
                 <span class="type-label">Body</span>
-                <span class="type-sample" style="font-size:0.9375rem;color:var(--text-secondary)">Body text for paragraphs.</span>
+                <span class="type-sample" style="font-size:0.9375rem;color:var(--text-secondary)"
+                >Body text for paragraphs.</span>
               </div>
               <div class="type-row">
                 <span class="type-label">Caption</span>
-                <span class="type-sample" style="font-size:0.6875rem;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.08em;font-weight:600">Caption</span>
+                <span
+                  class="type-sample"
+                  style="font-size:0.6875rem;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.08em;font-weight:600"
+                >Caption</span>
               </div>
               <div class="type-row">
                 <span class="type-label">Mono</span>
-                <span class="type-sample" style="font-size:0.8125rem;font-family:'SF Mono','Fira Code','Consolas',monospace;color:var(--text-primary)">deno add jsr:@kissjs/ui</span>
+                <span
+                  class="type-sample"
+                  style="font-size:0.8125rem;font-family:'SF Mono','Fira Code','Consolas',monospace;color:var(--text-primary)"
+                >deno add jsr:@kissjs/ui</span>
               </div>
             </div>
           </div>

@@ -20,10 +20,10 @@ export class WebAwesomePage extends LitElement {
         font-weight: 800;
         letter-spacing: -0.03em;
         margin: 0 0 0.5rem;
-        color: #fff;
+        color: var(--text-primary);
       }
       .subtitle {
-        color: #666;
+        color: var(--text-tertiary);
         margin-bottom: 2.5rem;
         font-size: 0.9375rem;
         line-height: 1.6;
@@ -35,7 +35,7 @@ export class WebAwesomePage extends LitElement {
       }
       .demo-box {
         padding: 1.25rem;
-        border: 1px solid #1a1a1a;
+        border: 1px solid var(--border);
         border-radius: 3px;
         margin: 0.75rem 0 1.5rem;
       }
@@ -43,7 +43,7 @@ export class WebAwesomePage extends LitElement {
         font-size: 0.9375rem;
         font-weight: 600;
         margin: 0 0 0.75rem;
-        color: #fff;
+        color: var(--text-primary);
       }
       .demo-box .component-row {
         display: flex;
@@ -52,8 +52,8 @@ export class WebAwesomePage extends LitElement {
         margin-bottom: 0.75rem;
       }
       pre {
-        background: #111;
-        color: #c8c8c8;
+        background: var(--code-bg);
+        color: var(--text-secondary);
         padding: 0.75rem 1rem;
         border-radius: 3px;
         overflow-x: auto;
@@ -65,7 +65,7 @@ export class WebAwesomePage extends LitElement {
         font-family: "SF Mono", "Fira Code", monospace;
       }
       .inline-code {
-        background: #111;
+        background: var(--code-bg);
         padding: 0.125rem 0.375rem;
         border-radius: 4px;
         font-size: 0.875em;

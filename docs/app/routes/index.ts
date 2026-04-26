@@ -316,105 +316,107 @@ export class DocsHome extends LitElement {
           <div class="overline">Web Standards Framework</div>
           <h1>KISS</h1>
           <p class="tagline">
-            Keep It Simple, Stupid. A minimal full-stack framework
-            built entirely on Web Standards.
+            Keep It Simple, Stupid. A minimal full-stack framework built entirely on Web Standards.
           </p>
           <div class="equation">
-            <span class="eq-item"><span class="eq-label">HTTP =</span> <span class="eq-val">Fetch API</span></span>
-            <span class="eq-item"><span class="eq-label">UI =</span> <span class="eq-val">Web Components</span></span>
-            <span class="eq-item"><span class="eq-label">Build =</span> <span class="eq-val">ESM</span></span>
+            <span class="eq-item"><span class="eq-label">HTTP =</span> <span class="eq-val"
+              >Fetch API</span></span>
+            <span class="eq-item"><span class="eq-label">UI =</span> <span class="eq-val"
+              >Web Components</span></span>
+            <span class="eq-item"><span class="eq-label">Build =</span> <span class="eq-val"
+              >ESM</span></span>
+            </div>
+            <div class="cta">
+              <a class="cta-primary" href="/guide/getting-started">Get Started</a>
+              <a class="cta-secondary" href="https://github.com/SisyphusZheng/kiss">GitHub</a>
+            </div>
           </div>
-          <div class="cta">
-            <a class="cta-primary" href="/guide/getting-started">Get Started</a>
-            <a class="cta-secondary" href="https://github.com/SisyphusZheng/kiss">GitHub</a>
-          </div>
-        </div>
 
-        <div class="standards">
-          <div class="section-label">Web Standards Coverage</div>
-          <div class="pill-row">
-            <span class="pill"><span class="check">&#10003;</span> Fetch API</span>
-            <span class="pill"><span class="check">&#10003;</span> Web Components</span>
-            <span class="pill"><span class="check">&#10003;</span> ESM</span>
-            <span class="pill"><span class="check">&#10003;</span> Declarative Shadow DOM</span>
-            <span class="pill"><span class="check">&#10003;</span> Islands</span>
-          </div>
-        </div>
-
-        <div class="features">
-          <div class="section-label">Why KISS</div>
-          <div class="features-list">
-            <div class="feature-item">
-              <h2>Web Standards First</h2>
-              <p>No new abstractions. If you know the web platform, you know KISS.</p>
-            </div>
-            <div class="feature-item">
-              <h2>Islands Architecture</h2>
-              <p>Only interactive components load JS. Default homepage: 0 KB.</p>
-            </div>
-            <div class="feature-item">
-              <h2>Type-Safe RPC</h2>
-              <p>End-to-end type safety with Hono RPC. No codegen needed.</p>
-            </div>
-            <div class="feature-item">
-              <h2>Multi-Runtime</h2>
-              <p>Same code on Deno, Node, Bun, Cloudflare Workers.</p>
-            </div>
-            <div class="feature-item">
-              <h2>SSG Built-In</h2>
-              <p>Pre-render to static HTML at build time. Zero config.</p>
-            </div>
-            <div class="feature-item">
-              <h2>Zero Lock-In</h2>
-              <p>Your code works without KISS. Hono, Lit, Vite are all standard.</p>
+          <div class="standards">
+            <div class="section-label">Web Standards Coverage</div>
+            <div class="pill-row">
+              <span class="pill"><span class="check">&#10003;</span> Fetch API</span>
+              <span class="pill"><span class="check">&#10003;</span> Web Components</span>
+              <span class="pill"><span class="check">&#10003;</span> ESM</span>
+              <span class="pill"><span class="check">&#10003;</span> Declarative Shadow DOM</span>
+              <span class="pill"><span class="check">&#10003;</span> Islands</span>
             </div>
           </div>
-        </div>
 
-        <div class="comparison">
-          <div class="section-label">Full-Chain Web Standards</div>
-          <table class="comparison-table">
-            <thead>
-              <tr>
-                <th>KISS</th>
-                <th>Astro</th>
-                <th>Next.js</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Fetch API</td>
-                <td>Fetch API</td>
-                <td>Custom API</td>
-              </tr>
-              <tr>
-                <td>Web Components</td>
-                <td>Islands (custom)</td>
-                <td>React only</td>
-              </tr>
-              <tr>
-                <td>ESM</td>
-                <td>ESM</td>
-                <td>ESM + Custom</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="jsr">
-          <div class="section-label">Install from JSR</div>
-          <div class="badge-row">
-            <a class="jsr-badge" href="https://jsr.io/@kissjs/core">@kissjs/core</a>
-            <a class="jsr-badge" href="https://jsr.io/@kissjs/ui">@kissjs/ui</a>
-            <a class="jsr-badge" href="https://jsr.io/@kissjs/rpc">@kissjs/rpc</a>
+          <div class="features">
+            <div class="section-label">Why KISS</div>
+            <div class="features-list">
+              <div class="feature-item">
+                <h2>Web Standards First</h2>
+                <p>No new abstractions. If you know the web platform, you know KISS.</p>
+              </div>
+              <div class="feature-item">
+                <h2>Islands Architecture</h2>
+                <p>Only interactive components load JS. Default homepage: 0 KB.</p>
+              </div>
+              <div class="feature-item">
+                <h2>Type-Safe RPC</h2>
+                <p>End-to-end type safety with Hono RPC. No codegen needed.</p>
+              </div>
+              <div class="feature-item">
+                <h2>Multi-Runtime</h2>
+                <p>Same code on Deno, Node, Bun, Cloudflare Workers.</p>
+              </div>
+              <div class="feature-item">
+                <h2>SSG Built-In</h2>
+                <p>Pre-render to static HTML at build time. Zero config.</p>
+              </div>
+              <div class="feature-item">
+                <h2>Zero Lock-In</h2>
+                <p>Your code works without KISS. Hono, Lit, Vite are all standard.</p>
+              </div>
+            </div>
           </div>
-        </div>
-      </app-layout>
-    `;
+
+          <div class="comparison">
+            <div class="section-label">Full-Chain Web Standards</div>
+            <table class="comparison-table">
+              <thead>
+                <tr>
+                  <th>KISS</th>
+                  <th>Astro</th>
+                  <th>Next.js</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Fetch API</td>
+                  <td>Fetch API</td>
+                  <td>Custom API</td>
+                </tr>
+                <tr>
+                  <td>Web Components</td>
+                  <td>Islands (custom)</td>
+                  <td>React only</td>
+                </tr>
+                <tr>
+                  <td>ESM</td>
+                  <td>ESM</td>
+                  <td>ESM + Custom</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="jsr">
+            <div class="section-label">Install from JSR</div>
+            <div class="badge-row">
+              <a class="jsr-badge" href="https://jsr.io/@kissjs/core">@kissjs/core</a>
+              <a class="jsr-badge" href="https://jsr.io/@kissjs/ui">@kissjs/ui</a>
+              <a class="jsr-badge" href="https://jsr.io/@kissjs/rpc">@kissjs/rpc</a>
+            </div>
+          </div>
+        </app-layout>
+      `;
+    }
   }
-}
 
-customElements.define('docs-home', DocsHome);
+  customElements.define('docs-home', DocsHome);
 
-export default DocsHome;
-export const tagName = 'docs-home';
+  export default DocsHome;
+  export const tagName = 'docs-home';

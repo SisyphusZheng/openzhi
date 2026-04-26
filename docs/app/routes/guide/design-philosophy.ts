@@ -20,10 +20,10 @@ export class DesignPhilosophyPage extends LitElement {
         font-weight: 800;
         letter-spacing: -0.03em;
         margin: 0 0 0.5rem;
-        color: #fff;
+        color: var(--text-primary);
       }
       .subtitle {
-        color: #666;
+        color: var(--text-tertiary);
         margin-bottom: 2.5rem;
         font-size: 0.9375rem;
         line-height: 1.6;
@@ -32,25 +32,25 @@ export class DesignPhilosophyPage extends LitElement {
         font-size: 1.25rem;
         font-weight: 600;
         margin: 2.5rem 0 0.75rem;
-        color: #fff;
+        color: var(--text-primary);
         letter-spacing: -0.01em;
       }
       h3 {
         font-size: 1rem;
         font-weight: 600;
         margin: 1.5rem 0 0.5rem;
-        color: #ccc;
+        color: var(--accent-dim);
       }
       p {
         line-height: 1.7;
         margin: 0.5rem 0;
-        color: #999;
+        color: var(--text-secondary);
       }
       .pillar {
         padding: 1.25rem;
         margin: 1rem 0;
-        border-left: 3px solid #333;
-        background: #0f0f0f;
+        border-left: 3px solid var(--border-hover);
+        background: var(--bg-surface);
         border-radius: 0 3px 3px 0;
       }
       .pillar .num {
@@ -58,7 +58,7 @@ export class DesignPhilosophyPage extends LitElement {
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 0.05em;
-        color: #555;
+        color: var(--text-muted);
         margin-bottom: 0.25rem;
       }
       .pillar h3 {
@@ -67,8 +67,8 @@ export class DesignPhilosophyPage extends LitElement {
       }
       .hard-constraint {
         display: inline-block;
-        background: #111;
-        border: 1px solid #222;
+        background: var(--code-bg);
+        border: 1px solid var(--border-hover);
         padding: 0.25rem 0.625rem;
         border-radius: 4px;
         font-size: 0.8125rem;
@@ -82,21 +82,21 @@ export class DesignPhilosophyPage extends LitElement {
       }
       th,
       td {
-        border: 1px solid #1a1a1a;
+        border: 1px solid var(--border);
         padding: 0.5rem 0.75rem;
         text-align: left;
       }
       th {
-        background: #111;
+        background: var(--code-bg);
         font-weight: 600;
-        color: #ccc;
+        color: var(--accent-dim);
       }
       td {
-        color: #888;
+        color: var(--text-secondary);
       }
       pre {
-        background: #111;
-        color: #c8c8c8;
+        background: var(--code-bg);
+        color: var(--text-secondary);
         padding: 1rem 1.25rem;
         border-radius: 3px;
         overflow-x: auto;
@@ -120,8 +120,7 @@ export class DesignPhilosophyPage extends LitElement {
         <div class="container">
           <h1>Design Philosophy</h1>
           <p class="subtitle">
-            KISS = Keep It Simple, Stupid. Not a slogan — a filter for every
-            decision.
+            KISS = Keep It Simple, Stupid. Not a slogan — a filter for every decision.
           </p>
 
           <h2>Five Pillars</h2>
@@ -134,14 +133,12 @@ export class DesignPhilosophyPage extends LitElement {
               <em>is</em> web standards.
             </p>
             <p>
-              Your code doesn't depend on KISS abstractions. Swap it out, and
-              your Hono/Lit/Vite code still works.
+              Your code doesn't depend on KISS abstractions. Swap it out, and your Hono/Lit/Vite code
+              still works.
             </p>
             <p>
               <span class="hard-constraint">Pure ESM, zero CJS</span>
-              <span class="hard-constraint"
-                >Vite-only, no second build tool</span
-              >
+              <span class="hard-constraint">Vite-only, no second build tool</span>
               <span class="hard-constraint">No patch scripts on output</span>
             </p>
           </div>
@@ -150,21 +147,18 @@ export class DesignPhilosophyPage extends LitElement {
             <div class="num">Pillar 2</div>
             <h3>Minimal Augmentation</h3>
             <p>
-              KISS doesn't invent things. It connects existing standard tools
-              with minimum overhead.
+              KISS doesn't invent things. It connects existing standard tools with minimum overhead.
             </p>
             <p>
               Framework = 1 Vite plugin (a connector, not a new abstraction).
             </p>
             <p>
-              Zero-interaction page: <strong>0 KB</strong> KISS runtime. Single
-              Island: ~6 KB (Lit itself).
+              Zero-interaction page: <strong>0 KB</strong> KISS runtime. Single Island: ~6 KB (Lit
+              itself).
             </p>
             <p>
               <span class="hard-constraint">Reuse Hono/Vite/Lit ecosystem</span>
-              <span class="hard-constraint"
-                >New dependencies need ADR</span
-              >
+              <span class="hard-constraint">New dependencies need ADR</span>
             </p>
           </div>
 
@@ -172,16 +166,12 @@ export class DesignPhilosophyPage extends LitElement {
             <div class="num">Pillar 3</div>
             <h3>No Framework Binding</h3>
             <p>
-              KISS recommends Lit, but you can use something else. You can use
-              @kissjs/core for SSR without Lit. You can use Lit without KISS.
+              KISS recommends Lit, but you can use something else. You can use @kissjs/core for SSR
+              without Lit. You can use Lit without KISS.
             </p>
             <p>
-              <span class="hard-constraint"
-                >Lit is not a forced peerDependency</span
-              >
-              <span class="hard-constraint"
-                >No mandatory validation scheme</span
-              >
+              <span class="hard-constraint">Lit is not a forced peerDependency</span>
+              <span class="hard-constraint">No mandatory validation scheme</span>
             </p>
           </div>
 
@@ -189,16 +179,11 @@ export class DesignPhilosophyPage extends LitElement {
             <div class="num">Pillar 4</div>
             <h3>No Runtime Binding</h3>
             <p>
-              Pure ESM output runs on any runtime that supports ESM: Deno, Node,
-              Bun, Cloudflare Workers.
+              Pure ESM output runs on any runtime that supports ESM: Deno, Node, Bun, Cloudflare Workers.
             </p>
             <p>
-              <span class="hard-constraint"
-                >No platform-specific hardcoded code</span
-              >
-              <span class="hard-constraint"
-                >deno.json is dev tooling, not runtime dependency</span
-              >
+              <span class="hard-constraint">No platform-specific hardcoded code</span>
+              <span class="hard-constraint">deno.json is dev tooling, not runtime dependency</span>
             </p>
           </div>
 
@@ -206,8 +191,8 @@ export class DesignPhilosophyPage extends LitElement {
             <div class="num">Pillar 5</div>
             <h3>Progressive Enhancement</h3>
             <p>
-              KISS defaults to zero JS. Opt in per component. No SPA — this is
-              architecture, not oversight.
+              KISS defaults to zero JS. Opt in per component. No SPA — this is architecture, not
+              oversight.
             </p>
             <table>
               <thead>
@@ -231,16 +216,15 @@ export class DesignPhilosophyPage extends LitElement {
               </tbody>
             </table>
             <p>
-              No Level 2 SPA, no Level 3 real-time, no Level 4 CSR. This is not
-              a gap — it's a boundary defined by KISS Architecture's S
-              constraint.
+              No Level 2 SPA, no Level 3 real-time, no Level 4 CSR. This is not a gap — it's a boundary
+              defined by KISS Architecture's S constraint.
             </p>
           </div>
 
           <h2>Philosophy vs Architecture</h2>
           <p>
-            The five philosophy pillars describe <strong>how</strong> KISS makes
-            decisions. The KISS Architecture (K·I·S·S) constraints define
+            The five philosophy pillars describe <strong>how</strong> KISS makes decisions. The KISS
+            Architecture (K·I·S·S) constraints define
             <strong>what</strong> the framework enforces.
           </p>
           <table>
@@ -282,8 +266,7 @@ export class DesignPhilosophyPage extends LitElement {
 
           <h2>Capability Layering</h2>
           <p>
-            Every feature must pass through the capability ladder. Lower layers
-            first, always:
+            Every feature must pass through the capability ladder. Lower layers first, always:
           </p>
           <table>
             <thead>
@@ -323,23 +306,20 @@ export class DesignPhilosophyPage extends LitElement {
           </table>
           <p>
             Skipping a layer = violating the design philosophy. See
-            <a href="/guide/dia" style="color: #6a9bcc;"
-              >KISS Architecture</a
-            >
+            <a href="/guide/dia" style="color: #6a9bcc;">KISS Architecture</a>
             for the full decision tree.
           </p>
 
           <h2>Review Checklist</h2>
           <code-block
-            ><pre><code>Before every commit, ask:
-1. New dependency?     → Does it violate "minimal augmentation"?
-2. Modified build?    → Does it violate "Web Standards first"?
-3. New abstraction?   → Are you reinventing the wheel?
-4. Platform code?     → Does it violate "no runtime binding"?
-5. Forced choice?     → Does it violate "no framework binding"?
-6. Added JS?          → Could a lower layer do this instead?
-7. Broke Shadow DOM?  → Is there a DSD-compatible alternative?</code></pre></code-block
-          >
+          ><pre><code>Before every commit, ask:
+            1. New dependency?     → Does it violate "minimal augmentation"?
+            2. Modified build?    → Does it violate "Web Standards first"?
+            3. New abstraction?   → Are you reinventing the wheel?
+            4. Platform code?     → Does it violate "no runtime binding"?
+            5. Forced choice?     → Does it violate "no framework binding"?
+            6. Added JS?          → Could a lower layer do this instead?
+            7. Broke Shadow DOM?  → Is there a DSD-compatible alternative?</code></pre></code-block>
           <p>
             Any "yes" requires an ADR (Architecture Decision Record).
           </p>
@@ -398,12 +378,8 @@ export class DesignPhilosophyPage extends LitElement {
           </table>
 
           <div class="nav-row">
-            <a href="/guide/getting-started" class="nav-link"
-              >&larr; Getting Started</a
-            >
-            <a href="/guide/dia" class="nav-link"
-              >KISS Architecture &rarr;</a
-            >
+            <a href="/guide/getting-started" class="nav-link">&larr; Getting Started</a>
+            <a href="/guide/dia" class="nav-link">KISS Architecture &rarr;</a>
           </div>
         </div>
       </app-layout>

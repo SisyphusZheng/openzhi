@@ -20,10 +20,10 @@ export class DeploymentPage extends LitElement {
         font-weight: 800;
         letter-spacing: -0.03em;
         margin: 0 0 0.5rem;
-        color: #fff;
+        color: var(--text-primary); 
       }
       .subtitle {
-        color: #666;
+        color: var(--text-tertiary); 
         margin-bottom: 2.5rem;
         font-size: 0.9375rem;
         line-height: 1.6;
@@ -36,11 +36,11 @@ export class DeploymentPage extends LitElement {
       p {
         line-height: 1.7;
         margin: 0.5rem 0;
-        color: #999;
+        color: var(--text-secondary); 
       }
       pre {
-        background: #111;
-        color: #c8c8c8;
+        background: var(--code-bg); 
+        color: var(--text-secondary);
         padding: 1rem 1.25rem;
         border-radius: 3px;
         overflow-x: auto;
@@ -52,7 +52,7 @@ export class DeploymentPage extends LitElement {
         font-family: "SF Mono", "Fira Code", monospace;
       }
       .inline-code {
-        background: #111;
+        background: var(--code-bg); 
         padding: 0.125rem 0.375rem;
         border-radius: 4px;
         font-size: 0.875em;
@@ -65,7 +65,7 @@ export class DeploymentPage extends LitElement {
       }
       .platform-card {
         padding: 1rem 1.25rem;
-        border: 1px solid #1a1a1a;
+        border: 1px solid var(--border);
         border-radius: 3px;
       }
       .platform-card h3 {
@@ -75,7 +75,7 @@ export class DeploymentPage extends LitElement {
       }
       .platform-card p {
         font-size: 0.8125rem;
-        color: #666;
+        color: var(--text-tertiary); 
         margin: 0;
       }
       table {
@@ -85,17 +85,17 @@ export class DeploymentPage extends LitElement {
         font-size: 0.875rem;
       }
       th, td {
-        border: 1px solid #1a1a1a;
+        border: 1px solid var(--border);
         padding: 0.5rem 0.75rem;
         text-align: left;
       }
       th {
-        background: #111;
+        background: var(--code-bg); 
         font-weight: 600;
-        color: #ccc;
+        color: var(--accent-dim);
       }
       td {
-        color: #888;
+        color: var(--text-secondary); 
       }
       .nav-row {
         margin-top: 2.5rem;

@@ -9,6 +9,9 @@ dist/
 *.tsbuildinfo
 .tsbuildinfo
 
+# npm (Deno project — no npm lockfiles)
+package-lock.json
+
 # Environment
 .env
 .env.local
@@ -33,3 +36,6 @@ __test_fixtures__/
 
 # Framework internals
 .kiss/
+
+# Vite cache
+.vite/

@@ -276,7 +276,7 @@ kiss({
 
 ## 文档
 
-[完整文档站](https://sisyphuszheng.github.io/kiss/)
+[完整文档站](https://kiss.js.org/)
 
 ## 技术栈
 
@@ -293,7 +293,7 @@ kiss({
 
 ## 当前状态
 
-Phase 4C 完成。KISS Architecture 四约束文档已更新。JSR 已发布。
+Phase 5A 完成。纯黑白设计系统 + 主题切换。JSR 已发布。
 
 ## License
 

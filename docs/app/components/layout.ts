@@ -4,11 +4,10 @@
  * DSD (Declarative Shadow DOM) makes content visible without JavaScript.
  * Shadow DOM provides style encapsulation — no global CSS leakage.
  *
- * KISS Architecture (K·I·S·S):
- * - K (Knowledge): SSG output includes <template shadowrootmode="open">
- * - I (Isolated): Layout is a proper Shadow DOM component
- * - S (Semantic): DSD ensures content is visible pre-hydration
- * - S (Static): Dynamic data via API Routes + RPC (Serverless)
+ * Theme toggle: handled by a global script (headFragments), not Lit hydration.
+ * This component is NOT an Island — it has no client-side JS.
+ * The theme-toggle button uses composedPath() event delegation to cross
+ * the Shadow DOM boundary. KISS Architecture: L2 > L4.
  */
 import { html, LitElement } from '@kissjs/core';
 import { layoutStyles } from './layout-styles.js';
@@ -19,44 +18,12 @@ export class AppLayout extends LitElement {
   static properties = {
     home: { type: Boolean, reflect: true },
     currentPath: { type: String, attribute: 'current-path' },
-    theme: { state: true },
   };
 
   constructor() {
     super();
     this.home = false;
     this.currentPath = '';
-    this.theme = 'dark';
-  }
-
-  connectedCallback() {
-    super.connectedCallback();
-    // Read initial theme
-    this.theme = document.documentElement.getAttribute('data-theme') || 'dark';
-    // Listen for theme changes from other components
-    this._onThemeChange = () => {
-      this.theme = document.documentElement.getAttribute('data-theme') || 'dark';
-    };
-    globalThis.addEventListener('kiss-theme-change', this._onThemeChange);
-  }
-
-  disconnectedCallback() {
-    super.disconnectedCallback();
-    globalThis.removeEventListener('kiss-theme-change', this._onThemeChange);
-  }
-
-  private _onThemeChange:
-    | (() => void)
-    | undefined;
-
-  private _toggleTheme() {
-    const current = document.documentElement.getAttribute('data-theme') || 'dark';
-    const next = current === 'dark' ? 'light' : 'dark';
-    document.documentElement.setAttribute('data-theme', next);
-    localStorage.setItem('kiss-theme', next);
-    this.theme = next;
-    // Notify other components
-    globalThis.dispatchEvent(new CustomEvent('kiss-theme-change'));
   }
 
   private _navLink(path: string, text: string) {
@@ -71,8 +38,6 @@ export class AppLayout extends LitElement {
   }
 
   render() {
-    const isDark = this.theme === 'dark';
-
     return html`
       <div class="app-layout" ?home="${this.home}">
         <header class="app-header">
@@ -86,11 +51,10 @@ export class AppLayout extends LitElement {
             <div class="header-right">
               <button
                 class="theme-toggle"
-                @click="${this._toggleTheme}"
-                title="Switch to ${isDark ? 'light' : 'dark'} theme"
+                title="Switch to light theme"
                 aria-label="Toggle theme"
               >
-                ${isDark ? '☀' : '☾'}
+                ☀
               </button>
               <a class="github-link" href="https://github.com/SisyphusZheng/kiss">GitHub</a>
             </div>

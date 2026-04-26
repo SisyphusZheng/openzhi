@@ -20,10 +20,10 @@ export class ApiRoutesPage extends LitElement {
         font-weight: 800;
         letter-spacing: -0.03em;
         margin: 0 0 0.5rem;
-        color: #fff;
+        color: var(--text-primary);
       }
       .subtitle {
-        color: #666;
+        color: var(--text-tertiary);
         margin-bottom: 2.5rem;
         font-size: 0.9375rem;
         line-height: 1.6;
@@ -34,8 +34,8 @@ export class ApiRoutesPage extends LitElement {
         margin: 1.5rem 0 0.75rem;
       }
       pre {
-        background: #111;
-        color: #c8c8c8;
+        background: var(--code-bg);
+        color: var(--text-secondary);
         padding: 1rem 1.25rem;
         border-radius: 3px;
         overflow-x: auto;
@@ -47,7 +47,7 @@ export class ApiRoutesPage extends LitElement {
         font-family: "SF Mono", "Fira Code", monospace;
       }
       .inline-code {
-        background: #111;
+        background: var(--code-bg);
         padding: 0.125rem 0.375rem;
         border-radius: 4px;
         font-size: 0.875em;

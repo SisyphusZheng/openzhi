@@ -13,17 +13,16 @@
 | Phase 2 | 工程化补齐             | P0/P1 修复 + 架构重构                       | 完成   |
 | Phase 3 | 文档整合               | docs-site → docs                            | 完成   |
 | Phase 4 | KISS Architecture 落地 | K·I·S·S 四约束 + Jamstack 对齐 + 文档站改造 | 完成 |
-| Phase 5 | UI 革命                | @kissjs/ui 自有组件库 + 全栈示例            | 进行中 |
 
 ---
 
 ## Phase 0-3：已完成
 
-见 git 历史和 MEMORY.md。
+见 git 历史。
 
 ---
 
-## Phase 4：KISS Architecture 落地（进行中）
+## Phase 4：KISS Architecture 落地（已完成）
 
 ### 4A: 核心 DIA 合规（已完成）
 
