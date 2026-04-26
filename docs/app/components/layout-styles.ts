@@ -339,19 +339,37 @@ export const layoutStyles = css`
       display: none;
     }
 
-    /* Sidebar: hidden by default on mobile */
+    /* Sidebar: overlay on mobile — L0 + L1, zero JS */
     .docs-sidebar {
       display: none;
+      position: fixed;
+      top: 56px;
+      left: 0;
+      right: 0;
+      bottom: 0;
       width: 100%;
-      height: auto;
-      position: relative;
-      top: 0;
+      height: calc(100vh - 56px);
+      z-index: 90;
+      background: var(--bg-base);
       border-right: none;
-      border-bottom: 1px solid var(--border);
-      padding: 1rem;
+      border-bottom: none;
+      padding: 1rem 1.25rem;
+      overflow-y: auto;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
     }
 
-    /* L1: :has() selector — when hamburger is open, show sidebar */
+    /* Semi-transparent backdrop behind sidebar overlay */
+    .app-layout:has(.mobile-menu[open]) .layout-body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      top: 56px;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 80;
+      pointer-events: none;
+    }
+
+    /* L1: :has() selector — when hamburger is open, show sidebar overlay */
     /* KISS Architecture: L0 (details/summary) + L1 (:has()) = zero JS menu */
     .app-layout:has(.mobile-menu[open]) .docs-sidebar {
       display: block;
@@ -366,7 +384,13 @@ export const layoutStyles = css`
     }
 
     .docs-sidebar a {
-      padding: 0.25rem 0.5rem 0.25rem 1.25rem;
+      padding: 0.375rem 0.5rem 0.375rem 1.25rem;
+      font-size: 0.875rem;
+    }
+
+    /* Layout main fills full width on mobile */
+    .layout-main {
+      width: 100%;
     }
   }
 

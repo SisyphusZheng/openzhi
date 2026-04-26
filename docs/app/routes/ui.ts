@@ -1,45 +1,23 @@
 /**
  * @kissjs/ui — Design System
  * Two palettes. Zero noise.
+ *
+ * Uses pageStyles for consistent layout with other doc pages.
+ * Only UI-specific component demos have custom styles here.
  */
 import { css, html, LitElement } from '@kissjs/core';
+import { pageStyles } from '../components/page-styles.js';
 import '../components/layout.js';
 
 export class UIShowcase extends LitElement {
-  static styles = css`
+  static styles = [pageStyles, css`
     :host {
       display: block;
     }
 
-    .container {
-      max-width: 800px;
-      padding: 3rem 3rem 5rem;
-    }
-
-    h1 {
-      font-size: 2rem;
-      font-weight: 900;
-      letter-spacing: -0.04em;
-      margin: 0 0 0.5rem;
-      color: var(--text-primary);
-      line-height: 1.1;
-    }
-
-    .subtitle {
-      color: var(--text-secondary);
-      margin-bottom: 3.5rem;
-      font-size: 0.9375rem;
-      line-height: 1.7;
-    }
-
-    .subtitle strong {
-      color: var(--text-primary);
-      font-weight: 600;
-    }
-
     /* ─── Section ─── */
     .section {
-      margin-bottom: 4rem;
+      margin-bottom: 3.5rem;
     }
 
     .section-title {
@@ -393,34 +371,7 @@ export class UIShowcase extends LitElement {
       margin: 0.75rem 0 0;
     }
 
-    /* ─── Nav ─── */
-    .nav-row {
-      margin-top: 4rem;
-      padding-top: 1.5rem;
-      border-top: 1px solid var(--border);
-      display: flex;
-      justify-content: space-between;
-    }
-
-    .nav-link {
-      display: inline-flex;
-      align-items: center;
-      padding: 0.5rem 1rem;
-      font-size: 0.8125rem;
-      font-weight: 500;
-      color: var(--text-secondary);
-      text-decoration: none;
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      transition: color 0.15s, border-color 0.15s, background 0.15s;
-    }
-
-    .nav-link:hover {
-      color: var(--text-primary);
-      border-color: var(--border-hover);
-      background: var(--accent-subtle);
-    }
-
+    /* ─── Mobile ─── */
     @media (max-width: 640px) {
       .palette-row {
         grid-template-columns: 1fr;
@@ -430,7 +381,7 @@ export class UIShowcase extends LitElement {
         grid-template-columns: 1fr;
       }
     }
-  `;
+  `];
 
   render() {
     return html`
