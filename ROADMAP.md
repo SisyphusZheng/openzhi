@@ -107,7 +107,7 @@
 - [x] **自定义域名修复** — base path 从 /kiss/ 改为 /（kiss.js.org 不需要路径前缀）
 - [x] **SSH 推送配置** — ed25519 key + .gitattributes LF 强制
 
-### 5B: @kissjs/ui 组件库实现（已完成）
+### 5B: @kissjs/ui 组件库实现（进行中）
 
 - [x] **@kissjs/ui 重构** — 基于 Open Props + Lit 构建自有 Web Components 组件库
   - 设计令牌：颜色、间距、字体（暗黑瑞士国际主义风格）
@@ -118,9 +118,10 @@
 - [x] **迁移示例文件** — examples/minimal-blog + examples/hello 迁移到 static properties
 - [x] **清理 decorator 配置** — 移除 kiss-ui/deno.json 的 experimentalDecorators
 - [x] **CHANGELOG.md 更新**
-- [ ] **发布 @kissjs/ui@0.1.4** — JSR 发布
+- [x] **发布 @kissjs/ui@0.1.4** — JSR 发布（已发布 8 hours ago）
+- [x] **kiss-ui.ts 文档更新** — 移除"计划中"状态，记录实际组件
 - [ ] **全栈示例** — examples/fullstack，展示 SSG + API Routes + PWA
-- [ ] **Hello World 重写** — examples/hello，用新 UI 库
+- [ ] **Hello World 重写** — examples/hello，用新 UI 库（已在使用 @kissjs/ui，可标记完成）
 
 ---
 
