@@ -54,7 +54,7 @@ export class RoadmapPage extends LitElement {
         font-size: 0.875rem;
       }
       .task-list li::before {
-        content: '✓';
+        content: "✓";
         position: absolute;
         left: 0;
         color: var(--accent);
@@ -96,7 +96,7 @@ export class RoadmapPage extends LitElement {
         margin: 1.5rem 0;
         font-size: 0.75rem;
         line-height: 1.6;
-        font-family: 'SF Mono', 'Fira Code', monospace;
+        font-family: "SF Mono", "Fira Code", monospace;
         white-space: pre;
         overflow-x: auto;
         color: var(--text-secondary);
@@ -245,33 +245,15 @@ export class RoadmapPage extends LitElement {
 
           <h2>架构概览</h2>
           <div class="architecture-diagram">
-用户视角：vite.config.ts
-┌─────────────────────────────────────────┐
-│  import { kiss } from '@kissjs/core'     │
-│  export default defineConfig({           │
-│    plugins: [kiss()]                     │
-│  })                                      │
-└──────────────┬──────────────────────────┘
-               │
-┌──────────────▼──────────────────────────┐
-│         @kissjs/core (8 子插件)          │
-│                                          │
-│  1. kiss:core         — 路由扫描 (K)     │
-│  2. kiss:virtual-entry — 虚拟模块        │
-│  3. @hono/vite-dev-server — dev only     │
-│  4. island-transform    — AST 标记 (I)   │
-│  5. island-extractor    — 依赖分析 (I)   │
-│  6. html-template       — HTML 注入 (I)  │
-│  7. kiss:ssg            — SSG 产物 (K+S) │
-│  8. kiss:build          — Island JS (I)  │
-└──────────────┬──────────────────────────┘
-               │
-    ┌──────────▼──────────┐
-    │  两个独立部署目标     │
-    │                      │
-    │  dist/ (静态前端)     │ ← K+I+S 约束
-    │  API Routes (Serverless) │ ← S 约束
-    └──────────────────────┘
+            用户视角：vite.config.ts ┌─────────────────────────────────────────┐ │ import { kiss } from
+            '@kissjs/core' │ │ export default defineConfig({ │ │ plugins: [kiss()] │ │ }) │
+            └──────────────┬──────────────────────────┘ │ ┌──────────────▼──────────────────────────┐ │
+            @kissjs/core (8 子插件) │ │ │ │ 1. kiss:core — 路由扫描 (K) │ │ 2. kiss:virtual-entry —
+            虚拟模块 │ │ 3. @hono/vite-dev-server — dev only │ │ 4. island-transform — AST 标记 (I) │ │ 5.
+            island-extractor — 依赖分析 (I) │ │ 6. html-template — HTML 注入 (I) │ │ 7. kiss:ssg — SSG
+            产物 (K+S) │ │ 8. kiss:build — Island JS (I) │ └──────────────┬──────────────────────────┘ │
+            ┌──────────▼──────────┐ │ 两个独立部署目标 │ │ │ │ dist/ (静态前端) │ ← K+I+S 约束 │ API
+            Routes (Serverless) │ ← S 约束 └──────────────────────┘
           </div>
 
           <div class="nav-row">

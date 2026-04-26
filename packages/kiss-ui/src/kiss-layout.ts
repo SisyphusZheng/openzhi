@@ -480,13 +480,13 @@ export class KissLayout extends LitElement {
         `,
       ];
 
-  static properties = {
-    home: { type: Boolean, reflect: true },
-    currentPath: { type: String, attribute: 'current-path' },
-  };
+      static properties = {
+        home: { type: Boolean, reflect: true },
+        currentPath: { type: String, attribute: 'current-path' },
+      };
 
-  home = false;
-  currentPath = '';
+      home = false;
+      currentPath = '';
 
       private _navLink(path: string, text: string) {
         const isActive = this.currentPath === path;
@@ -647,4 +647,4 @@ export class KissLayout extends LitElement {
       }
     }
 
-customElements.define(tagName, KissLayout);
+    customElements.define(tagName, KissLayout);

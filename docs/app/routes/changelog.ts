@@ -67,7 +67,7 @@ export class ChangelogPage extends LitElement {
         font-size: 0.875rem;
       }
       .change-list li::before {
-        content: '•';
+        content: "•";
         position: absolute;
         left: 0;
         color: var(--text-muted);
@@ -109,8 +109,8 @@ export class ChangelogPage extends LitElement {
 
           <p>
             The format is based on
-            <a href="https://keepachangelog.com/en/1.0.0/" target="_blank">Keep a Changelog</a>,
-            and this project adheres to
+            <a href="https://keepachangelog.com/en/1.0.0/" target="_blank">Keep a Changelog</a>, and this
+            project adheres to
             <a href="https://semver.org/spec/v2.0.0.html" target="_blank">Semantic Versioning</a>.
           </p>
 
@@ -123,7 +123,10 @@ export class ChangelogPage extends LitElement {
               <h4>Added</h4>
               <ul class="change-list">
                 <li>Logger module with <code>KISS_LOG_LEVEL</code> environment variable support</li>
-                <li>@kissjs/ui component library with kiss-button, kiss-card, kiss-input, kiss-code-block, kiss-layout</li>
+                <li>
+                  @kissjs/ui component library with kiss-button, kiss-card, kiss-input, kiss-code-block,
+                  kiss-layout
+                </li>
                 <li>design-tokens CSS custom properties for Swiss International Style</li>
                 <li>examples/hello minimal example demonstrating KISS basics</li>
                 <li>Documentation site dogfooding: /ui page uses real KISS UI components</li>

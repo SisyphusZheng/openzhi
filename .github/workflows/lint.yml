@@ -17,7 +17,7 @@ jobs:
           deno-version: v2.x
 
       - name: Check formatting
-        run: deno fmt --check packages/
+        run: deno fmt --check
 
       - name: Run linter
-        run: deno lint packages/
+        run: deno lint
