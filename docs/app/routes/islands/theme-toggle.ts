@@ -15,16 +15,17 @@ export class ThemeToggle extends LitElement {
     }
     button {
       background: none;
-      border: 1px solid #333;
-      border-radius: 4px;
+      border: 1px solid var(--border, #333);
+      border-radius: 6px;
       padding: 0.5rem 1rem;
       cursor: pointer;
-      font-size: 1rem;
-      color: #fff;
-      transition: background 0.2s ease;
+      font-size: 0.875rem;
+      color: var(--text-primary, inherit);
+      transition: background 0.2s ease, border-color 0.2s ease;
     }
     button:hover {
-      background: #1a1a1a;
+      background: var(--accent-subtle, rgba(255, 255, 255, 0.05));
+      border-color: var(--border-hover, #555);
     }
   `;
 

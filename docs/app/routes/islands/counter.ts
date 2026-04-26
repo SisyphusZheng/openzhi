@@ -23,20 +23,21 @@ export class CounterIsland extends LitElement {
       font-weight: 700;
       min-width: 3rem;
       text-align: center;
-      color: #fff;
+      color: var(--text-primary, inherit);
     }
     button {
-      background: #00e87b;
-      color: #000;
-      border: none;
+      background: var(--accent, #fff);
+      color: var(--bg-base, #000);
+      border: 1px solid var(--border, transparent);
       border-radius: 6px;
       padding: 0.5rem 1rem;
       font-size: 1.25rem;
       font-weight: 600;
       cursor: pointer;
-      transition: transform 0.15s ease;
+      transition: transform 0.15s ease, opacity 0.15s ease;
     }
     button:hover {
+      opacity: 0.85;
       transform: scale(1.05);
     }
     button:active {

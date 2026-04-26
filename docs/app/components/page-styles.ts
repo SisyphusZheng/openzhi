@@ -34,9 +34,9 @@ export const pageStyles = css`
 
   .subtitle {
     color: var(--text-tertiary);
-    margin-bottom: 2.5rem;
+    margin-bottom: 3rem;
     font-size: 0.9375rem;
-    line-height: 1.6;
+    line-height: 1.7;
   }
 
   h2 {

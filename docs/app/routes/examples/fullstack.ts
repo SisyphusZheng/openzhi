@@ -19,10 +19,11 @@ export class FullstackDemoPage extends LitElement {
     css`
       .demo-container {
         padding: 2rem;
-        background: #000;
+        background: var(--bg-surface);
+        border: 1px solid var(--border);
         border-radius: 8px;
         margin: 1.5rem 0;
-        color: #fff;
+        color: var(--text-primary);
       }
       .demo-container h1 {
         font-size: 2rem;
@@ -31,32 +32,34 @@ export class FullstackDemoPage extends LitElement {
       .api-demo {
         margin-top: 1.5rem;
         padding: 1rem;
-        background: #0a0a0a;
+        background: var(--bg-elevated);
+        border: 1px solid var(--border);
         border-radius: 6px;
       }
       .api-demo h3 {
         margin: 0 0 0.75rem;
         font-size: 0.9375rem;
-        color: #00e87b;
+        color: var(--accent);
       }
       .api-response {
         font-family: "SF Mono", "Fira Code", monospace;
         font-size: 0.8125rem;
-        color: #999;
-        background: #111;
+        color: var(--text-secondary);
+        background: var(--code-bg);
         padding: 0.75rem;
         border-radius: 4px;
       }
       .counter-demo {
         margin-top: 1.5rem;
         padding: 1rem;
-        background: #0a0a0a;
+        background: var(--bg-elevated);
+        border: 1px solid var(--border);
         border-radius: 6px;
       }
       .counter-demo h3 {
         margin: 0 0 1rem;
         font-size: 0.9375rem;
-        color: #00e87b;
+        color: var(--accent);
       }
       .deployment-diagram {
         padding: 1.25rem;

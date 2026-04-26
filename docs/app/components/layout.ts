@@ -190,14 +190,24 @@ export class AppLayout extends LitElement {
         </div>
         <div class="app-footer">
           <footer>
-            <p>
-              Built with <a href="https://github.com/SisyphusZheng/kiss" target="_blank"
-              >KISS Framework</a>
-              <span class="divider"></span>
-              Self-bootstrapped from JSR
-              <span class="divider"></span>
-              KISS Architecture — K·I·S·S
-            </p>
+            <div class="footer-inner">
+              <div class="footer-links">
+                <a href="/guide/getting-started">Docs</a>
+                <a href="/examples">Examples</a>
+                <a href="/roadmap">Roadmap</a>
+                <a href="/changelog">Changelog</a>
+                <a href="https://github.com/SisyphusZheng/kiss">GitHub</a>
+                <a href="https://jsr.io/@kissjs/core">JSR</a>
+              </div>
+              <p>
+                Built with <a href="https://github.com/SisyphusZheng/kiss" target="_blank"
+                >KISS Framework</a>
+                <span class="divider"></span>
+                Self-bootstrapped from JSR
+                <span class="divider"></span>
+                KISS Architecture — K·I·S·S
+              </p>
+            </div>
           </footer>
         </div>
       </div>

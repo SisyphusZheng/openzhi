@@ -47,16 +47,16 @@ export class ExamplesPage extends LitElement {
         font-weight: 500;
       }
       .example-card .tag.k {
-        color: #00e87b;
+        color: var(--accent);
       }
       .example-card .tag.i {
-        color: #f59e0b;
+        color: var(--accent-dim);
       }
       .example-card .tag.s1 {
-        color: #3b82f6;
+        color: var(--text-secondary);
       }
       .example-card .tag.s2 {
-        color: #8b5cf6;
+        color: var(--text-tertiary);
       }
       .example-card p {
         margin: 0.5rem 0 1rem;
@@ -78,16 +78,62 @@ export class ExamplesPage extends LitElement {
         font-family: "SF Mono", "Fira Code", monospace;
       }
       .architecture-diagram {
-        padding: 1.25rem;
+        padding: 1.5rem;
         background: var(--bg-surface);
         border: 1px solid var(--border-base);
         border-radius: 6px;
         margin: 1.5rem 0;
+      }
+      .arch-row {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+      }
+      .arch-row:last-child {
+        margin-bottom: 0;
+      }
+      .arch-label {
+        font-size: 0.6875rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--text-muted);
+        min-width: 120px;
+      }
+      .arch-value {
         font-size: 0.8125rem;
-        line-height: 1.8;
-        font-family: "SF Mono", "Fira Code", monospace;
-        white-space: pre-wrap;
         color: var(--text-secondary);
+      }
+      .arch-divider {
+        border: none;
+        border-top: 1px solid var(--border);
+        margin: 1rem 0;
+      }
+      .kiss-row {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        margin: 0.75rem 0;
+      }
+      .kiss-letter {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 28px;
+        height: 28px;
+        border: 1px solid var(--border-hover);
+        border-radius: 4px;
+        font-size: 0.75rem;
+        font-weight: 800;
+        color: var(--text-primary);
+        background: var(--bg-base);
+      }
+      .kiss-desc {
+        font-size: 0.8125rem;
+        color: var(--text-secondary);
+        margin-left: 0.25rem;
+        line-height: 28px;
       }
       .nav-links {
         display: flex;
@@ -112,15 +158,32 @@ export class ExamplesPage extends LitElement {
           </p>
 
           <div class="architecture-diagram">
-            ┌─────────────────────────────────────────────────────────────────┐ │ KISS Architecture │ │ │
-            │ Jamstack Islands Architecture Progressive Enh. │ │ ┌─────┐ ┌─────────┐ ┌───────────┐ │ │ │ M
-            │ ←─────────── │ │ ←───────── │ Content │ │ │ │ A │ │ Shadow │ │ First │ │ │ │ J │ │ DOM │ │ │
-            │ │ └─────┘ └─────────┘ └───────────┘ │ │ │ │ │ │ │ ▼ ▼ ▼ │ │
-            ┌──────────────────────────────────────────────────────┐ │ │ │ K·I·S·S 四约束 │ │ │ │ K:
-            Knowledge — SSG + DSD (构建时已知) │ │ │ │ I: Isolated — Islands + Shadow DOM (隔离) │ │ │ │
-            S: Semantic — 无 JS 基线 (语义可达) │ │ │ │ S: Static — CDN + Serverless (静态部署) │ │ │
-            └──────────────────────────────────────────────────────┘ │
-            └─────────────────────────────────────────────────────────────────┘
+            <div class="arch-row">
+              <span class="arch-label">Jamstack</span>
+              <span class="arch-value">Static-first deployment model — SSG + CDN</span>
+            </div>
+            <div class="arch-row">
+              <span class="arch-label">Islands</span>
+              <span class="arch-value">Isolated interactive components in Shadow DOM</span>
+            </div>
+            <div class="arch-row">
+              <span class="arch-label">Progressive</span>
+              <span class="arch-value">Content first, enhancement second — no JS baseline</span>
+            </div>
+            <hr class="arch-divider" />
+            <div class="kiss-row">
+              <span class="kiss-letter">K</span><span class="kiss-desc">Knowledge — SSG + DSD</span>
+            </div>
+            <div class="kiss-row">
+              <span class="kiss-letter">I</span><span class="kiss-desc"
+              >Isolated — Islands + Shadow DOM</span>
+            </div>
+            <div class="kiss-row">
+              <span class="kiss-letter">S</span><span class="kiss-desc">Semantic — No-JS baseline</span>
+            </div>
+            <div class="kiss-row">
+              <span class="kiss-letter">S</span><span class="kiss-desc">Static — CDN + Serverless</span>
+            </div>
           </div>
 
           <h2>示例项目</h2>
@@ -146,7 +209,7 @@ export class ExamplesPage extends LitElement {
                 <kiss-button
                   size="sm"
                   variant="ghost"
-                  href="https://github.com/SisyphusZheng/kiss/tree/main/examples/hello"
+                  href="https://github.com/SisyphusZheng/kiss/tree/main/docs/app/routes/examples/hello"
                 >源码</kiss-button>
               </div>
             </div>
@@ -172,7 +235,7 @@ export class ExamplesPage extends LitElement {
                 <kiss-button
                   size="sm"
                   variant="ghost"
-                  href="https://github.com/SisyphusZheng/kiss/tree/main/examples/minimal-blog"
+                  href="https://github.com/SisyphusZheng/kiss/tree/main/docs/app/routes/examples/minimal-blog"
                 >源码</kiss-button>
               </div>
             </div>
@@ -204,7 +267,7 @@ export class ExamplesPage extends LitElement {
                 <kiss-button
                   size="sm"
                   variant="ghost"
-                  href="https://github.com/SisyphusZheng/kiss/tree/main/examples/fullstack"
+                  href="https://github.com/SisyphusZheng/kiss/tree/main/docs/app/routes/examples/fullstack"
                 >源码</kiss-button>
               </div>
             </div>

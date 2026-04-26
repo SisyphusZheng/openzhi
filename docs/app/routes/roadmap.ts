@@ -34,11 +34,11 @@ export class RoadmapPage extends LitElement {
         color: var(--text-primary);
       }
       .status-done {
-        color: #00e87b;
+        color: var(--accent);
         font-weight: 500;
       }
       .status-wip {
-        color: #f59e0b;
+        color: var(--text-secondary);
         font-weight: 500;
       }
       .task-list {
@@ -57,7 +57,7 @@ export class RoadmapPage extends LitElement {
         content: '✓';
         position: absolute;
         left: 0;
-        color: #00e87b;
+        color: var(--accent);
         font-weight: 700;
       }
       .tech-debt-table {
@@ -80,13 +80,13 @@ export class RoadmapPage extends LitElement {
         color: var(--text-muted);
       }
       .priority-high {
-        color: #ef4444;
+        color: var(--accent);
       }
       .priority-medium {
-        color: #f59e0b;
+        color: var(--accent-dim);
       }
       .priority-low {
-        color: #3b82f6;
+        color: var(--text-tertiary);
       }
       .architecture-diagram {
         padding: 1.5rem;

@@ -46,13 +46,13 @@ export class ChangelogPage extends LitElement {
         margin-bottom: 0.5rem;
       }
       .change-category.added h4 {
-        color: #00e87b;
+        color: var(--accent);
       }
       .change-category.changed h4 {
-        color: #f59e0b;
+        color: var(--accent-dim);
       }
       .change-category.fixed h4 {
-        color: #3b82f6;
+        color: var(--text-secondary);
       }
       .change-list {
         list-style: none;

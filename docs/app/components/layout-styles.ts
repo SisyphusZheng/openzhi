@@ -475,13 +475,38 @@ export const layoutStyles = css`
 
   /* === Footer === */
   .app-footer footer {
-    padding: 2rem;
+    padding: 2.5rem 2rem;
     border-top: 1px solid var(--border);
     text-align: center;
     color: var(--text-muted);
     font-size: 0.6875rem;
     letter-spacing: 0.04em;
     background: var(--bg-base);
+  }
+
+  .app-footer .footer-inner {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  .app-footer .footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .app-footer .footer-links a {
+    color: var(--text-tertiary);
+    text-decoration: none;
+    font-size: 0.75rem;
+    font-weight: 500;
+    transition: color 0.15s;
+  }
+
+  .app-footer .footer-links a:hover {
+    color: var(--text-primary);
   }
 
   .app-footer p {

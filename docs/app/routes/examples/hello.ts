@@ -18,7 +18,8 @@ export class HelloDemoPage extends LitElement {
     css`
       .demo-container {
         padding: 2rem;
-        background: #000;
+        background: var(--bg-surface);
+        border: 1px solid var(--border);
         border-radius: 8px;
         margin: 1.5rem 0;
       }
@@ -26,10 +27,10 @@ export class HelloDemoPage extends LitElement {
         font-size: 2.5rem;
         font-weight: 800;
         margin: 0 0 1rem;
-        color: #fff;
+        color: var(--text-primary);
       }
       .demo-container .subtitle {
-        color: #666;
+        color: var(--text-tertiary);
         font-size: 1rem;
         margin-bottom: 1.5rem;
       }
@@ -38,7 +39,7 @@ export class HelloDemoPage extends LitElement {
         gap: 1rem;
       }
       kiss-card {
-        --kiss-bg-card: #0a0a0a;
+        --kiss-bg-card: var(--bg-elevated);
       }
       .actions {
         display: flex;

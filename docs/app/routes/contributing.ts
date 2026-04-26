@@ -37,7 +37,7 @@ export class ContributingPage extends LitElement {
         font-size: 0.875rem;
       }
       .commit-type code {
-        color: #00e87b;
+        color: var(--accent);
         font-weight: 600;
       }
     `,

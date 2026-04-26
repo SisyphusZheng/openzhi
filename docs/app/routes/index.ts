@@ -11,7 +11,7 @@ export class DocsHome extends LitElement {
     .hero {
       max-width: 800px;
       margin: 0 auto;
-      padding: 10rem 2rem 5rem;
+      padding: 12rem 2rem 6rem;
       text-align: left;
     }
 
@@ -19,47 +19,54 @@ export class DocsHome extends LitElement {
       font-size: 0.625rem;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.2em;
+      letter-spacing: 0.24em;
       color: var(--text-muted);
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.75rem;
+      display: block;
     }
 
     .hero h1 {
-      font-size: 4.5rem;
+      font-size: 5.5rem;
       font-weight: 900;
-      letter-spacing: -0.05em;
+      letter-spacing: -0.06em;
       margin: 0;
       color: var(--text-primary);
-      line-height: 0.95;
+      line-height: 0.9;
     }
 
     .hero .tagline {
       font-size: 1.0625rem;
       color: var(--text-secondary);
-      margin-top: 2rem;
+      margin-top: 2.25rem;
       line-height: 1.8;
       font-weight: 400;
-      max-width: 440px;
+      max-width: 480px;
     }
 
     .hero .equation {
       margin-top: 3rem;
       display: flex;
-      gap: 0.375rem;
+      gap: 0.5rem;
       flex-wrap: wrap;
     }
 
     .eq-item {
       display: inline-flex;
       align-items: center;
-      gap: 0.375rem;
-      padding: 0.5rem 0.875rem;
+      gap: 0.5rem;
+      padding: 0.625rem 1rem;
       background: var(--bg-surface);
       border: 1px solid var(--border);
-      border-radius: 4px;
+      border-radius: 6px;
       font-size: 0.75rem;
       font-weight: 500;
       color: var(--text-tertiary);
+      transition: border-color 0.2s ease, background 0.2s ease;
+    }
+
+    .eq-item:hover {
+      border-color: var(--border-hover);
+      background: var(--bg-elevated);
     }
 
     .eq-label {
@@ -77,18 +84,18 @@ export class DocsHome extends LitElement {
     .cta {
       margin-top: 3rem;
       display: flex;
-      gap: 0.625rem;
+      gap: 0.75rem;
     }
 
     .cta a {
       display: inline-flex;
       align-items: center;
-      padding: 0.625rem 1.5rem;
+      padding: 0.75rem 1.75rem;
       font-size: 0.8125rem;
       font-weight: 600;
-      letter-spacing: 0.01em;
+      letter-spacing: 0.02em;
       text-decoration: none;
-      border-radius: 4px;
+      border-radius: 6px;
       transition: all 0.2s ease;
     }
 
@@ -99,6 +106,7 @@ export class DocsHome extends LitElement {
 
     .cta-primary:hover {
       opacity: 0.85;
+      transform: translateY(-1px);
     }
 
     .cta-secondary {
@@ -110,13 +118,14 @@ export class DocsHome extends LitElement {
     .cta-secondary:hover {
       color: var(--text-primary);
       border-color: var(--border-hover);
+      transform: translateY(-1px);
     }
 
     /* ─── Standards ─── */
     .standards {
       max-width: 800px;
       margin: 0 auto;
-      padding: 3rem 2rem;
+      padding: 4rem 2rem;
       border-top: 1px solid var(--border);
     }
 
@@ -126,7 +135,7 @@ export class DocsHome extends LitElement {
       text-transform: uppercase;
       letter-spacing: 0.16em;
       color: var(--text-muted);
-      margin-bottom: 1.25rem;
+      margin-bottom: 1.5rem;
     }
 
     .pill-row {
@@ -138,24 +147,25 @@ export class DocsHome extends LitElement {
     .pill {
       display: inline-flex;
       align-items: center;
-      gap: 0.375rem;
-      padding: 0.375rem 0.75rem;
-      border-radius: 3px;
+      gap: 0.5rem;
+      padding: 0.5rem 0.875rem;
+      border-radius: 6px;
       font-size: 0.75rem;
       font-weight: 500;
       background: var(--bg-surface);
       color: var(--text-secondary);
       border: 1px solid var(--border);
-      transition: border-color 0.2s, color 0.2s;
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
     }
 
     .pill:hover {
       border-color: var(--border-hover);
       color: var(--text-primary);
+      background: var(--bg-elevated);
     }
 
     .pill .check {
-      color: var(--text-primary);
+      color: var(--accent);
       font-size: 0.625rem;
       font-weight: 700;
     }
@@ -175,8 +185,9 @@ export class DocsHome extends LitElement {
     }
 
     .feature-item {
-      padding: 1.75rem 1.5rem;
+      padding: 2rem 1.75rem;
       border-bottom: 1px solid var(--border);
+      transition: background 0.2s ease;
     }
 
     .feature-item:nth-child(odd) {
@@ -187,10 +198,14 @@ export class DocsHome extends LitElement {
       border-bottom: none;
     }
 
+    .feature-item:hover {
+      background: var(--bg-surface);
+    }
+
     .feature-item h2 {
       font-size: 0.875rem;
       font-weight: 600;
-      margin: 0 0 0.375rem;
+      margin: 0 0 0.5rem;
       color: var(--text-primary);
       letter-spacing: -0.01em;
     }
@@ -199,7 +214,7 @@ export class DocsHome extends LitElement {
       font-size: 0.8125rem;
       color: var(--text-tertiary);
       margin: 0;
-      line-height: 1.6;
+      line-height: 1.65;
     }
 
     /* ─── Comparison ─── */
@@ -218,7 +233,7 @@ export class DocsHome extends LitElement {
 
     .comparison-table th,
     .comparison-table td {
-      padding: 0.75rem 1rem;
+      padding: 0.875rem 1.125rem;
       text-align: left;
       border-bottom: 1px solid var(--border);
     }
@@ -244,11 +259,15 @@ export class DocsHome extends LitElement {
       font-weight: 500;
     }
 
+    .comparison-table tr:hover td {
+      background: var(--bg-surface);
+    }
+
     /* ─── JSR ─── */
     .jsr {
       max-width: 800px;
       margin: 0 auto;
-      padding: 3rem 2rem 5rem;
+      padding: 3rem 2rem 6rem;
       border-top: 1px solid var(--border);
     }
 
@@ -261,10 +280,10 @@ export class DocsHome extends LitElement {
     .jsr-badge {
       display: inline-flex;
       align-items: center;
-      padding: 0.375rem 0.875rem;
+      padding: 0.5rem 1rem;
       background: var(--bg-surface);
       border: 1px solid var(--border);
-      border-radius: 3px;
+      border-radius: 6px;
       font-size: 0.75rem;
       font-weight: 600;
       color: var(--text-secondary);
@@ -277,6 +296,7 @@ export class DocsHome extends LitElement {
       background: var(--bg-elevated);
       color: var(--text-primary);
       border-color: var(--border-hover);
+      transform: translateY(-1px);
     }
 
     /* ─── Responsive ─── */
