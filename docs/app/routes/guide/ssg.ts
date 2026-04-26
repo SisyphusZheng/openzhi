@@ -49,7 +49,41 @@ export class SSGGuidePage extends LitElement {
               <li>Extracts Island components into separate JS bundles</li>
               <li>Writes each page as <span class="inline-code">route/path/index.html</span></li>
             </ol>
-            <p>Dynamic routes (with <span class="inline-code">:param</span>) are skipped automatically.</p>
+          <p>Dynamic routes (with <span class="inline-code">:param</span>) are skipped automatically.</p>
+
+          <h2>SSR Compatibility: Use static properties</h2>
+          <p>
+            KISS uses Vite's SSR capabilities with esbuild for fast transpilation. Due to
+            <strong>esbuild's limited decorator support</strong>, we recommend using
+            <span class="inline-code">static properties</span> instead of
+            <span class="inline-code">@property</span> decorators:
+          </p>
+          <code-block
+          ><pre><code>// ✅ Recommended: Works in SSR
+            class MyComponent extends LitElement {
+              static properties = {
+                count: { type: Number },
+                name: { type: String },
+              };
+              count = 0;
+              name = '';
+            }
+
+            // ❌ Not recommended: Fails in SSR
+            import { property } from 'lit/decorators.js';
+            class MyComponent extends LitElement {
+              @property({ type: Number }) count = 0;  // "Unsupported decorator location"
+            }</code></pre></code-block>
+
+            <p>
+              <strong>Why?</strong> Vite SSR uses esbuild for on-the-fly transpilation. esbuild only supports
+              the legacy <span class="inline-code">experimentalDecorators</span> proposal (TC39 Stage 2), which
+              has limited support for field decorators like <span class="inline-code">@property</span>.
+            </p>
+            <p>
+              <span class="inline-code">static properties</span> is Lit's recommended syntax, works everywhere,
+              and aligns with KISS's "Web Standards First" philosophy — no decorator polyfills needed.
+            </p>
 
             <h2>DSD Output</h2>
             <p>Each rendered page includes Declarative Shadow DOM for all Lit components. This means:</p>
