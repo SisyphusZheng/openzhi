@@ -7,75 +7,22 @@ export class WebAwesomePage extends LitElement {
   static styles = [
     pageStyles,
     css`
-      :host {
-        display: block;
-      }
-      .container {
-        max-width: 720px;
-        margin: 0 auto;
-        padding: 2rem 1.5rem 3rem;
-      }
-      h1 {
-        font-size: 2.25rem;
-        font-weight: 800;
-        letter-spacing: -0.03em;
-        margin: 0 0 0.5rem;
-        color: var(--text-primary);
-      }
-      .subtitle {
-        color: var(--text-tertiary);
-        margin-bottom: 2.5rem;
-        font-size: 0.9375rem;
-        line-height: 1.6;
-      }
-      h2 {
-        font-size: 1.125rem;
-        font-weight: 600;
-        margin: 1.5rem 0 0.75rem;
-      }
+
       .demo-box {
         padding: 1.25rem;
         border: 1px solid var(--border);
         border-radius: 3px;
         margin: 0.75rem 0 1.5rem;
       }
-      .demo-box h3 {
-        font-size: 0.9375rem;
-        font-weight: 600;
-        margin: 0 0 0.75rem;
-        color: var(--text-primary);
-      }
+      .demo-box
       .demo-box .component-row {
         display: flex;
         gap: 0.5rem;
         flex-wrap: wrap;
         margin-bottom: 0.75rem;
       }
-      pre {
-        background: var(--code-bg);
-        color: var(--text-secondary);
-        padding: 0.75rem 1rem;
-        border-radius: 3px;
-        overflow-x: auto;
-        font-size: 0.8125rem;
-        line-height: 1.6;
-        margin: 0;
-      }
-      code {
-        font-family: "SF Mono", "Fira Code", monospace;
-      }
-      .inline-code {
-        background: var(--code-bg);
-        padding: 0.125rem 0.375rem;
-        border-radius: 4px;
-        font-size: 0.875em;
-      }
-      .nav-row {
-        margin-top: 2.5rem;
-        display: flex;
-        justify-content: space-between;
-      }
-    `,
+
+`,
   ];
   render() {
     return html`

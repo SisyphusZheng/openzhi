@@ -410,6 +410,9 @@ export const layoutStyles = css`
       pointer-events: auto;
     }
 
+    /* Close sidebar when backdrop is clicked — L2: minimal JS via headFragments */
+    /* The backdrop click handler is injected in vite.config.ts headFragments */
+
     .nav-section {
       margin-bottom: 0.375rem;
     }

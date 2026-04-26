@@ -5,6 +5,12 @@ import { css } from '@kissjs/core';
  *
  * Academic, modern, restrained.
  * Typography drives hierarchy. Borders are whispers.
+ *
+ * These styles are the SINGLE SOURCE OF TRUTH for all doc pages.
+ * Route files should NOT re-define .container, h1, .subtitle, h2, p, pre,
+ * code, .inline-code, table/th/td, or .nav-row — they're all here.
+ * Only page-specific components (e.g. .step, .constraint, .platform-card)
+ * should have local styles.
  */
 export const pageStyles = css`
   :host {
@@ -14,11 +20,11 @@ export const pageStyles = css`
   .container {
     max-width: 720px;
     margin: 0 auto;
-    padding: 3rem 3rem 5rem;
+    padding: 2rem 1.5rem 3rem;
   }
 
   h1 {
-    font-size: 2rem;
+    font-size: 2.25rem;
     font-weight: 800;
     letter-spacing: -0.03em;
     margin: 0 0 0.5rem;
@@ -27,31 +33,29 @@ export const pageStyles = css`
   }
 
   .subtitle {
-    color: var(--text-secondary);
-    margin-bottom: 3rem;
+    color: var(--text-tertiary);
+    margin-bottom: 2.5rem;
     font-size: 0.9375rem;
-    line-height: 1.7;
-    letter-spacing: 0.01em;
+    line-height: 1.6;
   }
 
   h2 {
     font-size: 1.125rem;
     font-weight: 600;
-    margin: 3rem 0 0.75rem;
+    margin: 1.5rem 0 0.75rem;
     color: var(--text-primary);
-    letter-spacing: -0.01em;
   }
 
   h3 {
     font-size: 0.9375rem;
     font-weight: 600;
-    margin: 2rem 0 0.5rem;
+    margin: 1.5rem 0 0.5rem;
     color: var(--accent-dim);
   }
 
   p {
-    line-height: 1.75;
-    margin: 0.75rem 0;
+    line-height: 1.7;
+    margin: 0.5rem 0;
     color: var(--text-secondary);
     font-size: 0.9375rem;
   }
@@ -79,21 +83,27 @@ export const pageStyles = css`
     text-decoration-color: var(--text-primary);
   }
 
-  /* Code */
+  /* Code blocks */
   pre {
     background: var(--code-bg);
     color: var(--text-secondary);
-    padding: 1.25rem 1.5rem;
-    border-radius: 6px;
+    padding: 1rem 1.25rem;
+    border-radius: 3px;
     overflow-x: auto;
     font-size: 0.8125rem;
-    line-height: 1.7;
-    margin: 1.25rem 0;
-    border: 1px solid var(--code-border);
+    line-height: 1.6;
+    margin: 0.75rem 0;
   }
 
   code {
     font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+  }
+
+  .inline-code {
+    background: var(--code-bg);
+    padding: 0.125rem 0.375rem;
+    border-radius: 4px;
+    font-size: 0.875em;
   }
 
   p code, li code {
@@ -109,22 +119,20 @@ export const pageStyles = css`
   table {
     width: 100%;
     border-collapse: collapse;
-    margin: 1.25rem 0 1.5rem;
-    font-size: 0.8125rem;
+    margin: 0.75rem 0 1.5rem;
+    font-size: 0.875rem;
   }
 
   th, td {
     border: 1px solid var(--border);
-    padding: 0.75rem 1rem;
+    padding: 0.5rem 0.75rem;
     text-align: left;
   }
 
   th {
-    background: var(--bg-elevated);
+    background: var(--code-bg);
     font-weight: 600;
     color: var(--accent-dim);
-    font-size: 0.75rem;
-    letter-spacing: 0.02em;
   }
 
   td {
@@ -134,19 +142,19 @@ export const pageStyles = css`
   /* Callout blocks */
   .pillar {
     padding: 1.25rem 1.5rem;
-    margin: 1.25rem 0;
-    border-left: 2px solid var(--border-hover);
+    margin: 1rem 0;
+    border-left: 3px solid var(--border-hover);
     background: var(--bg-surface);
-    border-radius: 0 6px 6px 0;
+    border-radius: 0 3px 3px 0;
   }
 
   .pillar .num {
-    font-size: 0.625rem;
+    font-size: 0.75rem;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.05em;
     color: var(--text-muted);
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.25rem;
   }
 
   .pillar h3 {
@@ -157,46 +165,42 @@ export const pageStyles = css`
 
   .hard-constraint {
     display: inline-block;
-    background: var(--bg-elevated);
-    border: 1px solid var(--border);
+    background: var(--code-bg);
+    border: 1px solid var(--border-hover);
     padding: 0.25rem 0.625rem;
-    border-radius: 3px;
-    font-size: 0.6875rem;
-    color: var(--text-secondary);
-    margin: 0.125rem;
-  }
-
-  /* Lists */
-  ul, ol {
-    padding-left: 1.25rem;
-    color: var(--text-secondary);
-    line-height: 1.75;
-  }
-
-  li {
-    margin: 0.375rem 0;
+    border-radius: 4px;
+    font-size: 0.8125rem;
+    margin: 0.125rem 0;
   }
 
   .callout {
     padding: 1rem 1.25rem;
-    margin: 1.25rem 0;
-    border-left: 2px solid var(--border-hover);
+    margin: 1rem 0;
+    border-left: 3px solid var(--border-hover);
     background: var(--bg-surface);
-    border-radius: 0 6px 6px 0;
+    border-radius: 0 3px 3px 0;
   }
 
   .callout.warn {
     border-left-color: var(--text-tertiary);
   }
 
+  /* Lists */
+  ul, ol {
+    padding-left: 1.25rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  li {
+    margin: 0.375rem 0;
+  }
+
   /* Page nav */
   .nav-row {
-    margin-top: 4rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--border);
+    margin-top: 2.5rem;
     display: flex;
     justify-content: space-between;
-    gap: 1rem;
   }
 
   .nav-link {
@@ -222,7 +226,7 @@ export const pageStyles = css`
   /* === Responsive === */
   @media (max-width: 900px) {
     .container {
-      padding: 2rem 1.5rem 3rem !important;
+      padding: 2rem 1.25rem 3rem;
     }
 
     h1 {
@@ -234,14 +238,13 @@ export const pageStyles = css`
     }
 
     h2 {
-      margin: 2rem 0 0.5rem;
+      margin: 1.5rem 0 0.5rem;
     }
 
     pre {
-      padding: 1rem;
+      padding: 0.875rem 1rem;
       font-size: 0.75rem;
       border-radius: 4px;
-      overflow-x: auto;
     }
 
     table {
@@ -265,17 +268,11 @@ export const pageStyles = css`
       text-align: center;
       justify-content: center;
     }
-
-    /* Force responsive padding on containers that override in page styles */
-    .step, .concept-block {
-      padding-left: 0;
-      padding-right: 0;
-    }
   }
 
   @media (max-width: 480px) {
     .container {
-      padding: 1.5rem 1rem 2.5rem !important;
+      padding: 1.5rem 1rem 2.5rem;
     }
 
     h1 {
@@ -296,10 +293,9 @@ export const pageStyles = css`
     }
 
     pre {
-      padding: 0.875rem;
+      padding: 0.75rem;
       font-size: 0.6875rem;
-      margin: 0.75rem 0;
-      overflow-x: auto;
+      margin: 0.5rem 0;
     }
 
     code {
@@ -308,6 +304,11 @@ export const pageStyles = css`
 
     ul, ol {
       padding-left: 1rem;
+    }
+
+    .hard-constraint {
+      font-size: 0.6875rem;
+      padding: 0.125rem 0.5rem;
     }
   }
 `;

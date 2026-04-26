@@ -42,6 +42,10 @@ export default defineConfig({
           // Also initializes button state on DOMContentLoaded
           // KISS Architecture: L2 (browser API), not L4 (Lit component hydration)
           '<script>(function(){function syncToggle(btn){var t=document.documentElement.getAttribute("data-theme")||"dark";if(t==="light"){btn.classList.add("is-light")}else{btn.classList.remove("is-light")}btn.setAttribute("title","Switch to "+(t==="dark"?"light":"dark")+" theme")}document.addEventListener("click",function(e){var p=e.composedPath();for(var i=0;i<p.length;i++){if(p[i].classList&&p[i].classList.contains("theme-toggle")){var c=document.documentElement.getAttribute("data-theme")||"dark";var n=c==="dark"?"light":"dark";document.documentElement.setAttribute("data-theme",n);localStorage.setItem("kiss-theme",n);syncToggle(p[i]);break}}});document.addEventListener("DOMContentLoaded",function(){document.querySelectorAll("app-layout").forEach(function(el){var sr=el.shadowRoot;if(sr){var b=sr.querySelector(".theme-toggle");if(b)syncToggle(b)}})})})()</script>',
+          // Mobile sidebar: close on backdrop click — L2 (browser API)
+          // KISS Architecture: L0 <details> + L1 :has() opens sidebar,
+          // L2 backdrop click closes it by removing [open] attribute
+          '<script>document.addEventListener("click",function(e){var p=e.composedPath();for(var i=0;i<p.length;i++){if(p[i].classList&&p[i].classList.contains("mobile-backdrop")){document.querySelectorAll("app-layout").forEach(function(el){var sr=el.shadowRoot;if(sr){var d=sr.querySelector("details.mobile-menu");if(d&&d.open)d.removeAttribute("open")}});break}}})</script>',
         ],
       },
     }),
