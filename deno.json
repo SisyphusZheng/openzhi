@@ -6,6 +6,7 @@
     "./packages/kiss-ui",
     "./examples/poc",
     "./examples/minimal-blog",
+    "./examples/fullstack",
     "./docs"
   ],
   "imports": {

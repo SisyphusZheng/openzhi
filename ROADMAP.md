@@ -120,8 +120,8 @@
 - [x] **CHANGELOG.md 更新**
 - [x] **发布 @kissjs/ui@0.1.4** — JSR 发布（已发布 8 hours ago）
 - [x] **kiss-ui.ts 文档更新** — 移除"计划中"状态，记录实际组件
-- [ ] **全栈示例** — examples/fullstack，展示 SSG + API Routes + PWA
-- [ ] **Hello World 重写** — examples/hello，用新 UI 库（已在使用 @kissjs/ui，可标记完成）
+- [x] **全栈示例** — examples/fullstack，展示 SSG + API Routes + Islands
+- [x] **Hello World 重写** — examples/hello，用新 UI 库（已在使用 @kissjs/ui）
 
 ---
 
