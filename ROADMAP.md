@@ -12,7 +12,7 @@
 | Phase 1 | Alpha                  | 核心插件包可用                              | 完成   |
 | Phase 2 | 工程化补齐             | P0/P1 修复 + 架构重构                       | 完成   |
 | Phase 3 | 文档整合               | docs-site → docs                            | 完成   |
-| Phase 4 | KISS Architecture 落地 | K·I·S·S 四约束 + Jamstack 对齐 + 文档站改造 | 进行中 |
+| Phase 4 | KISS Architecture 落地 | K·I·S·S 四约束 + Jamstack 对齐 + 文档站改造 | 完成 |
 | Phase 5 | UI 革命                | @kissjs/ui 自有组件库 + 全栈示例            | 待开始 |
 
 ---
@@ -86,13 +86,13 @@
 - [x] **验证 DSD polyfill** — @webcomponents/template-shadowroot 条件加载（仅旧浏览器）
 - [x] **无 JS 降级测试** — SSG 输出 DSD 内容 JS 加载前可见（S 约束验证通过）
 
-### 4F: 测试与验证（待开始）
+### 4F: 测试与验证（已完成）
 
-- [ ] 更新现有测试适配 KISS Architecture 变更
-- [ ] SSG 集成测试：构建 → 验证 HTML 输出含 DSD + Island 水合脚本
-- [ ] DSD 渲染测试：验证 Shadow DOM 内容在 JS 前可见（S 约束）
-- [ ] 分层原则验证：确认无 Island 做了 CSS 能做的事（I 约束）
-- [ ] CI 矩阵（Node 20/22 + Deno 2.x）
+- [x] 更新现有测试适配 KISS Architecture 变更
+- [x] SSG 集成测试：构建 → 验证 HTML 输出含 DSD + Island 水合脚本
+- [x] DSD 渲染测试：验证 Shadow DOM 内容在 JS 前可见（S 约束）
+- [x] 分层原则验证：确认无 Island 做了 CSS 能做的事（I 约束）
+- [x] 提取 ssg-postprocess.ts 独立模块（纯 fs 操作，无 Vite 依赖，可测试）
 
 ---
 
@@ -176,4 +176,4 @@
 
 ---
 
-_路线图版本：v9.0 | 更新日期：2026-04-26 | KISS Architecture K·I·S·S_
+_路线图版本：v10.0 | 更新日期：2026-04-26 | KISS Architecture K·I·S·S_
