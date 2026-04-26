@@ -66,3 +66,5 @@ export class ThemeToggle extends LitElement {
 }
 
 customElements.define('theme-toggle', ThemeToggle);
+
+export const tagName = 'theme-toggle';

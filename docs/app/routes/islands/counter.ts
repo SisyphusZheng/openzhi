@@ -73,3 +73,5 @@ export class CounterIsland extends LitElement {
 }
 
 customElements.define('counter-island', CounterIsland);
+
+export const tagName = 'counter-island';
