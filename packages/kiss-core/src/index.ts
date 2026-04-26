@@ -180,7 +180,7 @@ export function kiss(options: FrameworkOptions = {}): Plugin[] {
         const pageCount = routes.filter((r) => r.type === 'page' && !r.special).length;
         const apiCount = routes.filter((r) => r.type === 'api' && !r.special).length;
         console.log(
-            `[KISS] Routes: ${pageCount} page(s), ${apiCount} API route(s), ` +
+          `[KISS] Routes: ${pageCount} page(s), ${apiCount} API route(s), ` +
             `${ctx.islandTagNames.length} island(s) — KISS Architecture`,
         );
       } catch (err) {
@@ -230,8 +230,9 @@ export function kiss(options: FrameworkOptions = {}): Plugin[] {
       const routes = await scanRoutes(resolvedOptions.routesDir!);
 
       const islandsRoot = join(root, resolvedOptions.islandsDir || 'app/islands');
-      const ssgIslandFiles = await scanIslands(islandsRoot);
-      const ssgIslandTagNames = ssgIslandFiles.map((f) => fileToTagName(f));
+      const ssgIslandTagNames = ctx.islandTagNames.length > 0
+        ? ctx.islandTagNames
+        : (await scanIslands(islandsRoot)).map((f) => fileToTagName(f));
 
       const ssgEntryCode = generateHonoEntryCode(routes, {
         routesDir: resolvedOptions.routesDir,
@@ -308,7 +309,21 @@ export function kiss(options: FrameworkOptions = {}): Plugin[] {
             throw result.error;
           }
 
-          console.log(`[KISS SSG] KISS Architecture: Static site generated → ${join(root, outDir)}`);
+          console.log(
+            `[KISS SSG] KISS Architecture: Static site generated → ${join(root, outDir)}`,
+          );
+
+          // Post-process: rewrite Island hydration paths from source to built chunks
+          // This must happen AFTER client build (kiss:build) has produced the JS files
+          // and AFTER SSG has generated the HTML files.
+          const { buildIslandChunkMap, rewriteHtmlFiles } = await import('./build.js');
+          const basePath = ctx.resolvedConfig?.base || '/';
+          const islandChunkMap = buildIslandChunkMap(root, outDir, ctx.islandTagNames, basePath);
+          if (Object.keys(islandChunkMap).length > 0) {
+            console.log('[KISS SSG] Island chunk map:', islandChunkMap);
+            rewriteHtmlFiles(outputDir, islandChunkMap);
+            console.log('[KISS SSG] Hydration paths rewritten in SSG output');
+          }
         } finally {
           await server.close();
         }
@@ -323,6 +338,9 @@ export function kiss(options: FrameworkOptions = {}): Plugin[] {
   };
 
   // --- 组装插件数组 ---
+  // CRITICAL ORDER: kiss:build must run BEFORE kiss:ssg in closeBundle
+  // because client build compiles Island JS, then SSG generates HTML,
+  // then post-processing rewrites Island paths in HTML.
   return [
     corePlugin, // configResolved + buildStart（路由扫描）
     virtualEntryPlugin, // virtual:kiss-hono-entry 提供器
@@ -330,8 +348,8 @@ export function kiss(options: FrameworkOptions = {}): Plugin[] {
     islandTransformPlugin(resolvedOptions.islandsDir!),
     islandExtractorPlugin(resolvedOptions),
     htmlTemplatePlugin(resolvedOptions),
-    ssgPlugin, // SSG 静态生成（K+S 约束产物）
-    buildPlugin(resolvedOptions, ctx), // 客户端构建（仅 Islands）
+    buildPlugin(resolvedOptions, ctx), // 客户端构建（仅 Islands，I 约束）— 先于 SSG
+    ssgPlugin, // SSG 静态生成（K+S 约束产物）+ 路径重写
   ];
 }
 

@@ -1,7 +1,7 @@
 import { LitElement, html, css } from '@kissjs/core'
 import { pageStyles } from '../../components/page-styles.js'
 import '../../components/layout.js'
-import '../islands/code-block.js'
+import '../../islands/code-block.js'
 
 export class ApiDesignPage extends LitElement {
   static styles = [pageStyles, css`

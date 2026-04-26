@@ -33,7 +33,7 @@ export class AppLayout extends LitElement {
       <a
         href="${path}"
         class="${isActive ? 'active' : ''}"
-        aria-current="${isActive ? 'page' : ''}"
+        aria-current="${isActive ? 'page' : undefined}"
       >${text}</a>
     `;
   }
@@ -57,14 +57,14 @@ export class AppLayout extends LitElement {
           ${!this.home
             ? html`
               <nav class="docs-sidebar" aria-label="Documentation navigation">
-                <div class="nav-section">
-                  <div class="nav-section-title">Introduction</div>
+                <details class="nav-section" open>
+                  <summary class="nav-section-title">Introduction</summary>
                   ${this._navLink('/kiss/guide/getting-started', 'Getting Started')} ${this
                     ._navLink('/kiss/guide/design-philosophy', 'Design Philosophy')} ${this
                     ._navLink('/kiss/guide/dia', 'KISS Architecture')}
-                </div>
-                <div class="nav-section">
-                  <div class="nav-section-title">Core</div>
+                </details>
+                <details class="nav-section" open>
+                  <summary class="nav-section-title">Core</summary>
                   ${this._navLink('/kiss/guide/routing', 'Routing')} ${this._navLink(
                     '/kiss/guide/islands',
                     'Islands',
@@ -72,9 +72,9 @@ export class AppLayout extends LitElement {
                     '/kiss/guide/api-design',
                     'API Design',
                   )} ${this._navLink('/kiss/guide/ssg', 'SSG')}
-                </div>
-                <div class="nav-section">
-                  <div class="nav-section-title">Guides</div>
+                </details>
+                <details class="nav-section" open>
+                  <summary class="nav-section-title">Guides</summary>
                   ${this._navLink('/kiss/guide/configuration', 'Configuration')} ${this._navLink(
                     '/kiss/guide/error-handling',
                     'Error Handling',
@@ -82,9 +82,9 @@ export class AppLayout extends LitElement {
                     '/kiss/guide/security-middleware',
                     'Security & Middleware',
                   )} ${this._navLink('/kiss/guide/testing', 'Testing')}
-                </div>
-                <div class="nav-section">
-                  <div class="nav-section-title">Reference</div>
+                </details>
+                <details class="nav-section" open>
+                  <summary class="nav-section-title">Reference</summary>
                   ${this._navLink('/kiss/guide/architecture', 'Architecture')} ${this._navLink(
                     '/kiss/guide/deployment',
                     'Deployment',
@@ -92,7 +92,7 @@ export class AppLayout extends LitElement {
                     '/kiss/styling/web-awesome',
                     'Web Awesome',
                   )}
-                </div>
+                </details>
               </nav>
             `
             : ''}

@@ -40,7 +40,26 @@ export const layoutStyles = css`
 
   @media (max-width: 900px) {
     .docs-sidebar {
-      display: none;
+      display: block;
+      width: 100%;
+      height: auto;
+      position: relative;
+      top: 0;
+      border-right: none;
+      border-bottom: 1px solid #1a1a1a;
+      padding: 0.75rem 1rem;
+    }
+
+    .docs-sidebar .nav-section {
+      margin-bottom: 0.5rem;
+    }
+
+    .docs-sidebar .nav-section summary {
+      padding: 0.25rem 0.5rem;
+    }
+
+    .docs-sidebar a {
+      padding: 0.25rem 0.5rem 0.25rem 1.5rem;
     }
   }
 
@@ -148,7 +167,7 @@ export const layoutStyles = css`
     margin-bottom: 1.25rem;
   }
 
-  .docs-sidebar .nav-section-title {
+  .docs-sidebar .nav-section summary {
     font-size: 0.6875rem;
     font-weight: 700;
     text-transform: uppercase;
@@ -156,6 +175,31 @@ export const layoutStyles = css`
     color: #444;
     padding: 0 1.25rem;
     margin-bottom: 0.375rem;
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    user-select: none;
+  }
+
+  .docs-sidebar .nav-section summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .docs-sidebar .nav-section summary::before {
+    content: "▸";
+    font-size: 0.625rem;
+    transition: transform 0.15s;
+    display: inline-block;
+  }
+
+  .docs-sidebar .nav-section[open] summary::before {
+    transform: rotate(90deg);
+  }
+
+  .docs-sidebar .nav-section summary:hover {
+    color: #888;
   }
 
   .docs-sidebar a {
