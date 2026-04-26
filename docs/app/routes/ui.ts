@@ -6,7 +6,7 @@
  */
 import { css, html, LitElement } from '@kissjs/core';
 import { pageStyles } from '../components/page-styles.js';
-import '../components/layout.js';
+import '@kissjs/ui/kiss-layout';
 
 // Import KISS UI components for dogfooding
 import '@kissjs/ui/kiss-button';

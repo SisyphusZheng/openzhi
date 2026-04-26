@@ -1,5 +1,5 @@
 import { css, html, LitElement } from '@kissjs/core';
-import '../components/layout.js';
+import '@kissjs/ui/kiss-layout';
 
 export class DocsHome extends LitElement {
   static styles = css`

@@ -3,7 +3,7 @@
  */
 import { css, html, LitElement } from '@kissjs/core';
 import { pageStyles } from '../components/page-styles.js';
-import '../components/layout.js';
+import '@kissjs/ui/kiss-layout';
 
 export class ChangelogPage extends LitElement {
   static styles = [

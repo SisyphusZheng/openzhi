@@ -1,6 +1,6 @@
 ﻿import { LitElement, html, css } from '@kissjs/core'
 import { pageStyles } from '../../components/page-styles.js'
-import '../../components/layout.js'
+import '@kissjs/ui/kiss-layout'
 import '../../islands/code-block.js'
 
 export class IslandsGuidePage extends LitElement {
