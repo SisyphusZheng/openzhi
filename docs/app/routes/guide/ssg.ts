@@ -21,7 +21,7 @@ export class SSGGuidePage extends LitElement {
   `]
   render() {
     return html`
-      <app-layout currentPath="/kiss/guide/ssg">
+      <app-layout currentPath="/guide/ssg">
         <div class="container">
           <h1>Static Site Generation</h1>
           <p class="subtitle">Pre-render your routes to static HTML with DSD at build time.</p>
@@ -86,8 +86,8 @@ export default defineConfig({
 # Output in dist/ — deploy to any static host</code></pre></code-block>
 
           <div class="nav-row">
-            <a href="/kiss/guide/api-design" class="nav-link">&larr; API Design</a>
-            <a href="/kiss/guide/configuration" class="nav-link">Configuration &rarr;</a>
+            <a href="/guide/api-design" class="nav-link">&larr; API Design</a>
+            <a href="/guide/configuration" class="nav-link">Configuration &rarr;</a>
           </div>
         </div>
       </app-layout>

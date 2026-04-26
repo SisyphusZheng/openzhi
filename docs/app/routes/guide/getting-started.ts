@@ -19,7 +19,7 @@ export class GettingStartedPage extends LitElement {
   `]
   render() {
     return html`
-      <app-layout currentPath="/kiss/guide/getting-started">
+      <app-layout currentPath="/guide/getting-started">
         <div class="container">
           <h1>Getting Started</h1>
           <p class="subtitle">Up and running in under 5 minutes.</p>
@@ -80,7 +80,7 @@ export default class HomePage extends LitElement {
           </div>
 
           <div class="nav-row">
-            <a href="/kiss/guide/design-philosophy" class="nav-link">Design Philosophy &rarr;</a>
+            <a href="/guide/design-philosophy" class="nav-link">Design Philosophy &rarr;</a>
           </div>
         </div>
       </app-layout>

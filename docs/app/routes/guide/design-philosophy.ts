@@ -116,7 +116,7 @@ export class DesignPhilosophyPage extends LitElement {
   ];
   render() {
     return html`
-      <app-layout currentPath="/kiss/guide/design-philosophy">
+      <app-layout currentPath="/guide/design-philosophy">
         <div class="container">
           <h1>Design Philosophy</h1>
           <p class="subtitle">
@@ -323,7 +323,7 @@ export class DesignPhilosophyPage extends LitElement {
           </table>
           <p>
             Skipping a layer = violating the design philosophy. See
-            <a href="/kiss/guide/dia" style="color: #6a9bcc;"
+            <a href="/guide/dia" style="color: #6a9bcc;"
               >KISS Architecture</a
             >
             for the full decision tree.
@@ -398,10 +398,10 @@ export class DesignPhilosophyPage extends LitElement {
           </table>
 
           <div class="nav-row">
-            <a href="/kiss/guide/getting-started" class="nav-link"
+            <a href="/guide/getting-started" class="nav-link"
               >&larr; Getting Started</a
             >
-            <a href="/kiss/guide/dia" class="nav-link"
+            <a href="/guide/dia" class="nav-link"
               >KISS Architecture &rarr;</a
             >
           </div>

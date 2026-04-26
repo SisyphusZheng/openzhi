@@ -18,7 +18,7 @@ export class RoutingGuidePage extends LitElement {
   `]
   render() {
     return html`
-      <app-layout currentPath="/kiss/guide/routing">
+      <app-layout currentPath="/guide/routing">
         <div class="container">
           <h1>Routing</h1>
           <p class="subtitle">File-based routing — create a file, get a route.</p>
@@ -64,8 +64,8 @@ export class RoutingGuidePage extends LitElement {
           </table>
 
           <div class="nav-row">
-            <a href="/kiss/guide/dia" class="nav-link">&larr; KISS Architecture</a>
-            <a href="/kiss/guide/islands" class="nav-link">Islands &rarr;</a>
+            <a href="/guide/dia" class="nav-link">&larr; KISS Architecture</a>
+            <a href="/guide/islands" class="nav-link">Islands &rarr;</a>
           </div>
         </div>
       </app-layout>

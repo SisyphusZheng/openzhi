@@ -21,7 +21,7 @@ export class TestingPage extends LitElement {
   `]
   render() {
     return html`
-      <app-layout currentPath="/kiss/guide/testing">
+      <app-layout currentPath="/guide/testing">
         <div class="container">
           <h1>Testing Strategy</h1>
           <p class="subtitle">Test pyramid, framework tests, and user project testing templates.</p>
@@ -84,8 +84,8 @@ jobs:
           </ul>
 
           <div class="nav-row">
-            <a href="/kiss/guide/security-middleware" class="nav-link">&larr; Security &amp; Middleware</a>
-            <a href="/kiss/guide/architecture" class="nav-link">Architecture &rarr;</a>
+            <a href="/guide/security-middleware" class="nav-link">&larr; Security &amp; Middleware</a>
+            <a href="/guide/architecture" class="nav-link">Architecture &rarr;</a>
           </div>
         </div>
       </app-layout>

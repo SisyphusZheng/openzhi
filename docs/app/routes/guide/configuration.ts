@@ -23,7 +23,7 @@ export class ConfigurationPage extends LitElement {
   `]
   render() {
     return html`
-      <app-layout currentPath="/kiss/guide/configuration">
+      <app-layout currentPath="/guide/configuration">
         <div class="container">
           <h1>Configuration</h1>
           <p class="subtitle">kiss() options and Vite config reference.</p>
@@ -99,8 +99,8 @@ export default defineConfig({
   vite.config.ts</code></pre></code-block>
 
           <div class="nav-row">
-            <a href="/kiss/guide/ssg" class="nav-link">&larr; SSG</a>
-            <a href="/kiss/guide/error-handling" class="nav-link">Error Handling &rarr;</a>
+            <a href="/guide/ssg" class="nav-link">&larr; SSG</a>
+            <a href="/guide/error-handling" class="nav-link">Error Handling &rarr;</a>
           </div>
         </div>
       </app-layout>

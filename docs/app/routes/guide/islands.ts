@@ -30,7 +30,7 @@ export class IslandsGuidePage extends LitElement {
   `]
   render() {
     return html`
-      <app-layout currentPath="/kiss/guide/islands">
+      <app-layout currentPath="/guide/islands">
         <div class="container">
           <h1>Islands Architecture</h1>
           <p class="subtitle">Add interactivity only where needed. Ship zero JS by default.</p>
@@ -125,8 +125,8 @@ export default class MyCounter extends LitElement {
           </table>
 
           <div class="nav-row">
-            <a href="/kiss/guide/routing" class="nav-link">&larr; Routing</a>
-            <a href="/kiss/guide/api-routes" class="nav-link">API Routes &rarr;</a>
+            <a href="/guide/routing" class="nav-link">&larr; Routing</a>
+            <a href="/guide/api-routes" class="nav-link">API Routes &rarr;</a>
           </div>
         </div>
       </app-layout>

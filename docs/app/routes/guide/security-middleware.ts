@@ -22,7 +22,7 @@ export class SecurityMiddlewarePage extends LitElement {
   `]
   render() {
     return html`
-      <app-layout currentPath="/kiss/guide/security-middleware">
+      <app-layout currentPath="/guide/security-middleware">
         <div class="container">
           <h1>Security &amp; Middleware</h1>
           <p class="subtitle">Security headers, CORS, rate limiting, and middleware chain order.</p>
@@ -84,8 +84,8 @@ export default defineConfig({
           </ul>
 
           <div class="nav-row">
-            <a href="/kiss/guide/error-handling" class="nav-link">&larr; Error Handling</a>
-            <a href="/kiss/guide/testing" class="nav-link">Testing &rarr;</a>
+            <a href="/guide/error-handling" class="nav-link">&larr; Error Handling</a>
+            <a href="/guide/testing" class="nav-link">Testing &rarr;</a>
           </div>
         </div>
       </app-layout>

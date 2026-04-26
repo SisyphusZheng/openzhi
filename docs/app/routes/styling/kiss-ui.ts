@@ -76,7 +76,7 @@ export class KissUIPage extends LitElement {
   ];
   render() {
     return html`
-      <app-layout currentPath="/kiss/styling/kiss-ui">
+      <app-layout currentPath="/styling/kiss-ui">
         <div class="container">
           <h1>@kissjs/ui</h1>
           <p class="subtitle">KISS Architecture 的 UI 层 — 从 CDN 注入到自有设计语言的演进路径。</p>
@@ -150,8 +150,8 @@ export class KissUIPage extends LitElement {
               </p>
 
               <div class="nav-row">
-                <a href="/kiss/guide/deployment" class="nav-link">&larr; Deployment</a>
-                <a href="/kiss/styling/web-awesome" class="nav-link">Web Awesome &rarr;</a>
+                <a href="/guide/deployment" class="nav-link">&larr; Deployment</a>
+                <a href="/styling/web-awesome" class="nav-link">Web Awesome &rarr;</a>
               </div>
             </div>
           </app-layout>

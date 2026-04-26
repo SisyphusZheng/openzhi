@@ -324,7 +324,7 @@ export class DocsHome extends LitElement {
               >ESM</span></span>
             </div>
             <div class="cta">
-              <a class="cta-primary" href="/kiss/guide/getting-started">Get Started</a>
+              <a class="cta-primary" href="/guide/getting-started">Get Started</a>
               <a class="cta-secondary" href="https://github.com/SisyphusZheng/kiss">GitHub</a>
             </div>
           </div>

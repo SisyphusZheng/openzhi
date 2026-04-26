@@ -86,7 +86,7 @@ export class ArchitecturePage extends LitElement {
   ];
   render() {
     return html`
-      <app-layout currentPath="/kiss/guide/architecture">
+      <app-layout currentPath="/guide/architecture">
         <div class="container">
           <h1>Architecture</h1>
           <p class="subtitle">
@@ -300,8 +300,8 @@ export default defineConfig({
           </p>
 
           <div class="nav-row">
-            <a href="/kiss/guide/testing" class="nav-link">&larr; Testing</a>
-            <a href="/kiss/guide/deployment" class="nav-link"
+            <a href="/guide/testing" class="nav-link">&larr; Testing</a>
+            <a href="/guide/deployment" class="nav-link"
               >Deployment &rarr;</a
             >
           </div>

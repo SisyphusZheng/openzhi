@@ -246,7 +246,7 @@ export class KissArchitecturePage extends LitElement {
 
   render() {
     return html`
-      <app-layout currentPath="/kiss/guide/dia">
+      <app-layout currentPath="/guide/dia">
         <div class="container">
           <h1>KISS Architecture</h1>
           <p class="subtitle">
@@ -728,10 +728,10 @@ S — 引入了服务端进程？       → 只允许静态文件 + Serverless A
           >
 
           <div class="nav-row">
-            <a href="/kiss/guide/design-philosophy" class="nav-link"
+            <a href="/guide/design-philosophy" class="nav-link"
               >&larr; Design Philosophy</a
             >
-            <a href="/kiss/guide/routing" class="nav-link">Routing &rarr;</a>
+            <a href="/guide/routing" class="nav-link">Routing &rarr;</a>
           </div>
         </div>
       </app-layout>

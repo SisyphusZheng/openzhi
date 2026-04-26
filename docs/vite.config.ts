@@ -13,7 +13,7 @@ const __dir = dirname(fileURLToPath(import.meta.url));
 const runtimeShim = resolve(__dir, 'app/.kiss-runtime.ts');
 
 export default defineConfig({
-  base: '/kiss/',
+  base: '/',
   plugins: [
     kiss({
       routesDir: 'app/routes',

@@ -43,9 +43,9 @@ export class AppLayout extends LitElement {
       <div class="app-layout" ?home="${this.home}">
         <header class="app-header">
           <div class="header-inner">
-            <a class="logo" href="/kiss/">KISS<span class="logo-sub">framework</span></a>
+            <a class="logo" href="/">KISS<span class="logo-sub">framework</span></a>
             <nav>
-              <a href="/kiss/guide/getting-started">Docs</a>
+              <a href="/guide/getting-started">Docs</a>
               <a href="https://jsr.io/@kissjs/core">JSR</a>
             </nav>
             <div class="header-right">
@@ -59,37 +59,37 @@ export class AppLayout extends LitElement {
               <nav class="docs-sidebar" aria-label="Documentation navigation">
                 <details class="nav-section" open>
                   <summary class="nav-section-title">Introduction</summary>
-                  ${this._navLink('/kiss/guide/getting-started', 'Getting Started')} ${this
-                    ._navLink('/kiss/guide/design-philosophy', 'Design Philosophy')} ${this
-                    ._navLink('/kiss/guide/dia', 'KISS Architecture')}
+                  ${this._navLink('/guide/getting-started', 'Getting Started')} ${this
+                    ._navLink('/guide/design-philosophy', 'Design Philosophy')} ${this
+                    ._navLink('/guide/dia', 'KISS Architecture')}
                 </details>
                 <details class="nav-section" open>
                   <summary class="nav-section-title">Core</summary>
-                  ${this._navLink('/kiss/guide/routing', 'Routing')} ${this._navLink(
-                    '/kiss/guide/islands',
+                  ${this._navLink('/guide/routing', 'Routing')} ${this._navLink(
+                    '/guide/islands',
                     'Islands',
-                  )} ${this._navLink('/kiss/guide/api-routes', 'API Routes')} ${this._navLink(
-                    '/kiss/guide/api-design',
+                  )} ${this._navLink('/guide/api-routes', 'API Routes')} ${this._navLink(
+                    '/guide/api-design',
                     'API Design',
-                  )} ${this._navLink('/kiss/guide/ssg', 'SSG')}
+                  )} ${this._navLink('/guide/ssg', 'SSG')}
                 </details>
                 <details class="nav-section" open>
                   <summary class="nav-section-title">Guides</summary>
-                  ${this._navLink('/kiss/guide/configuration', 'Configuration')} ${this._navLink(
-                    '/kiss/guide/error-handling',
+                  ${this._navLink('/guide/configuration', 'Configuration')} ${this._navLink(
+                    '/guide/error-handling',
                     'Error Handling',
                   )} ${this._navLink(
-                    '/kiss/guide/security-middleware',
+                    '/guide/security-middleware',
                     'Security & Middleware',
-                  )} ${this._navLink('/kiss/guide/testing', 'Testing')}
+                  )} ${this._navLink('/guide/testing', 'Testing')}
                 </details>
                 <details class="nav-section" open>
                   <summary class="nav-section-title">Reference</summary>
-                  ${this._navLink('/kiss/guide/architecture', 'Architecture')} ${this._navLink(
-                    '/kiss/guide/deployment',
+                  ${this._navLink('/guide/architecture', 'Architecture')} ${this._navLink(
+                    '/guide/deployment',
                     'Deployment',
-                  )} ${this._navLink('/kiss/styling/kiss-ui', '@kissjs/ui')} ${this._navLink(
-                    '/kiss/styling/web-awesome',
+                  )} ${this._navLink('/styling/kiss-ui', '@kissjs/ui')} ${this._navLink(
+                    '/styling/web-awesome',
                     'Web Awesome',
                   )}
                 </details>

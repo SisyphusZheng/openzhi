@@ -79,7 +79,7 @@ export class WebAwesomePage extends LitElement {
   ];
   render() {
     return html`
-      <app-layout currentPath="/kiss/styling/web-awesome">
+      <app-layout currentPath="/styling/web-awesome">
         <div class="container">
           <h1>Web Awesome Components</h1>
           <p class="subtitle">50+ UI components via CDN. Zero imports needed.</p>
@@ -174,7 +174,7 @@ export class WebAwesomePage extends LitElement {
                 </p>
 
                 <div class="nav-row">
-                  <a href="/kiss/styling/kiss-ui" class="nav-link">&larr; @kissjs/ui</a>
+                  <a href="/styling/kiss-ui" class="nav-link">&larr; @kissjs/ui</a>
                   <a href="https://webawesome.com/docs" class="nav-link">Web Awesome Docs &rarr;</a>
                 </div>
               </div>

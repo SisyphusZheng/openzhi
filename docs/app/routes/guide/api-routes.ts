@@ -61,7 +61,7 @@ export class ApiRoutesPage extends LitElement {
   ];
   render() {
     return html`
-      <app-layout currentPath="/kiss/guide/api-routes">
+      <app-layout currentPath="/guide/api-routes">
         <div class="container">
           <h1>API Routes</h1>
           <p class="subtitle">Create backend endpoints using Hono — the HTTP layer of KISS.</p>
@@ -130,8 +130,8 @@ export class ApiRoutesPage extends LitElement {
                 }</code></pre></code-block>
 
                 <div class="nav-row">
-                  <a href="/kiss/guide/islands" class="nav-link">&larr; Islands</a>
-                  <a href="/kiss/guide/api-design" class="nav-link">API Design &rarr;</a>
+                  <a href="/guide/islands" class="nav-link">&larr; Islands</a>
+                  <a href="/guide/api-design" class="nav-link">API Design &rarr;</a>
                 </div>
               </div>
             </app-layout>

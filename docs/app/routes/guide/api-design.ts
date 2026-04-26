@@ -22,7 +22,7 @@ export class ApiDesignPage extends LitElement {
   `]
   render() {
     return html`
-      <app-layout currentPath="/kiss/guide/api-design">
+      <app-layout currentPath="/guide/api-design">
         <div class="container">
           <h1>API Design</h1>
           <p class="subtitle">Hono routing, type-safe RPC, validation, and error response patterns.</p>
@@ -92,8 +92,8 @@ app.post('/', zValidator('json', schema), async (c) => {
 }</code></pre></code-block>
 
           <div class="nav-row">
-            <a href="/kiss/guide/api-routes" class="nav-link">&larr; API Routes</a>
-            <a href="/kiss/guide/ssg" class="nav-link">SSG &rarr;</a>
+            <a href="/guide/api-routes" class="nav-link">&larr; API Routes</a>
+            <a href="/guide/ssg" class="nav-link">SSG &rarr;</a>
           </div>
         </div>
       </app-layout>

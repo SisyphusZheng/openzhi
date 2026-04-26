@@ -23,7 +23,7 @@ export class ErrorHandlingPage extends LitElement {
   `]
   render() {
     return html`
-      <app-layout currentPath="/kiss/guide/error-handling">
+      <app-layout currentPath="/guide/error-handling">
         <div class="container">
           <h1>Error Handling</h1>
           <p class="subtitle">Type-safe error hierarchy, global handlers, and cross-boundary error mapping.</p>
@@ -90,8 +90,8 @@ app.get('/api/posts/:id', async (c) => {
           <p><strong>Note:</strong> "SSR" in KISS means <em>build-time rendering via @lit-labs/ssr</em>, not a runtime server. Errors occur during <span class="inline-code">vite build</span>, never in production.</p>
 
           <div class="nav-row">
-            <a href="/kiss/guide/configuration" class="nav-link">&larr; Configuration</a>
-            <a href="/kiss/guide/security-middleware" class="nav-link">Security &amp; Middleware &rarr;</a>
+            <a href="/guide/configuration" class="nav-link">&larr; Configuration</a>
+            <a href="/guide/security-middleware" class="nav-link">Security &amp; Middleware &rarr;</a>
           </div>
         </div>
       </app-layout>

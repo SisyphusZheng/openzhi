@@ -106,7 +106,7 @@ export class DeploymentPage extends LitElement {
   ];
   render() {
     return html`
-      <app-layout currentPath="/kiss/guide/deployment">
+      <app-layout currentPath="/guide/deployment">
         <div class="container">
           <h1>Deployment</h1>
           <p class="subtitle">
@@ -250,8 +250,8 @@ export class DeploymentPage extends LitElement {
                 </p>
 
                 <div class="nav-row">
-                  <a href="/kiss/guide/architecture" class="nav-link">&larr; Architecture</a>
-                  <a href="/kiss/styling/kiss-ui" class="nav-link">@kissjs/ui &rarr;</a>
+                  <a href="/guide/architecture" class="nav-link">&larr; Architecture</a>
+                  <a href="/styling/kiss-ui" class="nav-link">@kissjs/ui &rarr;</a>
                 </div>
               </div>
             </app-layout>
