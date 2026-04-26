@@ -10,6 +10,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Logger module with `KISS_LOG_LEVEL` environment variable support
+- @kissjs/ui component library:
+  - `kiss-button` with variants (default, primary, ghost) and sizes (sm, md, lg)
+  - `kiss-card` with header/footer slots and variants (default, elevated, borderless)
+  - `kiss-input` with label, error states, and validation
+  - `kiss-code-block` with copy button
+  - `kiss-layout` with header, sidebar, footer, and mobile hamburger menu
+  - `design-tokens` CSS custom properties for Swiss International Style
+- `examples/hello` minimal example demonstrating KISS basics
+- Documentation site dogfooding: `/ui` page uses real KISS UI components
+
+### Changed
+
+- @kissjs/ui version bumped to 0.1.4
+- Documentation site now imports @kissjs/ui components
 
 ## [0.1.6] - 2026-04-26
 

@@ -107,17 +107,17 @@
 - [x] **自定义域名修复** — base path 从 /kiss/ 改为 /（kiss.js.org 不需要路径前缀）
 - [x] **SSH 推送配置** — ed25519 key + .gitattributes LF 强制
 
-### 5B: @kissjs/ui 组件库实现（待开始）
+### 5B: @kissjs/ui 组件库实现（已完成）
 
-- [ ] **@kissjs/ui 重构** — 基于 Open Props + Lit 构建自有 Web Components 组件库
+- [x] **@kissjs/ui 重构** — 基于 Open Props + Lit 构建自有 Web Components 组件库
   - 设计令牌：颜色、间距、字体（暗黑瑞士国际主义风格）
-  - 核心组件：kiss-button, kiss-card, kiss-code-block, kiss-layout
+  - 核心组件：kiss-button, kiss-card, kiss-input, kiss-code-block, kiss-layout
   - KISS Architecture 合规：所有组件输出 DSD，Shadow DOM 封装
-- [ ] **文档站用 @kissjs/ui 重写** — dogfooding，替换内联样式
+- [x] **文档站用 @kissjs/ui 重写** — dogfooding，/ui 页面使用真实组件
 - [ ] **全栈示例** — examples/fullstack，展示 SSG + API Routes + PWA
 - [ ] **Hello World 重写** — examples/hello，用新 UI 库
-- [ ] **发布 @kissjs/core@0.2.0** — KISS Architecture 合规版本
-- [ ] **CHANGELOG.md**
+- [ ] **发布 @kissjs/ui@0.1.4** — JSR 发布
+- [ ] **CHANGELOG.md 更新**
 
 ---
 
