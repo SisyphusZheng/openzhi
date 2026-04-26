@@ -13,7 +13,7 @@
 | Phase 2 | 工程化补齐             | P0/P1 修复 + 架构重构                       | 完成   |
 | Phase 3 | 文档整合               | docs-site → docs                            | 完成   |
 | Phase 4 | KISS Architecture 落地 | K·I·S·S 四约束 + Jamstack 对齐 + 文档站改造 | 完成 |
-| Phase 5 | UI 革命                | @kissjs/ui 自有组件库 + 全栈示例            | 待开始 |
+| Phase 5 | UI 革命                | @kissjs/ui 自有组件库 + 全栈示例            | 进行中 |
 
 ---
 
@@ -98,6 +98,18 @@
 
 ## Phase 5：UI 革命与生态验证
 
+### 5A: 品牌视觉 + 设计系统页面（已完成）
+
+- [x] **首页风格改造** — 纯黑背景、绿色强调色(#00e87b)、渐变标题、高对比度
+- [x] **品牌色统一** — Logo/Nav hover/Sidebar active/Link 全局统一为 #00e87b
+- [x] **UI 设计系统页面** — /ui 路由，展示 Design Tokens(色彩+排版)、组件预览(Button/Card/Input)
+- [x] **导航栏添加 UI 标签** — 顶部导航 Docs | UI | JSR | GitHub
+- [x] **Sidebar 添加 UI 区域** — Design System 导航项
+- [x] **自定义域名修复** — base path 从 /kiss/ 改为 /（kiss.js.org 不需要路径前缀）
+- [x] **SSH 推送配置** — ed25519 key + .gitattributes LF 强制
+
+### 5B: @kissjs/ui 组件库实现（待开始）
+
 - [ ] **@kissjs/ui 重构** — 基于 Open Props + Lit 构建自有 Web Components 组件库
   - 设计令牌：颜色、间距、字体（暗黑瑞士国际主义风格）
   - 核心组件：kiss-button, kiss-card, kiss-code-block, kiss-layout
@@ -176,4 +188,4 @@
 
 ---
 
-_路线图版本：v10.0 | 更新日期：2026-04-26 | KISS Architecture K·I·S·S_
+_路线图版本：v11.0 | 更新日期：2026-04-26 | KISS Architecture K·I·S·S_
