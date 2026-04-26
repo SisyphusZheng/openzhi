@@ -85,7 +85,7 @@ export class RpcController implements ReactiveController {
   /**
    * Call an API endpoint with automatic loading/error handling.
    *
-   * DIA: throws RpcError on failure instead of returning null.
+   * KISS Architecture: throws RpcError on failure instead of returning null.
    * The error is still stored in this.error for template access,
    * but callers who want to handle errors must catch.
    *

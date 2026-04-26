@@ -7,7 +7,7 @@
  * - CSS stylesheet links
  * - Meta tags from route module exports
  *
- * DIA: Uses Hono ContextVariableMap for type extension
+ * KISS Architecture: Uses Hono ContextVariableMap for type extension
  * instead of declare module 'vite' augmentation.
  */
 

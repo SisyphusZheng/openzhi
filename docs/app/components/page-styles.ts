@@ -1,10 +1,12 @@
-import { LitElement, html, css } from '@kissjs/core'
+import { css, html, LitElement } from '@kissjs/core';
 
 /**
  * Shared page styles for all doc content pages.
  */
 export const pageStyles = css`
-  :host { display: block; }
+  :host {
+    display: block;
+  }
 
   .container {
     max-width: 720px;
@@ -84,7 +86,7 @@ export const pageStyles = css`
   }
 
   code {
-    font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
   }
 
   p code, li code {
@@ -209,4 +211,4 @@ export const pageStyles = css`
     border-color: #333;
     background: #111;
   }
-`
+`;

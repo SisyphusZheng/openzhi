@@ -1,6 +1,6 @@
 # KISS 实现路线图
 
-> DIA (Declarative Islands Architecture) 从 PoC 到 v1.0
+> KISS Architecture: Knowledge · Isolated · Semantic · Static — 从 PoC 到 v1.0
 
 ---
 
@@ -12,8 +12,8 @@
 | Phase 1 | Alpha | 核心插件包可用 | 完成 |
 | Phase 2 | 工程化补齐 | P0/P1 修复 + 架构重构 | 完成 |
 | Phase 3 | 文档整合 | docs-site → docs | 完成 |
-| Phase 4 | DIA 落地 | DIA 文档 + Shadow DOM 恢复 + 文档站改造 | 进行中 |
-| Phase 5 | 生态验证 | 示例 + @kiss/docs-kit + v0.2.0 | 待开始 |
+| Phase 4 | KISS Architecture 落地 | K·I·S·S 四约束 + Jamstack 对齐 + 文档站改造 | 进行中 |
+| Phase 5 | UI 革命 | @kissjs/ui 自有组件库 + 全栈示例 | 待开始 |
 
 ---
 
@@ -23,60 +23,88 @@
 
 ---
 
-## Phase 4：DIA 落地（进行中）
+## Phase 4：KISS Architecture 落地（进行中）
 
-### 4A: 核心 PIA→DIA 合规（已完成）
+### 4A: 核心 DIA 合规（已完成）
 
 - [x] **移除 SSR 运行时模式** — 删除 renderPageToString()、build.ts SSR bundle
 - [x] **移除 GLOBAL_BUILT** — 仅用 KissBuildContext 实例级标记
 - [x] **移除正则 Island 检测** — 改用构建时扫描的 __islandMap
 - [x] **解耦 FrameworkOptions.ui** — 新增 inject 通用选项，ui 标记 deprecated
-- [x] **移除 ssr.preRender 选项** — DIA 下 SSG 永远开启
+- [x] **移除 ssr.preRender 选项** — SSG 永远开启
 - [x] **RPC call() 异常化** — 抛出 RpcError，不再返回 null
 - [x] **修复 package.json name** — @kiss/core → @kissjs/core
-- [x] **删除 generateServerEntry** — DIA 无运行时服务器
+- [x] **删除 generateServerEntry** — 无运行时服务器
 
 ### 4B: DIA 文档建立（已完成）
 
-- [x] **新建 DIA 文档页** — guide/dia.ts，四支柱（声明即内容替代降级即内容）+ 分层原则 + DSD 桥梁 + Island 决策树
+- [x] **新建 DIA 文档页** — 四支柱 + 分层原则 + DSD 桥梁 + Island 决策树
 - [x] **重写 design-philosophy** — 融入 DIA 引用、分层原则、移除 Level 4 SPA
 - [x] **重写 islands** — 移除 Level 4 SPA、加 DSD 说明、加 Island 决策树
 - [x] **修改 architecture** — 移除 Dual build、加 DSD 输出说明
 - [x] **修改 deployment** — 移除 SSR Deployment，只保留静态部署
 - [x] **修改 configuration** — 加 inject 选项、标记 ui deprecated
-- [x] **修改 getting-started / ssg / web-awesome** — 更新配置示例（inject 替代 ui）
-- [x] **修改 error-handling** — 明确 SSR 仅构建时
-- [x] **更新 layout.ts** — footer PIA→DIA、sidebar 加 DIA 链接
-- [x] **重写 README.md** — PIA→DIA、四支柱改名、加 DSD + 分层原则
+- [x] **修改 getting-started / ssg / web-awesome** — 更新配置示例
+- [x] **更新 layout.ts** — footer 定位更新、sidebar 加 @kissjs/ui 链接
+- [x] **重写 README.md** — DIA 五支柱 + Jamstack 对齐
 - [x] **重写 ROADMAP.md** — Phase 4B 更新
 
-### 4C: Shadow DOM + DSD 恢复（待开始）
+### 4C: DIA + Jamstack 对齐（已完成）
+
+- [x] **DIA 五支柱更新** — 新增"API 即后端"支柱，与 Jamstack A 对齐
+- [x] **dia.ts 重写** — Jamstack 对齐图、JAM↔DIA 映射表、vs 表增加 Next.js 列
+- [x] **design-philosophy.ts 更新** — 新增 DIA & Jamstack 章节、vs 表增加 Fresh
+- [x] **architecture.ts 更新** — 新增 DIA=Jamstack 章节、全栈部署架构
+- [x] **deployment.ts 更新** — 新增 API Routes Serverless 部署、全栈架构表
+- [x] **README.md 重写** — DIA=Jamstack 定位、新增 API Routes 示例
+- [x] **新增 kiss-ui.ts** — @kissjs/ui 组件库介绍与演进路线
+- [x] **sidebar 更新** — 新增 @kissjs/ui 导航项
+
+### 4D: KISS Architecture 重定义（已完成）
+
+- [x] **架构重命名** — DIA → KISS Architecture (K·I·S·S 四约束)
+- [x] **双重指代确立** — KISS = Keep It Simple, Stupid (哲学) + Knowledge/Isolated/Semantic/Static (架构)
+- [x] **三范式继承文档** — Jamstack + Islands + Progressive Enhancement 继承关系
+- [x] **Haskell 比喻** — KISS 架构是 Web 前端的"强类型系统"
+- [x] **dia.ts 全面重写** — KISS Architecture 四约束 + 决策树 + 合规审查
+- [x] **design-philosophy.ts 更新** — 五哲学支柱 vs KISS Architecture 关系映射
+- [x] **architecture.ts 更新** — 插件表增加 KISS 约束列
+- [x] **README.md 重写** — KISS Architecture 双重指代 + 四约束 + 三范式继承
+- [x] **源码注释更新** — index.ts + build.ts DIA → KISS Architecture
+- [x] **layout.ts 更新** — sidebar "KISS Architecture" + footer "K·I·S·S"
+- [x] **PIA 残留清零** — 全项目搜索确认无残留
+
+### 4E: Shadow DOM + DSD 恢复（待开始）
 
 - [ ] **恢复 layout.ts Shadow DOM** — 移除 `createRenderRoot() { return this }`，恢复默认 Shadow DOM
 - [ ] **验证 SSG DSD 输出** — 确认 @lit-labs/ssr v3 输出 `<template shadowrootmode="open">`
 - [ ] **sidebar 折叠** — 用 `<details>/<summary>` 替代 JS 折叠（L0 分层原则）
 - [ ] **sidebar active 高亮** — 构建时输出 `aria-current="page"` + CSS（L0+L1 替代 active-highlight Island）
 - [ ] **删除 active-highlight Island** — 被 aria-current + CSS 替代
-- [ ] **重构 copy-code Island** — 改为 `<code-block>` Shadow DOM Island + Clipboard API（方案 A）
+- [ ] **重构 copy-code Island** — 改为 `<code-block>` Shadow DOM Island + Clipboard API
 - [ ] **验证 DSD polyfill** — @webcomponents/template-shadowroot 在旧浏览器回退
-- [ ] **无 JS 降级测试** — 禁用 JS 验证 DSD 内容可见
+- [ ] **无 JS 降级测试** — 禁用 JS 验证 DSD 内容可见（S 约束验证）
 
-### 4D: 测试与验证（待开始）
+### 4F: 测试与验证（待开始）
 
-- [ ] 更新现有测试适配 DIA 变更
+- [ ] 更新现有测试适配 KISS Architecture 变更
 - [ ] SSG 集成测试：构建 → 验证 HTML 输出含 DSD + Island 水合脚本
-- [ ] DSD 渲染测试：验证 Shadow DOM 内容在 JS 前可见
-- [ ] 分层原则验证：确认无 Island 做了 CSS 能做的事
+- [ ] DSD 渲染测试：验证 Shadow DOM 内容在 JS 前可见（S 约束）
+- [ ] 分层原则验证：确认无 Island 做了 CSS 能做的事（I 约束）
 - [ ] CI 矩阵（Node 20/22 + Deno 2.x）
 
 ---
 
-## Phase 5：生态验证
+## Phase 5：UI 革命与生态验证
 
-- [ ] **blog 示例** — SSG + Islands，Markdown 渲染
-- [ ] **@kiss/docs-kit** — 从文档站抽取 Lit + Open Props 组件库
-- [ ] **文档站用 docs-kit 重写** — dogfooding
-- [ ] **发布 @kissjs/core@0.2.0** — DIA 合规版本
+- [ ] **@kissjs/ui 重构** — 基于 Open Props + Lit 构建自有 Web Components 组件库
+  - 设计令牌：颜色、间距、字体（暗黑瑞士国际主义风格）
+  - 核心组件：kiss-button, kiss-card, kiss-code-block, kiss-layout
+  - KISS Architecture 合规：所有组件输出 DSD，Shadow DOM 封装
+- [ ] **文档站用 @kissjs/ui 重写** — dogfooding，替换内联样式
+- [ ] **全栈示例** — examples/fullstack，展示 SSG + API Routes + PWA
+- [ ] **Hello World 重写** — examples/hello，用新 UI 库
+- [ ] **发布 @kissjs/core@0.2.0** — KISS Architecture 合规版本
 - [ ] **CHANGELOG.md**
 
 ---
@@ -87,13 +115,14 @@
 |------|------|
 | hono-entry.ts 全字符串拼接 | 已重构为 EntryDescriptor + renderEntry |
 | 8 插件闭包共享可变状态 | 已提取 KissBuildContext |
-| SSR 运行时模式 | 已移除（DIA） |
+| SSR 运行时模式 | 已移除 |
 | GLOBAL_BUILT 模块级变量 | 已移除 |
 | Island 正则检测 | 已改为构建时 map |
 | CORS process.env | 已改为配置驱动 |
 | RPC call() 返回 null | 已改为抛出 RpcError |
 | FrameworkOptions.ui 硬编码 WebAwesome | 已新增 inject 通用选项 |
-| PIA "降级即内容" 误读导致 light DOM | DIA "声明即内容" + DSD 纠正（Phase 4C） |
+| DIA 四支柱 → 五支柱 | 已更新（新增"API 即后端"） |
+| DIA → KISS Architecture | 已重定义（K·I·S·S 四约束） |
 
 ## 仍存在的技术债
 
@@ -101,13 +130,14 @@
 |------|--------|
 | entry-renderer.ts 生成的代码仍使用字符串拼接（非 MagicString source map） | 中 |
 | html-template.ts 仍使用 declare module 'vite' 扩展 | 低 |
-| layout.ts 使用 light DOM（应恢复 Shadow DOM + DSD） | 高（Phase 4C） |
-| active-highlight Island 做 CSS 能做的事 | 高（Phase 4C） |
-| copy-code Island 突破 Shadow DOM 边界 | 高（Phase 4C） |
+| layout.ts 使用 light DOM（应恢复 Shadow DOM + DSD） | 高（Phase 4E） |
+| active-highlight Island 做 CSS 能做的事 | 高（Phase 4E） |
+| copy-code Island 突破 Shadow DOM 边界 | 高（Phase 4E） |
+| 文档站内联样式碎片（每个页面重复 pillar/table/code-block 样式） | 中（Phase 5） |
 
 ---
 
-## 架构概览（DIA）
+## 架构概览（KISS Architecture = Jamstack, Web Standards Native）
 
 ```
 用户视角：vite.config.ts
@@ -121,41 +151,31 @@
 ┌──────────────▼──────────────────────────┐
 │         @kissjs/core (8 子插件)          │
 │                                          │
-│  1. kiss:core         — 路由扫描          │
+│  1. kiss:core         — 路由扫描 (K)     │
 │  2. kiss:virtual-entry — 虚拟模块        │
 │  3. @hono/vite-dev-server — dev only     │
-│  4. island-transform    — AST 标记       │
-│  5. island-extractor    — 依赖分析       │
-│  6. html-template       — HTML 注入      │
-│  7. kiss:ssg            — DIA 产物生成   │
-│  8. kiss:build          — Island 客户端  │
+│  4. island-transform    — AST 标记 (I)   │
+│  5. island-extractor    — 依赖分析 (I)   │
+│  6. html-template       — HTML 注入 (I)  │
+│  7. kiss:ssg            — SSG 产物 (K+S) │
+│  8. kiss:build          — Island JS (I)  │
 └──────────────┬──────────────────────────┘
                │
     ┌──────────▼──────────┐
-    │  dist/ (纯静态)      │
+    │  两个独立部署目标     │
+    │                      │
+    │  dist/ (静态前端)     │ ← K+I+S 约束
     │  ├── index.html      │ ← 含 DSD
     │  ├── about/          │
     │  │   └── index.html  │ ← 含 DSD
     │  └── client/         │
-    │      └── islands/    │ ← Island JS
-    └─────────────────────┘
-```
-
-### 生产部署流程
-
-```
-deno task build
-    │
-    ├─ @lit-labs/ssr 渲染所有页面 → dist/**/*.html (含 DSD)
-    ├─ Island 组件打包            → dist/client/islands/
-    └─ 非 Island 组件             → 不输出任何客户端 JS
-    │
-    ▼
-  任何静态托管（CDN / GitHub Pages / Nginx / S3）
-  DSD 让 Shadow DOM 内容在 JS 加载前可见
-  零运行时进程
+    │      └── islands/    │ ← Island JS (I)
+    │                      │
+    │  API Routes (Serverless) │ ← S 约束
+    │  └── Hono handlers   │ ← 类型安全 RPC
+    └──────────────────────┘
 ```
 
 ---
 
-*路线图版本：v6.0 | 更新日期：2026-04-25 | Phase 4 DIA 进行中*
+_路线图版本：v8.0 | 更新日期：2026-04-25 | KISS Architecture K·I·S·S_

@@ -1,9 +1,11 @@
-import { LitElement, html, css } from '@kissjs/core'
-import '../components/layout.js'
+import { css, html, LitElement } from '@kissjs/core';
+import '../components/layout.js';
 
 export class DocsHome extends LitElement {
   static styles = css`
-    :host { display: block; }
+    :host {
+      display: block;
+    }
 
     .hero {
       max-width: 800px;
@@ -60,7 +62,7 @@ export class DocsHome extends LitElement {
       padding: 0.25rem 0.5rem;
       border: 1px solid #222;
       border-radius: 2px;
-      font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+      font-family: "SF Mono", "Fira Code", "Consolas", monospace;
       font-size: 0.8125rem;
       color: #bbb;
     }
@@ -238,8 +240,12 @@ export class DocsHome extends LitElement {
       background: #111;
     }
 
-    .col-header.highlight { color: #fff; }
-    .col-header.dim { color: #444; }
+    .col-header.highlight {
+      color: #fff;
+    }
+    .col-header.dim {
+      color: #444;
+    }
 
     .cell {
       padding: 0.625rem 1rem;
@@ -289,7 +295,7 @@ export class DocsHome extends LitElement {
       font-weight: 600;
       color: #999;
       text-decoration: none;
-      font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+      font-family: "SF Mono", "Fira Code", "Consolas", monospace;
       transition: background 0.15s, color 0.15s, border-color 0.15s;
     }
 
@@ -298,7 +304,7 @@ export class DocsHome extends LitElement {
       color: #ccc;
       border-color: #333;
     }
-  `
+  `;
 
   render() {
     return html`
@@ -310,95 +316,98 @@ export class DocsHome extends LitElement {
             A minimal full-stack framework built on Web Standards.
           </p>
           <div class="equation">
-            <span class="eq-item"><span class="eq-label">HTTP =</span> <span class="eq-val">Fetch API</span></span>
-            <span class="eq-item"><span class="eq-label">UI =</span> <span class="eq-val">Web Components</span></span>
-            <span class="eq-item"><span class="eq-label">Build =</span> <span class="eq-val">ESM</span></span>
+            <span class="eq-item"><span class="eq-label">HTTP =</span> <span class="eq-val"
+              >Fetch API</span></span>
+            <span class="eq-item"><span class="eq-label">UI =</span> <span class="eq-val"
+              >Web Components</span></span>
+            <span class="eq-item"><span class="eq-label">Build =</span> <span class="eq-val"
+              >ESM</span></span>
+            </div>
+            <div class="cta">
+              <a class="cta-primary" href="/kiss/guide/getting-started">Get Started</a>
+              <a class="cta-secondary" href="https://github.com/SisyphusZheng/kiss">GitHub</a>
+            </div>
           </div>
-          <div class="cta">
-            <a class="cta-primary" href="/kiss/guide/getting-started">Get Started</a>
-            <a class="cta-secondary" href="https://github.com/SisyphusZheng/kiss">GitHub</a>
-          </div>
-        </div>
 
-        <div class="standards">
-          <div class="label">Web Standards Coverage</div>
-          <div class="pill-row">
-            <span class="pill"><span class="check">&#10003;</span> Fetch API</span>
-            <span class="pill"><span class="check">&#10003;</span> Web Components</span>
-            <span class="pill"><span class="check">&#10003;</span> ESM</span>
-            <span class="pill"><span class="check">&#10003;</span> Declarative Shadow DOM</span>
-            <span class="pill"><span class="check">&#10003;</span> Islands</span>
+          <div class="standards">
+            <div class="label">Web Standards Coverage</div>
+            <div class="pill-row">
+              <span class="pill"><span class="check">&#10003;</span> Fetch API</span>
+              <span class="pill"><span class="check">&#10003;</span> Web Components</span>
+              <span class="pill"><span class="check">&#10003;</span> ESM</span>
+              <span class="pill"><span class="check">&#10003;</span> Declarative Shadow DOM</span>
+              <span class="pill"><span class="check">&#10003;</span> Islands</span>
+            </div>
           </div>
-        </div>
 
-        <div class="features">
-          <div class="section-label">Why KISS</div>
-          <div class="features-grid">
-            <div class="feature-card">
-              <div class="icon">&#9672;</div>
-              <h2>Web Standards First</h2>
-              <p>No new abstractions. If you know the web platform, you know KISS.</p>
-            </div>
-            <div class="feature-card">
-              <div class="icon">&#9674;</div>
-              <h2>Islands Architecture</h2>
-              <p>Only interactive components load JS. Default homepage: 0 KB.</p>
-            </div>
-            <div class="feature-card">
-              <div class="icon">&#9670;</div>
-              <h2>Type-Safe RPC</h2>
-              <p>End-to-end type safety with Hono RPC. No codegen needed.</p>
-            </div>
-            <div class="feature-card">
-              <div class="icon">&#9651;</div>
-              <h2>Multi-Runtime</h2>
-              <p>Same code on Deno, Node, Bun, Cloudflare Workers.</p>
-            </div>
-            <div class="feature-card">
-              <div class="icon">&#9656;</div>
-              <h2>SSG Built-In</h2>
-              <p>Pre-render to static HTML at build time. Zero config.</p>
-            </div>
-            <div class="feature-card">
-              <div class="icon">&#9633;</div>
-              <h2>Zero Lock-In</h2>
-              <p>Your code works without KISS. Hono, Lit, Vite are all standard.</p>
+          <div class="features">
+            <div class="section-label">Why KISS</div>
+            <div class="features-grid">
+              <div class="feature-card">
+                <div class="icon">&#9672;</div>
+                <h2>Web Standards First</h2>
+                <p>No new abstractions. If you know the web platform, you know KISS.</p>
+              </div>
+              <div class="feature-card">
+                <div class="icon">&#9674;</div>
+                <h2>Islands Architecture</h2>
+                <p>Only interactive components load JS. Default homepage: 0 KB.</p>
+              </div>
+              <div class="feature-card">
+                <div class="icon">&#9670;</div>
+                <h2>Type-Safe RPC</h2>
+                <p>End-to-end type safety with Hono RPC. No codegen needed.</p>
+              </div>
+              <div class="feature-card">
+                <div class="icon">&#9651;</div>
+                <h2>Multi-Runtime</h2>
+                <p>Same code on Deno, Node, Bun, Cloudflare Workers.</p>
+              </div>
+              <div class="feature-card">
+                <div class="icon">&#9656;</div>
+                <h2>SSG Built-In</h2>
+                <p>Pre-render to static HTML at build time. Zero config.</p>
+              </div>
+              <div class="feature-card">
+                <div class="icon">&#9633;</div>
+                <h2>Zero Lock-In</h2>
+                <p>Your code works without KISS. Hono, Lit, Vite are all standard.</p>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div class="comparison">
-          <div class="label">Full-Chain Web Standards</div>
-          <div class="comparison-grid">
-            <div class="col-header highlight">KISS</div>
-            <div class="col-header dim">Astro</div>
-            <div class="col-header dim">Next.js</div>
-            <div class="cell highlight">Fetch API</div>
-            <div class="cell">Fetch API</div>
-            <div class="cell">Custom API</div>
-            <div class="cell highlight">Web Components</div>
-            <div class="cell">Islands (custom)</div>
-            <div class="cell">React only</div>
-            <div class="cell highlight">ESM</div>
-            <div class="cell">ESM</div>
-            <div class="cell">ESM + Custom</div>
+          <div class="comparison">
+            <div class="label">Full-Chain Web Standards</div>
+            <div class="comparison-grid">
+              <div class="col-header highlight">KISS</div>
+              <div class="col-header dim">Astro</div>
+              <div class="col-header dim">Next.js</div>
+              <div class="cell highlight">Fetch API</div>
+              <div class="cell">Fetch API</div>
+              <div class="cell">Custom API</div>
+              <div class="cell highlight">Web Components</div>
+              <div class="cell">Islands (custom)</div>
+              <div class="cell">React only</div>
+              <div class="cell highlight">ESM</div>
+              <div class="cell">ESM</div>
+              <div class="cell">ESM + Custom</div>
+            </div>
           </div>
-        </div>
 
-        <div class="jsr">
-          <div class="label">Install from JSR</div>
-          <div class="badge-row">
-            <a class="jsr-badge" href="https://jsr.io/@kissjs/core">@kissjs/core</a>
-            <a class="jsr-badge" href="https://jsr.io/@kissjs/ui">@kissjs/ui</a>
-            <a class="jsr-badge" href="https://jsr.io/@kissjs/rpc">@kissjs/rpc</a>
+          <div class="jsr">
+            <div class="label">Install from JSR</div>
+            <div class="badge-row">
+              <a class="jsr-badge" href="https://jsr.io/@kissjs/core">@kissjs/core</a>
+              <a class="jsr-badge" href="https://jsr.io/@kissjs/ui">@kissjs/ui</a>
+              <a class="jsr-badge" href="https://jsr.io/@kissjs/rpc">@kissjs/rpc</a>
+            </div>
           </div>
-        </div>
-      </app-layout>
-    `
+        </app-layout>
+      `;
+    }
   }
-}
 
-customElements.define('docs-home', DocsHome)
+  customElements.define('docs-home', DocsHome);
 
-export default DocsHome
-export const tagName = 'docs-home'
+  export default DocsHome;
+  export const tagName = 'docs-home';

@@ -10,9 +10,9 @@
  * This file is a build-time bridge — not part of the framework's public API.
  * Users should still write: import { LitElement, html, css } from '@kissjs/core'
  */
-export { LitElement, html, css, nothing, svg } from 'lit'
-export { unsafeHTML } from 'lit/directives/unsafe-html.js'
-export { classMap } from 'lit/directives/class-map.js'
-export { styleMap } from 'lit/directives/style-map.js'
-export { ref, createRef } from 'lit/directives/ref.js'
-export { Hono } from 'hono'
+export { css, html, LitElement, nothing, svg } from 'lit';
+export { unsafeHTML } from 'lit/directives/unsafe-html.js';
+export { classMap } from 'lit/directives/class-map.js';
+export { styleMap } from 'lit/directives/style-map.js';
+export { createRef, ref } from 'lit/directives/ref.js';
+export { Hono } from 'hono';

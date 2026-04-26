@@ -1,13 +1,13 @@
 /**
  * @kissjs/core - SSR Handler
- * DIA (Declarative Islands Architecture): rendering is build-time only.
+ * KISS Architecture (K·I·S·S): rendering is build-time only.
  *
  * This module provides:
  * - Build-time rendering functions (used by SSG plugin and dev server)
  * - Error page rendering
  * - HTML document wrapping
  *
- * What was removed (DIA):
+ * What was removed (KISS Architecture):
  * - renderPageToString() — runtime SSR function that took ViteDevServer
  * - collectIslands() — regex-based island detection (moved to build-time map)
  *

@@ -183,4 +183,4 @@ export const kissTypography = `
     border-color: var(--kiss-border-hover, #333);
     background: var(--kiss-bg-elevated, #111);
   }
-`
+`;

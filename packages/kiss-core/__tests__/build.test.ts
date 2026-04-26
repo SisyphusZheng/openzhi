@@ -1,7 +1,7 @@
 /**
  * @kissjs/core - build / entry-generators tests (Deno)
  *
- * DIA: generateServerEntry removed (no runtime server).
+ * KISS Architecture: generateServerEntry removed (no runtime server).
  * Only generateClientEntry remains for Island client bundle.
  */
 import { assertStringIncludes } from 'jsr:@std/assert@^1.0.0';
@@ -30,8 +30,8 @@ Deno.test('build - generateClientEntry', async (t) => {
     assertStringIncludes(code, "if (!customElements.get('my-counter'))");
   });
 
-  await t.step('includes DIA comment', () => {
+  await t.step('includes KISS Architecture comment', () => {
     const code = generateClientEntry('app/islands', ['my-counter.ts']);
-    assertStringIncludes(code, 'DIA');
+    assertStringIncludes(code, 'KISS Architecture');
   });
 });

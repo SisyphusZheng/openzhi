@@ -3,7 +3,7 @@
  * Pure functions that generate auto-entry code strings.
  * No Vite dependency — safe to import in tests.
  *
- * DIA: generateServerEntry() removed — no runtime server.
+ * KISS Architecture: generateServerEntry() removed — no runtime server.
  * Only generateClientEntry() remains for Island client bundle.
  */
 
@@ -27,7 +27,7 @@ export function generateClientEntry(islandsDir: string, islandFiles: string[]): 
     })
     .join('\n  ');
 
-  return `// KISS Client Entry (auto-generated — DIA: Islands only)
+  return `// KISS Client Entry (auto-generated — KISS Architecture: Islands only)
 ${imports}
 
 // Register all island custom elements

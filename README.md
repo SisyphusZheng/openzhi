@@ -1,7 +1,7 @@
 # KISS — Keep It Simple, Stupid
 
-> **Declarative Islands Architecture (DIA) 框架**
-> 构建即终态，交互必隔离，声明即内容，拒绝即纪律。
+> **KISS Architecture**: Knowledge · Isolated · Semantic · Static
+> 融合 Jamstack 部署模型与声明式岛屿交互范式的全栈架构风格。
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Vite](https://img.shields.io/badge/Vite-6.x-646CFF)](https://vitejs.dev/)
@@ -9,37 +9,60 @@
 [![Lit](https://img.shields.io/badge/Lit-3.x-325CFF)](https://lit.dev/)
 [![Deno](https://img.shields.io/badge/Deno-2.x-000000)](https://deno.land/)
 
-## DIA 是什么
+## 双重指代
 
-KISS 是唯一将"声明式 Shadow DOM 内容可达"与"交互强制隔离"同时固化为框架纪律的全栈框架。
+**KISS** 同时是哲学和架构：
 
-四条不可动摇的支柱：
+| 含义 | 解释 |
+|------|------|
+| **哲学** | Keep It Simple, Stupid — 简单即力量，每个决策都经过"够不够简单"的过滤 |
+| **架构** | **K**nowledge · **I**solated · **S**emantic · **S**tatic — 四个不可违抗的架构约束 |
 
-1. **构建即终态** — 所有页面在构建时渲染为静态 HTML（含 DSD），构建后零服务端进程
-2. **交互必隔离** — 客户端 JS 只能存在于 Island Web Component 内部
-3. **声明即内容** — DSD 让 Shadow DOM 内容从 HTML 声明中即可见，不需要 JS
-4. **拒绝即纪律** — 框架不提供 SSR 运行时、CSR、SPA。这些限制不可配置关闭
+两个含义精神一致：约束就是简单。
 
-### DSD：DIA 的桥梁
+## KISS 架构四约束
 
-Declarative Shadow DOM 是 DIA 与 Web Components 之间的桥梁。它解决了"封装 vs 可达"的根本矛盾：
+KISS 框架实现的正是 KISS 架构——一个融合了 Jamstack 部署模型与声明式岛屿交互范式的全栈架构风格。
+
+| 字母 | 约束 | 含义 |
+|------|------|------|
+| **K** | Knowledge（知识） | 所有内容在构建时预渲染为语义 HTML 静态文件。页面骨架、正文、导航在 JS 执行前即可见 |
+| **I** | Isolated（隔离） | 任何客户端 JS 只能存在于独立 Island 组件的 Shadow DOM 内部。一个 Island 的失败不影响其他部分 |
+| **S** | Semantic（语义） | 每个 Island 包裹原生 HTML 元素（`<form>`、`<a>`、`<details>`），禁用 JS 时提供等价基线功能 |
+| **S** | Static（静态） | 构建产物仅为纯静态文件，无持久服务端进程。可部署到任何 CDN 或静态托管，零运行时锁定 |
+
+## 三范式继承
+
+KISS 架构继承了三个已有范式的核心思想，将它们组合成一套严格、可验证、不可关闭的架构规则：
+
+| 范式 | KISS 继承了什么 | KISS 的强化 |
+|------|-----------------|-------------|
+| **Jamstack** | 静态优先、前后端分离的部署模型 | 固化为不可配置的框架规则，而非最佳实践建议 |
+| **Islands Architecture** | 静态海洋中的独立交互岛屿 | 要求所有 Island 必须是 Shadow DOM 内的 Web Component，跨岛通信只能通过声明式机制 |
+| **Progressive Enhancement** | 内容优先，增强在后 | 从开发者最佳实践提升为框架层面的可验证约束——Island 内部没有语义降级元素，就不符合 KISS 规范 |
+
+KISS 架构不发明新的渲染算法或通信协议。它识别出三个范式各自领域中被验证有效的约束，组合成不可违抗的架构规则，通过 KISS 框架强制执行。
+
+`kiss build` 就是这套规则的编译验证器——不满足架构约束的输出，不会产生。
+
+### Jamstack 对齐
+
+KISS 架构与 Jamstack 天然 1:1 对齐：
+
+| Jamstack | KISS 实现 | Web Standard |
+|----------|-----------|--------------|
+| **M**arkup | SSG + DSD — 零 JS 默认输出 | Declarative Shadow DOM |
+| **A**PIs | API Routes — Hono + RPC | Fetch API |
+| **J**avaScript | Islands — Shadow DOM + lazy hydration | Web Components |
+
+### DSD：封装与可达的桥梁
+
+Declarative Shadow DOM 解决了"封装 vs 可达"的根本矛盾：
 
 - **Shadow DOM 封装**：样式隔离，DOM 保护 ✓
 - **DSD 内容可达**：JS 加载前内容即可见 ✓
 - **SEO / 爬虫可达**：完整内容对 bot 可见 ✓
 - **浏览器支持**：Chrome 111+ / Safari 16.4+ / Firefox 123+（polyfill ~1KB）
-
-### 分层原则：能力下沉，依赖上移
-
-```
-L0  HTML5 语义       — 结构、内容、导航
-L1  CSS 表现         — 视觉、布局、动画、响应式
-L2  浏览器平台 API    — Clipboard、IntersectionObserver、matchMedia
-L3  Hono/Vite/Lit    — 路由、构建、组件封装
-L4  自研代码          — Island 水合、RPC、插件逻辑
-```
-
-每一层只做上一层做不了的事。能用低层能力解决的事情，绝不引入高层依赖。
 
 ## 为什么是 KISS
 
@@ -51,17 +74,30 @@ L4  自研代码          — Island 水合、RPC、插件逻辑
 | Shadow DOM 破坏了 SEO？ | DSD 让 Shadow DOM 内容声明式可达 |
 | 类型安全靠 codegen？ | Hono RPC 端到端类型推断，零 codegen |
 | 部署只能 Node？ | CDN / GitHub Pages / Nginx，任何静态托管 |
+| 动态数据怎么办？ | API Routes 部署为 Serverless，前端通过 RPC 调用 |
 
 ## 渐进增强
 
-DIA 只有两层：
+KISS 只有两层：
 
 | 层级 | JS 大小 | 能力 | 状态 |
 |------|---------|------|------|
 | **Level 0** | 0 KB | HTML + DSD（构建时预渲染，Shadow DOM 封装） | 已实现 |
 | **Level 1** | ~6 KB/Island | Island 交互 + 懒水合 | 已实现 |
 
-没有 Level 2 SPA、Level 3 实时、Level 4 CSR。这不是疏忽，是纪律。
+没有 Level 2 SPA、Level 3 实时、Level 4 CSR。这不是疏忽，是架构约束（S — Static）。
+
+## 分层原则：能力下沉，依赖上移
+
+```
+L0  HTML5 语义       — 结构、内容、导航
+L1  CSS 表现         — 视觉、布局、动画、响应式
+L2  浏览器平台 API    — Clipboard、IntersectionObserver、matchMedia
+L3  Hono/Vite/Lit    — 路由、构建、组件封装
+L4  自研代码          — Island 水合、RPC、插件逻辑
+```
+
+每一层只做上一层做不了的事。能用低层能力解决的事情，绝不引入高层依赖。
 
 ## 快速开始
 
@@ -75,17 +111,21 @@ deno add jsr:@kissjs/core jsr:@kissjs/rpc
 
 ```ts
 // vite.config.ts
-import { kiss } from '@kissjs/core'
-import { defineConfig } from 'vite'
+import { kiss } from '@kissjs/core';
+import { defineConfig } from 'vite';
 
 export default defineConfig({
   plugins: [kiss({
     inject: {
-      stylesheets: ['https://cdn.jsdelivr.net/npm/@awesome-webcomponents/webawesome@3.5.0/dist/styles.css'],
-      scripts: ['https://cdn.jsdelivr.net/npm/@awesome-webcomponents/webawesome@3.5.0/dist/webawesome.loader.js'],
+      stylesheets: [
+        'https://cdn.jsdelivr.net/npm/@awesome-webcomponents/webawesome@3.5.0/dist/styles.css',
+      ],
+      scripts: [
+        'https://cdn.jsdelivr.net/npm/@awesome-webcomponents/webawesome@3.5.0/dist/webawesome.loader.js',
+      ],
     },
-  })]
-})
+  })],
+});
 ```
 
 ### 项目结构
@@ -97,7 +137,7 @@ my-app/
 │   │   ├── index.ts      # 首页
 │   │   ├── about.ts      # /about
 │   │   └── api/
-│   │       └── posts.ts  # API 路由（Hono）
+│   │       └── posts.ts  # API 路由（Hono）→ 部署为 Serverless
 │   ├── islands/          # Island 组件（自动水合）
 │   │   └── counter.ts    # <my-counter>
 │   └── components/       # 普通 Lit 组件（构建时渲染 + DSD，不发送 JS）
@@ -110,53 +150,53 @@ my-app/
 
 ```ts
 // app/routes/index.ts
-import { LitElement, html, css } from '@kissjs/core'
+import { css, html, LitElement } from '@kissjs/core';
 
-export const tagName = 'home-page'
+export const tagName = 'home-page';
 export default class HomePage extends LitElement {
   render() {
     return html`
       <h1>Hello KISS!</h1>
       <my-counter></my-counter>
-    `
+    `;
   }
 }
 ```
 
-### API 路由
+### API 路由（Serverless）
 
 ```ts
 // app/routes/api/posts.ts
-import { Hono } from '@kissjs/core'
+import { Hono } from '@kissjs/core';
 
-const app = new Hono()
-app.get('/', (c) => c.json({ data: [] }))
+const app = new Hono();
+app.get('/', (c) => c.json({ data: [] }));
 
-export default app
-export type AppType = typeof app
+export default app;
+export type AppType = typeof app;
 ```
 
 ### Island 组件
 
 ```ts
 // app/islands/my-counter.ts
-import { LitElement, html } from '@kissjs/core'
+import { html, LitElement } from '@kissjs/core';
 
-export const tagName = 'my-counter'
+export const tagName = 'my-counter';
 export default class MyCounter extends LitElement {
-  static properties = { count: { type: Number } }
+  static properties = { count: { type: Number } };
 
   constructor() {
-    super()
-    this.count = 0
+    super();
+    this.count = 0;
   }
 
   render() {
     return html`
-      <button @click=${() => this.count++}>+</button>
+      <button @click="${() => this.count++}">+</button>
       <span>${this.count}</span>
-      <button @click=${() => this.count--}>-</button>
-    `
+      <button @click="${() => this.count--}">-</button>
+    `;
   }
 }
 ```
@@ -164,11 +204,11 @@ export default class MyCounter extends LitElement {
 ### RPC 调用（在 Island 内）
 
 ```ts
-import { hc } from 'hono/client'
-import type { AppType } from '../routes/api/posts'
+import { hc } from 'hono/client';
+import type { AppType } from '../routes/api/posts';
 
-const client = hc<AppType>('/api/posts')
-const res = await client.$post({ json: { title: 'Hello' } })
+const client = hc<AppType>('/api/posts');
+const res = await client.$post({ json: { title: 'Hello' } });
 ```
 
 ## 配置选项
@@ -192,7 +232,7 @@ kiss({
   html: { lang: 'zh', title: '我的应用' },
 
   // Island 水合策略
-  island: { hydrationStrategy: 'lazy' },  // eager | lazy | idle | visible
+  island: { hydrationStrategy: 'lazy' }, // eager | lazy | idle | visible
 
   // 构建输出
   build: { outDir: 'dist' },
@@ -203,7 +243,7 @@ kiss({
     corsOrigin: 'https://example.com',
     securityHeaders: true,
   },
-})
+});
 ```
 
 ## 工作原理
@@ -218,16 +258,16 @@ kiss({
                      Island 组件 → 独立 JS chunk
                      非 Island 组件 → 不发送 JS
 
-生产部署：
-  dist/ → 任何静态托管（CDN / GitHub Pages / Nginx）
-  零运行时进程
+生产部署（Jamstack）：
+  静态前端 → CDN / GitHub Pages / Nginx（零运行时进程）
+  API Routes → Serverless（Deno Deploy / Cloudflare Workers / Vercel Edge）
   DSD 让 Shadow DOM 内容在 JS 加载前可见
 ```
 
 ## 包结构
 
 | 包 | 版本 | 说明 |
-|----|------|------|
+|---|------|------|
 | [@kissjs/core](https://jsr.io/@kissjs/core) | 0.1.5 | 核心框架 — Vite 插件 + Lit/Hono re-export |
 | [@kissjs/rpc](https://jsr.io/@kissjs/rpc) | 0.1.2 | RPC 客户端 — Lit ReactiveController |
 | [@kissjs/ui](https://jsr.io/@kissjs/ui) | 0.1.2 | UI 插件 — WebAwesome CDN 注入 |
@@ -243,7 +283,7 @@ kiss({
 | 层 | 技术 | 版本 | 用途 |
 |----|------|------|------|
 | 运行时 | Deno | ^2.x | 首选运行时 |
-| HTTP | Hono | ^4.x | 构建时路由匹配 + dev server |
+| HTTP | Hono | ^4.x | 构建时路由匹配 + dev server + API Routes |
 | UI | Lit | ^3.x | Web Component 渲染引擎 |
 | Build | Vite | ^6.x | 构建工具 |
 | SSR | @lit-labs/ssr | ^3.3.x | 构建时渲染 + DSD 输出 |
@@ -253,7 +293,7 @@ kiss({
 
 ## 当前状态
 
-Phase 4 进行中。DIA 文档已建立，代码改造（Shadow DOM + DSD 恢复）待执行。JSR 已发布。
+Phase 4C 完成。KISS Architecture 四约束文档已更新。JSR 已发布。
 
 ## License
 
@@ -261,4 +301,4 @@ MIT
 
 ---
 
-KISS — Keep It Simple, Stupid / DIA / 声明即内容
+KISS — Keep It Simple, Stupid / K·I·S·S Architecture

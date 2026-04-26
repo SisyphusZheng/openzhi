@@ -1,219 +1,231 @@
 /**
  * Docs site global layout styles.
- * DIA: Shadow DOM encapsulated — styles scoped to app-layout's shadow root.
+ * KISS Architecture (K·I·S·S) — Shadow DOM encapsulated, styles scoped to app-layout's shadow root.
  * DSD makes content visible even without JavaScript.
  */
-import { css } from '@kissjs/core'
+import { css } from '@kissjs/core';
 
 export const layoutStyles = css`
-/* === Global Reset & Base === */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-:host {
-  display: block;
-}
-
-/* === Layout === */
-.app-layout {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
-
-.app-layout .layout-body {
-  display: flex;
-  flex: 1;
-}
-
-.app-layout .layout-main {
-  flex: 1;
-  min-width: 0;
-}
-
-.app-layout[home] .layout-body {
-  display: block;
-}
-
-@media (max-width: 900px) {
-  .docs-sidebar {
-    display: none;
+  /* === Global Reset & Base === */
+  *, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
   }
-}
 
-/* === Header === */
-.app-header {
-  display: block;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  background: #0a0a0a;
-  border-bottom: 1px solid #1a1a1a;
-}
+  :host {
+    display: block;
+  }
 
-.app-header .header-inner {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0 1.5rem;
-  display: flex;
-  align-items: center;
-  height: 56px;
-  gap: 2rem;
-}
+  /* === Layout === */
+  .app-layout {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
 
-.app-header .logo {
-  font-size: 1rem;
-  font-weight: 800;
-  color: #fff;
-  text-decoration: none;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
+  .app-layout .layout-body {
+    display: flex;
+    flex: 1;
+  }
 
-.app-header .logo:hover { color: #888; }
+  .app-layout .layout-main {
+    flex: 1;
+    min-width: 0;
+  }
 
-.app-header .logo-sub {
-  font-size: 0.6875rem;
-  font-weight: 400;
-  color: #444;
-  margin-left: 0.375rem;
-  letter-spacing: 0.02em;
-}
+  .app-layout[home] .layout-body {
+    display: block;
+  }
 
-.app-header nav {
-  display: flex;
-  gap: 0.25rem;
-  flex: 1;
-}
+  @media (max-width: 900px) {
+    .docs-sidebar {
+      display: none;
+    }
+  }
 
-.app-header nav a {
-  color: #666;
-  text-decoration: none;
-  font-size: 0.8125rem;
-  font-weight: 500;
-  padding: 0.375rem 0.75rem;
-  letter-spacing: 0.01em;
-  transition: color 0.15s;
-  border-radius: 2px;
-}
+  /* === Header === */
+  .app-header {
+    display: block;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: #0a0a0a;
+    border-bottom: 1px solid #1a1a1a;
+  }
 
-.app-header nav a:hover { color: #fff; }
+  .app-header .header-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    display: flex;
+    align-items: center;
+    height: 56px;
+    gap: 2rem;
+  }
 
-.app-header .header-right {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
+  .app-header .logo {
+    font-size: 1rem;
+    font-weight: 800;
+    color: #fff;
+    text-decoration: none;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
 
-.app-header .github-link {
-  color: #555;
-  text-decoration: none;
-  font-size: 0.75rem;
-  font-weight: 500;
-  letter-spacing: 0.02em;
-  padding: 0.375rem 0.75rem;
-  border: 1px solid #222;
-  border-radius: 2px;
-  transition: color 0.15s, border-color 0.15s;
-}
+  .app-header .logo:hover {
+    color: #888;
+  }
 
-.app-header .github-link:hover {
-  color: #ccc;
-  border-color: #444;
-}
+  .app-header .logo-sub {
+    font-size: 0.6875rem;
+    font-weight: 400;
+    color: #444;
+    margin-left: 0.375rem;
+    letter-spacing: 0.02em;
+  }
 
-/* === Sidebar === */
-.docs-sidebar {
-  display: block;
-  width: 240px;
-  flex-shrink: 0;
-  border-right: 1px solid #1a1a1a;
-  padding: 1.5rem 0;
-  overflow-y: auto;
-  height: calc(100vh - 56px);
-  position: sticky;
-  top: 56px;
-  scrollbar-width: thin;
-  scrollbar-color: #222 transparent;
-}
+  .app-header nav {
+    display: flex;
+    gap: 0.25rem;
+    flex: 1;
+  }
 
-.docs-sidebar .nav-section {
-  margin-bottom: 1.25rem;
-}
+  .app-header nav a {
+    color: #666;
+    text-decoration: none;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    padding: 0.375rem 0.75rem;
+    letter-spacing: 0.01em;
+    transition: color 0.15s;
+    border-radius: 2px;
+  }
 
-.docs-sidebar .nav-section-title {
-  font-size: 0.6875rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: #444;
-  padding: 0 1.25rem;
-  margin-bottom: 0.375rem;
-}
+  .app-header nav a:hover {
+    color: #fff;
+  }
 
-.docs-sidebar a {
-  display: block;
-  color: #777;
-  text-decoration: none;
-  font-size: 0.8125rem;
-  padding: 0.3rem 1.25rem;
-  transition: color 0.15s, background 0.15s;
-  border-left: 2px solid transparent;
-}
+  .app-header .header-right {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
 
-.docs-sidebar a:hover {
-  color: #ccc;
-  background: rgba(255,255,255,0.03);
-}
+  .app-header .github-link {
+    color: #555;
+    text-decoration: none;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    padding: 0.375rem 0.75rem;
+    border: 1px solid #222;
+    border-radius: 2px;
+    transition: color 0.15s, border-color 0.15s;
+  }
 
-.docs-sidebar a.active,
-.docs-sidebar a[aria-current="page"] {
-  color: #fff;
-  border-left-color: #fff;
-  background: rgba(255,255,255,0.05);
-}
+  .app-header .github-link:hover {
+    color: #ccc;
+    border-color: #444;
+  }
 
-/* === Footer === */
-.app-footer {
-  display: block;
-  margin-top: auto;
-}
+  /* === Sidebar === */
+  .docs-sidebar {
+    display: block;
+    width: 240px;
+    flex-shrink: 0;
+    border-right: 1px solid #1a1a1a;
+    padding: 1.5rem 0;
+    overflow-y: auto;
+    height: calc(100vh - 56px);
+    position: sticky;
+    top: 56px;
+    scrollbar-width: thin;
+    scrollbar-color: #222 transparent;
+  }
 
-.app-footer footer {
-  padding: 2rem 1.5rem;
-  border-top: 1px solid #222;
-  text-align: center;
-  color: #666;
-  font-size: 0.75rem;
-  letter-spacing: 0.02em;
-  background: #000;
-}
+  .docs-sidebar .nav-section {
+    margin-bottom: 1.25rem;
+  }
 
-.app-footer p { margin: 0.25rem 0; }
+  .docs-sidebar .nav-section-title {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #444;
+    padding: 0 1.25rem;
+    margin-bottom: 0.375rem;
+  }
 
-.app-footer a {
-  color: #999;
-  text-decoration: none;
-  transition: color 0.15s;
-}
+  .docs-sidebar a {
+    display: block;
+    color: #777;
+    text-decoration: none;
+    font-size: 0.8125rem;
+    padding: 0.3rem 1.25rem;
+    transition: color 0.15s, background 0.15s;
+    border-left: 2px solid transparent;
+  }
 
-.app-footer a:hover { color: #fff; }
+  .docs-sidebar a:hover {
+    color: #ccc;
+    background: rgba(255, 255, 255, 0.03);
+  }
 
-.app-footer .divider {
-  display: inline-block;
-  width: 1px;
-  height: 10px;
-  background: #333;
-  vertical-align: middle;
-  margin: 0 0.75rem;
-}
+  .docs-sidebar a.active,
+  .docs-sidebar a[aria-current="page"] {
+    color: #fff;
+    border-left-color: #fff;
+    background: rgba(255, 255, 255, 0.05);
+  }
 
-/* === Noscript === */
-.noscript-warning {
-  padding: 1rem;
-  background: #1a1a1a;
-  color: #999;
-  text-align: center;
-  font-size: 0.8125rem;
-  border-bottom: 1px solid #333;
-}
-`
+  /* === Footer === */
+  .app-footer {
+    display: block;
+    margin-top: auto;
+  }
+
+  .app-footer footer {
+    padding: 2rem 1.5rem;
+    border-top: 1px solid #222;
+    text-align: center;
+    color: #666;
+    font-size: 0.75rem;
+    letter-spacing: 0.02em;
+    background: #000;
+  }
+
+  .app-footer p {
+    margin: 0.25rem 0;
+  }
+
+  .app-footer a {
+    color: #999;
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+
+  .app-footer a:hover {
+    color: #fff;
+  }
+
+  .app-footer .divider {
+    display: inline-block;
+    width: 1px;
+    height: 10px;
+    background: #333;
+    vertical-align: middle;
+    margin: 0 0.75rem;
+  }
+
+  /* === Noscript === */
+  .noscript-warning {
+    padding: 1rem;
+    background: #1a1a1a;
+    color: #999;
+    text-align: center;
+    font-size: 0.8125rem;
+    border-bottom: 1px solid #333;
+  }
+`;

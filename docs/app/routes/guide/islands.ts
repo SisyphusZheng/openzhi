@@ -46,7 +46,7 @@ export class IslandsGuidePage extends LitElement {
               </ul>
             </div>
             <div class="comparison-item kiss">
-              <h3>KISS Islands (DIA)</h3>
+              <h3>KISS Islands (KISS Architecture)</h3>
               <ul>
                 <li>Only interactive parts load JS</li>
                 <li>Static content = HTML + DSD (zero JS)</li>
@@ -57,7 +57,7 @@ export class IslandsGuidePage extends LitElement {
           </div>
 
           <h2>Progressive Enhancement Levels</h2>
-          <p>DIA only has two levels. No SPA — this is discipline.</p>
+          <p>KISS Architecture only has two levels. No SPA — this is the S constraint (Static).</p>
           <table>
             <thead><tr><th>Level</th><th>Rendering</th><th>JS Size</th><th>Use Case</th></tr></thead>
             <tbody>

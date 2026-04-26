@@ -77,4 +77,4 @@ export const kissTokens = `
   --kiss-transition-fast: 0.15s;
   --kiss-transition-normal: 0.25s;
 }
-`
+`;

@@ -1,105 +1,558 @@
-import { LitElement, html, css } from '@kissjs/core'
-import { pageStyles } from '../../components/page-styles.js'
-import '../../components/layout.js'
-import '../islands/code-block.js'
+import { css, html, LitElement } from '@kissjs/core';
+import { pageStyles } from '../../components/page-styles.js';
+import '../../components/layout.js';
+import '../islands/code-block.js';
 
-export class DiaPage extends LitElement {
-  static styles = [pageStyles, css`
-    :host { display: block; }
-    .container { max-width: 720px; margin: 0 auto; padding: 2rem 1.5rem 3rem; }
-    h1 { font-size: 2.25rem; font-weight: 800; letter-spacing: -0.03em; margin: 0 0 0.5rem; color: #fff; }
-    .subtitle { color: #666; margin-bottom: 2.5rem; font-size: 0.9375rem; line-height: 1.6; }
-    h2 { font-size: 1.25rem; font-weight: 600; margin: 2.5rem 0 0.75rem; color: #fff; letter-spacing: -0.01em; }
-    h3 { font-size: 1rem; font-weight: 600; margin: 1.5rem 0 0.5rem; color: #ccc; }
-    p { line-height: 1.7; margin: 0.5rem 0; color: #999; }
-    .pillar { padding: 1.25rem; margin: 1rem 0; border-left: 3px solid #333; background: #0f0f0f; border-radius: 0 3px 3px 0; }
-    .pillar .num { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #555; margin-bottom: 0.25rem; }
-    .pillar h3 { margin: 0 0 0.5rem; font-size: 1.0625rem; color: #fff; }
-    .pillar p { color: #888; }
-    .layer-ladder { margin: 1rem 0 1.5rem; }
-    .layer { display: flex; align-items: center; padding: 0.625rem 1rem; border: 1px solid #1a1a1a; margin-bottom: -1px; font-size: 0.875rem; }
-    .layer:first-child { border-radius: 3px 3px 0 0; }
-    .layer:last-child { border-radius: 0 0 3px 3px; }
-    .layer .level { width: 2.5rem; font-weight: 700; color: #666; font-family: 'SF Mono', 'Fira Code', monospace; }
-    .layer .name { width: 9rem; font-weight: 600; color: #ccc; }
-    .layer .desc { flex: 1; color: #888; }
-    .layer .example { color: #666; font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.8125rem; }
-    table { width: 100%; border-collapse: collapse; margin: 0.75rem 0 1.5rem; font-size: 0.875rem; }
-    th, td { border: 1px solid #1a1a1a; padding: 0.5rem 0.75rem; text-align: left; }
-    th { background: #111; font-weight: 600; color: #ccc; }
-    pre { background: #111; color: #c8c8c8; padding: 1rem 1.25rem; border-radius: 3px; overflow-x: auto; font-size: 0.8125rem; line-height: 1.6; margin: 0.75rem 0; }
-    code { font-family: 'SF Mono', 'Fira Code', monospace; }
-    .inline-code { background: #111; padding: 0.125rem 0.375rem; border-radius: 4px; font-size: 0.875em; }
-    .decision-tree { padding: 1rem; background: #0f0f0f; border-left: 3px solid #444; border-radius: 0 3px 3px; margin: 0.75rem 0; font-size: 0.8125rem; line-height: 1.8; color: #888; font-family: 'SF Mono', 'Fira Code', monospace; white-space: pre-wrap; }
-    .dsd-diagram { padding: 1rem; background: #0f0f0f; border: 1px solid #1a1a1a; border-radius: 3px; margin: 0.75rem 0; font-size: 0.8125rem; line-height: 1.7; color: #888; font-family: 'SF Mono', 'Fira Code', monospace; white-space: pre-wrap; }
-    .hard-constraint { display: inline-block; background: #111; border: 1px solid #222; padding: 0.25rem 0.625rem; border-radius: 4px; font-size: 0.8125rem; margin: 0.125rem 0; }
-    .nav-row { margin-top: 2.5rem; display: flex; justify-content: space-between; }
-  `]
+export class KissArchitecturePage extends LitElement {
+  static styles = [
+    pageStyles,
+    css`
+      :host {
+        display: block;
+      }
+      .container {
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 2rem 1.5rem 3rem;
+      }
+      h1 {
+        font-size: 2.25rem;
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        margin: 0 0 0.5rem;
+        color: #fff;
+      }
+      .subtitle {
+        color: #666;
+        margin-bottom: 2.5rem;
+        font-size: 0.9375rem;
+        line-height: 1.6;
+      }
+      h2 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin: 2.5rem 0 0.75rem;
+        color: #fff;
+        letter-spacing: -0.01em;
+      }
+      h3 {
+        font-size: 1rem;
+        font-weight: 600;
+        margin: 1.5rem 0 0.5rem;
+        color: #ccc;
+      }
+      p {
+        line-height: 1.7;
+        margin: 0.5rem 0;
+        color: #999;
+      }
+      .constraint {
+        padding: 1.25rem 1.5rem;
+        margin: 1rem 0;
+        border-left: 3px solid #333;
+        background: #0f0f0f;
+        border-radius: 0 3px 3px 0;
+      }
+      .constraint .letter {
+        font-size: 1.75rem;
+        font-weight: 800;
+        color: #fff;
+        display: inline-block;
+        width: 2rem;
+      }
+      .constraint .constraint-name {
+        font-size: 1.0625rem;
+        font-weight: 600;
+        color: #fff;
+      }
+      .constraint .constraint-cn {
+        font-size: 0.8125rem;
+        color: #555;
+        margin-left: 0.5rem;
+      }
+      .constraint p {
+        color: #888;
+        margin: 0.5rem 0 0 2.5rem;
+      }
+      .constraint .hard-constraint {
+        margin-left: 2.5rem;
+      }
+      .hard-constraint {
+        display: inline-block;
+        background: #111;
+        border: 1px solid #222;
+        padding: 0.25rem 0.625rem;
+        border-radius: 4px;
+        font-size: 0.8125rem;
+        margin: 0.125rem 0;
+      }
+      .layer-ladder {
+        margin: 1rem 0 1.5rem;
+      }
+      .layer {
+        display: flex;
+        align-items: center;
+        padding: 0.625rem 1rem;
+        border: 1px solid #1a1a1a;
+        margin-bottom: -1px;
+        font-size: 0.875rem;
+      }
+      .layer:first-child {
+        border-radius: 3px 3px 0 0;
+      }
+      .layer:last-child {
+        border-radius: 0 0 3px 3px;
+      }
+      .layer .level {
+        width: 2.5rem;
+        font-weight: 700;
+        color: #666;
+        font-family: "SF Mono", "Fira Code", monospace;
+      }
+      .layer .name {
+        width: 9rem;
+        font-weight: 600;
+        color: #ccc;
+      }
+      .layer .desc {
+        flex: 1;
+        color: #888;
+      }
+      .layer .example {
+        color: #666;
+        font-family: "SF Mono", "Fira Code", monospace;
+        font-size: 0.8125rem;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 0.75rem 0 1.5rem;
+        font-size: 0.875rem;
+      }
+      th,
+      td {
+        border: 1px solid #1a1a1a;
+        padding: 0.5rem 0.75rem;
+        text-align: left;
+      }
+      th {
+        background: #111;
+        font-weight: 600;
+        color: #ccc;
+      }
+      td {
+        color: #888;
+      }
+      pre {
+        background: #111;
+        color: #c8c8c8;
+        padding: 1rem 1.25rem;
+        border-radius: 3px;
+        overflow-x: auto;
+        font-size: 0.8125rem;
+        line-height: 1.6;
+        margin: 0.75rem 0;
+      }
+      code {
+        font-family: "SF Mono", "Fira Code", monospace;
+      }
+      .inline-code {
+        background: #111;
+        padding: 0.125rem 0.375rem;
+        border-radius: 4px;
+        font-size: 0.875em;
+      }
+      .decision-tree {
+        padding: 1rem;
+        background: #0f0f0f;
+        border-left: 3px solid #444;
+        border-radius: 0 3px 3px;
+        margin: 0.75rem 0;
+        font-size: 0.8125rem;
+        line-height: 1.8;
+        color: #888;
+        font-family: "SF Mono", "Fira Code", monospace;
+        white-space: pre-wrap;
+      }
+      .dsd-diagram {
+        padding: 1rem;
+        background: #0f0f0f;
+        border: 1px solid #1a1a1a;
+        border-radius: 3px;
+        margin: 0.75rem 0;
+        font-size: 0.8125rem;
+        line-height: 1.7;
+        color: #888;
+        font-family: "SF Mono", "Fira Code", monospace;
+        white-space: pre-wrap;
+      }
+      .jamstack-map {
+        padding: 1.25rem;
+        margin: 1rem 0;
+        background: #0f0f0f;
+        border: 1px solid #1a1a1a;
+        border-radius: 3px;
+      }
+      .jamstack-map .jam-row {
+        display: flex;
+        align-items: baseline;
+        margin: 0.5rem 0;
+        font-size: 0.9375rem;
+      }
+      .jamstack-map .jam-letter {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: #fff;
+        width: 2rem;
+        text-align: center;
+      }
+      .jamstack-map .jam-label {
+        font-weight: 600;
+        color: #ccc;
+        width: 8rem;
+      }
+      .jamstack-map .jam-desc {
+        color: #888;
+        flex: 1;
+      }
+      .jamstack-map .jam-kiss {
+        color: #999;
+        font-family: "SF Mono", "Fira Code", monospace;
+        font-size: 0.8125rem;
+      }
+      .quote-block {
+        padding: 1.25rem 1.5rem;
+        margin: 1.5rem 0;
+        border-left: 3px solid #444;
+        background: #0f0f0f;
+        border-radius: 0 3px 3px 0;
+        font-style: italic;
+        color: #aaa;
+        line-height: 1.7;
+      }
+      .quote-block .attribution {
+        margin-top: 0.5rem;
+        font-size: 0.8125rem;
+        color: #666;
+        font-style: normal;
+      }
+      .nav-row {
+        margin-top: 2.5rem;
+        display: flex;
+        justify-content: space-between;
+      }
+    `,
+  ];
 
   render() {
     return html`
       <app-layout currentPath="/kiss/guide/dia">
         <div class="container">
-          <h1>DIA — Declarative Islands Architecture</h1>
-          <p class="subtitle">KISS 的架构内核。Declarative 是核心差异——DSD 让 Shadow DOM 内容声明式可达。</p>
+          <h1>KISS Architecture</h1>
+          <p class="subtitle">
+            Knowledge · Isolated · Semantic · Static — 融合 Jamstack
+            部署模型与声明式岛屿交互范式的全栈架构风格。
+          </p>
 
-          <h2>为什么叫 DIA</h2>
-          <p>DIA = <strong>Declarative Islands Architecture</strong>。</p>
-          <p>KISS 之前的架构名称是 PIA（Pre-rendered Islands Architecture），但实践证明它不够准确：</p>
-          <ul>
-            <li><strong>Pre-rendered</strong> 只是手段，不是最独特的差异——Astro 也预渲染</li>
-            <li>PIA 名字没有体现 <strong>DSD</strong> 和 <strong>Web Components 封装</strong>，导致之前的实现直接放弃了 Shadow DOM</li>
-            <li>PIA 名字没有体现 <strong>分层原则</strong>，导致 JS 做了 CSS 能做的事</li>
-          </ul>
-          <p><strong>Declarative</strong> 才是核心差异——DSD 让 Shadow DOM 内容在 JS 加载前声明式可见。Pre-rendered 隐含在 Declarative 之中。</p>
+          <h2>双重指代</h2>
+          <p>
+            <strong>KISS</strong> 同时是哲学和架构。两个含义精神一致——约束就是简单。
+          </p>
+          <table>
+            <thead>
+              <tr>
+                <th>含义</th>
+                <th>解释</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>哲学</strong></td>
+                <td>
+                  Keep It Simple, Stupid — 简单即力量，每个决策都经过"够不够简单"的过滤
+                </td>
+              </tr>
+              <tr>
+                <td><strong>架构</strong></td>
+                <td>
+                  Knowledge · Isolated · Semantic · Static — 四个不可违抗的架构约束
+                </td>
+              </tr>
+            </tbody>
+          </table>
 
-          <h2>DIA 四支柱</h2>
+          <h2>四约束</h2>
+          <p>
+            KISS 框架实现的正是 KISS 架构——K·I·S·S 是四个架构约束的缩写：
+          </p>
 
-          <div class="pillar">
-            <div class="num">Pillar 1</div>
-            <h3>构建即终态</h3>
-            <p>所有页面在构建时渲染为静态 HTML（含 DSD），构建后零服务端进程。</p>
-            <p>SSG 输出的 HTML 就是最终产物——不需要运行时服务器重新渲染。</p>
+          <div class="constraint">
+            <span class="letter">K</span>
+            <span class="constraint-name">Knowledge</span>
+            <span class="constraint-cn">知识</span>
             <p>
-              <span class="hard-constraint">No SSR runtime</span>
-              <span class="hard-constraint">No server process in production</span>
+              所有内容在构建时预渲染为语义 HTML
+              静态文件。页面骨架、正文、导航在 JS 执行前即可见。
+            </p>
+            <p>
+              对应 Jamstack 的 M (Markup)：构建时渲染 = 内容的完整知识在构建时已确定，运行时不需要重新获取。
+            </p>
+            <p>
+              <span class="hard-constraint">SSG + DSD output</span>
+              <span class="hard-constraint">Content visible before JS</span>
             </p>
           </div>
 
-          <div class="pillar">
-            <div class="num">Pillar 2</div>
-            <h3>交互必隔离</h3>
-            <p>客户端 JS 只能存在于 Island Web Component 内部。非 Island 组件不发送任何 JS 到浏览器。</p>
-            <p>Island 是交互的原子单位——它的 Shadow DOM 封装了样式和逻辑，不会泄漏到外部。</p>
+          <div class="constraint">
+            <span class="letter">I</span>
+            <span class="constraint-name">Isolated</span>
+            <span class="constraint-cn">隔离</span>
+            <p>
+              任何客户端 JS 只能存在于独立 Island 组件的 Shadow DOM
+              内部。一个 Island 的失败不影响其他部分。
+            </p>
+            <p>
+              对应 Jamstack 的 J
+              (JavaScript)：交互是孤岛，不是汪洋。每个岛屿独立加载、独立运行、独立失败。
+            </p>
             <p>
               <span class="hard-constraint">Island = Shadow DOM + lazy hydration</span>
               <span class="hard-constraint">Non-Island = zero client JS</span>
             </p>
           </div>
 
-          <div class="pillar">
-            <div class="num">Pillar 3</div>
-            <h3>声明即内容</h3>
-            <p>DSD（Declarative Shadow DOM）让 Shadow DOM 内容从 HTML 声明中即可见——不需要 JS 解析和执行。</p>
-            <p>这是 PIA→DIA 最关键的修正：之前"降级即内容"被误读为"禁用 JS 时可见"，导致放弃 Shadow DOM。
-               正确理解是 <strong>JS 未加载前内容即可见</strong>，DSD 恰好满足。</p>
+          <div class="constraint">
+            <span class="letter">S</span>
+            <span class="constraint-name">Semantic</span>
+            <span class="constraint-cn">语义</span>
             <p>
-              <span class="hard-constraint">DSD output from @lit-labs/ssr</span>
-              <span class="hard-constraint">Chrome 111+ / Safari 16.4+ / Firefox 123+</span>
-              <span class="hard-constraint">Polyfill: @webcomponents/template-shadowroot ~1KB</span>
+              每个 Island 包裹原生 HTML 元素（<span
+                class="inline-code"
+              >&lt;form&gt;</span>、<span class="inline-code">&lt;a&gt;</span>、<span
+                class="inline-code"
+              >&lt;details&gt;</span>），禁用 JS 时提供等价基线功能。
+            </p>
+            <p>
+              对应 Progressive Enhancement 的核心：内容优先，增强在后。但在 KISS
+              中，这不是建议——而是可验证的约束。
+            </p>
+            <p>
+              <span class="hard-constraint">DSD makes content declaratively visible</span>
+              <span class="hard-constraint">No-JS baseline must be functional</span>
             </p>
           </div>
 
-          <div class="pillar">
-            <div class="num">Pillar 4</div>
-            <h3>拒绝即纪律</h3>
-            <p>框架不提供 SSR 运行时、CSR、SPA。这些限制不可配置关闭。</p>
-            <p>纪律意味着每一层能力必须先被低层证明不够用，才允许引入高层依赖。</p>
+          <div class="constraint">
+            <span class="letter">S</span>
+            <span class="constraint-name">Static</span>
+            <span class="constraint-cn">静态</span>
             <p>
-              <span class="hard-constraint">No SSR runtime</span>
-              <span class="hard-constraint">No CSR / SPA</span>
-              <span class="hard-constraint">Not configurable away</span>
+              构建产物仅为纯静态文件，无持久服务端进程。可部署到任何 CDN 或静态托管，零运行时锁定。
             </p>
+            <p>
+              对应 Jamstack 的部署模型：静态前端 + Serverless API。动态数据通过 API
+              Routes（Hono + RPC）获取，部署为 Serverless 函数。
+            </p>
+            <p>
+              <span class="hard-constraint">No SSR runtime in production</span>
+              <span class="hard-constraint">No CSR / SPA</span>
+              <span class="hard-constraint">Deploy to CDN + Serverless</span>
+            </p>
+          </div>
+
+          <h2>三范式继承</h2>
+          <p>
+            KISS 架构不发明新的渲染算法或通信协议。它识别出三个范式各自领域中被验证有效的约束，将它们组合成一套严格、可验证、不可关闭的架构规则。
+          </p>
+
+          <table>
+            <thead>
+              <tr>
+                <th>范式</th>
+                <th>KISS 继承了什么</th>
+                <th>KISS 的强化</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Jamstack</strong></td>
+                <td>静态优先、前后端分离的部署模型</td>
+                <td>固化为不可配置的框架规则，而非最佳实践建议</td>
+              </tr>
+              <tr>
+                <td><strong>Islands Architecture</strong></td>
+                <td>静态海洋中的独立交互岛屿</td>
+                <td>
+                  要求所有 Island 必须是 Shadow DOM 内的 Web
+                  Component，跨岛通信只能通过声明式机制
+                </td>
+              </tr>
+              <tr>
+                <td><strong>Progressive Enhancement</strong></td>
+                <td>内容优先，增强在后</td>
+                <td>
+                  从开发者最佳实践提升为框架层面的可验证约束——Island
+                  内部没有语义降级元素，就不符合 KISS 规范
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="quote-block">
+            KISS 对 Jamstack、Islands 和渐进增强三者关系的处理，类似于 Haskell
+            对函数式编程原则的处理：不是发明了纯函数这一概念，而是通过编译器/框架约束，使这一概念不可违抗。
+            <div class="attribution">
+              — KISS Architecture 的核心定位：Web 前端的"强类型系统"
+            </div>
+          </div>
+
+          <p>
+            框架的 <span class="inline-code">kiss build</span> 命令就是这套规则的编译验证器——不满足架构约束的输出，不会产生。
+          </p>
+
+          <h2>KISS = Jamstack</h2>
+          <p>
+            KISS 架构与 Jamstack 天然 1:1 对齐。K·I·S·S
+            四约束覆盖了 Jamstack 的三个维度，但用 Web Standards 原生实现：
+          </p>
+
+          <div class="jamstack-map">
+            <div class="jam-row">
+              <span class="jam-letter">J</span>
+              <span class="jam-label">JavaScript</span>
+              <span class="jam-desc">交互不膨胀，按需加载</span>
+              <span class="jam-kiss">→ I: Isolated（~6KB/island）</span>
+            </div>
+            <div class="jam-row">
+              <span class="jam-letter">A</span>
+              <span class="jam-label">APIs</span>
+              <span class="jam-desc">动态数据，类型安全</span>
+              <span class="jam-kiss">→ S: Static 的 Serverless 扩展</span>
+            </div>
+            <div class="jam-row">
+              <span class="jam-letter">M</span>
+              <span class="jam-label">Markup</span>
+              <span class="jam-desc">预渲染输出，零 JS 可见</span>
+              <span class="jam-kiss">→ K+I+S: Knowledge + DSD + Semantic</span>
+            </div>
+          </div>
+
+          <table>
+            <thead>
+              <tr>
+                <th>维度</th>
+                <th>传统 Jamstack</th>
+                <th>KISS Architecture</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Markup</td>
+                <td>SSG 框架生成</td>
+                <td>SSG + DSD（Shadow DOM 内容可达）</td>
+              </tr>
+              <tr>
+                <td>APIs</td>
+                <td>第三方 Serverless</td>
+                <td>内置 API Routes（Hono，端到端类型安全）</td>
+              </tr>
+              <tr>
+                <td>JavaScript</td>
+                <td>SPA 或全量 hydration</td>
+                <td>Islands（Shadow DOM 封装 + 懒水合）</td>
+              </tr>
+              <tr>
+                <td>UI 标准</td>
+                <td>React/Vue/Svelte</td>
+                <td>Web Components（零框架绑定）</td>
+              </tr>
+              <tr>
+                <td>HTTP 标准</td>
+                <td>框架自定义</td>
+                <td>Fetch API（Hono 原生）</td>
+              </tr>
+              <tr>
+                <td>运行时</td>
+                <td>Node.js / Deno 依赖</td>
+                <td>零运行时绑定（纯 ESM）</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <p>
+            <strong>KISS 是唯一全链路 Web Standards 的 Jamstack 架构。</strong>HTTP =
+            Fetch API，UI = Web Components，Build = ESM。3/3 标准覆盖。
+          </p>
+
+          <h2>DSD：KISS 的桥梁</h2>
+          <p>
+            Declarative Shadow DOM 是 KISS Architecture 与 Web Components
+            之间的桥梁。它解决了"封装 vs 可达"的根本矛盾：
+          </p>
+
+          <table>
+            <thead>
+              <tr>
+                <th>需求</th>
+                <th>传统 WC</th>
+                <th>DSD (KISS)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Shadow DOM 封装</td>
+                <td>✓</td>
+                <td>✓</td>
+              </tr>
+              <tr>
+                <td>JS 加载前内容可见</td>
+                <td>✗（需要 JS 注册组件）</td>
+                <td>✓（浏览器原生渲染 template）</td>
+              </tr>
+              <tr>
+                <td>SEO / 爬虫可达</td>
+                <td>✗</td>
+                <td>✓</td>
+              </tr>
+              <tr>
+                <td>样式隔离</td>
+                <td>✓</td>
+                <td>✓</td>
+              </tr>
+              <tr>
+                <td>无 JS 降级</td>
+                <td>✗</td>
+                <td>✓（polyfill 回退）</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <p>
+            DSD 让 K 约束（Knowledge）和 S 约束（Semantic）同时成立：内容在构建时已完整编码（K），且以声明式方式可达（S）。
+          </p>
+
+          <h3>SSG 输出示例</h3>
+          <div class="dsd-diagram">
+app-layout (Shadow DOM + DSD):
+┌─────────────────────────────────────────────┐
+│ &lt;app-layout&gt;                                │
+│   &lt;template shadowrootmode="open"&gt;         │
+│     &lt;style&gt;/* scoped styles */&lt;/style&gt;     │
+│     &lt;header&gt;...&lt;/header&gt;                    │
+│     &lt;nav&gt;...&lt;/nav&gt;                          │
+│     &lt;main&gt;&lt;slot&gt;&lt;/slot&gt;&lt;/main&gt;              │
+│     &lt;footer&gt;...&lt;/footer&gt;                    │
+│   &lt;/template&gt;                                │
+│   &lt;!-- slotted content --&gt;                   │
+│   &lt;page-home&gt;...&lt;/page-home&gt;                │
+│ &lt;/app-layout&gt;                                │
+└─────────────────────────────────────────────┘
+
+浏览器行为：
+  DSD 支持：直接渲染 Shadow DOM 内容（零 JS）     ← K 约束
+  JS 加载后：Lit 组件 hydrate，恢复交互            ← I 约束
+  旧浏览器：polyfill 展开 template → 内容可见      ← S 约束
+  部署：纯静态文件，CDN 即可                       ← S 约束
           </div>
 
           <h2>分层原则：能力下沉，依赖上移</h2>
@@ -139,108 +592,153 @@ export class DiaPage extends LitElement {
           </div>
 
           <h3>分层审查清单</h3>
-          <code-block><pre><code>每写一行代码，问自己：
+          <code-block
+            ><pre><code>每写一行代码，问自己：
 
-1. HTML5 能做吗？  → 用语义标签 + 属性
-2. CSS 能做吗？    → 用声明式样式
-3. 平台 API 能做吗？ → 用原生浏览器接口
-4. 框架能做吗？    → 用 Hono/Vite/Lit
-5. 都不行？       → 才写自研代码（Island）
+1. HTML5 能做吗？    → 用语义标签 + 属性
+2. CSS 能做吗？      → 用声明式样式
+3. 平台 API 能做吗？  → 用原生浏览器接口
+4. 框架能做吗？      → 用 Hono/Vite/Lit
+5. 都不行？         → 才写自研代码（Island）
 
-跳过任何一层 = 违反分层原则</code></pre></code-block>
-
-          <h2>DSD：DIA 的桥梁</h2>
-          <p>Declarative Shadow DOM 是 DIA 与 Web Components 之间的桥梁。它解决了"封装 vs 可达"的根本矛盾：</p>
-
-          <table>
-            <thead><tr><th>需求</th><th>传统 WC</th><th>DSD</th></tr></thead>
-            <tbody>
-              <tr><td>Shadow DOM 封装</td><td>✓</td><td>✓</td></tr>
-              <tr><td>JS 加载前内容可见</td><td>✗（需要 JS 注册组件）</td><td>✓（浏览器原生渲染 template）</td></tr>
-              <tr><td>SEO / 爬虫可达</td><td>✗</td><td>✓</td></tr>
-              <tr><td>样式隔离</td><td>✓</td><td>✓</td></tr>
-              <tr><td>无 JS 降级</td><td>✗</td><td>✓（polyfill 回退）</td></tr>
-            </tbody>
-          </table>
-
-          <h3>SSG 输出示例</h3>
-          <div class="dsd-diagram">app-layout (Shadow DOM + DSD):
-┌─────────────────────────────────────────────┐
-│ &lt;app-layout&gt;                                │
-│   &lt;template shadowrootmode="open"&gt;         │
-│     &lt;style&gt;/* scoped styles */&lt;/style&gt;     │
-│     &lt;header&gt;...&lt;/header&gt;                    │
-│     &lt;nav&gt;...&lt;/nav&gt;                          │
-│     &lt;main&gt;&lt;slot&gt;&lt;/slot&gt;&lt;/main&gt;             │
-│     &lt;footer&gt;...&lt;/footer&gt;                    │
-│   &lt;/template&gt;                               │
-│   &lt;!-- slotted content --&gt;                  │
-│   &lt;page-home&gt;...&lt;/page-home&gt;               │
-│ &lt;/app-layout&gt;                               │
-└─────────────────────────────────────────────┘
-
-浏览器行为：
-  - DSD 支持：直接渲染 Shadow DOM 内容（零 JS）
-  - JS 加载后：Lit 组件 hydrate，恢复交互
-  - 旧浏览器：polyfill 展开 template → 内容可见</div>
+跳过任何一层 = 违反 KISS 架构约束</code></pre></code-block
+          >
 
           <h2>Island 决策树</h2>
-          <p>每个交互需求必须通过决策树验证。如果低层能解决，就不能成为 Island。</p>
-          <div class="decision-tree">需要交互？
-├─ 只需内容可见？  → L0: DSD 输出（零 JS）
-├─ 只需视觉状态？  → L1: CSS（:hover, :focus-within, details[open]）
-├─ 只需浏览器能力？ → L2: 平台 API（Clipboard, IntersectionObserver）
-├─ 需要组件封装？  → L3: Lit 组件 + DSD（构建时渲染）
-└─ 以上都不行？    → L4: Island（Shadow DOM + 懒水合）</div>
+          <p>
+            每个交互需求必须通过决策树验证。如果低层能解决，就不能成为 Island——这是 I
+            约束（Isolated）的执行工具。
+          </p>
+          <div class="decision-tree">
+需要交互？
+├─ 只需内容可见？     → L0: DSD 输出（零 JS）      ← K 约束
+├─ 只需视觉状态？     → L1: CSS（:hover, :focus-within, details[open]）
+├─ 只需浏览器能力？   → L2: 平台 API（Clipboard, IntersectionObserver）
+├─ 需要组件封装？     → L3: Lit 组件 + DSD（构建时渲染）
+└─ 以上都不行？       → L4: Island（Shadow DOM + 懒水合）← I 约束
 
-          <h3>典型组件判定</h3>
+典型判定：
+  Sidebar 高亮  → aria-current + CSS (L0+L1, 非 Island)
+  Sidebar 折叠  → &lt;details&gt;/&lt;summary&gt; (L0, 非 Island)
+  代码复制按钮  → Island + Clipboard API (L2+L4, 合法 Island)
+  RPC 数据交互  → Island + RpcController (L4, 合法 Island)
+  主题切换      → color-scheme + CSS vars (L1, 非 Island)
+          </div>
+
+          <h2>KISS vs 其他架构</h2>
           <table>
-            <thead><tr><th>需求</th><th>判定</th><th>层级</th><th>JS?</th></tr></thead>
+            <thead>
+              <tr>
+                <th>维度</th>
+                <th>Astro</th>
+                <th>Fresh</th>
+                <th>Next.js</th>
+                <th>KISS</th>
+              </tr>
+            </thead>
             <tbody>
-              <tr><td>Sidebar active 高亮</td><td>构建时 <span class="inline-code">aria-current="page"</span> + CSS</td><td>L0+L1</td><td>无</td></tr>
-              <tr><td>Sidebar 折叠</td><td><span class="inline-code">&lt;details&gt;/&lt;summary&gt;</span></td><td>L0</td><td>无</td></tr>
-              <tr><td>页面布局 + 导航</td><td>Lit + Shadow DOM + DSD</td><td>L3</td><td>水合时</td></tr>
-              <tr><td>代码复制按钮</td><td>Island + Clipboard API</td><td>L2+L4</td><td>懒加载</td></tr>
-              <tr><td>RPC 数据交互</td><td>Island + RpcController</td><td>L4</td><td>懒加载</td></tr>
-              <tr><td>表单验证</td><td>Constraint Validation API</td><td>L0+L2</td><td>平台</td></tr>
-              <tr><td>主题切换</td><td><span class="inline-code">color-scheme</span> + CSS 变量</td><td>L1</td><td>无 / 极少</td></tr>
+              <tr>
+                <td>预渲染</td>
+                <td>✓ SSG</td>
+                <td>✓ SSR</td>
+                <td>✓ SSG/SSR</td>
+                <td>✓ SSG</td>
+              </tr>
+              <tr>
+                <td>Islands</td>
+                <td>✓</td>
+                <td>✓ Preact</td>
+                <td>✗</td>
+                <td>✓ WC + DSD</td>
+              </tr>
+              <tr>
+                <td>DSD 内容可达</td>
+                <td>—</td>
+                <td>—</td>
+                <td>—</td>
+                <td>✓ K+S 约束</td>
+              </tr>
+              <tr>
+                <td>Shadow DOM 封装</td>
+                <td>✗</td>
+                <td>✗</td>
+                <td>✗</td>
+                <td>✓ I 约束</td>
+              </tr>
+              <tr>
+                <td>Jamstack 原生</td>
+                <td>✓</td>
+                <td>✗（需 Deno Deploy）</td>
+                <td>✗（需 Node）</td>
+                <td>✓ S 约束</td>
+              </tr>
+              <tr>
+                <td>语义基线强制</td>
+                <td>✗</td>
+                <td>✗</td>
+                <td>✗</td>
+                <td>✓ S 约束</td>
+              </tr>
+              <tr>
+                <td>允许 SPA</td>
+                <td>✓ (View Transitions)</td>
+                <td>✗</td>
+                <td>✓</td>
+                <td>✗ S 约束</td>
+              </tr>
+              <tr>
+                <td>运行时绑定</td>
+                <td>Deno/Node</td>
+                <td>Deno only</td>
+                <td>Node only</td>
+                <td>零绑定</td>
+              </tr>
+              <tr>
+                <td>UI 标准</td>
+                <td>React/Vue/Svelte</td>
+                <td>Preact</td>
+                <td>React</td>
+                <td>Web Components</td>
+              </tr>
+              <tr>
+                <td>HTTP 标准</td>
+                <td>Custom</td>
+                <td>Custom</td>
+                <td>Custom</td>
+                <td>Fetch API</td>
+              </tr>
+              <tr>
+                <td>Web Standards 覆盖</td>
+                <td>1/3</td>
+                <td>1/3</td>
+                <td>0/3</td>
+                <td>3/3</td>
+              </tr>
             </tbody>
           </table>
 
-          <h2>DIA vs 其他架构</h2>
-          <table>
-            <thead><tr><th>维度</th><th>Astro</th><th>Fresh</th><th>KISS DIA</th></tr></thead>
-            <tbody>
-              <tr><td>预渲染</td><td>✓ SSG</td><td>✓ SSR</td><td>✓ SSG</td></tr>
-              <tr><td>Islands</td><td>✓</td><td>✓ Preact</td><td>✓ WC + DSD</td></tr>
-              <tr><td>DSD 内容可达</td><td>—</td><td>—</td><td>✓ 核心差异</td></tr>
-              <tr><td>Shadow DOM 封装</td><td>✗</td><td>✗</td><td>✓ 始终保留</td></tr>
-              <tr><td>允许 SPA</td><td>✓ (View Transitions)</td><td>✗</td><td>✗ 纪律</td></tr>
-              <tr><td>运行时绑定</td><td>Deno/Node</td><td>Deno only</td><td>零绑定</td></tr>
-              <tr><td>UI 标准</td><td>React/Vue/Svelte</td><td>Preact</td><td>Web Components</td></tr>
-              <tr><td>HTTP 标准</td><td>Custom</td><td>Custom</td><td>Fetch API</td></tr>
-            </tbody>
-          </table>
+          <h2>架构合规审查</h2>
+          <code-block
+            ><pre><code>每次提交前，审查 K·I·S·S 四约束：
 
-          <h2>DIA 合规审查</h2>
-          <code-block><pre><code>每次提交前，审查：
-
-1. 新增了 JS？  → 是否低层做不了？（分层原则）
-2. 突破了 Shadow DOM？ → 是否必要？（封装原则）
-3. Island 没走决策树？ → 退回重判（纪律原则）
-4. 输出没有 DSD？  → @lit-labs/ssr 配置问题
-5. 引入了 SPA 行为？ → 违反"拒绝即纪律"</code></pre></code-block>
+K — 新内容需要运行时获取？  → 应在构建时预渲染
+I — 新增了全局 JS？         → 必须封装为 Island Shadow DOM
+S — Island 禁用 JS 可用吗？  → 必须包裹语义 HTML 基线
+S — 引入了服务端进程？       → 只允许静态文件 + Serverless API</code></pre></code-block
+          >
 
           <div class="nav-row">
-            <a href="/kiss/guide/design-philosophy" class="nav-link">&larr; Design Philosophy</a>
+            <a href="/kiss/guide/design-philosophy" class="nav-link"
+              >&larr; Design Philosophy</a
+            >
             <a href="/kiss/guide/routing" class="nav-link">Routing &rarr;</a>
           </div>
         </div>
       </app-layout>
-    `
+    `;
   }
 }
 
-customElements.define('page-dia', DiaPage)
-export default DiaPage
-export const tagName = 'page-dia'
+customElements.define('page-kiss-architecture', KissArchitecturePage);
+export default KissArchitecturePage;
+export const tagName = 'page-kiss-architecture';
