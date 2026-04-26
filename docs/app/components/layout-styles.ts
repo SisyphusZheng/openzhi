@@ -410,6 +410,18 @@ export const layoutStyles = css`
       pointer-events: auto;
     }
 
+    /* Fallback for browsers without :has() support (Safari < 15.4, Firefox < 121) */
+    /* KISS Architecture: L2 fallback when L1 not available */
+    .app-layout.sidebar-open .docs-sidebar {
+      transform: translateX(0);
+      box-shadow: 4px 0 24px rgba(0, 0, 0, 0.3);
+    }
+
+    .app-layout.sidebar-open .mobile-backdrop {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
     /* Close sidebar when backdrop is clicked — L2: minimal JS via headFragments */
     /* The backdrop click handler is injected in vite.config.ts headFragments */
 

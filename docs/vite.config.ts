@@ -52,6 +52,9 @@ export default defineConfig({
           // KISS Architecture: L0 <details> + L1 :has() opens sidebar,
           // L2 backdrop click closes it by removing [open] attribute
           '<script>document.addEventListener("click",function(e){var p=e.composedPath();for(var i=0;i<p.length;i++){if(p[i].classList&&p[i].classList.contains("mobile-backdrop")){document.querySelectorAll("app-layout").forEach(function(el){var sr=el.shadowRoot;if(sr){var d=sr.querySelector("details.mobile-menu");if(d&&d.open)d.removeAttribute("open")}});break}}})</script>',
+          // :has() fallback for older browsers (Safari < 15.4, Firefox < 121)
+          // KISS Architecture: L2 fallback when L1 CSS selector not available
+          '<script>(function(){try{var s=document.createElement("style");s.innerHTML=":has(*){}";document.head.appendChild(s);var w=s.sheet.cssRules.length>0;if(!w){document.addEventListener("DOMContentLoaded",function(){document.querySelectorAll("app-layout").forEach(function(el){var sr=el.shadowRoot;if(sr){var d=sr.querySelector("details.mobile-menu");if(d){d.addEventListener("toggle",function(){if(this.open)el.classList.add("sidebar-open");else el.classList.remove("sidebar-open")})}}})})}document.head.removeChild(s)}catch(e){console.warn(":has() detection failed:",e)}})()</script>',
         ],
       },
     }),
