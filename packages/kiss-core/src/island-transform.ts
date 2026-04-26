@@ -144,6 +144,7 @@ export function generateHydrationScript(
   return `<script type="module" data-kiss-hydrate>
 // KISS Island Hydration Script
 // Progressive enhancement: SSR HTML is visible even if this fails.
+import { hydrate } from '@lit-labs/ssr-client';
 (function() {
   const islandLoaders = {
 ${islandDefs}
@@ -162,6 +163,14 @@ ${islandDefs}
       }
       // Wait for upgrade of existing elements
       await customElements.whenDefined(tagName);
+      // Hydrate all instances of this island
+      document.querySelectorAll(tagName).forEach(el => {
+        // Only hydrate if element has DSD template (defer-hydration attribute)
+        if (el.hasAttribute('defer-hydration')) {
+          hydrate(el);
+          el.removeAttribute('defer-hydration');
+        }
+      });
     } catch (error) {
       console.warn('[KISS] Island <' + tagName + '> hydration failed:', error);
       // Progressive enhancement: SSR HTML still visible
