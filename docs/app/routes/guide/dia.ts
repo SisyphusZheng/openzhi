@@ -7,7 +7,6 @@ export class KissArchitecturePage extends LitElement {
   static styles = [
     pageStyles,
     css`
-
       .constraint {
         padding: 1.25rem 1.5rem;
         margin: 1rem 0;
@@ -32,8 +31,7 @@ export class KissArchitecturePage extends LitElement {
         color: var(--text-muted);
         margin-left: 0.5rem;
       }
-      .constraint
-      .constraint .hard-constraint {
+      .constraint .constraint .hard-constraint {
         margin-left: 2.5rem;
       }
       .hard-constraint {
@@ -157,8 +155,7 @@ export class KissArchitecturePage extends LitElement {
         color: var(--text-tertiary);
         font-style: normal;
       }
-
-`,
+    `,
   ];
 
   render() {

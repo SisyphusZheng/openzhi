@@ -18,54 +18,54 @@ export class HelloPage extends LitElement {
   render() {
     return html`
       <style>
-        :host {
-          display: block;
-          min-height: 100vh;
-          background: #000;
-          color: #fff;
-          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        }
-        .container {
-          max-width: 600px;
-          margin: 0 auto;
-          padding: 4rem 1.5rem;
-          text-align: center;
-        }
-        h1 {
-          font-size: 3rem;
-          font-weight: 800;
-          letter-spacing: -0.03em;
-          margin: 0 0 1rem;
-        }
-        .subtitle {
-          color: #666;
-          font-size: 1.125rem;
-          margin-bottom: 2rem;
-        }
-        .cards {
-          display: grid;
-          gap: 1rem;
-          margin-top: 2rem;
-          text-align: left;
-        }
-        kiss-card {
-          --kiss-bg-card: #0a0a0a;
-        }
-        kiss-card h3 {
-          margin: 0;
-          font-size: 1rem;
-        }
-        kiss-card p {
-          margin: 0.5rem 0 0;
-          color: #999;
-          font-size: 0.875rem;
-        }
-        .actions {
-          margin-top: 2rem;
-          display: flex;
-          gap: 0.5rem;
-          justify-content: center;
-        }
+      :host {
+        display: block;
+        min-height: 100vh;
+        background: #000;
+        color: #fff;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      }
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 4rem 1.5rem;
+        text-align: center;
+      }
+      h1 {
+        font-size: 3rem;
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        margin: 0 0 1rem;
+      }
+      .subtitle {
+        color: #666;
+        font-size: 1.125rem;
+        margin-bottom: 2rem;
+      }
+      .cards {
+        display: grid;
+        gap: 1rem;
+        margin-top: 2rem;
+        text-align: left;
+      }
+      kiss-card {
+        --kiss-bg-card: #0a0a0a;
+      }
+      kiss-card h3 {
+        margin: 0;
+        font-size: 1rem;
+      }
+      kiss-card p {
+        margin: 0.5rem 0 0;
+        color: #999;
+        font-size: 0.875rem;
+      }
+      .actions {
+        margin-top: 2rem;
+        display: flex;
+        gap: 0.5rem;
+        justify-content: center;
+      }
       </style>
       <div class="container">
         <h1>Hello, KISS!</h1>
@@ -83,7 +83,9 @@ export class HelloPage extends LitElement {
         <div class="cards">
           <kiss-card>
             <h3 slot="header">SSG + DSD</h3>
-            <p>Static Site Generation with Declarative Shadow DOM. Content visible before JavaScript loads.</p>
+            <p>
+              Static Site Generation with Declarative Shadow DOM. Content visible before JavaScript loads.
+            </p>
           </kiss-card>
           <kiss-card>
             <h3 slot="header">Islands Architecture</h3>
