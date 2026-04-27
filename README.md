@@ -266,11 +266,11 @@ kiss({
 
 ## 包结构
 
-| 包                                          | 版本  | 说明                                      |
-| ------------------------------------------- | ----- | ----------------------------------------- |
-| [@kissjs/core](https://jsr.io/@kissjs/core) | 0.1.6 | 核心框架 — Vite 插件 + Lit/Hono re-export |
-| [@kissjs/rpc](https://jsr.io/@kissjs/rpc)   | 0.1.3 | RPC 客户端 — Lit ReactiveController       |
-| [@kissjs/ui](https://jsr.io/@kissjs/ui)     | 0.1.4 | UI 插件 — WebAwesome CDN 注入             |
+| 包                                          | 版本  | 说明                                            |
+| ------------------------------------------- | ----- | ----------------------------------------------- |
+| [@kissjs/core](https://jsr.io/@kissjs/core) | 0.2.1 | 核心框架 — Vite 插件 + Lit/Hono re-export       |
+| [@kissjs/rpc](https://jsr.io/@kissjs/rpc)   | 0.1.3 | RPC 客户端 — Lit ReactiveController             |
+| [@kissjs/ui](https://jsr.io/@kissjs/ui)     | 0.2.0 | UI 组件库 — kiss-layout, kiss-theme-toggle 等   |
 
 > JSR 上有旧包 `@kissjs/vite` 和 `@kissjs/ssg`，已废弃，请勿使用。
 
@@ -293,7 +293,7 @@ kiss({
 
 ## 当前状态
 
-Phase 5A 完成。纯黑白设计系统 + 主题切换。JSR 已发布。
+v0.2.0 已发布。包内 Island 自动检测 + kiss-theme-toggle Island。文档站自举验证通过。
 
 ## License
 

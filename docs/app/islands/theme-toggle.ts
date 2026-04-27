@@ -31,7 +31,7 @@ export default class ThemeToggle extends LitElement {
     }
   `;
 
-  static properties = {
+  static override properties = {
     theme: { type: String },
   };
 

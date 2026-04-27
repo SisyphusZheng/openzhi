@@ -6,6 +6,10 @@
  *
  * This is a local copy of @kissjs/ui/kiss-theme-toggle to avoid
  * package resolution issues in the client build (configFile: false).
+ *
+ * NOTE: kissDesignTokens omitted intentionally — the package's design-tokens
+ * module imports from 'lit' which can't be resolved in the client build.
+ * Hardcoded values (6px, 0.2s ease) are functionally equivalent.
  */
 import { css, html, LitElement } from '@kissjs/core';
 
@@ -127,3 +131,8 @@ export default class KissThemeToggle extends LitElement {
     `;
   }
 }
+
+// Auto-register when loaded as a module
+// This is also handled by the KISS client entry, but included for
+// consistency with the package version and standalone usage.
+customElements.define(tagName, KissThemeToggle);
