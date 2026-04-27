@@ -1,0 +1,23 @@
+import{i as s,a as o,b as a}from"./island-code-block-Cf8gdzyJ.js";const i="theme-toggle",e=class e extends s{constructor(){super(),this.theme="dark"}connectedCallback(){super.connectedCallback();const r=localStorage.getItem("kiss-theme");r&&(this.theme=r,this.applyTheme())}toggleTheme(){this.theme=this.theme==="dark"?"light":"dark",localStorage.setItem("kiss-theme",this.theme),this.applyTheme()}applyTheme(){document.documentElement.setAttribute("data-theme",this.theme)}render(){return a`
+      <button @click="${this.toggleTheme}">
+        ${this.theme==="dark"?"☀️ Light":"🌙 Dark"}
+      </button>
+    `}};e.styles=o`
+    :host {
+      display: inline-block;
+    }
+    button {
+      background: none;
+      border: 1px solid var(--kiss-border, #333);
+      border-radius: 6px;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      font-size: 0.875rem;
+      color: var(--text-primary, inherit);
+      transition: background 0.2s ease, border-color 0.2s ease;
+    }
+    button:hover {
+      background: var(--kiss-accent-subtle, rgba(255, 255, 255, 0.05));
+      border-color: var(--kiss-border-hover, #555);
+    }
+  `,e.properties={theme:{type:String}};let t=e;customElements.define(i,t);export{t as T};
