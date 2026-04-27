@@ -338,14 +338,14 @@ export function kiss(options: FrameworkOptions = {}): Plugin[] {
           const nodePath = await import('node:path');
 
           const fsModule = {
-            writeFile: (path: string, data: string | Uint8Array) => {
+            writeFile: async (path: string, data: string | Uint8Array) => {
               const dir = nodePath.dirname(path);
               if (!nodeFs.existsSync(dir)) {
                 nodeFs.mkdirSync(dir, { recursive: true });
               }
               nodeFs.writeFileSync(path, data);
             },
-            mkdir: (path: string) => {
+            mkdir: async (path: string) => {
               if (!nodeFs.existsSync(path)) {
                 nodeFs.mkdirSync(path, { recursive: true });
               }

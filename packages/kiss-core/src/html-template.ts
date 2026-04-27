@@ -30,7 +30,7 @@ export function htmlTemplatePlugin(_options: FrameworkOptions = {}): Plugin {
         const tags: HtmlTagDescriptor[] = [];
 
         // Get the route-specific data from server context if available
-        const routeMeta = (ctx as Record<string, unknown>)[KISS_ROUTE_META_KEY] as
+        const routeMeta = (ctx as unknown as Record<string, unknown>)[KISS_ROUTE_META_KEY] as
           | RouteMeta
           | undefined;
 
