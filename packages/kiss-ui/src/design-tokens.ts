@@ -21,7 +21,7 @@
  * ```
  */
 
-import { css } from 'lit';
+import { css } from '@kissjs/core';
 
 /**
  * KISS Design Tokens CSS
