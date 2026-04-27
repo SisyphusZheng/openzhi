@@ -68,6 +68,11 @@ export class ConfigurationPage extends LitElement {
                 <td>Head injection for stylesheets, scripts, fragments</td>
               </tr>
               <tr>
+                <td><span class="inline-code">packageIslands</span> <span class="new-badge">new</span></td>
+                <td><span class="inline-code">[]</span></td>
+                <td>Package names to scan for Islands (auto-detection)</td>
+              </tr>
+              <tr>
                 <td><span class="inline-code">ui</span> <span class="deprecated">deprecated</span></td>
                 <td><span class="inline-code">undefined</span></td>
                 <td>Use <span class="inline-code">inject</span> instead</td>
@@ -95,6 +100,19 @@ export class ConfigurationPage extends LitElement {
             },
           })</code></pre></code-block>
 
+          <h2>packageIslands Option <span class="new-badge">new</span></h2>
+          <p>
+            Auto-detect Islands from npm/JSR packages. The framework scans the package's
+            <code>islands</code> export and registers them automatically:
+          </p>
+          <code-block><pre><code>kiss({
+  packageIslands: ['@kissjs/ui'], // Scan @kissjs/ui for Islands
+})</code></pre></code-block>
+          <p>
+            The package must export an <code>islands</code> array with Island metadata. See
+            <a href="/guide/islands">Islands Architecture</a> for details.
+          </p>
+
           <h2>Full Config Example</h2>
           <code-block
           ><pre><code>// vite.config.ts
@@ -109,6 +127,9 @@ export class ConfigurationPage extends LitElement {
                   islandsDir: 'app/islands',
                   componentsDir: 'app/components',
                   middleware: 'app/middleware.ts',
+
+                  // Auto-detect Islands from packages
+                  packageIslands: ['@kissjs/ui'],
 
                   // Generic head injection (preferred)
                   inject: {

@@ -116,35 +116,56 @@ export class ChangelogPage extends LitElement {
 
           <div class="version-section">
             <div class="version-header">
-              <span class="version-number">Unreleased</span>
+              <span class="version-number">0.2.0</span>
+              <span class="version-date">2026-04-27</span>
             </div>
 
             <div class="change-category added">
               <h4>Added</h4>
               <ul class="change-list">
-                <li>Theme toggle with localStorage persistence in kiss-layout</li>
-                <li>Navigation sections for Examples + Project in kiss-layout sidebar</li>
-                <li>Test coverage for kiss-rpc and kiss-ui packages</li>
+                <li>
+                  <strong>Package Islands Auto-Detection</strong>: Automatically detect and register
+                  Islands from npm/JSR packages
+                </li>
+                <li>
+                  <code>packageIslands</code> configuration option to specify which packages to scan
+                </li>
+                <li>
+                  <code>scanPackageIslands()</code> function to dynamically import packages and read
+                  <code>islands</code> export
+                </li>
+                <li>
+                  <code>kiss-theme-toggle</code> Island for theme switching (Dark/Light)
+                </li>
+                <li>
+                  Package Island metadata type: <code>PackageIslandMeta</code>
+                </li>
               </ul>
             </div>
 
             <div class="change-category changed">
               <h4>Changed</h4>
               <ul class="change-list">
-                <li>Docs site fully dogfoods @kissjs/ui/kiss-layout (25 routes migrated)</li>
-                <li>code-block Island now uses CSS variables for theme support</li>
-                <li>Removed unused kiss-docs-kit package and logger.ts module</li>
-                <li>Removed unimplemented hydrationStrategy option from types</li>
+                <li>
+                  <strong>BREAKING</strong>: <code>kiss-layout</code> theme toggle logic removed — use
+                  <code>kiss-theme-toggle</code> Island instead
+                </li>
+                <li>
+                  <code>kiss-layout</code> simplified to static component (no client-side state)
+                </li>
+                <li>
+                  L2 theme toggle script removed (replaced by Island hydration)
+                </li>
+                <li>
+                  Client build now auto-generates import and registration code for package Islands
+                </li>
               </ul>
             </div>
 
             <div class="change-category fixed">
               <h4>Fixed</h4>
               <ul class="change-list">
-                <li>allNoExternal now correctly passed to Vite SSR noExternal</li>
-                <li>userResolveAlias supports both Record and Alias[] formats</li>
-                <li>Island detection finds islands in app/islands/ (not routes/islands/)</li>
-                <li>Theme toggle button now has click handler bound</li>
+                <li>Theme toggle now uses proper Island hydration (DSD + client-side state)</li>
               </ul>
             </div>
           </div>
@@ -278,6 +299,11 @@ export class ChangelogPage extends LitElement {
               </tr>
             </thead>
             <tbody>
+              <tr>
+                <td>0.2.0</td>
+                <td>2026-04-27</td>
+                <td>Package Islands auto-detection + kiss-theme-toggle Island</td>
+              </tr>
               <tr>
                 <td>0.1.7</td>
                 <td>2026-04-27</td>

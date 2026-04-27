@@ -68,8 +68,8 @@ export class IslandsGuidePage extends LitElement {
 Example rejections:
   - Active highlight  → aria-current + CSS (L0+L1, not an Island)
   - Sidebar collapse  → &lt;details&gt;/&lt;summary&gt; (L0, not an Island)
-  - Theme toggle      → color-scheme + CSS vars (L1, not an Island)
-  - Code copy button  → Island + Clipboard API (L2+L4, valid Island)</div>
+  - Code copy button  → Island + Clipboard API (L2+L4, valid Island)
+  - Theme toggle      → Island + localStorage (L2+L4, valid Island)</div>
 
           <h2>How Islands Work</h2>
           <h3>Build Time</h3>
@@ -101,6 +101,85 @@ export default class MyCounter extends LitElement {
   }
 }</code></pre></code-block>
           <p>Use it in any route — it gets hydrated on the client automatically.</p>
+
+          <h2>Package Islands</h2>
+          <p>
+            KISS can automatically detect and register Islands from npm/JSR packages. This enables
+            reusable Island components that can be shared across projects.
+          </p>
+
+          <h3>Creating a Package Island</h3>
+          <p>
+            In your package, create an Island and export it via the <code>islands</code> array:
+          </p>
+          <code-block><pre><code>// packages/my-ui/src/my-counter.ts
+import { LitElement, html, css } from 'lit'
+
+export const tagName = 'my-counter'
+export default class MyCounter extends LitElement {
+  static properties = { count: { type: Number } }
+  render() {
+    return html\`&lt;button @click=\${() => this.count++}&gt;Count: \${this.count}&lt;/button&gt;\`
+  }
+}
+
+// packages/my-ui/src/index.ts
+import type { PackageIslandMeta } from '@kissjs/core'
+import MyCounter, { tagName as counterTag } from './my-counter.js'
+
+// Export islands array for auto-detection
+export const islands: PackageIslandMeta[] = [
+  { tagName: counterTag, modulePath: 'my-ui/my-counter', strategy: 'eager' }
+]
+
+export { MyCounter }</code></pre></code-block>
+
+          <h3>Using Package Islands</h3>
+          <p>
+            Configure <code>packageIslands</code> in your <code>vite.config.ts</code>:
+          </p>
+          <code-block><pre><code>// vite.config.ts
+import { kiss } from '@kissjs/core'
+
+export default {
+  plugins: [
+    kiss({
+      packageIslands: ['my-ui'], // Auto-detect islands from my-ui package
+    })
+  ]
+}</code></pre></code-block>
+          <p>
+            The framework will automatically import and register all Islands from the package. No
+            manual registration needed.
+          </p>
+
+          <h3>Package Island Metadata</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Field</th>
+                <th>Type</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>tagName</code></td>
+                <td>string</td>
+                <td>Custom element tag name (e.g., 'my-counter')</td>
+              </tr>
+              <tr>
+                <td><code>modulePath</code></td>
+                <td>string</td>
+                <td>Import path relative to package (e.g., 'my-ui/my-counter')</td>
+              </tr>
+              <tr>
+                <td><code>strategy</code></td>
+                <td>string</td>
+                <td>Hydration strategy: 'eager' | 'lazy' | 'idle' | 'visible' (default: 'eager')</td>
+              </tr>
+            </tbody>
+          </table>
 
           <h2>DSD + Islands</h2>
           <p>Non-Island components (in <span class="inline-code">app/components/</span> and <span class="inline-code">app/routes/</span>) are rendered at build time with <strong>Declarative Shadow DOM</strong>. Their content is visible before JS loads:</p>

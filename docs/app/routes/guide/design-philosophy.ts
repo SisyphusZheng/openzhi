@@ -89,8 +89,13 @@ export class DesignPhilosophyPage extends LitElement {
               without Lit. You can use Lit without KISS.
             </p>
             <p>
+              Package Islands are auto-detected — no manual registration needed. Just export an
+              <code>islands</code> array from your package, and KISS finds it.
+            </p>
+            <p>
               <span class="hard-constraint">Lit is not a forced peerDependency</span>
               <span class="hard-constraint">No mandatory validation scheme</span>
+              <span class="hard-constraint">Zero-config Island discovery</span>
             </p>
           </div>
 
