@@ -4,6 +4,7 @@
   "exports": "./vite.config.ts",
   "imports": {
     "@kissjs/core": "../packages/kiss-core/src/index.ts",
+    "@kissjs/ui": "../packages/kiss-ui/src/index.ts",
     "lit": "npm:lit@^3.2.0",
     "@lit/reactive-element": "npm:@lit/reactive-element@^2.0.0",
     "lit-element": "npm:lit-element@^4.0.0",
