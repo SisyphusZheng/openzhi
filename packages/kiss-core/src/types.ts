@@ -76,7 +76,7 @@ export interface FrameworkOptions {
   /** SSR build configuration (build-time only, no runtime) */
   ssr?: {
     /** Packages that should not be externalized in SSR build (default: lit packages) */
-    noExternal?: string[];
+    noExternal?: (string | RegExp)[];
   };
 
   /** Island configuration */
@@ -120,7 +120,7 @@ export interface RouteEntry {
   /** Relative file path from routesDir */
   filePath: string;
   /** Route type */
-  type: 'page' | 'api' | 'island';
+  type: 'page' | 'api' | 'island' | 'special';
   /** Variable name for module import */
   varName: string;
   /** Special file type (renderer or middleware), if applicable */

@@ -129,7 +129,7 @@ export async function scanRoutes(
             relativePath.replace(/^_renderer/, '_renderer').replace(/^_middleware/, '_middleware'),
           ),
           filePath: relativePath.split(sep).join(posix.sep),
-          type: 'page', // Same type, but flagged
+          type: 'special', // Not a page or API route — renderer/middleware only
           varName: `Special_${specialType}_${baseDir.replace(/[\\/]/g, '_') || 'root'}`,
           special: specialType,
         });

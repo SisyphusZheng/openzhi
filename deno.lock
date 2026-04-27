@@ -13,25 +13,14 @@
     "npm:@lit-labs/ssr-dom-shim@^1.2.0": "1.5.1",
     "npm:@lit-labs/ssr@^3.2.0": "3.3.1",
     "npm:@lit/reactive-element@2": "2.1.2",
-    "npm:@microsoft/api-extractor@^7.58.0": "7.58.7_@types+node@22.19.17",
-    "npm:@parse5/tools@0.7": "0.7.0_parse5@7.3.0",
-    "npm:@rollup/pluginutils@^5.3.0": "5.3.0",
     "npm:@types/node@22": "22.19.17",
-    "npm:@volar/typescript@^2.4.0": "2.4.28",
-    "npm:@vue/language-core@^2.2.0": "2.2.0_typescript@5.9.3",
-    "npm:compare-versions@6": "6.1.1",
-    "npm:debug@^4.4.0": "4.4.3",
     "npm:entities@4": "4.5.0",
     "npm:hono@4": "4.12.14",
     "npm:hono@^4.7.0": "4.12.14",
     "npm:jsr@*": "0.14.3",
-    "npm:kolorist@^1.8.0": "1.8.0",
     "npm:lit-element@4": "4.2.2",
     "npm:lit-html@^3.2.0": "3.3.2",
     "npm:lit@^3.2.0": "3.2.0",
-    "npm:local-pkg@^1.1.0": "1.1.2",
-    "npm:magic-string@0.30": "0.30.21",
-    "npm:node-fetch@^3.3.2": "3.3.2",
     "npm:parse5@7": "7.3.0",
     "npm:typescript@5": "5.9.3",
     "npm:typescript@^5.9.0": "5.9.3",
@@ -248,7 +237,7 @@
         "@lit-labs/ssr-client",
         "@lit-labs/ssr-dom-shim",
         "@lit/reactive-element",
-        "@parse5/tools@0.3.0",
+        "@parse5/tools",
         "@types/node@16.18.126",
         "enhanced-resolve",
         "lit",
@@ -305,12 +294,6 @@
     },
     "@parse5/tools@0.3.0": {
       "integrity": "sha512-zxRyTHkqb7WQMV8kTNBKWb1BeOFUKXBXTBWuxg9H9hfvQB3IwP6Iw2U75Ia5eyRxPNltmY7E8YAlz6zWwUnjKg==",
-      "dependencies": [
-        "parse5"
-      ]
-    },
-    "@parse5/tools@0.7.0_parse5@7.3.0": {
-      "integrity": "sha512-JDvrGhc8kYBq7/SM4obJkpgwWo6pRjF/fo9CCaiJyVOkDf203Ciq2UF6TjzCFXKs7Q/zS2sS4deyBx0XzRvh9Q==",
       "dependencies": [
         "parse5"
       ]
@@ -1096,17 +1079,6 @@
   "workspace": {
     "dependencies": [
       "npm:@lit-labs/ssr-client@^1.1.8",
-      "npm:@microsoft/api-extractor@^7.58.0",
-      "npm:@parse5/tools@0.7",
-      "npm:@rollup/pluginutils@^5.3.0",
-      "npm:@volar/typescript@^2.4.0",
-      "npm:@vue/language-core@^2.2.0",
-      "npm:compare-versions@6",
-      "npm:debug@^4.4.0",
-      "npm:kolorist@^1.8.0",
-      "npm:local-pkg@^1.1.0",
-      "npm:magic-string@0.30",
-      "npm:node-fetch@^3.3.2",
       "npm:typescript@^5.9.0"
     ],
     "members": {

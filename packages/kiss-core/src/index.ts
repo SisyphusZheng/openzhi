@@ -198,7 +198,8 @@ export function kiss(options: FrameworkOptions = {}): Plugin[] {
             `${totalIslands} island(s) — KISS Architecture`,
         );
       } catch (err) {
-        console.error('[KISS] Route scan failed:', err);
+        // Route scanning failure is always fatal — empty builds should not pass CI
+        throw new Error(`[KISS] Route scan failed: ${err instanceof Error ? err.message : String(err)}`);
       }
     },
   };
@@ -386,7 +387,8 @@ export function kiss(options: FrameworkOptions = {}): Plugin[] {
           await server.close();
         }
       } catch (err) {
-        console.error('[KISS SSG] Failed:', err);
+        // SSG failure should fail the build — silent success is misleading
+        throw new Error(`[KISS SSG] Failed: ${err instanceof Error ? err.message : String(err)}`);
       } finally {
         try {
           unlinkSync(tmpEntryPath);

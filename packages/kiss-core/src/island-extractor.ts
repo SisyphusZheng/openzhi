@@ -70,58 +70,7 @@ export function islandExtractorPlugin(options: FrameworkOptions = {}): Plugin {
         console.log('[KISS] No islands detected — zero client JS output');
       }
     },
-
-    /**
-     * Generate the island registry module.
-     * This is imported by the client entry point.
-     */
-    generateBundle() {
-      // Generate the island registry as a virtual module
-      const entries = Array.from(islandMap.values());
-
-      if (entries.length === 0) return;
-
-      const registryCode = generateIslandRegistry(entries, islandsDir);
-
-      this.emitFile({
-        type: 'asset',
-        fileName: 'kiss-island-registry.js',
-        source: registryCode,
-      });
-    },
   };
-}
-
-/**
- * Generate the island registry module code.
- * This module is used by the client build to register island custom elements.
- */
-function generateIslandRegistry(
-  entries: IslandChunkMap[],
-  _islandsDir: string,
-): string {
-  const imports = entries
-    .map((entry, i) => {
-      return `import Island_${i} from '.${entry.modulePath}';`;
-    })
-    .join('\n');
-
-  const registrations = entries
-    .map((entry, i) => {
-      return `if (!customElements.get('${entry.tagName}')) {
-  customElements.define('${entry.tagName}', Island_${i});
-}`;
-    })
-    .join('\n');
-
-  return `// KISS Island Registry (auto-generated at build time)
-// DO NOT EDIT — changes will be overwritten
-
-${imports}
-
-// Register all island custom elements
-${registrations}
-`;
 }
 
 /**
