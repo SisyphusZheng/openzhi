@@ -192,7 +192,9 @@ export default class ApiConsumer extends LitElement {
 
   override connectedCallback() {
     super.connectedCallback();
-    this._fetchStatus();
+    // Defer initial fetch to avoid double-render during SSR hydration.
+    // User can click ⟳ Refresh to load data.
+    Promise.resolve().then(() => this._fetchStatus());
   }
 
   private async _fetchStatus() {
