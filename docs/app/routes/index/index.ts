@@ -42,7 +42,7 @@ export default class DocsHome extends LitElement {
     }
     .hero-tech {
       font-size: clamp(0.625rem, 1vw, 0.75rem);
-      color: #888;
+      color: var(--kiss-text-muted);
       letter-spacing: 0.05em;
     }
 
@@ -56,7 +56,7 @@ export default class DocsHome extends LitElement {
     .section-title {
       font-size: clamp(0.625rem, 1vw, 0.75rem);
       font-weight: 500;
-      color: #888;
+      color: var(--kiss-text-muted);
       letter-spacing: 0.1em;
       margin-bottom: 1.5%;
       text-transform: uppercase;
@@ -66,7 +66,7 @@ export default class DocsHome extends LitElement {
     .stats {
       display: flex;
       gap: 0;
-      border: 0.5px solid #e5e5e5;
+      border: 0.5px solid var(--kiss-border);
       border-radius: 4px;
     }
     .stat {
@@ -74,16 +74,16 @@ export default class DocsHome extends LitElement {
       text-align: center;
       padding: 3% 2%;
     }
-    .stat + .stat { border-left: 0.5px solid #e5e5e5; }
+    .stat + .stat { border-left: 0.5px solid var(--kiss-border); }
     .stat-val {
       font-size: clamp(1.25rem, 3vw, 1.75rem);
       font-weight: 500;
-      color: #000;
+      color: var(--kiss-text-primary);
       line-height: 1;
     }
     .stat-label {
       font-size: clamp(0.625rem, 1vw, 0.75rem);
-      color: #888;
+      color: var(--kiss-text-muted);
       margin-top: 0.25rem;
     }
 
@@ -91,18 +91,18 @@ export default class DocsHome extends LitElement {
     .code-row {
       display: flex;
       gap: 0;
-      border: 0.5px solid #e5e5e5;
+      border: 0.5px solid var(--kiss-border);
       border-radius: 4px;
     }
     .code-panel {
       flex: 1;
       padding: 2%;
-      background: #f8f8f8;
+      background: var(--kiss-bg-surface);
     }
-    .code-panel + .code-panel { border-left: 0.5px solid #e5e5e5; }
+    .code-panel + .code-panel { border-left: 0.5px solid var(--kiss-border); }
     .code-panel .label {
       font-size: clamp(0.5rem, 0.9vw, 0.625rem);
-      color: #888;
+      color: var(--kiss-text-muted);
       text-transform: uppercase;
       letter-spacing: 0.1em;
       margin-bottom: 2%;
@@ -112,7 +112,7 @@ export default class DocsHome extends LitElement {
       font-family: 'SF Mono','Fira Code',monospace;
       font-size: clamp(0.625rem, 1vw, 0.75rem);
       line-height: 1.6;
-      color: #555;
+      color: var(--kiss-text-secondary);
     }
 
     /* Features */
@@ -128,12 +128,12 @@ export default class DocsHome extends LitElement {
     .feat h3 {
       font-size: clamp(0.875rem, 1.5vw, 1rem);
       font-weight: 500;
-      color: #000;
+      color: var(--kiss-text-primary);
       margin: 0 0 1%;
     }
     .feat p {
       font-size: clamp(0.75rem, 1.2vw, 0.875rem);
-      color: #666;
+      color: var(--kiss-text-tertiary);
       margin: 0;
       line-height: 1.5;
     }
@@ -142,7 +142,7 @@ export default class DocsHome extends LitElement {
     .qstart {
       display: flex;
       gap: 0;
-      border: 0.5px solid #e5e5e5;
+      border: 0.5px solid var(--kiss-border);
       border-radius: 4px;
     }
     .qstep {
@@ -152,21 +152,21 @@ export default class DocsHome extends LitElement {
       flex-direction: column;
       gap: 0.5rem;
     }
-    .qstep + .qstep { border-left: 0.5px solid #e5e5e5; }
+    .qstep + .qstep { border-left: 0.5px solid var(--kiss-border); }
     .qstep .num {
       font-size: clamp(0.5rem, 0.8vw, 0.625rem);
-      color: #888;
+      color: var(--kiss-text-muted);
     }
     .qstep code {
       font-family: monospace;
       font-size: clamp(0.625rem, 1vw, 0.75rem);
-      background: #f0f0f0;
+      background: var(--kiss-code-bg);
       padding: 1% 2%;
       border-radius: 2px;
     }
     .qstep .desc {
       font-size: clamp(0.625rem, 1vw, 0.75rem);
-      color: #888;
+      color: var(--kiss-text-muted);
     }
 
     /* Comparison */
@@ -174,7 +174,7 @@ export default class DocsHome extends LitElement {
       width: 100%;
       border-collapse: collapse;
       font-size: clamp(0.625rem, 1vw, 0.75rem);
-      border: 0.5px solid #e5e5e5;
+      border: 0.5px solid var(--kiss-border);
     }
     .cmp th, .cmp td {
       padding: 2%;
@@ -182,12 +182,12 @@ export default class DocsHome extends LitElement {
       border-bottom: 0.5px solid #e5e5e5;
     }
     .cmp th {
-      background: #f8f8f8;
-      color: #888;
+      background: var(--kiss-bg-surface);
+      color: var(--kiss-text-muted);
       font-weight: 500;
     }
-    .cmp td { color: #666; }
-    .cmp td:first-child { color: #000; font-weight: 500; }
+    .cmp td { color: var(--kiss-text-tertiary); }
+    .cmp td:first-child { color: var(--kiss-text-primary); font-weight: 500; }
 
     @media (max-width: 640px) {
       .hero { flex-direction: column; align-items: flex-start; }
