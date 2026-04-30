@@ -53,14 +53,14 @@ export class KissUIPage extends LitElement {
             ><pre><code>// deno.json
 {
   "imports": {
-    "@kissjs/ui": "jsr:@kissjs/ui@^0.3.3"
+    "@kissjs/ui": "jsr:@kissjs/ui@^0.4.0"
   }
 }</code></pre></code-block
           >
 
           <h2>可用组件</h2>
           <p>
-            <span class="inline-code">@kissjs/ui</span> v0.3.3+ 提供以下 Web Components：
+            <span class="inline-code">@kissjs/ui</span> v0.4.0+ 提供以下 Web Components：
           </p>
 
           <div class="component-grid">
@@ -145,7 +145,7 @@ export class MyPage extends LitElement {
           <div class="callout warn">
             <p>
               <strong>历史说明</strong> — v0.1.0-0.1.3 是 WebAwesome CDN loader。v0.1.4+
-              开始自有 Web Components 组件库（当前 v0.3.3）。如需 WebAwesome，改用
+              开始自有 Web Components 组件库（当前 v0.4.0）。如需 WebAwesome，改用
               <span class="inline-code">inject</span> 选项手动注入 CDN。
             </p>
           </div>
