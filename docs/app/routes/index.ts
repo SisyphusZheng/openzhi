@@ -5,19 +5,39 @@ export const tagName = 'docs-home';
 
 export default class DocsHome extends LitElement {
   static styles = css`
-    :host { display: block; }
+    :host {
+      display: block;
+      /* Hero uses its own color vars, independent of page theme
+         because the hero simultaneously uses black AND white backgrounds. */
+      --hero-text: #fff;
+      --hero-text-dim: #888;
+      --hero-text-muted: #555;
+      --hero-bg-dark: #000;
+      --hero-bg-light: #fff;
+      --hero-text-light: #000;
+      --hero-border-light: #ccc;
+      --hero-text-light-dim: #888;
+    }
 
     /* ─── Hero — full-width diagonal split ─── */
     .hero-wrap {
       position: relative;
       height: 400px;
-      background: var(--kiss-bg-base);
       overflow: hidden;
+      /* Break out of layout container constraints to be full viewport width */
+      width: 100vw;
+      margin-left: calc(-50vw + 50%);
     }
-    .hero-dark {
+    .hero-diag {
       position: absolute; inset: 0;
-      clip-path: polygon(0 0, 58% 0, 100% 42%, 100% 100%, 38% 100%);
-      background: #000;
+      /* Clean diagonal: black on top-left, white on bottom-right */
+      background: linear-gradient(to bottom right, #000 0%, #000 51%, #f8f8f8 51%, #f8f8f8 100%);
+    }
+    .hero-diag-line {
+      position: absolute; inset: 0;
+      pointer-events: none;
+      /* Diagonal accent line exactly on the split */
+      background: linear-gradient(to bottom right, transparent 0%, transparent calc(51% - 0.25px), #ccc calc(51% - 0.25px), #ccc 51%, transparent 51%, transparent 100%);
     }
     .hero-line {
       position: absolute; inset: 0;
@@ -34,14 +54,14 @@ export default class DocsHome extends LitElement {
     .hero-kiss {
       font-size: 88px;
       font-weight: 500;
-      color: #fff;
+      color: var(--hero-text);
       letter-spacing: -4px;
       line-height: 0.9;
       margin: 0;
     }
     .hero-tagline {
       font-size: 10px;
-      color: #888;
+      color: var(--hero-text-dim);
       letter-spacing: 3px;
       text-transform: uppercase;
       margin-top: 16px;
@@ -59,9 +79,9 @@ export default class DocsHome extends LitElement {
     .hero-ping {
       padding: 6px 20px;
       border-radius: 2px;
-      border: 0.5px solid #000;
+      border: 0.5px solid var(--hero-text-light);
       background: transparent;
-      color: #000;
+      color: var(--hero-text-light);
       font-size: 11px;
       cursor: pointer;
       letter-spacing: 2px;
@@ -70,33 +90,33 @@ export default class DocsHome extends LitElement {
       font-family: inherit;
     }
     .hero-ping:hover {
-      background: #000;
-      color: #fff;
+      background: var(--hero-text-light);
+      color: var(--hero-bg-light);
     }
     .hero-ping:disabled {
       opacity: 0.2;
       cursor: not-allowed;
     }
     .hero-box {
-      background: #fff;
-      border: 0.5px solid #ccc;
+      background: var(--hero-bg-light);
+      border: 0.5px solid var(--hero-border-light);
       border-radius: 2px;
       padding: 10px 14px;
       min-width: 180px;
       min-height: 36px;
       font-family: 'SF Mono','Fira Code','Consolas',monospace;
       font-size: 10px;
-      color: #555;
+      color: var(--hero-text-light-dim);
       line-height: 1.6;
     }
-    .hero-box .prompt { color: #aaa; }
-    .hero-box .result { color: #000; }
-    .hero-box .loading { color: #888; }
+    .hero-box .prompt { color: var(--hero-border-light); }
+    .hero-box .result { color: var(--hero-text-light); }
+    .hero-box .loading { color: var(--hero-text-light-dim); }
     .hero-dot {
       position: absolute;
       width: 6px; height: 6px;
       border-radius: 50%;
-      background: #000;
+      background: var(--hero-text-light);
       top: 38%; left: 61%;
       z-index: 3;
     }
@@ -106,7 +126,7 @@ export default class DocsHome extends LitElement {
       left: 48px;
       z-index: 3;
       font-size: 9px;
-      color: #555;
+      color: var(--hero-text-muted);
       letter-spacing: 3px;
     }
     .hero-foot em { font-style: normal; font-weight: 500; }
@@ -265,12 +285,8 @@ export default class DocsHome extends LitElement {
       <kiss-layout home>
         <!-- Hero -->
         <div class="hero-wrap">
-          <div class="hero-dark"></div>
-          <div class="hero-line">
-            <svg viewBox="0 0 1000 400" preserveAspectRatio="none">
-              <line x1="580" y1="0" x2="380" y2="400" stroke="var(--kiss-border)" stroke-width="0.5"/>
-            </svg>
-          </div>
+          <div class="hero-diag"></div>
+          <div class="hero-diag-line"></div>
           <div class="hero-dot"></div>
 
           <div class="hero-brand">
@@ -290,11 +306,11 @@ export default class DocsHome extends LitElement {
           </div>
 
           <div class="hero-foot">
-            <em style="color:#666">jamstack</em>
+            <em style="color:var(--hero-text-muted)">jamstack</em>
             ·
-            <em style="color:#000">islands</em>
+            <em style="color:var(--hero-text)">islands</em>
             ·
-            <em style="color:#666">web std</em>
+            <em style="color:var(--hero-text-muted)">web std</em>
           </div>
         </div>
 
