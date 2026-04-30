@@ -186,14 +186,44 @@ export class RoadmapPage extends LitElement {
               </tr>
               <tr>
                 <td>Phase 10</td>
-                <td>v0.4.0 — PWA + 生态</td>
-                <td>PWA 支持、博客模块、在线文档</td>
-                <td>进行中</td>
+                <td>v0.4.0 — Serverless Milestone</td>
+                <td>Serverless API CI 部署 + 全站审计归零</td>
+                <td class="status-done">完成</td>
               </tr>
               <tr>
                 <td>Phase 11</td>
-                <td>v1.0 — .kiss Compiler</td>
-                <td>零运行时编译器、消灭 Lit</td>
+                <td>v0.5.0 — Vite 8 + 体验优化</td>
+                <td>Vite 8 迁移、Wrangler 适配、SSG 管线加速</td>
+                <td>规划中</td>
+              </tr>
+              <tr>
+                <td>Phase 12</td>
+                <td>v0.6.0 — .kiss Compiler Alpha</td>
+                <td>编译器原型、零运行时组件</td>
+                <td>规划中</td>
+              </tr>
+              <tr>
+                <td>Phase 13</td>
+                <td>v0.7.0 — 生态与兼容</td>
+                <td>React 19 CE 互操作、自动 RPC 生成</td>
+                <td>规划中</td>
+              </tr>
+              <tr>
+                <td>Phase 14</td>
+                <td>v0.8.0 — 生产就绪</td>
+                <td>WASM Islands、性能基准、压力测试</td>
+                <td>规划中</td>
+              </tr>
+              <tr>
+                <td>Phase 15</td>
+                <td>v0.9.0 — API 冻结</td>
+                <td>Public API 冻结、迁移文档、弃用声明</td>
+                <td>规划中</td>
+              </tr>
+              <tr>
+                <td>Phase 16</td>
+                <td>v1.0.0 — 稳定发布</td>
+                <td>语义版本 1.0、长期支持</td>
                 <td>规划中</td>
               </tr>
             </tbody>
@@ -286,25 +316,67 @@ export class RoadmapPage extends LitElement {
             <li>JSR publish typecheck 修复 — noExternalPatterns 类型断言</li>
           </ul>
 
-          <h2>Phase 10：v0.4.0 PWA + 生态（进行中）</h2>
+          <h2>Phase 10：v0.4.0 Serverless Milestone（已完成）</h2>
           <ul class="task-list">
-            <li>PWA 支持 — 自动生成 manifest.json + sw.js（CacheFirst 策略）</li>
-            <li><code>@kissjs/blog</code> 设计完成 — <code>docs/decisions/0004-blog-system.md</code></li>
-            <li>博客系统实现在 <code>.kiss</code> compiler 之后（depends on Phase 11）</li>
-            <li>腾讯在线文档同步 — 变更记录发布到 docs.qq.com</li>
-            <li>v0.3.x 全量修复 — 35+ 项代码审查问题已清零</li>
-            <li>SSG 新项目 DSD 缺失 — 纯路由组件 SSR 输出空壳标签 <code>&lt;df-home defer-hydration&gt;&lt;/df-home&gt;</code>，未渲染 Shadow DOM。docs 站点因使用 <code>kiss-layout</code> 绕过此问题。根因在 <code>entry-descriptor.ts</code> 生成的 SSR 渲染代码中 Lit SSR <code>render()</code> 未被正确调用或 resolveAlias 导致 shim 不完整</li>
+            <li>Serverless API CI 部署 — deploy-api.yml 自动化，CORS 修复，平台迁移 deployctl→deno deploy</li>
+            <li>kiss-demo-api.sisyphuszheng.deno.net 生产在线，前端 kiss-hero-ping 一键 verify</li>
+            <li>Service Worker 修复 — PRECACHE 删除，networkFirst，动态缓存名</li>
+            <li>全站 1px→0.5px（17 文件 40+ 处）</li>
+            <li>全站硬编码色 → --kiss-* CSS 变量</li>
+            <li>首页全中文 + 比较表 + 响应式尺寸</li>
+            <li>kiss-hero-ping 提取为 @kissjs/ui 组件</li>
+            <li>全站 lint/type 归零，84/84 测试通过</li>
+            <li>SW 缓存 bug 修复（"切回首页变旧版"根因定位）</li>
+            <li>Hydration race 修复（嵌套 Island 双渲染）</li>
           </ul>
 
-          <h2>Phase 11：v1.0 .kiss Compiler（规划中）</h2>
-          <p class="subtitle">彻底消灭 Lit，零运行时 Web Components。</p>
+          <h2>Phase 11：v0.5.0 Vite 8 + 体验优化（规划中）</h2>
           <ul class="task-list">
-            <li>发明 <code>.kiss</code> 文件格式 — 声明式组件（template + script + style）</li>
-            <li>编译器：<code>.kiss → vanilla Custom Element</code>（0 runtime deps）</li>
-            <li>消除：Lit 58kb gzip、@lit-labs/ssr、hydration、CJS polyfill</li>
-            <li>SSR 变为同步 string concat：<code>template.innerHTML</code></li>
-            <li>保留 Lit 作为可选 fallback（<code>compiler: 'auto'</code>）</li>
-            <li>详见证：<code>docs/decisions/0002-kiss-compiler-eliminate-lit.md</code></li>
+            <li>Vite 6 → 8 迁移 — 更新 Vite 插件 API、构建管线适配</li>
+            <li>Wrangler 适配 — Cloudflare Workers 部署支持</li>
+            <li>SSG 管线加速 — 并行渲染、增量构建</li>
+            <li>Demo 子目录构建集成到 deploy.yml</li>
+            <li>开发体验优化 — 更好的错误信息、HMR 改进</li>
+          </ul>
+
+          <h2>Phase 12：v0.6.0 .kiss Compiler Alpha（规划中）</h2>
+          <ul class="task-list">
+            <li>.kiss 文件格式定义 — template + script + style 声明式组件</li>
+            <li>编译器原型 — .kiss → vanilla Custom Element（0 runtime deps）</li>
+            <li>消除 Lit 58kb gzip、@lit-labs/ssr、CJS polyfill</li>
+            <li>SSR 变为同步 string concat：template.innerHTML（无 hydration）</li>
+            <li>Lit 保留为可选 fallback（compiler: 'auto'）</li>
+            <li>详见证：docs/decisions/0002-kiss-compiler-eliminate-lit.md</li>
+          </ul>
+
+          <h2>Phase 13：v0.7.0 生态与兼容（规划中）</h2>
+          <ul class="task-list">
+            <li>React 19 Custom Elements 互操作 — 属性传递、事件</li>
+            <li>Vue 3 原生 CE 支持</li>
+            <li>自动 API RPC 生成 — 从 Hono 路由自动生成类型安全客户端</li>
+            <li>i18n 支持 — 多路由 locale 架构</li>
+          </ul>
+
+          <h2>Phase 14：v0.8.0 生产就绪（规划中）</h2>
+          <ul class="task-list">
+            <li>WASM Islands — 计算密集型 Island 编译为 WebAssembly</li>
+            <li>性能基准 — Lighthouse 分数、LCP/TTI/CLS 基准线</li>
+            <li>压力测试 — CDN 缓存命中率、Serverless 冷启动</li>
+            <li>可访问性审计 — WCAG 2.1 AA 合规</li>
+          </ul>
+
+          <h2>Phase 15：v0.9.0 API 冻结（规划中）</h2>
+          <ul class="task-list">
+            <li>Public API 冻结 — kiss() 选项接口、插件接口</li>
+            <li>迁移文档 — v0.x → v1.0 升级指南</li>
+            <li>弃用声明 — 旧 API 标记 deprecated</li>
+          </ul>
+
+          <h2>Phase 16：v1.0.0 稳定发布（规划中）</h2>
+          <ul class="task-list">
+            <li>语义版本 1.0 — 向后兼容承诺</li>
+            <li>长期支持 — 至少 12 个月 bug 修复</li>
+            <li>版本号基线：@kissjs/core@1.0.0, @kissjs/ui@1.0.0, @kissjs/rpc@1.0.0, @kissjs/create@1.0.0</li>
           </ul>
 
           <h2>已解决的技术债</h2>

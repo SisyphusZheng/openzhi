@@ -5,10 +5,10 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![CI](https://github.com/SisyphusZheng/kiss/actions/workflows/test.yml/badge.svg)](https://github.com/SisyphusZheng/kiss/actions/workflows/test.yml)
-[![JSR @kissjs/core](https://jsr.io/badges/@kissjs/core)](https://jsr.io/@kissjs/core)
-[![JSR @kissjs/ui](https://jsr.io/badges/@kissjs/ui)](https://jsr.io/@kissjs/ui)
-[![JSR @kissjs/rpc](https://jsr.io/badges/@kissjs/rpc)](https://jsr.io/@kissjs/rpc)
-[![JSR @kissjs/create](https://jsr.io/badges/@kissjs/create)](https://jsr.io/@kissjs/create)
+[![JSR](https://img.shields.io/badge/@kissjs/core-0.3.4-083344?logo=jsr)](https://jsr.io/@kissjs/core)
+[![JSR](https://img.shields.io/badge/@kissjs/ui-0.4.0-083344?logo=jsr)](https://jsr.io/@kissjs/ui)
+[![JSR](https://img.shields.io/badge/@kissjs/rpc-0.2.5-083344?logo=jsr)](https://jsr.io/@kissjs/rpc)
+[![JSR](https://img.shields.io/badge/@kissjs/create-0.3.4-083344?logo=jsr)](https://jsr.io/@kissjs/create)
 [![Vite](https://img.shields.io/badge/Vite-6.x-646CFF)](https://vitejs.dev/)
 [![Hono](https://img.shields.io/badge/Hono-4.x-E36002)](https://hono.dev/)
 [![Lit](https://img.shields.io/badge/Lit-3.x-325CFF)](https://lit.dev/)
@@ -24,12 +24,12 @@ deno task dev
 
 ## 包
 
-| 包                                              | 版本                                                 | 说明                                          |
-| ----------------------------------------------- | ---------------------------------------------------- | --------------------------------------------- |
-| [@kissjs/core](https://jsr.io/@kissjs/core)     | [![JSR](https://jsr.io/badges/@kissjs/core)](https://jsr.io/@kissjs/core)     | 核心框架 — Vite 插件 + Lit/Hono re-export     |
-| [@kissjs/ui](https://jsr.io/@kissjs/ui)         | [![JSR](https://jsr.io/badges/@kissjs/ui)](https://jsr.io/@kissjs/ui)         | UI 组件库 — kiss-layout, kiss-hero-ping 等   |
-| [@kissjs/rpc](https://jsr.io/@kissjs/rpc)       | [![JSR](https://jsr.io/badges/@kissjs/rpc)](https://jsr.io/@kissjs/rpc)       | RPC 客户端 — Lit ReactiveController           |
-| [@kissjs/create](https://jsr.io/@kissjs/create) | [![JSR](https://jsr.io/badges/@kissjs/create)](https://jsr.io/@kissjs/create) | 项目脚手架                                    |
+| 包                                              | 版本                                                                                                                       | 说明                                          |
+| ----------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------- |
+| [@kissjs/core](https://jsr.io/@kissjs/core)     | ![JSR](https://img.shields.io/badge/0.3.4-083344?logo=jsr)                                                                | 核心框架 — Vite 插件 + Lit/Hono re-export     |
+| [@kissjs/ui](https://jsr.io/@kissjs/ui)         | ![JSR](https://img.shields.io/badge/0.4.0-083344?logo=jsr)                                                                | UI 组件库 — kiss-layout, kiss-hero-ping 等   |
+| [@kissjs/rpc](https://jsr.io/@kissjs/rpc)       | ![JSR](https://img.shields.io/badge/0.2.5-083344?logo=jsr)                                                                | RPC 客户端 — Lit ReactiveController           |
+| [@kissjs/create](https://jsr.io/@kissjs/create) | ![JSR](https://img.shields.io/badge/0.3.4-083344?logo=jsr)                                                                | 项目脚手架                                    |
 
 > JSR 上有旧包 `@kissjs/vite` 和 `@kissjs/ssg`，已废弃，请勿使用。
 

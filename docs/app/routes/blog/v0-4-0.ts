@@ -46,11 +46,31 @@ export default class BlogV040 extends LitElement {
           <h1>KISS v0.4.0 — Serverless Integration Milestone</h1>
           <p class="meta" style="color:var(--kiss-text-muted);font-size:0.8125rem;margin-bottom:2rem">2026-04-30 · 版本发布</p>
 
-          <p>今天发布了 v0.4.0。相比 v0.3.2（上一个正式 Release），跨越了 90 个 commit，修改了 103 个文件，净增 2094 行代码。</p>
+          <p>KISS v0.4.0 只有一个核心主题：<strong>Serverless 集成跑通了</strong>。</p>
+          <p>从 v0.3.2 开始，KISS 的架构文档里就写着 "API Routes 可以部署为 Serverless"，但直到这个版本，它才真正 CI 自动化、真正跑在生产环境上。</p>
 
           <div class="truth">
             <strong>v0.3.2 → v0.4.0：90 commits · 103 files · +3904 / −1810</strong>
           </div>
+
+          <h2>Serverless API 的落地之路</h2>
+          <p>
+            这 12 个 commit 是从"文档描述"到"真机部署"的全过程：
+          </p>
+
+          <table class="cmp">
+            <tr><th>阶段</th><th>问题</th><th>解决方案</th></tr>
+            <tr><td>部署平台迁移</td><td><code>deployctl</code>（旧平台 Classic）废弃</td><td>迁移到 <code>deno deploy</code>（新平台 v2）</td></tr>
+            <tr><td>CORS</td><td><code>hono/cors</code> 中间件在 Deno Deploy 上不兼容</td><td>手动设置 Access-Control-Allow-Origin</td></tr>
+            <tr><td>入口路径</td><td>deployctl 和 deno deploy 的入口解析不一致</td><td>用 <code>--entrypoint=serverless.ts</code> 明确指定</td></tr>
+            <tr><td>Import Map</td><td>Deno Deploy 读不到 workspace 配置</td><td>从 clean temp dir 部署，自带 deno.json</td></tr>
+            <tr><td>CI 触发</td><td>只 push main + demo/** 变更</td><td><code>deploy-api.yml</code> 自动化 + workflow_dispatch</td></tr>
+          </table>
+
+          <p>
+            最终成果：<code>kiss-demo-api.sisyphuszheng.deno.net</code> 生产在线，CI 自动部署，前端 <code>kiss-hero-ping</code> 一键 verify。
+            这是 KISS Jamstack 承诺的 "J"（Markup）+ "A"（API）+ "M"（Markup） 全链路闭环。
+          </p>
 
           <h2>从 v0.3.2 到 v0.4.0 完整变更</h2>
 
