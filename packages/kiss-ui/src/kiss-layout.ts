@@ -542,6 +542,7 @@ export class KissLayout extends LitElement {
           { path: '/guide/error-handling', label: 'Error Handling' },
           { path: '/guide/security-middleware', label: 'Security & Middleware' },
           { path: '/guide/testing', label: 'Testing' },
+          { path: '/demo', label: 'JAM Pattern in Action' },
         ],
       },
       {
@@ -585,12 +586,6 @@ export class KissLayout extends LitElement {
         items: [
           { path: '/changelog', label: 'Changelog' },
           { path: '/contributing', label: 'Contributing' },
-        ],
-      },
-      {
-        section: 'Demo',
-        items: [
-          { path: '/demo', label: 'JAM Pattern in Action' },
         ],
       },
     ];
