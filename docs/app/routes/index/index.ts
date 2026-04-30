@@ -10,6 +10,7 @@ export default class DocsHome extends LitElement {
     /* Hero — 紧凑，内容居中 */
     .hero {
       background: #000;
+      border-bottom: 0.5px solid #222;
       padding: 4% 0;
       display: flex;
       align-items: center;
@@ -301,8 +302,8 @@ class App extends LitElement {
               </div>
               <div class="qstep">
                 <span class="num">步骤 3</span>
-                <code>deno task build:ssg</code>
-                <span class="desc">构建静态网站</span>
+                <code>deno task build<br>deno task build:client<br>deno task build:ssg</code>
+                <span class="desc">三段式构建：SSR → Island → SSG</span>
               </div>
             </div>
           </div>
