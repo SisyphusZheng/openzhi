@@ -10,7 +10,15 @@ export default class DocsHome extends LitElement {
     /* Hero — 紧凑，内容居中 */
     .hero {
       background: #000;
-      padding: 4% 5%;
+      padding: 4% 0;
+      display: flex;
+      align-items: center;
+    }
+    .hero-inner {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      width: 100%;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -39,7 +47,7 @@ export default class DocsHome extends LitElement {
 
     /* Content */
     .content {
-      max-width: 90%;
+      max-width: 720px;
       margin: 0 auto;
       padding: 3% 5%;
     }

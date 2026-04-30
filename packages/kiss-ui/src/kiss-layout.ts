@@ -116,7 +116,7 @@ export class KissLayout extends LitElement {
       }
 
       .header-inner {
-        max-width: 1400px;
+        max-width: var(--kiss-layout-max-width, 1400px);
         margin: 0 auto;
         padding: 0 var(--kiss-size-8);
         display: flex;
@@ -252,7 +252,7 @@ export class KissLayout extends LitElement {
 
         /* === Sidebar (Desktop) === */
         .docs-sidebar {
-          width: 240px;
+          width: clamp(200px, 20vw, 280px);
           flex-shrink: 0;
           border-right: 1px solid var(--kiss-border);
           padding: var(--kiss-size-6) 0;
