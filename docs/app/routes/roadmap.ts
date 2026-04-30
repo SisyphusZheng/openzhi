@@ -330,15 +330,19 @@ export class RoadmapPage extends LitElement {
             <li>Hydration race 修复（嵌套 Island 双渲染）</li>
           </ul>
 
-          <h2>Phase 11：v0.5.0 Vite 8 + 体验优化（规划中）</h2>
+          <h2>Phase 11：v0.5.0 Vite 8 + DX 优化（规划中）</h2>
           <ul class="task-list">
+            <li><strong>deno task check 一键验证</strong> — lint + fmt + type + test 单命令</li>
+            <li><strong>构建错误美化</strong> — Vite/Rollup 堆栈 → KISS 中文错误提示</li>
+            <li><strong>组件 API 文档</strong> — kiss-layout / kiss-hero-ping props 文档化</li>
+            <li><strong>CSS 变量参考</strong> — 所有 --kiss-* 变量的使用说明</li>
+            <li><strong>500 错误页</strong> — 漂亮错误页代替原始 HTML dump</li>
             <li>Vite 6 → 8 迁移 — 更新 Vite 插件 API、构建管线适配</li>
             <li>Wrangler 适配 — Cloudflare Workers 部署支持</li>
             <li>SSG 管线加速 — 并行渲染、增量构建</li>
-            <li>Demo 子目录构建集成到 deploy.yml</li>
             <li>WebSocket 支持 — Hono app.ws() 暴露到 serverless 入口</li>
             <li>deno create @kissjs/app 协议支持</li>
-            <li>开发体验优化 — 更好的错误信息、HMR 改进</li>
+            <li>HMR 改进 — 主题/样式变更热更新</li>
           </ul>
 
           <h2>Phase 12：v0.6.0 零基础设施 JS + .kiss Compiler Alpha（规划中）</h2>
