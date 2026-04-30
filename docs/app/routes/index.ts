@@ -111,7 +111,7 @@ export default class DocsHome extends LitElement {
     }
     .hero-foot em { font-style: normal; font-weight: 500; }
 
-    /* ─── Content sections (minimal) ─── */
+    /* ─── Content sections ─── */
     .content {
       max-width: 800px;
       margin: 0 auto;
@@ -124,16 +124,44 @@ export default class DocsHome extends LitElement {
       color: var(--kiss-text-muted);
       margin-bottom: 2rem;
     }
+    .section-label-line {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .section-label-line span {
+      font-size: 9px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--kiss-text-muted);
+      white-space: nowrap;
+    }
+    .section-label-line hr {
+      flex: 1;
+      border: none;
+      border-top: 0.5px solid var(--kiss-border);
+      margin: 0;
+    }
 
-    /* Features — minimal grid, no borders */
+    /* Features grid */
     .features {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 0;
+      margin-bottom: 3rem;
     }
     .feature {
       padding: 1.5rem 0;
       border-top: 0.5px solid var(--kiss-border);
+      transition: background 0.15s;
+      padding-left: 1rem;
+      padding-right: 1rem;
+      margin: 0 -1rem;
+      border-radius: 2px;
+    }
+    .feature:hover {
+      background: var(--kiss-bg-surface);
     }
     .feature:nth-child(-n+2) { border-top: none; }
     .feature h3 {
@@ -141,6 +169,7 @@ export default class DocsHome extends LitElement {
       font-weight: 500;
       color: var(--kiss-text-primary);
       margin: 0 0 6px;
+      letter-spacing: -0.01em;
     }
     .feature p {
       font-size: 11px;
@@ -149,26 +178,56 @@ export default class DocsHome extends LitElement {
       line-height: 1.7;
     }
 
+    /* Stats row */
+    .stats {
+      display: flex;
+      gap: 0;
+      border-top: 0.5px solid var(--kiss-border);
+      padding-top: 2rem;
+      margin-bottom: 3rem;
+    }
+    .stat {
+      flex: 1;
+      text-align: center;
+    }
+    .stat + .stat {
+      border-left: 0.5px solid var(--kiss-border);
+    }
+    .stat-val {
+      font-size: 28px;
+      font-weight: 500;
+      color: var(--kiss-text-primary);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .stat-label {
+      font-size: 9px;
+      color: var(--kiss-text-muted);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
     /* Links row */
     .links {
       display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-top: 3rem;
-      padding-top: 2rem;
+      gap: 0;
       border-top: 0.5px solid var(--kiss-border);
     }
     .link-item {
+      flex: 1;
+      text-align: center;
       font-size: 11px;
       color: var(--kiss-text-secondary);
       text-decoration: none;
-      padding: 4px 0;
-      border-bottom: 0.5px solid transparent;
+      padding: 1rem 0;
       transition: all 0.15s;
+    }
+    .link-item + .link-item {
+      border-left: 0.5px solid var(--kiss-border);
     }
     .link-item:hover {
       color: var(--kiss-text-primary);
-      border-color: var(--kiss-text-primary);
+      background: var(--kiss-bg-surface);
     }
 
     @media (max-width: 640px) {
@@ -241,23 +300,46 @@ export default class DocsHome extends LitElement {
 
         <!-- Content -->
         <div class="content">
-          <div class="section-label">Built with web standards</div>
+          <div class="section-label-line">
+            <hr>
+            <span>built with web standards</span>
+            <hr>
+          </div>
           <div class="features">
             <div class="feature">
               <h3>Web standards first</h3>
-              <p>No new abstractions. Know the platform, know KISS. HTTP via Fetch API, UI via Web Components, modules via ESM.</p>
+              <p>HTTP via Fetch API, UI via Web Components, modules via ESM. No framework lock-in.</p>
             </div>
             <div class="feature">
               <h3>Islands architecture</h3>
-              <p>Only interactive components load JavaScript. Zero JS for static content, full interactivity where you need it.</p>
+              <p>Only interactive components load JS. Static pages ship zero JavaScript.</p>
             </div>
             <div class="feature">
               <h3>Type-safe RPC</h3>
-              <p>End-to-end type safety via Hono RPC. No code generation. Server and client share types directly.</p>
+              <p>End-to-end types via Hono RPC — server and client share types without code generation.</p>
             </div>
             <div class="feature">
               <h3>SSG + DSD</h3>
-              <p>Build-time static generation with Declarative Shadow DOM. Server-rendered HTML that hydrates instantly on the client.</p>
+              <p>Build-time static generation with Declarative Shadow DOM that hydrates instantly.</p>
+            </div>
+          </div>
+
+          <div class="stats">
+            <div class="stat">
+              <div class="stat-val">&lt;20KB</div>
+              <div class="stat-label">runtime payload</div>
+            </div>
+            <div class="stat">
+              <div class="stat-val">0KB</div>
+              <div class="stat-label">static pages</div>
+            </div>
+            <div class="stat">
+              <div class="stat-val">4</div>
+              <div class="stat-label">run-times</div>
+            </div>
+            <div class="stat">
+              <div class="stat-val">100%</div>
+              <div class="stat-label">web std</div>
             </div>
           </div>
 
