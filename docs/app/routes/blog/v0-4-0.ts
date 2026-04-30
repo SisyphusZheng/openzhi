@@ -46,19 +46,79 @@ export default class BlogV040 extends LitElement {
           <h1>KISS v0.4.0 — Serverless Integration Milestone</h1>
           <p class="meta" style="color:var(--kiss-text-muted);font-size:0.8125rem;margin-bottom:2rem">2026-04-30 · 版本发布</p>
 
-          <p>今天发布了 v0.4.0。这个版本不是一个量变——它标志着 KISS 从"能跑起来"变成了"真正能用"。Serverless API 集成、PWA、全中文首页、一致的主题系统，全部到位。</p>
+          <p>今天发布了 v0.4.0。相比 v0.3.2（上一个正式 Release），跨越了 90 个 commit，修改了 103 个文件，净增 2094 行代码。</p>
 
-          <h2>v0.3.x → v0.4.0 变更清单</h2>
+          <div class="truth">
+            <strong>v0.3.2 → v0.4.0：90 commits · 103 files · +3904 / −1810</strong>
+          </div>
 
+          <h2>从 v0.3.2 到 v0.4.0 完整变更</h2>
+
+          <h3>@kissjs/ui</h3>
           <table class="cmp">
-            <tr><th>类别</th><th>v0.3.x</th><th>v0.4.0</th></tr>
-            <tr><td>Serverless API</td><td>文档只有描述</td><td>实际部署 + Deno Deploy 集成</td></tr>
-            <tr><td>Theme</td><td>硬编码颜色</td><td>全站 --kiss-* CSS 变量</td></tr>
-            <tr><td>Service Worker</td><td>Precache 首页（永远旧）</td><td>networkFirst（实时更新）</td></tr>
-            <tr><td>Border 风格</td><td>1px 混杂</td><td>全站统一 0.5px</td></tr>
-            <tr><td>首页内容</td><td>英文</td><td>全中文，响应式</td></tr>
-            <tr><td>Ping 组件</td><td>无</td><td>kiss-hero-ping（@kissjs/ui）</td></tr>
-            <tr><td>代码质量</td><td>lint/type 有残留</td><td>0 lint + 0 type errors</td></tr>
+            <tr><th>变更</th><th>说明</th><th>版本</th></tr>
+            <tr><td>新组件：kiss-hero-ping</td><td>可配置 API 的 ping 按钮，🟢/🔴 状态点</td><td>0.3.6 → 0.4.0</td></tr>
+            <tr><td>kiss-layout</td><td>sidebar 240px → clamp(200px, 20vw, 280px)，max-width 变量化</td><td>0.3.5</td></tr>
+            <tr><td>全组件边框统一</td><td>kiss-button/card/input/code-block/layout 全部 0.5px</td><td>0.3.5</td></tr>
+            <tr><td>kiss-input</td><td>修复 undefined string 问题</td><td>0.3.5</td></tr>
+            <tr><td>kiss-button</td><td>修复 nothing 输出</td><td>0.3.5</td></tr>
+            <tr><td>kiss-code-block</td><td>修复 timeout cleanup</td><td>0.3.5</td></tr>
+            <tr><td>theme-toggle</td><td>ARIA 修复，动画访问性</td><td>0.3.5</td></tr>
+            <tr><td>effects token</td><td>暗色模式阴影修复</td><td>0.3.5</td></tr>
+            <tr><td>vite.config.build</td><td>新增 kiss-hero-ping 构建入口</td><td>0.3.5</td></tr>
+            <tr><td>index.ts</td><td>导出 kiss-hero-ping，islands 数组 +1</td><td>0.3.6</td></tr>
+          </table>
+
+          <h3>@kissjs/core</h3>
+          <table class="cmp">
+            <tr><th>变更</th><th>说明</th></tr>
+            <tr><td>Service Worker</td><td>PRECACHE 删除，networkFirst（HTML）+ cacheFirst（assets），动态缓存名</td></tr>
+            <tr><td>SSR entry</td><td>修复 Island 组件注册缺失（Lit SSR 渲染空标签问题）</td></tr>
+            <tr><td>扫描器</td><td>route-scanner 重构，isDirectory() 方法调用修复</td></tr>
+            <tr><td>上下文</td><td>createSsrContext 改进</td></tr>
+            <tr><td>构建管线</td><td>build-client + build-ssg 稳定化</td></tr>
+            <tr><td>deploy.yml</td><td>加 .version 缓存清除文件</td></tr>
+            <tr><td>deno.json/jsr.json</td><td>添加 CLI 导出</td></tr>
+            <tr><td>types.ts</td><td>JSDoc 修复</td></tr>
+          </table>
+
+          <h3>@kissjs/rpc</h3>
+          <table class="cmp">
+            <tr><th>变更</th><th>说明</th></tr>
+            <tr><td>abort race 修复</td><td>RPC 调用取消竞争条件修复</td></tr>
+          </table>
+
+          <h3>文档站</h3>
+          <table class="cmp">
+            <tr><th>类别</th><th>变更</th></tr>
+            <tr><td>首页</td><td>全中文、响应式 clamp()、比较表、Quick start 修正、auto/% 尺寸</td></tr>
+            <tr><td>全站边框</td><td>17 个文件、40+ 处 1px → 0.5px 统一</td></tr>
+            <tr><td>主题</td><td>所有非 Hero 区域硬编码色 → --kiss-* CSS 变量</td></tr>
+            <tr><td>Hero 可见度</td><td>#555→#999，#444→#777，border-bottom 隔离</td></tr>
+            <tr><td>布局统一</td><td>首页 720px 内容宽度对齐 Guide 页面</td></tr>
+            <tr><td>博客</td><td>v0.4.0 发布文、kiss-compiler 设计决策</td></tr>
+            <tr><td>架构文档</td><td>设计哲学、部署指南等同步更新</td></tr>
+            <tr><td>README</td><td>精简 80%，加 JSR badges，诚实 JS 大小</td></tr>
+            <tr><td>导航</td><td>侧边栏组织优化</td></tr>
+          </table>
+
+          <h3>CI/CD</h3>
+          <table class="cmp">
+            <tr><th>流水线</th><th>变更</th></tr>
+            <tr><td>Lint & Format</td><td>稳定通过（跳过 docs/ 由于 Deno fmt bug）</td></tr>
+            <tr><td>Test</td><td>并行化 test-core + test-ui + test-create，移除 coverage 步骤</td></tr>
+            <tr><td>Publish</td><td>自动检测 deno.json 版本变更，多包发布</td></tr>
+            <tr><td>Deploy</td><td>三步构建完整 CI，缓存清除</td></tr>
+          </table>
+
+          <h3>代码质量</h3>
+          <table class="cmp">
+            <tr><th>指标</th><th>v0.3.2</th><th>v0.4.0</th></tr>
+            <tr><td>Lint 错误</td><td>有残留</td><td>0</td></tr>
+            <tr><td>TypeScript 类型</td><td>有残留</td><td>0 errors</td></tr>
+            <tr><td>UI 测试通过</td><td>部分</td><td>84/84</td></tr>
+            <tr><td>全站 1px 残留</td><td>40+ 处</td><td>0</td></tr>
+            <tr><td>硬编码色（非 Hero）</td><td>大量</td><td>0（全部 CSS 变量）</td></tr>
           </table>
 
           <h2>与其他框架的直观对比</h2>
