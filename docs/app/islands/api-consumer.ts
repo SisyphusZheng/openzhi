@@ -192,11 +192,6 @@ export default class ApiConsumer extends LitElement {
 
   override connectedCallback() {
     super.connectedCallback();
-  }
-
-  override firstUpdated() {
-    // Fetch after hydration is fully complete to avoid
-    // re-render conflicts during Lit SSR hydration.
     this._fetchStatus();
   }
 

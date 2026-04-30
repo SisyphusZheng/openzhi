@@ -174,7 +174,7 @@ export default class PageDemo extends LitElement {
           </div>
 
           <!-- Live API Consumer Island -->
-          <api-consumer></api-consumer>
+          <!-- api-consumer rendered by renderer in light DOM -->
 
           <hr class="divider" />
 
