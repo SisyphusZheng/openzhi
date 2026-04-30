@@ -136,7 +136,7 @@ export class KissLayout extends LitElement {
         justify-content: center;
         width: 32px;
         height: 32px;
-        border: 1px solid var(--kiss-border);
+        border: 0.5px solid var(--kiss-border);
         border-radius: var(--kiss-radius-md);
         background: transparent;
         color: var(--kiss-text-tertiary);
@@ -236,7 +236,7 @@ export class KissLayout extends LitElement {
           font-weight: var(--kiss-font-weight-medium);
           letter-spacing: var(--kiss-letter-spacing-wide);
           padding: var(--kiss-size-2) var(--kiss-size-3);
-          border: 1px solid var(--kiss-border);
+          border: 0.5px solid var(--kiss-border);
           border-radius: var(--kiss-radius-md);
           transition: color var(--kiss-transition-normal), border-color var(--kiss-transition-normal);
         }
