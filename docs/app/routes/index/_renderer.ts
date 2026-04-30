@@ -9,9 +9,14 @@ import type { KissRenderer } from '@kissjs/core';
 
 const renderer: KissRenderer = {
   wrap(html, _ctx) {
-    return html.replace(
+    const cleaned = html.replace(
       '<hero-ping defer-hydration>',
       '<hero-ping>',
+    );
+    // Force CDN to revalidate on each load (GitHub Pages edge cache)
+    return cleaned.replace(
+      '</head>',
+      '<meta http-equiv="cache-control" content="no-cache, must-revalidate">\n</head>',
     );
   },
 };

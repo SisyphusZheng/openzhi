@@ -33,13 +33,13 @@ export default class DocsHome extends LitElement {
     }
     .hero-desc {
       font-size: 0.8125rem;
-      color: #555;
+      color: #999;
       line-height: 1.6;
       max-width: 340px;
     }
     .hero-tech {
       font-size: 0.625rem;
-      color: #444;
+      color: #777;
       margin-top: 0.75rem;
       letter-spacing: 0.05em;
     }
@@ -205,26 +205,6 @@ export default class DocsHome extends LitElement {
     .cmp td:first-child { color: var(--kiss-text-secondary); font-size: 0.625rem; }
     .cmp .ours { color: var(--kiss-text-primary); font-weight: 500; }
     .cmp tr:last-child td { border-bottom: none; }
-
-    /* ===== Links ===== */
-    .links {
-      display: flex;
-      gap: 0;
-      border: 0.5px solid var(--kiss-border);
-      border-radius: 4px;
-      overflow: hidden;
-    }
-    .link-item {
-      flex: 1;
-      text-align: center;
-      font-size: 0.6875rem;
-      color: var(--kiss-text-secondary);
-      text-decoration: none;
-      padding: 0.875rem 0;
-      transition: all 0.15s;
-    }
-    .link-item + .link-item { border-left: 0.5px solid var(--kiss-border); }
-    .link-item:hover { color: var(--kiss-text-primary); background: var(--kiss-bg-surface); }
 
     @media (max-width: 640px) {
       .hero-inner { flex-direction: column; align-items: flex-start; gap: 16px; padding: 0 1.5rem; }
@@ -421,15 +401,6 @@ class App extends LitElement {
               </tr>
             </table>
           </div>
-
-          <!-- Links -->
-          <div class="links">
-            <a class="link-item" href="/guide/getting-started">Getting started →</a>
-            <a class="link-item" href="/demo">Live demo →</a>
-            <a class="link-item" href="https://github.com/SisyphusZheng/kiss">GitHub →</a>
-            <a class="link-item" href="https://jsr.io/@kissjs/core">JSR →</a>
-          </div>
-        </div>
       </kiss-layout>
     `;
   }
