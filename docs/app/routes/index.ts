@@ -7,59 +7,45 @@ export default class DocsHome extends LitElement {
   static styles = css`
     :host { display: block; }
 
-    /* ─── Hero ─── */
+    /* Hero — minimal, inside layout */
     .hero {
-      position: relative;
-      height: 200px;
-      margin: 0 0 3rem;
-      border-bottom: 0.5px solid var(--kiss-border);
-      /* Diagonal split via pseudo-element */
-    }
-    .hero::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to bottom right, #000 0%, #000 50%, transparent 50.5%, transparent 100%);
-    }
-    .hero-inner {
-      position: relative;
-      z-index: 1;
-      height: 100%;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 48px;
+      gap: 24px;
+      padding: 3rem 0 2rem;
+      border-bottom: 0.5px solid var(--kiss-border);
+      margin-bottom: 2rem;
     }
     .hero-brand {
       display: flex;
       flex-direction: column;
-      gap: 2px;
+      gap: 4px;
     }
     .hero-kiss {
-      font-size: 36px;
+      font-size: 42px;
       font-weight: 500;
-      color: #fff;
-      letter-spacing: -1px;
+      color: var(--kiss-text-primary);
+      letter-spacing: -2px;
       line-height: 1;
     }
     .hero-tagline {
-      font-size: 9px;
-      color: #666;
+      font-size: 10px;
+      color: var(--kiss-text-muted);
       letter-spacing: 2px;
       text-transform: uppercase;
     }
-
     .hero-term {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
     }
     .hero-ping {
       padding: 4px 16px;
       border-radius: 2px;
-      border: 0.5px solid #000;
+      border: 0.5px solid var(--kiss-text-primary);
       background: transparent;
-      color: #000;
+      color: var(--kiss-text-primary);
       font-size: 10px;
       cursor: pointer;
       letter-spacing: 1.5px;
@@ -69,8 +55,8 @@ export default class DocsHome extends LitElement {
       white-space: nowrap;
     }
     .hero-ping:hover {
-      background: #000;
-      color: #fff;
+      background: var(--kiss-text-primary);
+      color: var(--kiss-bg-base);
     }
     .hero-ping:disabled {
       opacity: 0.25;
@@ -78,21 +64,18 @@ export default class DocsHome extends LitElement {
     }
     .hero-result {
       font-family: 'SF Mono','Fira Code','Consolas',monospace;
-      font-size: 9px;
-      color: #888;
-      min-width: 100px;
+      font-size: 10px;
+      color: var(--kiss-text-muted);
+      min-width: 120px;
     }
-    .hero-result .r { color: #000; }
+    .hero-result .r { color: var(--kiss-text-primary); }
 
-    /* ─── Content ─── */
-    .content {
-      padding: 0 0 6rem;
-    }
+    /* Features */
     .features {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 0;
-      margin-bottom: 2.5rem;
+      margin-bottom: 2rem;
     }
     .feature {
       padding: 1rem 0;
@@ -100,18 +83,19 @@ export default class DocsHome extends LitElement {
     }
     .feature:nth-child(-n+2) { border-top: none; }
     .feature h3 {
-      font-size: 11px;
+      font-size: 12px;
       font-weight: 500;
       color: var(--kiss-text-primary);
       margin: 0 0 4px;
     }
     .feature p {
-      font-size: 10px;
+      font-size: 11px;
       color: var(--kiss-text-tertiary);
       margin: 0;
       line-height: 1.6;
     }
 
+    /* Links */
     .links {
       display: flex;
       gap: 0;
@@ -120,7 +104,7 @@ export default class DocsHome extends LitElement {
     .link-item {
       flex: 1;
       text-align: center;
-      font-size: 10px;
+      font-size: 11px;
       color: var(--kiss-text-secondary);
       text-decoration: none;
       padding: 0.75rem 0;
@@ -133,9 +117,8 @@ export default class DocsHome extends LitElement {
     }
 
     @media (max-width: 640px) {
-      .hero { height: 160px; }
-      .hero-inner { padding: 0 24px; flex-direction: column; align-items: flex-start; justify-content: center; gap: 12px; }
-      .hero-kiss { font-size: 28px; }
+      .hero { flex-direction: column; align-items: flex-start; gap: 16px; }
+      .hero-kiss { font-size: 32px; }
       .features { grid-template-columns: 1fr; }
       .feature:nth-child(2) { border-top: 0.5px solid var(--kiss-border); }
     }
@@ -164,49 +147,45 @@ export default class DocsHome extends LitElement {
     return html`
       <kiss-layout home>
         <div class="hero">
-          <div class="hero-inner">
-            <div class="hero-brand">
-              <div class="hero-kiss">KISS</div>
-              <div class="hero-tagline">keep it simple, stupid</div>
-            </div>
-            <div class="hero-term">
-              <button class="hero-ping" @click=${this._ping} ?disabled=${this._loading}>
-                ${this._loading ? 'pinging...' : 'ping server'}
-              </button>
-              <span class="hero-result">
-                ${this._loading ? html`<span>connecting...</span>` : ''}
-                ${this._result ? html`<span class="r">${this._result}</span>` : ''}
-              </span>
-            </div>
+          <div class="hero-brand">
+            <div class="hero-kiss">KISS</div>
+            <div class="hero-tagline">keep it simple, stupid</div>
+          </div>
+          <div class="hero-term">
+            <button class="hero-ping" @click=${this._ping} ?disabled=${this._loading}>
+              ${this._loading ? 'pinging...' : 'ping server'}
+            </button>
+            <span class="hero-result">
+              ${this._loading ? html`<span>connecting...</span>` : ''}
+              ${this._result ? html`<span class="r">${this._result}</span>` : ''}
+            </span>
           </div>
         </div>
 
-        <div class="content">
-          <div class="features">
-            <div class="feature">
-              <h3>Web standards first</h3>
-              <p>HTTP via Fetch API, UI via Web Components, modules via ESM.</p>
-            </div>
-            <div class="feature">
-              <h3>Islands architecture</h3>
-              <p>Only interactive components load JS. Static pages ship zero.</p>
-            </div>
-            <div class="feature">
-              <h3>Type-safe RPC</h3>
-              <p>End-to-end types via Hono RPC — no code generation.</p>
-            </div>
-            <div class="feature">
-              <h3>SSG + DSD</h3>
-              <p>Build-time static generation with instant client hydration.</p>
-            </div>
+        <div class="features">
+          <div class="feature">
+            <h3>Web standards first</h3>
+            <p>HTTP via Fetch API, UI via Web Components, modules via ESM.</p>
           </div>
+          <div class="feature">
+            <h3>Islands architecture</h3>
+            <p>Only interactive components load JS. Static pages ship zero.</p>
+          </div>
+          <div class="feature">
+            <h3>Type-safe RPC</h3>
+            <p>End-to-end types via Hono RPC — no code generation.</p>
+          </div>
+          <div class="feature">
+            <h3>SSG + DSD</h3>
+            <p>Build-time static generation with instant client hydration.</p>
+          </div>
+        </div>
 
-          <div class="links">
-            <a class="link-item" href="/guide/getting-started">Getting started →</a>
-            <a class="link-item" href="/demo">Live demo →</a>
-            <a class="link-item" href="https://github.com/SisyphusZheng/kiss">GitHub →</a>
-            <a class="link-item" href="https://jsr.io/@kissjs/core">JSR →</a>
-          </div>
+        <div class="links">
+          <a class="link-item" href="/guide/getting-started">Getting started →</a>
+          <a class="link-item" href="/demo">Live demo →</a>
+          <a class="link-item" href="https://github.com/SisyphusZheng/kiss">GitHub →</a>
+          <a class="link-item" href="https://jsr.io/@kissjs/core">JSR →</a>
         </div>
       </kiss-layout>
     `;
