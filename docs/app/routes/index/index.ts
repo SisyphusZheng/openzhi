@@ -11,8 +11,8 @@ export default class DocsHome extends LitElement {
     .hero {
       background: #000;
       margin: 0 0 2.5rem;
-      min-height: auto;
-      padding: 3.5rem 0;
+      min-height: 50vh;
+      padding: 2.5rem 0;
     }
     .hero-inner {
       max-width: 720px;
@@ -23,7 +23,7 @@ export default class DocsHome extends LitElement {
       justify-content: space-between;
       gap: 2rem;
     }
-    .hero-brand { display: flex; flex-direction: column; gap: 6px; }
+    .hero-brand { display: flex; flex-direction: column; gap: 0.4rem; }
     .hero-kiss {
       font-size: 3.5rem;
       font-weight: 500;
