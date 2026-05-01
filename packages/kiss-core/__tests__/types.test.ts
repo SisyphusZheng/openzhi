@@ -13,13 +13,13 @@ import type {
   SpecialFileType,
   SsrContext,
 } from '../src/types.ts';
-import type { HydrationStrategy } from '../src/entry-generators.ts';
+// v0.5.0: HydrationStrategy type is defined inline in types.ts (FrameworkOptions.island.hydrationStrategy)
+// No longer exported from entry-generators.ts
 
 // Compile-time type existence checks (lint compliance: consume the imported types)
 type _KissMiddleware = KissMiddleware;
 type _KissRenderer = KissRenderer;
 type _SpecialFileType = SpecialFileType;
-type _HydrationStrategy = HydrationStrategy;
 
 // These are compile-time assertions — if the types don't exist or have
 // wrong shapes, this file won't compile.

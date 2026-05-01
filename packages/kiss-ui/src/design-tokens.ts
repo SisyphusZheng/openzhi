@@ -48,9 +48,7 @@ import { kissEffectTokens } from './tokens/effects.js';
  * They provide consistent spacing, colors, typography, and more.
  */
 export const kissDesignTokens: CSSResult = css`
-  ${kissSpacingTokens} ${kissTypographyTokens}
-    ${kissColorTokens}
-    ${kissEffectTokens};
+  ${kissSpacingTokens} ${kissTypographyTokens} ${kissColorTokens} ${kissEffectTokens};
 `;
 
 /**

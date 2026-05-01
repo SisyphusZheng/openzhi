@@ -75,6 +75,9 @@ export default defineConfig({
   resolve: {
     alias: {
       '@kissjs/core': runtimeShim,
+      // v0.5.0: render-dsd subpath needs separate alias since @kissjs/core → .kiss-runtime.ts
+      '@kissjs/core/render-dsd': resolve(__dir, '../packages/kiss-core/src/render-dsd.ts'),
+      '@kissjs/core/kiss-element': resolve(__dir, '../packages/kiss-core/src/kiss-element.ts'),
     },
   },
 });

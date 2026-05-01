@@ -22,8 +22,6 @@
  *   - No <!--lit-part--> markers to reconcile
  */
 
-import type { HydrationStrategy } from './types.js';
-
 /** Island entry for client bundle generation */
 export interface ClientIslandEntry {
   /** Custom element tag name */
@@ -89,6 +87,3 @@ __islandPromises.then(() => {
 });
 `;
 }
-
-/** @deprecated Use generateClientEntry() — strategy parameter kept for API compat */
-export type { HydrationStrategy };

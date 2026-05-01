@@ -12,13 +12,7 @@ export const kissTypographyTokens = css`
   :host {
     /* === Font Families === */
     --kiss-font-sans:
-      -apple-system,
-      BlinkMacSystemFont,
-      "Segoe UI",
-      Roboto,
-      "Helvetica Neue",
-      Arial,
-      sans-serif;
+      -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     --kiss-font-mono: "SF Mono", "Fira Code", "Fira Mono", Menlo, Consolas, monospace;
 
     /* === Font Sizes (modular scale ~1.125) === */
