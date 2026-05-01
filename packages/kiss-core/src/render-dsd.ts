@@ -114,7 +114,7 @@ export function renderDSD(
   //    The component must be designed to work without connectedCallback.
   let instance: DsdComponent;
   try {
-    instance = new componentClass() as DsdComponent;
+    instance = new componentClass() as unknown as DsdComponent;
   } catch (err) {
     console.error(`[KISS] Failed to instantiate <${tagName}>:`, err);
     return `<${tagName}><!-- render error --></${tagName}>`;

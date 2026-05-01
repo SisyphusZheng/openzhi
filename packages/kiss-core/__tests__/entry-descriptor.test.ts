@@ -129,16 +129,17 @@ Deno.test('renderEntry: produces valid module code', () => {
   const code = renderEntry(desc);
 
   assertStringIncludes(code, "import { Hono } from 'hono'");
-  assertStringIncludes(code, "import { render as litRender } from '@lit-labs/ssr'");
+  assertStringIncludes(code, "import { renderDSD, renderDSDByName } from '@kissjs/core/render-dsd'");
   assertStringIncludes(code, 'export default app');
   assertStringIncludes(code, 'const app = new Hono()');
 });
 
-Deno.test('renderEntry: SSG mode includes DOM shim import', () => {
+Deno.test('renderEntry: SSG mode excludes DOM shim (DSD renderer has no shim dependency)', () => {
   const desc = buildEntryDescriptor(sampleRoutes, { ssg: true });
   const code = renderEntry(desc);
 
-  assertStringIncludes(code, "import '@lit-labs/ssr/lib/install-global-dom-shim.js'");
+  // v0.5.0: DSD renderer doesn't need DOM shim — no @lit-labs/ssr dependency
+  assertEquals(code.includes('install-global-dom-shim'), false);
 });
 
 Deno.test('renderEntry: SSG mode omits /__kiss debug endpoint', () => {
@@ -174,18 +175,19 @@ Deno.test('renderEntry: page routes use SSR helper and wrapInDocument', () => {
   const code = renderEntry(desc);
 
   assertStringIncludes(code, "app.get('/'");
-  assertStringIncludes(code, 'await __ssr(tag)');
+  // v0.5.0: __ssr takes route params as second arg for SSR-time data access
+  assertStringIncludes(code, '__ssr(tag');
+  assertStringIncludes(code, 'c.req.param()');
   // v0.3.4: SSR automatically registers page components for Shadow DOM rendering
   assertStringIncludes(code, 'customElements.define(');
-  assertStringIncludes(code, 'customElements.get(');
+  // v0.5.0: DSD renderer uses customElements.get(tag) to find component class
+  assertStringIncludes(code, 'customElements.get(tag)');
   // v0.3.0: Uses wrapInDocument from ssr-handler.ts (single source of truth)
-  // No inline HTML wrapping, no stripLitComments
   assertStringIncludes(code, 'wrapInDocument(');
-  // Hydration is handled by the Vite-built client entry, not inline scripts
+  // v0.5.0: No Lit hydration artifacts
   assertEquals(code.includes('generateHydrationScript'), false);
   assertEquals(code.includes('stripLitComments'), false);
-  // <!--lit-part--> comments are preserved for Lit hydration
-  assertEquals(code.includes('stripLitComments'), false);
+  assertEquals(code.includes('lit-part'), false);
 });
 
 Deno.test('renderEntry: no process.env call in output', () => {

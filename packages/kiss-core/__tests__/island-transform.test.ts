@@ -93,14 +93,14 @@ Deno.test('island-transform - islandTransformPlugin', async (t) => {
   });
 });
 
-Deno.test('entry-generators - generateClientEntry (v0.3.0 hydration)', async (t) => {
-  await t.step('imports lit-element-hydrate-support as side effect', () => {
+Deno.test('entry-generators - generateClientEntry (v0.5.0 CE upgrade)', async (t) => {
+  await t.step('no Lit hydration imports — CE-native upgrade', () => {
     const islands = [{ tagName: 'my-counter', modulePath: '/app/islands/my-counter.ts' }];
-    const code = generateClientEntry(islands, 'lazy');
-    // v0.3.1: side-effect import only (no manual litElementHydrateSupport() call)
+    const code = generateClientEntry(islands);
+    // v0.5.0: No Lit hydration — browser CE spec upgrades elements automatically
     assertEquals(
-      code.includes("import '@lit-labs/ssr-client/lit-element-hydrate-support.js'"),
-      true,
+      code.includes('lit-element-hydrate-support'),
+      false,
     );
   });
 
@@ -109,7 +109,7 @@ Deno.test('entry-generators - generateClientEntry (v0.3.0 hydration)', async (t)
       { tagName: 'my-counter', modulePath: '/app/islands/my-counter.ts' },
       { tagName: 'theme-toggle', modulePath: '@kissjs/ui/kiss-theme-toggle', isPackage: true },
     ];
-    const code = generateClientEntry(islands, 'lazy');
+    const code = generateClientEntry(islands);
     // All islands (local + package) use dynamic import() — they self-register
     assertEquals(code.includes("import('/app/islands/my-counter.ts')"), true);
     assertEquals(code.includes("import('@kissjs/ui/kiss-theme-toggle')"), true);
@@ -117,46 +117,20 @@ Deno.test('entry-generators - generateClientEntry (v0.3.0 hydration)', async (t)
     assertEquals(code.includes("customElements.define('my-counter'"), false);
   });
 
-  await t.step('waits for customElements.whenDefined before hydrating', () => {
+  await t.step('waits for customElements.whenDefined before dispatch', () => {
     const islands = [{ tagName: 'my-counter', modulePath: '/app/islands/my-counter.ts' }];
-    const code = generateClientEntry(islands, 'lazy');
+    const code = generateClientEntry(islands);
     assertEquals(code.includes('customElements.whenDefined'), true);
     assertEquals(code.includes('Promise.all'), true);
   });
 
-  await t.step('removes defer-hydration to trigger LitElement hydration', () => {
+  await t.step('dispatches kiss:ready event after upgrade', () => {
     const islands = [{ tagName: 'my-counter', modulePath: '/app/islands/my-counter.ts' }];
-    const code = generateClientEntry(islands, 'eager');
-    assertEquals(code.includes('[defer-hydration]'), true);
-    assertEquals(code.includes("removeAttribute('defer-hydration')"), true);
-    // Must recursively find elements in Shadow DOM (querySelectorAll doesn't pierce)
-    assertEquals(code.includes('shadowRoot'), true);
-    // We do NOT call hydrate(el) directly — lit-element-hydrate-support handles it
-    assertEquals(code.includes('hydrate(el)'), false);
-  });
-
-  await t.step('supports eager strategy', () => {
-    const islands = [{ tagName: 'my-counter', modulePath: '/app/islands/my-counter.ts' }];
-    const code = generateClientEntry(islands, 'eager');
-    assertEquals(code.includes('hydrate all islands immediately'), true);
-  });
-
-  await t.step('supports lazy strategy', () => {
-    const islands = [{ tagName: 'my-counter', modulePath: '/app/islands/my-counter.ts' }];
-    const code = generateClientEntry(islands, 'lazy');
-    assertEquals(code.includes('requestIdleCallback'), true);
-  });
-
-  await t.step('supports visible strategy', () => {
-    const islands = [{ tagName: 'my-counter', modulePath: '/app/islands/my-counter.ts' }];
-    const code = generateClientEntry(islands, 'visible');
-    assertEquals(code.includes('IntersectionObserver'), true);
-  });
-
-  await t.step('supports idle strategy', () => {
-    const islands = [{ tagName: 'my-counter', modulePath: '/app/islands/my-counter.ts' }];
-    const code = generateClientEntry(islands, 'idle');
-    assertEquals(code.includes('requestIdleCallback'), true);
+    const code = generateClientEntry(islands);
+    // v0.5.0: No defer-hydration, no Lit hydration — CE-native upgrade
+    assertEquals(code.includes('defer-hydration'), false);
+    assertEquals(code.includes('kiss:ready'), true);
+    assertEquals(code.includes('LitElement'), false);
   });
 
   await t.step('returns no-client-JS comment for empty islands', () => {

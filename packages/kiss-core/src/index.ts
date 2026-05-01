@@ -75,15 +75,22 @@ export type { ArtifactInfo, BuildManifest } from './build-manifest.js';
 
 // --- v0.5.0: Dual runtime exports ---
 // KissElement (zero-runtime, Web Standards path) — always available
-export { KissElement, html, css, signal, computed, effect } from './kiss-element.js';
+export { KissElement, signal, effect } from './kiss-element.js';
 export type { ReactiveController, ReactiveControllerHost } from './kiss-element.js';
 
 // DSD renderer exports
-export { renderDSD, renderDSDByName, renderNestedDsd, escapeHtml } from './render-dsd.js';
+export { renderDSD, renderDSDByName, renderNestedDsd, escapeHtml, wrapDsdDocument } from './render-dsd.js';
 
-// Lit re-exports (optional — only available when lit is installed)
-// Users import from '@kissjs/core' — LitElement works if lit is a dependency.
-// KissElement works without lit.
+// KissElement template helpers (string-based, zero-runtime)
+// Named differently from Lit equivalents to avoid confusion
+export { html as kissHtml, css as kissCss } from './kiss-element.js';
+
+// Lit re-exports (for backward compat — available when lit is installed)
+// These are needed by @kissjs/ui components that extend LitElement
+// Also serves as the default html/css for backwards-compatible user code
+export { css, html, LitElement, nothing, svg, unsafeCSS } from 'lit';
+export type { CSSResult, TemplateResult } from 'lit';
+
 export { Hono } from 'hono';
 
 // --- Hono 官方 Vite 插件（静态 import，package.json 已声明依赖）---

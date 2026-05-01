@@ -243,19 +243,21 @@ Deno.test('renderEntry: exports default app', () => {
   assertStringIncludes(code, 'export default app');
 });
 
-Deno.test('renderEntry: imports Hono and SSR dependencies', () => {
+Deno.test('renderEntry: imports Hono and DSD renderer', () => {
   const desc = buildEntryDescriptor(basicRoutes);
   const code = renderEntry(desc);
 
   assertStringIncludes(code, "import { Hono } from 'hono'");
-  assertStringIncludes(code, '@lit-labs/ssr');
+  // v0.5.0: DSD renderer replaces @lit-labs/ssr
+  assertStringIncludes(code, 'renderDSD');
 });
 
-Deno.test('renderEntry: SSG mode includes DOM shim', () => {
+Deno.test('renderEntry: SSG mode includes no DOM shim (DSD renderer)', () => {
   const desc = buildEntryDescriptor(basicRoutes, { ssg: true });
   const code = renderEntry(desc);
 
-  assertStringIncludes(code, 'install-global-dom-shim');
+  // v0.5.0: DSD renderer doesn't need DOM shim — pure string concatenation
+  assertEquals(code.includes('install-global-dom-shim'), false);
 });
 
 // ─── Integration: Full Pipeline ────────────────────────────

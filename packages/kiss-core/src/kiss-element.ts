@@ -36,7 +36,12 @@
  * @module @kissjs/core
  */
 
-import { signal, computed, effect, type Signal } from '@preact/signals-core';
+import { signal, effect } from '@preact/signals-core';
+
+// ─── Types ───────────────────────────────────────────────────
+// Signal.State and Signal.Computed types from @preact/signals-core
+interface SignalState<T> { value: T; peek(): T; }
+interface SignalComputed<T> { readonly value: T; peek(): T; }
 
 // ─── Reactive Controller Interface ──────────────────────────────
 // Structural type — compatible with both Lit ReactiveController and kiss-rpc.
@@ -65,7 +70,7 @@ export interface ReactiveControllerHost {
  * which triggers any subscribed effects (including re-render).
  */
 function createState(host: KissElement): Record<string, unknown> {
-  const signals = new Map<string, Signal.State<unknown>>();
+  const signals = new Map<string, SignalState<unknown>>();
 
   return new Proxy({} as Record<string, unknown>, {
     get(_target, key: string) {
@@ -104,9 +109,16 @@ function createState(host: KissElement): Record<string, unknown> {
   });
 }
 
+// ─── Guard for non-browser environments (Deno SSR, Node.js) ────
+// KissElement extends HTMLElement which only exists in browser/DOM environments.
+// In SSR (Deno/Node), we provide a minimal stub so imports don't crash.
+const _Base = typeof HTMLElement !== 'undefined'
+  ? HTMLElement
+  : class {} as unknown as typeof HTMLElement;
+
 // ─── KissElement Base Class ─────────────────────────────────────
 
-export abstract class KissElement extends HTMLElement implements ReactiveControllerHost {
+export abstract class KissElement extends _Base implements ReactiveControllerHost {
   /** Reactive state — assign to trigger re-render */
   readonly state: Record<string, unknown>;
 
@@ -341,5 +353,4 @@ export function css(
 }
 
 // ─── Re-exports (for convenience, keeps @kissjs/core as single import) ───
-export { signal, computed, effect } from '@preact/signals-core';
-export type { Signal } from '@preact/signals-core';
+export { signal, effect } from '@preact/signals-core';

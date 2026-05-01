@@ -262,11 +262,9 @@ function renderPageRoute(
 export function renderEntry(desc: EntryDescriptor): string {
   const b = new CodeBuilder();
 
-  // --- SSG: DOM shim must be the very first import ---
-  if (desc.isSSG) {
-    b.push(`import '@lit-labs/ssr/lib/install-global-dom-shim.js'`);
-    b.blank();
-  }
+  // --- SSG: DSD renderer doesn't need DOM shim ---
+  // v0.5.0: render-dsd.ts uses pure string concatenation — no DOM shim needed
+  // The old @lit-labs/ssr DOM shim import has been removed.
 
   // --- Imports ---
   for (const imp of desc.imports) {
@@ -344,7 +342,7 @@ export function renderEntry(desc: EntryDescriptor): string {
   // Output is standard DSD: <tag><template shadowrootmode="open">...</template></tag>
   // No defer-hydration, no <!--lit-part-->, no hydration ceremony needed.
   b.push('// SSR helper: render a registered custom element to DSD HTML');
-  b.push('// Outputs standard DSD — no <!--lit-part--> markers, no defer-hydration');
+  b.push('// Outputs standard DSD — no hydration markers needed');
   b.push('async function __ssr(tag, props = {}) {');
   b.push('  // Validate tag name — must be a valid Custom Element (contains hyphen)');
   b.push('  if (!tag || !tag.includes("-")) {');

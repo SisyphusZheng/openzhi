@@ -46,7 +46,6 @@ export interface ClientIslandEntry {
  */
 export function generateClientEntry(
   islands: ClientIslandEntry[],
-  strategy: HydrationStrategy = 'lazy',
 ): string {
   if (islands.length === 0) {
     return '// KISS Client Entry — No islands detected, zero client JS needed\n';
