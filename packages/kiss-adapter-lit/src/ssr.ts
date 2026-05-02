@@ -283,11 +283,11 @@ export function installLitAdapter(): void {
     return; // Already installed — idempotent
   }
 
-  (globalThis as Record<string, unknown>).__kissLitSsrRenderer = async (
+  (globalThis as Record<string, unknown>).__kissLitSsrRenderer = (
     result: unknown,
     tagName: string,
   ): Promise<string> => {
-    return renderLitToString(result, tagName);
+    return Promise.resolve(renderLitToString(result, tagName));
   };
 
   (globalThis as Record<string, unknown>).__kissLitTemplateCheck = (

@@ -83,11 +83,11 @@ create-kiss     — 脚手架                 [CLI]
 
 | 包 | v0.4.0 | v0.5.0-alpha.1 |
 |----|--------|----------------|
-| @kissjs/core | 0.4.x | **0.5.0-alpha.1** |
-| @kissjs/adapter-lit | — | **0.5.0-alpha.1** (新) |
-| @kissjs/ui | 0.4.0 | **0.5.0-alpha.1** |
-| @kissjs/rpc | 0.2.5 | **0.3.0-alpha.1** |
-| @kissjs/create | 0.3.4 | **0.4.0-alpha.1** |
+| @kissjs/core | 0.3.2 | **0.4.0** (移除 Lit 导出 → minor bump) |
+| @kissjs/adapter-lit | — | **0.1.0** (新包) |
+| @kissjs/ui | 0.4.0 | **0.4.1** (patch) |
+| @kissjs/rpc | 0.2.3 | **0.2.4** (patch) |
+| @kissjs/create | 0.3.2 | **0.3.2** (无变更) |
 
 ---
 
