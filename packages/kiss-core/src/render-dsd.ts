@@ -197,9 +197,9 @@ export async function renderDSD(
         // can handle it. Provide a clear error message.
         console.error(
           `[KISS] <${tagName}> render() returned ${typeof result} instead of string. ` +
-          (isLitTemplateResultHeuristic(result)
-            ? 'This looks like a Lit TemplateResult — install @kissjs/adapter-lit to handle it.'
-            : 'Components must return a string from render().'),
+            (isLitTemplateResultHeuristic(result)
+              ? 'This looks like a Lit TemplateResult — install @kissjs/adapter-lit to handle it.'
+              : 'Components must return a string from render().'),
         );
         content = `<!-- render error: ${typeof result} returned, expected string -->`;
       }

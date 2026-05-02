@@ -18,4 +18,4 @@
  */
 
 export { installLitAdapter, uninstallLitAdapter } from './ssr.js';
-export { renderLitToString, isLitTemplateResult } from './ssr.js';
+export { isLitTemplateResult, renderLitToString } from './ssr.js';

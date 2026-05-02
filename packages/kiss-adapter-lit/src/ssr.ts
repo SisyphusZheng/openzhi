@@ -210,7 +210,7 @@ export function renderLitToString(
     const tag = tagName || 'unknown';
     throw new Error(
       `[KISS] <${tag}> TemplateResult interpolation failed. ` +
-      `Original error: ${err instanceof Error ? err.message : String(err)}`,
+        `Original error: ${err instanceof Error ? err.message : String(err)}`,
     );
   }
 }
