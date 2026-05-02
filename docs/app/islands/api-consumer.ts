@@ -210,7 +210,12 @@ export default class ApiConsumer extends LitElement {
 
   override connectedCallback() {
     super.connectedCallback();
-    this._fetchStatus();
+    // Wait for first render to complete before triggering fetch.
+    // In LitElement, setting properties in connectedCallback races with
+    // the initial update cycle. Lit's hydration support (from
+    // @lit-labs/ssr-client) can block the second update pipeline when
+    // the component is nested inside a DSD-rendered parent shadow DOM.
+    this.updateComplete.then(() => this._fetchStatus());
   }
 
   private async _fetchStatus() {
