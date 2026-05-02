@@ -55,8 +55,14 @@ export class BlogIndexPage extends LitElement {
           <p class="subtitle">KISS 框架的设计思考、架构决策和发展路线。</p>
 
           <div class="blog-list">
+            <a href="/blog/v0-5-alpha1" class="blog-item">
+              <h2>v0.5-alpha1 — 全量架构审计与精准修复 <span style="font-size:0.7rem;color:var(--kiss-accent)">NEW</span></h2>
+              <p class="blog-desc">3 agent 扫描 13k 行源码 · CSS 注入修复 · Island 水合修复 · 6 条新设计原则 · 配置精简</p>
+              <span class="blog-date">2026-05-03</span>
+            </a>
+
             <a href="/blog/v0-5-0" class="blog-item">
-              <h2>KISS v0.5.0 — 架构精简</h2>
+              <h2>KISS v0.5-alpha-0 — 架构精简</h2>
               <p class="blog-desc">零运行时 Core · 原生 RPC · OpenProps + Lit · 单 deno.json</p>
               <span class="blog-date">2026-05-02</span>
             </a>
