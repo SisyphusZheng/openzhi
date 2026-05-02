@@ -117,6 +117,23 @@ export class ChangelogPage extends LitElement {
 
           <div class="version-section">
             <div class="version-header">
+              <span class="version-number">0.5.0</span>
+              <span class="version-date">2026-05-02</span>
+            </div>
+            <div class="change-category added">
+              <h4>架构精简</h4>
+              <ul class="change-list">
+                <li><strong>@kissjs/core 零运行时</strong>：KissElement 废弃，Lit re-export 移除，core 成为纯构建/SSR 基础设施</li>
+                <li><strong>@kissjs/rpc 原生化</strong>：移除 Lit peer dep，纯 fetch + AbortController</li>
+                <li><strong>OpenProps 设计系统</strong>：替换硬编码 hex，CSS 变量穿透 Shadow DOM</li>
+                <li><strong>Vite 8</strong>：从 Vite 6 升级到 Vite 8.0.10</li>
+                <li><strong>单 deno.json</strong>：删除 docs/deno.json，vendor 模式管理依赖</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="version-section">
+            <div class="version-header">
               <span class="version-number">0.4.0</span>
               <span class="version-date">2026-04-30</span>
             </div>

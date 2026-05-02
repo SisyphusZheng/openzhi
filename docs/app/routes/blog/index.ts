@@ -55,6 +55,12 @@ export class BlogIndexPage extends LitElement {
           <p class="subtitle">KISS 框架的设计思考、架构决策和发展路线。</p>
 
           <div class="blog-list">
+            <a href="/blog/v0-5-0" class="blog-item">
+              <h2>KISS v0.5.0 — 架构精简</h2>
+              <p class="blog-desc">零运行时 Core · 原生 RPC · OpenProps + Lit · 单 deno.json</p>
+              <span class="blog-date">2026-05-02</span>
+            </a>
+
             <a href="/blog/v0-4-0" class="blog-item">
               <h2>KISS v0.4.0 — Serverless Integration Milestone</h2>
               <p class="meta">2026-04-30 · 版本发布</p>
