@@ -362,12 +362,30 @@ export class RoadmapPage extends LitElement {
             <li>代码质量审计 — 重复代码 3 处、死代码 5 处、版本不一致 5 包全部发现</li>
           </ul>
 
-          <h2>Phase 11A：v0.5.2 — 稳定修复（规划中）</h2>
+          <h2>Phase 11A：v0.5.x — 冲刺 v0.5.0 正式版（规划中）</h2>
+
+          <h3>P0 — 阻塞发布</h3>
           <ul class="task-list">
-            <li><strong>adapter-lit 单元测试</strong> — 当前 0 测试（所有 Bug 都出在这里）</li>
-            <li><strong>移除 @lit-labs/ssr-client</strong> — v0.5 已声称移除但仍在依赖中</li>
-            <li><strong>extractLitStyles → console.warn</strong> — 错误不再静默吞噬</li>
-            <li><strong>escapeHtml/escapeAttr 统一</strong> — 3 处重复 → 1 处</li>
+            <li><strong>A1 adapter-lit 测试</strong> — extractLitStyles + renderLitToString + installLitAdapter</li>
+            <li><strong>A2 移除 @lit-labs/ssr-client</strong> — deno.json 和 client bundle 彻底清除</li>
+            <li><strong>A3 extractLitStyles → console.warn</strong> — 错误不再静默</li>
+            <li><strong>A4 CI 全绿</strong> — lint / fmt / test / typecheck 零错误</li>
+            <li><strong>A5 版本号对齐</strong> — core 0.5.0, rpc 0.3.0, ui 0.5.0, create 0.4.0</li>
+            <li><strong>A6 Docs 站验证</strong> — SSG 构建 38 页通过，DSD 含 &lt;style&gt;</li>
+          </ul>
+
+          <h3>P1 — 发布附带</h3>
+          <ul class="task-list">
+            <li><strong>B1</strong> escapeHtml 统一（3→1） · <strong>B2</strong> escapeAttr 统一（2→1）</li>
+            <li><strong>B3-B5</strong> 死代码清理（renderNestedDsd / html-template / @deprecated）</li>
+            <li><strong>B6</strong> kiss-hero-ping apiUrl 修复 · <strong>B7</strong> create-kiss 模板更新</li>
+          </ul>
+
+          <h3>P2 — v0.5.1+</h3>
+          <ul class="task-list">
+            <li><strong>C1</strong> Island 懒加载 · <strong>C2</strong> OpenProps 按需</li>
+            <li><strong>C3</strong> JS/CSS minification · <strong>C4</strong> E2E 测试 (Playwright)</li>
+            <li><strong>C5</strong> 结构化 inject API · <strong>C6</strong> 无障碍 · <strong>C7</strong> SEO</li>
           </ul>
 
           <h2>Phase 11B：v0.6.0 — 性能里程碑（规划中）</h2>
