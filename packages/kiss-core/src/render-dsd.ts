@@ -230,10 +230,10 @@ export async function renderDSDByName(
  * Currently returns the original HTML — full recursive implementation pending
  * the component registry integration.
  */
-export async function renderNestedDsd(
+export function renderNestedDsd(
   html: string,
   _renderFn: (tag: string, props: Record<string, string>) => Promise<string> = renderDSDByName,
-): Promise<string> {
+): string {
   // Phase 2: Implement regex or lightweight parser for custom element detection.
   // For v0.5.0 alpha, components are responsible for rendering their own children.
   return html;
