@@ -83,7 +83,9 @@ export const SIDEBAR_NAV: NavSection[] = [
     section: 'Blog',
     items: [
       { path: '/blog', label: 'All Posts' },
-      { path: '/blog/kiss-compiler', label: 'KISS Compiler' },
+      { path: '/blog/v0-5-alpha1', label: 'v0.5-alpha1 (new!)' },
+      { path: '/blog/v0-5-alpha-0', label: 'v0.5-alpha-0' },
+      { path: '/blog/v0-5-0', label: 'v0.5.0' },
     ],
   },
   {

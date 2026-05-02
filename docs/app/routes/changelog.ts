@@ -115,6 +115,31 @@ export class ChangelogPage extends LitElement {
             <a href="https://semver.org/lang/zh-CN/" target="_blank">语义化版本 2.0.0</a>。
           </p>
 
+          <h2>v0.5.0-alpha.1 — 架构审计与精准修复 <span style="font-size:0.75rem;color:var(--kiss-text-muted);font-weight:400">2026-05-02</span></h2>
+
+<h3>修复</h3>
+<ul>
+  <li><strong>CSS 注入修复：</strong> extractLitStyles() 错误假设 Lit 3.x CSSResult 有 strings 属性，实际只有 cssText。修复为直接使用 cssText，删除 42 行无用代码。<code>packages/kiss-adapter-lit/src/ssr.ts</code></li>
+  <li><strong>Island 水合修复：</strong> api-consumer 在父 DSD shadow DOM 内升级时，connectedCallback 中同步调用 _fetchStatus() 导致 LitElement 更新管线竞态卡死。修复为 updateComplete.then()。<code>docs/app/islands/api-consumer.ts</code></li>
+</ul>
+
+<h3>改进</h3>
+<ul>
+  <li><strong>全量架构审计：</strong> 3 agent 深度扫描 13,000+ 行代码，发现 P0-5 项、P1-9 项、P2-7 项</li>
+  <li><strong>配置精简：</strong> 删除 jsr.json（冗余）+ 不必要 package.json，统一为单一 deno.json 配置源</li>
+  <li><strong>10 条设计原则确立：</strong> 新增 Lit Update Safety、Adapter Test Coverage、Error Visibility、Island Lazy by Default、CSS Single Source、One Config File</li>
+  <li><strong>版本号对齐：</strong> 所有 5 个包的 deno.json 版本统一</li>
+</ul>
+
+<h3>审计发现</h3>
+<ul>
+  <li>kiss-adapter-lit：0 测试（两个 Bug 都出在这里）</li>
+  <li>escapeHtml 在 3 处重复编写，编码还不同（&#x27; vs &#39;）</li>
+  <li>所有 9 个 Island 全 eager 加载 → 每页 67.8KB JS → Lighthouse 30 分</li>
+  <li>@lit-labs/ssr-client 仍在依赖中（v0.5.0 声称已移除）</li>
+  <li>renderNestedDsd() 是空函数 stub</li>
+</ul>
+
           <div class="version-section">
             <div class="version-header">
               <span class="version-number">0.5.0</span>

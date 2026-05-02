@@ -143,6 +143,94 @@ export class DesignPhilosophyPage extends LitElement {
             </p>
           </div>
 
+          <h2>六大新原则 (v0.5.0-alpha.1)</h2>
+          <p class="subtitle">
+            基于 2026-05-02 全量架构审计确立的新增原则。与五大支柱互补，不可替代。
+          </p>
+
+          <div class="pillar">
+            <div class="num">原则 6</div>
+            <h3>Lit Update Safety</h3>
+            <p>
+              LitElement 的 <code>connectedCallback()</code> 中绝不同步修改 reactive properties。
+              当组件在父 DSD shadow DOM 内升级时，同步属性变更会与首次更新周期竞态，
+              导致 DOM 永远不更新。
+            </p>
+            <p>
+              <span class="hard-constraint">使用 updateComplete.then()</span>
+              <span class="hard-constraint">或 firstUpdated()</span>
+            </p>
+          </div>
+
+          <div class="pillar">
+            <div class="num">原则 7</div>
+            <h3>Adapter Test Coverage</h3>
+            <p>
+              每个 adapter（如 @kissjs/adapter-lit）必须有与核心转换逻辑同等规模的测试覆盖。
+              今天的两个 P0 Bug 都出在 zero-test 的 adapter-lit 中。
+              零测试的 adapter 等于零保障。
+            </p>
+            <p>
+              <span class="hard-constraint">adapter 必须测试</span>
+              <span class="hard-constraint">覆盖率目标 ≥ 60%</span>
+            </p>
+          </div>
+
+          <div class="pillar">
+            <div class="num">原则 8</div>
+            <h3>Error Visibility</h3>
+            <p>
+              构建/运行时错误绝不静默吞噬。extractLitStyles() 曾用 try/catch 静默吞掉异常
+              导致页面无样式且零反馈——这种模式在框架层是不可接受的。
+              最少输出 console.warn，关键错误抛出。
+            </p>
+            <p>
+              <span class="hard-constraint">异常不可静默</span>
+              <span class="hard-constraint">最少 console.warn</span>
+            </p>
+          </div>
+
+          <div class="pillar">
+            <div class="num">原则 9</div>
+            <h3>Island Lazy by Default</h3>
+            <p>
+              所有 Island 组件默认延迟加载（IntersectionObserver），仅关键全局 Island
+              （如 theme-toggle）允许 eager。当前 9 个 Island 全 eager 导致每页 67.8KB JS。
+              违背了 Island 架构的按需加载初衷。
+            </p>
+            <p>
+              <span class="hard-constraint">IntersectionObserver 默认</span>
+              <span class="hard-constraint">仅 &lt; 3 个 eager</span>
+            </p>
+          </div>
+
+          <div class="pillar">
+            <div class="num">原则 10</div>
+            <h3>CSS Single Source</h3>
+            <p>
+              全局 CSS 变量/主题在一个位置定义，不重复注入到每个组件的
+              &lt;style&gt; 标签中。避免 CSS 膨胀和 Open Props 全量加载问题。
+            </p>
+            <p>
+              <span class="hard-constraint">全局 CSS 一处分发</span>
+              <span class="hard-constraint">组件不重复注入</span>
+            </p>
+          </div>
+
+          <div class="pillar">
+            <div class="num">原则 11</div>
+            <h3>One Config File</h3>
+            <p>
+              每个包只维护一个 deno.json 作为唯一配置源。删除 jsr.json（冗余）和不必要的 package.json。
+              多配置文件导致版本不一致——今天所有 5 个包都存在 deno.json ≠ package.json ≠ jsr.json 的问题。
+              简单就是少犯错。
+            </p>
+            <p>
+              <span class="hard-constraint">单 deno.json</span>
+              <span class="hard-constraint">npm deps 用 npm: prefix</span>
+            </p>
+          </div>
+
           <h2>哲学 vs 架构</h2>
           <p>
             五大哲学支柱描述<strong>如何</strong>做决策。KISS

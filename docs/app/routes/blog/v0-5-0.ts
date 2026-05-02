@@ -1,11 +1,11 @@
 /**
- * Blog: KISS v0.5.0 — Architecture Simplification
+ * Blog: KISS v0.5-alpha-0 — Architecture Simplification
  */
 import { css, html, LitElement } from '@kissjs/core';
 import { pageStyles } from '../../components/page-styles.js';
 import '@kissjs/ui/kiss-layout';
 
-export const tagName = 'blog-v050';
+export const tagName = 'blog-v050-a0';
 
 export default class BlogV050 extends LitElement {
   static styles = [
@@ -36,16 +36,16 @@ export default class BlogV050 extends LitElement {
 
   override render() {
     return html`
-      <kiss-layout currentPath="/blog/v0-5-0">
+      <kiss-layout currentPath="/blog/v0-5-alpha-0">
         <div class="container">
           <p class="breadcrumb"><a href="/blog">← Blog</a></p>
-          <h1>KISS v0.5.0 — 架构精简：砍掉不必要的，留住核心</h1>
+          <h1>KISS v0.5-alpha-0 — 架构精简：砍掉不必要的，留住核心</h1>
           <p class="subtitle">零运行时 Core · 原生 RPC · OpenProps + Lit · 单 deno.json</p>
           <p class="date">2026-05-02</p>
 
-          <p>v0.5.0 不做新功能。它做减法。</p>
+          <p>v0.5-alpha-0 不做新功能。它做减法。</p>
 
-          <p>从 v0.3.2 到 v0.4.0，我们加了 SSG、Islands、DSD、PWA、Serverless API——90 commits，3904 行新增。到 v0.5.0，问题变成了：这些东西能不能不这么复杂？</p>
+          <p>从 v0.3.2 到 v0.4.0，我们加了 SSG、Islands、DSD、PWA、Serverless API——90 commits，3904 行新增。到 v0.5-alpha-0，问题变成了：这些东西能不能不这么复杂？</p>
 
           <h2>删了什么</h2>
 
@@ -76,7 +76,7 @@ export default class BlogV050 extends LitElement {
           <div class="truth">
             <div class="truth-title">三、@kissjs/rpc 的 Lit 耦合 — 解除</div>
             <p>RPC 控制器本质上是 fetch + AbortController 的包装。它曾经因为用了 Lit 的 ReactiveController 接口而声明了 peer dep。</p>
-            <p>v0.5.0 改为 structural typing——RPC 自己声明兼容的接口，任何有 <code>addController</code>/<code>requestUpdate</code> 的对象都可以用。Lit、原生 HTMLElement、或其他框架都行。</p>
+            <p>v0.5-alpha-0 改为 structural typing——RPC 自己声明兼容的接口，任何有 <code>addController</code>/<code>requestUpdate</code> 的对象都可以用。Lit、原生 HTMLElement、或其他框架都行。</p>
           </div>
 
           <div class="truth">

@@ -192,8 +192,26 @@ export class RoadmapPage extends LitElement {
               </tr>
               <tr>
                 <td>Phase 11</td>
-                <td>v0.5.0 — Vite 8 + 体验优化</td>
-                <td>Vite 8 迁移、Wrangler 适配、SSG 管线加速</td>
+                <td>v0.5.0-alpha.1 — 架构审计与适配器修复</td>
+                <td>全量审查、CSS 注入修复、Island 水合修复、配置精简</td>
+                <td class="status-wip">进行中</td>
+              </tr>
+              <tr>
+                <td>Phase 11A</td>
+                <td>v0.5.2 — 稳定修复</td>
+                <td>adapter-lit 测试、移除 @lit-labs/ssr-client、P0 清零</td>
+                <td>规划中</td>
+              </tr>
+              <tr>
+                <td>Phase 11B</td>
+                <td>v0.6.0 — 性能里程碑</td>
+                <td>Island lazy loading、Lighthouse 90+、DRY 消除</td>
+                <td>规划中</td>
+              </tr>
+              <tr>
+                <td>Phase 11C</td>
+                <td>v0.7.0 — 质量里程碑</td>
+                <td>E2E 测试、结构化 inject API、中文错误</td>
                 <td>规划中</td>
               </tr>
               <tr>
@@ -334,19 +352,38 @@ export class RoadmapPage extends LitElement {
             <li>Hydration race 修复（嵌套 Island 双渲染）</li>
           </ul>
 
-          <h2>Phase 11：v0.5.0 Vite 8 + DX 优化（规划中）</h2>
+          <h2>Phase 11：v0.5.0-alpha.1 — 架构审计与适配器修复（进行中）</h2>
           <ul class="task-list">
-            <li><strong>deno task check 一键验证</strong> — lint + fmt + type + test 单命令</li>
-            <li><strong>构建错误美化</strong> — Vite/Rollup 堆栈 → KISS 中文错误提示</li>
-            <li><strong>组件 API 文档</strong> — kiss-layout / kiss-hero-ping props 文档化</li>
-            <li><strong>CSS 变量参考</strong> — 所有 --kiss-* 变量的使用说明</li>
-            <li><strong>500 错误页</strong> — 漂亮错误页代替原始 HTML dump</li>
-            <li>Vite 6 → 8 迁移 — 更新 Vite 插件 API、构建管线适配</li>
-            <li>Wrangler 适配 — Cloudflare Workers 部署支持</li>
-            <li>SSG 管线加速 — 并行渲染、增量构建</li>
-            <li>WebSocket 支持 — Hono app.ws() 暴露到 serverless 入口</li>
-            <li>deno create @kissjs/app 协议支持</li>
-            <li>HMR 改进 — 主题/样式变更热更新</li>
+            <li><strong>全量架构审计</strong> — 3 agent 深度扫描：packages (6,968行) + docs (6,000行) + CI/tests</li>
+            <li><strong>CSS 注入修复</strong> — extractLitStyles() 用 Lit 3.x cssText 替代 strings 属性，删除 42 行死代码</li>
+            <li><strong>Island 水合修复</strong> — api-consumer connectedCallback 竞态：改用 updateComplete.then()</li>
+            <li><strong>配置精简</strong> — 删除 jsr.json（冗余）+ 不必要 package.json，统一为 deno.json</li>
+            <li>10 条设计原则确立 — 包括 Lit Update Safety、Error Visibility、One Config File</li>
+            <li>代码质量审计 — 重复代码 3 处、死代码 5 处、版本不一致 5 包全部发现</li>
+          </ul>
+
+          <h2>Phase 11A：v0.5.2 — 稳定修复（规划中）</h2>
+          <ul class="task-list">
+            <li><strong>adapter-lit 单元测试</strong> — 当前 0 测试（所有 Bug 都出在这里）</li>
+            <li><strong>移除 @lit-labs/ssr-client</strong> — v0.5 已声称移除但仍在依赖中</li>
+            <li><strong>extractLitStyles → console.warn</strong> — 错误不再静默吞噬</li>
+            <li><strong>escapeHtml/escapeAttr 统一</strong> — 3 处重复 → 1 处</li>
+          </ul>
+
+          <h2>Phase 11B：v0.6.0 — 性能里程碑（规划中）</h2>
+          <ul class="task-list">
+            <li><strong>Island lazy loading</strong> — IntersectionObserver，当前 9 island 全 eager 加载 67.8KB</li>
+            <li><strong>Lighthouse 性能 90+</strong> — 当前 30 分，FCP 3.9s→1.8s, TBT 6,090ms→200ms</li>
+            <li><strong>Open Props 按需提取</strong> — 314KB unused CSS</li>
+            <li><strong>JS/CSS minification</strong> — build-client 构建优化</li>
+          </ul>
+
+          <h2>Phase 11C：v0.7.0 — 质量里程碑（规划中）</h2>
+          <ul class="task-list">
+            <li><strong>E2E 测试</strong> — Playwright smoke tests for all pages</li>
+            <li><strong>renderer → 结构化 inject API</strong> — 废弃字符串 replace</li>
+            <li><strong>中文错误信息</strong> — SSG/SSR 异常全中文化</li>
+            <li><strong>死代码清理</strong> — renderNestedDsd, html-template, deprecated fns</li>
           </ul>
 
           <h2>Phase 12：v0.6.0 零基础设施 JS + .kiss Compiler Alpha（规划中）</h2>
@@ -445,26 +482,14 @@ export class RoadmapPage extends LitElement {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>移动端 <code>&lt;details&gt;</code> hack — 无程序化关闭</td>
-                <td class="priority-medium">中</td>
-              </tr>
-              <tr>
-                <td>@kissjs/ui-plugin cdn:false 无操作选项</td>
-                <td class="priority-low">低</td>
-              </tr>
-              <tr>
-                <td>index-plugin.test.ts 10个冗余 plugins.length 测试</td>
-                <td class="priority-low">低</td>
-              </tr>
-              <tr>
-                <td>kiss-card 不在 islands 数组中 — SSR-only 设计未文档化</td>
-                <td class="priority-low">低</td>
-              </tr>
-              <tr>
-                <td>无 Codecov / 覆盖率 badge 自动化</td>
-                <td class="priority-medium">中</td>
-              </tr>
+              <tr><td>adapter-lit 零测试 — 最高风险缺口</td><td class="priority-high">P0</td></tr>
+              <tr><td>所有 Island eager 加载 → 67.8KB JS，Lighthouse 30</td><td class="priority-high">P0</td></tr>
+              <tr><td>@lit-labs/ssr-client 依赖残留 — 声称已移除</td><td class="priority-high">P0</td></tr>
+              <tr><td>escapeHtml 在 3 处重复（编码不同）</td><td class="priority-medium">P1</td></tr>
+              <tr><td>5 包版本号不一致（deno.json ≠ package.json ≠ jsr.json）</td><td class="priority-medium">P1</td></tr>
+              <tr><td>kiss-ui peerDeps vite ^6 × 框架 vite ^8</td><td class="priority-medium">P1</td></tr>
+              <tr><td>renderNestedDsd() 空函数 stub</td><td class="priority-low">P2</td></tr>
+              <tr><td>html-template.ts 遗留代码</td><td class="priority-low">P2</td></tr>
             </tbody>
           </table>
 
