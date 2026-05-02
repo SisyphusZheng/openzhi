@@ -34,6 +34,9 @@
 /** Marker property that identifies a Lit TemplateResult */
 const LIT_TEMPLATE_TYPE_MARKER = '_$litType$';
 
+/** Marker property that identifies a Lit CSSResult */
+const CSS_RESULT_MARKER = '_$cssResult$';
+
 /** Lit's `nothing` sentinel — used to conditionally remove attributes */
 const NOTHING_SYMBOL = Symbol.for('lit-nothing');
 
@@ -184,6 +187,81 @@ function interpolate(result: unknown): string {
   return output;
 }
 
+// ─── CSSResult Extraction ────────────────────────────────────────
+
+interface CSSResultLike {
+  strings: ArrayLike<string>;
+  values: ArrayLike<unknown>;
+  _$cssResult$?: unknown;
+}
+
+/**
+ * Check if a value is a Lit CSSResult.
+ */
+function isCSSResult(value: unknown): boolean {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    (CSS_RESULT_MARKER in (value as Record<string, unknown>) ||
+      ('strings' in (value as Record<string, unknown>) &&
+        'values' in (value as Record<string, unknown>) &&
+        !(LIT_TEMPLATE_TYPE_MARKER in (value as Record<string, unknown>))))
+  );
+}
+
+/**
+ * Convert a Lit CSSResult to a plain CSS string.
+ * Interleaves strings[] and values[] just like TemplateResult interpolation.
+ */
+function cssResultToString(result: CSSResultLike): string {
+  const strings = Array.from(result.strings) as string[];
+  const values = Array.from(result.values) as unknown[];
+  let css = '';
+  for (let i = 0; i < strings.length; i++) {
+    css += strings[i];
+    if (i < values.length) {
+      const v = values[i];
+      if (isCSSResult(v)) {
+        css += cssResultToString(v as CSSResultLike);
+      } else if (v != null) {
+        css += String(v);
+      }
+    }
+  }
+  return css;
+}
+
+/**
+ * Extract static styles from a Lit component class.
+ *
+ * Lit stores styles on the static `styles` property which can be:
+ * - A single CSSResult
+ * - An array of CSSResult
+ * - A CSSResultArray (from adoptedStyleSheets)
+ *
+ * Returns all styles concatenated as a single CSS string,
+ * or undefined if the component has no styles.
+ */
+export function extractLitStyles(componentClass: CustomElementConstructor): string | undefined {
+  const ctor = componentClass as unknown as Record<string, unknown>;
+  const styles = ctor.styles;
+  if (!styles) return undefined;
+
+  // Normalize to array
+  const styleList: unknown[] = Array.isArray(styles) ? styles : [styles];
+  const parts: string[] = [];
+
+  for (const s of styleList) {
+    if (isCSSResult(s)) {
+      parts.push(cssResultToString(s as CSSResultLike));
+    } else if (typeof s === 'string') {
+      parts.push(s);
+    }
+  }
+
+  return parts.length > 0 ? parts.join('\n') : undefined;
+}
+
 // ─── Public API ────────────────────────────────────────────────
 
 /**
@@ -250,6 +328,12 @@ export function installLitAdapter(): void {
     return isLitTemplateResult(value);
   };
 
+  (globalThis as Record<string, unknown>).__kissLitStylesExtractor = (
+    componentClass: CustomElementConstructor,
+  ): string | undefined => {
+    return extractLitStyles(componentClass);
+  };
+
   (globalThis as Record<string, unknown>).__kissLitAdapterInstalled = true;
   console.log('[KISS] Lit SSR adapter installed — TemplateResult → string (naive interpolation)');
 }
@@ -263,5 +347,6 @@ export function installLitAdapter(): void {
 export function uninstallLitAdapter(): void {
   delete (globalThis as Record<string, unknown>).__kissLitSsrRenderer;
   delete (globalThis as Record<string, unknown>).__kissLitTemplateCheck;
+  delete (globalThis as Record<string, unknown>).__kissLitStylesExtractor;
   delete (globalThis as Record<string, unknown>).__kissLitAdapterInstalled;
 }

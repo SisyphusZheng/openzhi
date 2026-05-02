@@ -69,6 +69,9 @@ type TemplateCheckFn = (value: unknown) => boolean;
 /** Type for the adapter's SSR renderer function */
 type SsrRendererFn = (value: unknown, tagName: string) => Promise<string>;
 
+/** Type for the adapter's styles extractor function */
+type StylesExtractorFn = (componentClass: CustomElementConstructor) => string | undefined;
+
 /**
  * Check if an adapter has registered a template type checker.
  * Returns the checker function if available, undefined otherwise.
@@ -86,6 +89,16 @@ function getAdapterTemplateCheck(): TemplateCheckFn | undefined {
 function getAdapterSsrRenderer(): SsrRendererFn | undefined {
   return (globalThis as Record<string, unknown>).__kissLitSsrRenderer as
     | SsrRendererFn
+    | undefined;
+}
+
+/**
+ * Check if an adapter has registered a styles extractor.
+ * Returns the extractor function if available, undefined otherwise.
+ */
+function getAdapterStylesExtractor(): StylesExtractorFn | undefined {
+  return (globalThis as Record<string, unknown>).__kissLitStylesExtractor as
+    | StylesExtractorFn
     | undefined;
 }
 
@@ -209,10 +222,26 @@ export async function renderDSD(
     content = '<!-- render error -->';
   }
 
-  // 5. Wrap in DSD
+  // 5. Extract static styles from component class
+  //    Adapters (e.g. @kissjs/adapter-lit) register a styles extractor
+  //    that reads CSSResult / CSSResultArray from the class and returns
+  //    a plain CSS string. This is injected as a <style> tag inside the
+  //    shadow root so the DSD output includes styles for first paint.
+  let styleCss = '';
+  const stylesExtractor = getAdapterStylesExtractor();
+  if (stylesExtractor) {
+    try {
+      styleCss = stylesExtractor(componentClass) || '';
+    } catch {
+      // Style extraction failed — continue without styles
+    }
+  }
+
+  // 6. Wrap in DSD
   const attrs = serializeAttributes(props);
+  const styleTag = styleCss ? `\n    <style>${styleCss}</style>` : '';
   return `<${tagName}${attrs}>
-  <template shadowrootmode="open">
+  <template shadowrootmode="open">${styleTag}
     ${content}
   </template>
 </${tagName}>`;
