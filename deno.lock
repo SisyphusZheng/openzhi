@@ -10,6 +10,7 @@
     "npm:@lit-labs/ssr-dom-shim@1": "1.5.1",
     "npm:@lit-labs/ssr@3": "3.3.1",
     "npm:@lit/reactive-element@2": "2.1.2",
+    "npm:@parse5/tools@0.7": "0.7.0_parse5@7.0.0",
     "npm:@types/node@22": "22.19.17",
     "npm:entities@6.0.0": "6.0.0",
     "npm:hono@4": "4.12.16",
@@ -376,7 +377,7 @@
         "@lit-labs/ssr-client",
         "@lit-labs/ssr-dom-shim",
         "@lit/reactive-element",
-        "@parse5/tools",
+        "@parse5/tools@0.3.0",
         "@types/node@16.18.126",
         "enhanced-resolve",
         "lit",
@@ -446,6 +447,12 @@
       "integrity": "sha512-zxRyTHkqb7WQMV8kTNBKWb1BeOFUKXBXTBWuxg9H9hfvQB3IwP6Iw2U75Ia5eyRxPNltmY7E8YAlz6zWwUnjKg==",
       "dependencies": [
         "parse5@7.3.0"
+      ]
+    },
+    "@parse5/tools@0.7.0_parse5@7.0.0": {
+      "integrity": "sha512-JDvrGhc8kYBq7/SM4obJkpgwWo6pRjF/fo9CCaiJyVOkDf203Ciq2UF6TjzCFXKs7Q/zS2sS4deyBx0XzRvh9Q==",
+      "dependencies": [
+        "parse5@7.0.0"
       ]
     },
     "@rolldown/binding-android-arm64@1.0.0-rc.17": {
@@ -1493,6 +1500,7 @@
       "npm:@lit-labs/ssr-dom-shim@1",
       "npm:@lit-labs/ssr@3",
       "npm:@lit/reactive-element@2",
+      "npm:@parse5/tools@0.7",
       "npm:@types/node@22",
       "npm:entities@6.0.0",
       "npm:hono@4",
@@ -1511,6 +1519,12 @@
             "npm:vite@8"
           ]
         }
+      },
+      "packages/kiss-adapter-lit": {
+        "dependencies": [
+          "npm:@lit-labs/ssr-dom-shim@1",
+          "npm:@lit-labs/ssr@3"
+        ]
       },
       "packages/kiss-core": {
         "packageJson": {

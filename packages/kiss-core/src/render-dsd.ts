@@ -2,13 +2,14 @@
  * @kissjs/core - DSD Renderer
  *
  * Pure string-based Declarative Shadow DOM SSR renderer.
- * Replaces @lit-labs/ssr — outputs standard DSD without <!--lit-part--> markers.
+ * Framework-agnostic — no Lit dependency, no TemplateResult knowledge.
  *
- * KISS Architecture (v0.5.0):
+ * KISS Architecture (v0.5.1+):
  * - Takes a registered Custom Element class + props → DSD HTML string
- * - No Lit dependency, no TemplateResult, no hydration markers
- * - Components implement render(): string (pure function from state → HTML)
+ * - Components MUST implement render(): string (pure function from state → HTML)
  * - Rendering is synchronous string concatenation — no DOM shim needed
+ * - Framework adapters (e.g. @kissjs/adapter-lit) can hook into the
+ *   rendering pipeline via globalThis to handle framework-specific types
  *
  * SSR Lifecycle:
  *   1. Instantiate component class (new Class())
@@ -16,6 +17,12 @@
  *   3. Call render() to get Shadow DOM HTML string
  *   4. Wrap in <template shadowrootmode="open">
  *   5. Recurse for nested custom elements (optional, Phase 2)
+ *
+ * Adapter Protocol:
+ *   Adapters register via globalThis hooks (set by installLitAdapter()):
+ *   - __kissLitTemplateCheck(value) → boolean  (is this a framework object?)
+ *   - __kissLitSsrRenderer(value, tagName) → Promise<string>  (convert to string)
+ *   Core never imports any framework — adapters are opt-in.
  *
  * Client Lifecycle (no hydration needed):
  *   1. Browser parses DSD → attaches Shadow DOM automatically
@@ -54,33 +61,35 @@ export function escapeAttrValue(value: unknown): string {
   return escapeAttr(String(value));
 }
 
-// ─── DSD Rendering ──────────────────────────────────────────────
+// ─── Adapter Protocol ──────────────────────────────────────────
+
+/** Type for the adapter's template check function */
+type TemplateCheckFn = (value: unknown) => boolean;
+
+/** Type for the adapter's SSR renderer function */
+type SsrRendererFn = (value: unknown, tagName: string) => Promise<string>;
 
 /**
- * Render a Lit TemplateResult to HTML string using @lit-labs/ssr.
- * LitElement's render() returns a TemplateResult (not a plain string).
- * We dynamically import @lit-labs/ssr to render it.
- * Falls back to String() if @lit-labs/ssr is not available.
+ * Check if an adapter has registered a template type checker.
+ * Returns the checker function if available, undefined otherwise.
  */
-async function renderLitTemplateResult(
-  result: unknown,
-  tagName: string,
-): Promise<string> {
-  try {
-    // Dynamic import — works when @lit-labs/ssr is installed (npm install)
-    const { render: litRender } = await import('@lit-labs/ssr');
-    const { collectResult } = await import('@lit-labs/ssr/lib/render-result.js');
-    const rendered = litRender(result);
-    const collected = await collectResult(rendered);
-    return collected as string;
-  } catch {
-    // @lit-labs/ssr not available — fall back to String()
-    console.warn(
-      `[KISS] <${tagName}> returned a Lit TemplateResult but @lit-labs/ssr is not available. Falling back to String().`,
-    );
-    return String(result);
-  }
+function getAdapterTemplateCheck(): TemplateCheckFn | undefined {
+  return (globalThis as Record<string, unknown>).__kissLitTemplateCheck as
+    | TemplateCheckFn
+    | undefined;
 }
+
+/**
+ * Check if an adapter has registered an SSR renderer.
+ * Returns the renderer function if available, undefined otherwise.
+ */
+function getAdapterSsrRenderer(): SsrRendererFn | undefined {
+  return (globalThis as Record<string, unknown>).__kissLitSsrRenderer as
+    | SsrRendererFn
+    | undefined;
+}
+
+// ─── DSD Rendering ──────────────────────────────────────────────
 
 /** Serialize key-value strings to HTML attribute string */
 export function serializeAttributes(props: Record<string, string | boolean | undefined>): string {
@@ -99,6 +108,9 @@ export function serializeAttributes(props: Record<string, string | boolean | und
 /**
  * Interface that components must implement to be DSD-renderable.
  * Works with any Custom Element class that has render() and connectedCallback().
+ *
+ * render() MUST return a string. If you use Lit components that return
+ * TemplateResult, install @kissjs/adapter-lit to handle the conversion.
  */
 export interface DsdComponent {
   /** Return Shadow DOM inner HTML as a string */
@@ -155,12 +167,11 @@ export async function renderDSD(
     }
   }
 
-  // 3. Call connectedCallback if available (won't fire automatically in SSR)
-  try {
-    instance.connectedCallback?.();
-  } catch {
-    // Component may throw if it requires a real DOM — degrade gracefully
-  }
+  // 3. DO NOT call connectedCallback in SSR.
+  //    Lit's connectedCallback triggers performUpdate() → requestUpdate()
+  //    which requires a real DOM (createComment, etc.).
+  //    In DSD SSR we only need the render() return value.
+  //    connectedCallback will fire on the client after upgrade.
 
   // 4. Call render() to get Shadow DOM content
   let content: string;
@@ -169,18 +180,34 @@ export async function renderDSD(
     if (result == null) {
       content = '';
     } else if (typeof result === 'string') {
+      // Fast path: render() returned a plain string — no adapter needed
       content = result;
-    } else if (typeof result === 'object' && '_$litType$' in (result as Record<string, unknown>)) {
-      // Lit TemplateResult — render using @lit-labs/ssr (available when lit is installed)
-      content = await renderLitTemplateResult(result, tagName);
     } else {
-      content = String(result);
+      // Slow path: render() returned a non-string value.
+      // Check if an adapter (e.g. @kissjs/adapter-lit) is installed.
+      const templateCheck = getAdapterTemplateCheck();
+      const ssrRenderer = getAdapterSsrRenderer();
+
+      if (templateCheck && ssrRenderer && templateCheck(result)) {
+        // Adapter handles the framework-specific type (e.g. Lit TemplateResult)
+        content = await ssrRenderer(result, tagName);
+      } else {
+        // No adapter installed — this is a user error.
+        // The component returned something that's not a string and no adapter
+        // can handle it. Provide a clear error message.
+        console.error(
+          `[KISS] <${tagName}> render() returned ${typeof result} instead of string. ` +
+          (isLitTemplateResultHeuristic(result)
+            ? 'This looks like a Lit TemplateResult — install @kissjs/adapter-lit to handle it.'
+            : 'Components must return a string from render().'),
+        );
+        content = `<!-- render error: ${typeof result} returned, expected string -->`;
+      }
     }
   } catch (err) {
     console.error(`[KISS] <${tagName}> render() failed:`, err);
     content = '<!-- render error -->';
   }
-  // Note: __ssr is async in the generated entry — this await is compatible
 
   // 5. Wrap in DSD
   const attrs = serializeAttributes(props);
@@ -189,6 +216,16 @@ export async function renderDSD(
     ${content}
   </template>
 </${tagName}>`;
+}
+
+/**
+ * Heuristic check for Lit TemplateResult without importing Lit.
+ * Checks for the _$litType$ marker that Lit uses internally.
+ * This is only used for error messaging — actual rendering goes through adapters.
+ */
+function isLitTemplateResultHeuristic(value: unknown): boolean {
+  return typeof value === 'object' && value !== null &&
+    '_$litType$' in (value as Record<string, unknown>);
 }
 
 /**

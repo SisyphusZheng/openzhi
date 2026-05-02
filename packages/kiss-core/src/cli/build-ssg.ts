@@ -24,6 +24,11 @@ import { readdirSync, readFileSync, unlinkSync } from 'node:fs';
 import type { FrameworkOptions, PackageIslandMeta } from '../types.js';
 import { SsrRenderError } from '../errors.js';
 
+// Lit adapter is installed after the Vite SSR server is created,
+// so that the adapter can be resolved through Vite's alias system.
+// The adapter uses naive TemplateResult interpolation — no DOM shim
+// or @lit-labs/ssr dependency needed.
+
 interface BuildSSGOptions {
   root?: string;
   outDir?: string;
@@ -141,11 +146,12 @@ async function buildSSG(options: BuildSSGOptions = {}): Promise<void> {
   try {
     const { createServer } = await import('vite');
 
-    // SSR noExternal: bundle lit ecosystem + @kissjs/ui + node-fetch (Deno compat)
+    // SSR noExternal: bundle lit ecosystem + @kissjs/ui + @kissjs/adapter-lit + node-fetch (Deno compat)
     const defaultNoExternal = [
       /^lit/,
       /^@lit/,
       /^@kissjs\/ui/,
+      /^@kissjs\/adapter-lit/,
       'node-fetch',
       'fetch-blob',
       'data-uri-to-buffer',
@@ -200,6 +206,20 @@ async function buildSSG(options: BuildSSGOptions = {}): Promise<void> {
         alias: alias || undefined,
       },
     });
+
+    // Install Lit adapter through Vite's module resolution (respects aliases).
+    // This must happen AFTER createServer() so that Vite can resolve
+    // @kissjs/adapter-lit through the alias config.
+    try {
+      const adapterModule = await server.ssrLoadModule('@kissjs/adapter-lit');
+      if (typeof adapterModule.installLitAdapter === 'function') {
+        adapterModule.installLitAdapter();
+      }
+    } catch {
+      console.warn(
+        '[KISS SSG] @kissjs/adapter-lit not found — Lit components must return string from render()',
+      );
+    }
 
     try {
       const module = await server.ssrLoadModule(tmpEntryPath);

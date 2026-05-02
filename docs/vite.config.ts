@@ -74,6 +74,8 @@ export default defineConfig({
     alias: {
       '@kissjs/core': runtimeShim,
       '@kissjs/core/render-dsd': resolve(__dir, '../packages/kiss-core/src/render-dsd.ts'),
+      '@kissjs/adapter-lit': resolve(__dir, '../packages/kiss-adapter-lit/src/index.ts'),
+      '@kissjs/adapter-lit/ssr': resolve(__dir, '../packages/kiss-adapter-lit/src/ssr.ts'),
     },
   },
 });

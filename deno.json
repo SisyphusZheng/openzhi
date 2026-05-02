@@ -4,16 +4,14 @@
     "./packages/kiss-core",
     "./packages/kiss-rpc",
     "./packages/kiss-ui",
-    "./packages/create-kiss",
-    "./docs"
+    "./packages/kiss-adapter-lit",
+    "./packages/create-kiss"
   ],
   "imports": {
     "lit": "npm:lit@^3.2.0",
     "@lit/reactive-element": "npm:@lit/reactive-element@^2",
     "lit-element": "npm:lit-element@^4",
     "lit-html": "npm:lit-html@^3",
-    "@lit-labs/ssr": "npm:@lit-labs/ssr@^3",
-    "@lit-labs/ssr-dom-shim": "npm:@lit-labs/ssr-dom-shim@^1",
     "@lit-labs/ssr-client": "npm:@lit-labs/ssr-client@^1",
     "hono": "npm:hono@^4",
     "@hono/vite-dev-server": "npm:@hono/vite-dev-server@^0.25.3",
