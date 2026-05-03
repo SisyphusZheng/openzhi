@@ -148,7 +148,7 @@ export class ChangelogPage extends LitElement {
                 </li>
                 <li>
                   <strong>版本号</strong>：@kissjs/core 升至 0.5.0-alpha.4，@kissjs/ui 升至
-                  0.4.5，@kissjs/adapter-lit 升至 0.1.4。
+                  0.4.6，@kissjs/adapter-lit 升至 0.1.4。
                 </li>
               </ul>
             </div>
@@ -162,6 +162,10 @@ export class ChangelogPage extends LitElement {
                 <li>
                   <strong>CI package island 解析</strong>：docs Vite config 显式解析 @kissjs/ui 子路径，CI
                   不再依赖本地 node_modules junction。
+                </li>
+                <li>
+                  <strong>Docs navigation</strong>：kiss-layout 默认 sidebar 和 header 补齐 Decisions /
+                  ADR 入口，文档站可直接发现架构决策记录。
                 </li>
                 <li>
                   <strong>Phase 2/3 工作目录</strong>：build:client 和 build:ssg 从 docs 目录读取 .kiss

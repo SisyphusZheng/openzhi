@@ -1204,6 +1204,21 @@ Deno.test('kiss-layout: currentPath highlights active nav link', async () => {
   assertExists(result);
 });
 
+Deno.test('kiss-layout: default docs nav includes architecture decisions', async () => {
+  const { KissLayout } = await import('../src/kiss-layout.ts');
+  const defaults = (KissLayout as any).DEFAULT_NAV as Array<{
+    section: string;
+    items: Array<{ path?: string; label: string }>;
+  }>;
+  const decisions = defaults.find((section) => section.section === 'Decisions');
+  assertExists(decisions);
+  assertEquals(decisions.items.some((item) => item.path === '/decisions'), true);
+  assertEquals(
+    decisions.items.some((item) => item.path === '/decisions/0004-blog-system'),
+    true,
+  );
+});
+
 Deno.test('kiss-layout: custom headerNav renders custom links', async () => {
   const { KissLayout } = await import('../src/kiss-layout.ts');
   const instance = new KissLayout();

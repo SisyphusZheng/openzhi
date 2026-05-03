@@ -77,7 +77,7 @@ needed.
 | Package               | Role                                                     | Current line    |
 | --------------------- | -------------------------------------------------------- | --------------- |
 | `@kissjs/core`        | Vite plugin, route scanning, DSD rendering, SSG pipeline | `0.5.0-alpha.4` |
-| `@kissjs/ui`          | Lit-based Web Component library and package islands      | `0.4.5`         |
+| `@kissjs/ui`          | Lit-based Web Component library and package islands      | `0.4.6`         |
 | `@kissjs/rpc`         | Small fetch/RPC controller utilities                     | `0.2.4`         |
 | `@kissjs/adapter-lit` | Optional Lit SSR adapter                                 | `0.1.4`         |
 | `@kissjs/create`      | Project scaffolding CLI                                  | `0.3.2`         |

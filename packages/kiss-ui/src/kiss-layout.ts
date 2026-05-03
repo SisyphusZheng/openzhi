@@ -561,7 +561,18 @@ export class KissLayout extends LitElement {
         items: [
           { path: '/guide/kiss-compiler', label: 'KISS Compiler' },
           { path: '/guide/pwa', label: 'PWA Support' },
+          { path: '/guide/blog-system', label: 'Blog System' },
           { path: '/roadmap', label: 'Roadmap' },
+        ],
+      },
+      {
+        section: 'Decisions',
+        items: [
+          { path: '/decisions', label: 'ADR Index' },
+          { path: '/decisions/0001-keep-hono-vite-dev-server', label: '0001 Hono Dev Server' },
+          { path: '/decisions/0002-kiss-compiler-eliminate-lit', label: '0002 .kiss Compiler' },
+          { path: '/decisions/0003-pwa-support', label: '0003 PWA Support' },
+          { path: '/decisions/0004-blog-system', label: '0004 Blog System' },
         ],
       },
       {
@@ -581,7 +592,10 @@ export class KissLayout extends LitElement {
         section: 'Blog',
         items: [
           { path: '/blog', label: 'All Posts' },
-          { path: '/blog/kiss-compiler', label: 'KISS Compiler' },
+          { path: '/blog/v0-5-alpha1', label: 'v0.5-alpha1' },
+          { path: '/blog/v0-5-0', label: 'v0.5.0' },
+          { path: '/blog/v0-4-0', label: 'v0.4.0' },
+          { path: '/blog/kiss-compiler', label: '.kiss Compiler' },
         ],
       },
       {
@@ -598,6 +612,8 @@ export class KissLayout extends LitElement {
       { href: '/guide/getting-started', label: 'Docs' },
       { href: '/ui', label: 'UI' },
       { href: '/blog', label: 'Blog' },
+      { href: '/decisions', label: 'Decisions' },
+      { href: '/demo', label: 'Demo' },
       { href: 'https://jsr.io/@kissjs/core', label: 'JSR' },
     ];
 

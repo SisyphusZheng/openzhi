@@ -112,6 +112,7 @@ export const HEADER_NAV: HeaderNavItem[] = [
   { href: '/guide/getting-started', label: 'Docs' },
   { href: '/ui', label: 'UI' },
   { href: '/blog', label: 'Blog' },
+  { href: '/decisions', label: 'Decisions' },
   { href: '/demo', label: 'Demo' },
   { href: 'https://jsr.io/@kissjs/core', label: 'JSR' },
 ];
