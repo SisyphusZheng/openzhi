@@ -49,6 +49,8 @@ export default defineConfig({
         ],
         scripts: [],
         headFragments: [
+          // Meta
+          '<meta name="description" content="KISS Framework — Web Standards-first Jamstack SSG with Island architecture. Zero-runtime core, DSD rendering, Lit Web Components, Hono API routes.">',
           // Favicon
           '<link rel="icon" type="image/svg+xml" href="/favicon.svg" />',
           // DSD (Declarative Shadow DOM) polyfill removed — all modern browsers
