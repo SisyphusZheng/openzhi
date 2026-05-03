@@ -666,27 +666,23 @@ export class KissLayout extends LitElement {
                 .logoSub}</span></a>
               ${this._renderHeaderNav()}
               <div class="header-right">
-                ${!this.home
-                  ? html`
-                    <details class="mobile-menu">
-                      <summary class="mobile-menu-btn" aria-label="Toggle navigation">
-                        <svg
-                          width="18"
-                          height="18"
-                          viewBox="0 0 18 18"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="1.5"
-                          stroke-linecap="round"
-                        >
-                          <line x1="3" y1="4.5" x2="15" y2="4.5" />
-                          <line x1="3" y1="9" x2="15" y2="9" />
-                          <line x1="3" y1="13.5" x2="15" y2="13.5" />
-                        </svg>
-                      </summary>
-                    </details>
-                  `
-                  : ''}
+                <details class="mobile-menu">
+                  <summary class="mobile-menu-btn" aria-label="Toggle navigation">
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 18 18"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                    >
+                      <line x1="3" y1="4.5" x2="15" y2="4.5" />
+                      <line x1="3" y1="9" x2="15" y2="9" />
+                      <line x1="3" y1="13.5" x2="15" y2="13.5" />
+                    </svg>
+                  </summary>
+                </details>
                 <kiss-theme-toggle></kiss-theme-toggle>
                 <a class="github-link" href="${this.githubUrl}" aria-label="GitHub repository">
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
@@ -701,7 +697,7 @@ export class KissLayout extends LitElement {
           </header>
           <div class="mobile-backdrop"></div>
           <div class="layout-body">
-            ${!this.home ? this._renderSidebarNav() : nothing}
+            ${this._renderSidebarNav()}
             <main class="layout-main">
               <slot></slot>
             </main>
