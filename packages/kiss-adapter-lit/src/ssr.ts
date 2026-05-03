@@ -197,7 +197,8 @@ function interpolate(result: unknown): string {
  * interpolated CSS string — no need to manually interleave strings/values.
  */
 export function extractLitStyles(componentClass: CustomElementConstructor): string | undefined {
-  const ctor = componentClass as unknown as Record<string, unknown>;
+  try {
+    const ctor = componentClass as unknown as Record<string, unknown>;
   const styles = ctor.styles;
   if (!styles) return undefined;
 
@@ -228,6 +229,11 @@ export function extractLitStyles(componentClass: CustomElementConstructor): stri
   }
 
   return parts.length > 0 ? parts.join('\n') : undefined;
+  } catch (err) {
+    const name = (componentClass as { name?: string }).name || 'unknown';
+    console.warn(`[KISS] Failed to extract styles for <${name}>:`, err instanceof Error ? err.message : err);
+    return undefined;
+  }
 }
 
 // ─── Public API ────────────────────────────────────────────────

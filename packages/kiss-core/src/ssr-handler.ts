@@ -17,31 +17,7 @@
  */
 
 import type { RouteEntry } from './types.js';
-
-/**
- * Escape a string for safe insertion into an HTML text content.
- * Covers the 5 characters that matter: &, <, >, ", '
- */
-function escapeHtml(str: string): string {
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#x27;');
-}
-
-/**
- * Escape a string for safe insertion into an HTML attribute value.
- * Covers the 4 critical characters: &, ", <, >
- */
-function escapeHtmlAttr(str: string): string {
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/"/g, '&quot;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
-}
+import { escapeHtml, escapeAttrValue as escapeHtmlAttr } from './render-dsd.js';
 
 /**
  * Render an error page to HTML string.
