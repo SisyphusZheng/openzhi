@@ -50,8 +50,10 @@ export const tagName = 'kiss-layout';
 
 /** A single navigation link */
 export interface NavItem {
-  /** URL path for the link */
-  path: string;
+  /** URL path for internal links */
+  path?: string;
+  /** External URL (takes precedence over path) */
+  href?: string;
   /** Display label */
   label: string;
 }
@@ -609,12 +611,15 @@ export class KissLayout extends LitElement {
     ];
 
     private _navLink(path: string, text: string) {
-      const isActive = this.currentPath === path;
+      const isExternal = path.startsWith('http');
+      const isActive = !isExternal && this.currentPath === path;
       return html`
         <a
           href="${path}"
           class="${isActive ? 'active' : ''}"
           aria-current="${isActive ? 'page' : undefined}"
+          target="${isExternal ? '_blank' : nothing}"
+          rel="${isExternal ? 'noopener noreferrer' : nothing}"
         >${text}</a>
       `;
     }
@@ -629,7 +634,7 @@ export class KissLayout extends LitElement {
                 <details class="nav-section" open>
                   <summary class="nav-section-title">${section.section}</summary>
                   ${section.items.map(
-                    (item) => this._navLink(item.path, item.label),
+                    (item) => this._navLink(item.href || item.path || '#', item.label),
                   )}
                 </details>
               `,
