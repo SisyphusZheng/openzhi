@@ -472,12 +472,12 @@ export class KissLayout extends LitElement {
 
         .app-footer a {
           color: var(--kiss-text-tertiary);
-          text-decoration: none;
           transition: color var(--kiss-transition-normal);
         }
 
         .app-footer a:hover {
           color: var(--kiss-text-primary);
+          text-decoration: underline;
         }
 
         .app-footer .divider {
