@@ -20,32 +20,22 @@ jobs:
 
       - uses: denoland/setup-deno@v2
         with:
-          deno-version: '2'
+          deno-version: 'v2.7.14'
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-
-      - name: Install dependencies (Deno for type-check, npm for vite binary)
-        run: |
-          deno install --node-modules-dir
-          cd docs && npm install
+      - name: Install dependencies
+        run: deno install --node-modules-dir
 
       - name: Build @kissjs/ui (needed by SSR bundle)
-        working-directory: packages/kiss-ui
-        run: npx vite build --config vite.config.build.ts
+        run: deno task build:ui
 
       - name: Phase 1 — SSR bundle
-        working-directory: docs
-        run: npx vite build
+        run: deno run -A npm:vite build docs --config docs/vite.config.ts
 
       - name: Phase 2 — Client island chunks
-        working-directory: docs
-        run: npx tsx ../packages/kiss-core/src/cli/build-client.ts
+        run: deno task build:client
 
       - name: Phase 3 — SSG static HTML
-        working-directory: docs
-        run: npx tsx ../packages/kiss-core/src/cli/build-ssg.ts
+        run: deno task build:ssg
 
       - name: Deploy to gh-pages branch
         run: |

@@ -52,14 +52,15 @@ export class PwaPage extends LitElement {
     return html`
       <kiss-layout currentPath="/guide/pwa">
         <div class="container">
-          <p class="adr-meta">ADR 0003 · 2026-04-30 · Draft</p>
+          <p class="adr-meta">ADR 0003 · 2026-04-30 · Partially implemented</p>
           <h1>PWA Support for KISS SSG</h1>
 
           <h2>Context</h2>
           <p>
             KISS generates pure static HTML with Declarative Shadow DOM. This is the ideal substrate for a
-            PWA: all pages are pre-rendered, assets are versioned hashes, no server state. A service
-            worker can precache the entire site at install time.
+            PWA: pages are pre-rendered, assets are versioned hashes, and API routes can stay outside the
+            static artifact on a serverless platform. The important rule is freshness: HTML should prefer
+            network, while hashed assets can prefer cache.
           </p>
 
           <h2>Implementation</h2>
@@ -71,7 +72,7 @@ export class PwaPage extends LitElement {
           >
             <li><code>manifest.json</code> — Web App Manifest with name, theme_color, icons</li>
             <li>
-              <code>sw.js</code> — Service Worker with CacheFirst (static) + NetworkFirst (API) strategy
+              <code>sw.js</code> — Service Worker with NetworkFirst (HTML/API) + CacheFirst (assets)
             </li>
             <li>HTML injection — <code>&lt;link rel="manifest"&gt;</code> + sw registration script</li>
           </ul>
@@ -84,22 +85,23 @@ export class PwaPage extends LitElement {
 
           <h3>Service Worker strategy</h3>
           <div class="code-block">
-            self.addEventListener('install', (e) => { e.waitUntil(caches.open('kiss-v1').then(c =>
-            c.addAll([ '/', '/index.html', // precache root ]))) self.skipWaiting(); })
-            self.addEventListener('fetch', (e) => { if (e.request.url.includes('/api/')) {
-            e.respondWith(networkFirst(e.request)); } else { e.respondWith(cacheFirst(e.request)); } })
+            self.addEventListener('install', () => self.skipWaiting()) self.addEventListener('fetch',
+            (e) => { const url = new URL(e.request.url) const isAsset = /\\.[a-z0-9]+$/i.test(url.pathname)
+            && !url.pathname.includes('/api/') e.respondWith(isAsset ? cacheFirst(e.request) :
+            networkFirst(e.request)) })
           </div>
 
           <h2>Current status</h2>
           <p>
             The <code>build-ssg.ts</code> script accepts a <code>pwa</code> option. When provided, it
             generates manifest.json and sw.js in the output directory, and injects manifest links + sw
-            registration into every HTML file. The <code>kiss()</code> plugin will expose this option in
-            the next release.
+            registration into every HTML file. The <code>kiss()</code> plugin already carries this option
+            through build metadata.
           </p>
           <p>
             Benefit: offline access, instant repeat visits, installable on mobile. Cost: ~100 lines of
-            code. No dependency on Workbox — hand-written 30-line sw.js covers CacheFirst + NetworkFirst.
+            code. No dependency on Workbox. The current service worker intentionally avoids full precache
+            because stale <code>index.html</code> is worse than a first-load network request.
           </p>
 
           <div class="nav-row" style="margin-top:2rem">

@@ -59,8 +59,8 @@ export class BlogSystemPage extends LitElement {
     return html`
       <kiss-layout currentPath="/guide/blog-system">
         <div class="container">
-          <p class="adr-meta">ADR 0004 · 2026-04-30 · Draft</p>
-          <h1>@kissjs/blog — Standalone Blog Package</h1>
+          <p class="adr-meta">ADR 0004 · 2026-04-30 · Draft · after v0.8.0 target</p>
+          <h1>@kissjs/blog — Standalone SSG Blog Package</h1>
 
           <h2>Motivation</h2>
           <p>
@@ -92,20 +92,21 @@ export class BlogSystemPage extends LitElement {
 
           <h2>Constraint</h2>
           <p>
-            The blog package is designed for the <code>.kiss</code> compiler from day one. Post templates
-            compile to vanilla Custom Elements — zero runtime, no Lit, synchronous SSR via <code
-            >template.innerHTML</code>.
+            The blog package should not require Lit. The first useful version should work as a plain SSG
+            plugin: Markdown in, static routes + feed out. Plain blog pages should ship no page-level
+            framework runtime; interactive widgets remain islands.
           </p>
           <p>
-            Before the compiler ships (v1.0), a fallback renders the same templates as server-side string
-            concatenation using <code>html-template.ts</code>.
+            The <code>.kiss</code> compiler is an ideal future template backend, not a release blocker.
+            When v0.10.0 alpha exists, blog templates can gain compiler-backed Custom Elements.
           </p>
 
           <h2>Implementation order</h2>
           <ol style="font-size:0.8125rem;line-height:1.8;color:var(--kiss-text-secondary)">
-            <li><code>.kiss</code> compiler is available (Phase 11)</li>
-            <li><code>@kissjs/blog</code> built on top (Phase 10 sub-task)</li>
-            <li>KISS docs site dogfoods — replaces current hardcoded blog routes</li>
+            <li>v0.8.0 stabilizes route/action/serverless conventions</li>
+            <li><code>@kissjs/blog</code> ships as a plain SSG plugin first</li>
+            <li><code>.kiss</code> compiler support is added after v0.10.0 alpha</li>
+            <li>KISS docs site dogfoods it and replaces current hardcoded blog routes</li>
           </ol>
 
           <p>详见 <code>docs/decisions/0004-blog-system.md</code></p>

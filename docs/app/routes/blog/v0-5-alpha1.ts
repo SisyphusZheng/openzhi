@@ -148,7 +148,7 @@ export default class BlogV05Alpha1 extends LitElement {
 
           <div class="bug-card">
             <div class="bug-label">Bug #2</div>
-            <h3>Island Hydration 死锁：API Consumer 卡在 "Contacting server..."</h3>
+            <h3>Island Upgrade 竞态：API Consumer 卡在 "Contacting server..."</h3>
             <p><code>api-consumer</code> 组件永远卡在 "Contacting server..." 状态。根因：<code>_fetchStatus()</code> 在 <code>connectedCallback()</code> 中同步调用，而 LitElement 的首次 update cycle 尚未完成——reactive property 被设置但 DOM 还没渲染。</p>
             <p><strong>修复：</strong>将初始化逻辑推迟到 <code>updateComplete.then(() => this._fetchStatus())</code>。这是 Lit 的基本规则：connectedCallback 做 setup，updateComplete 做首次状态驱动操作。</p>
           </div>
@@ -200,9 +200,9 @@ export default class BlogV05Alpha1 extends LitElement {
           <div class="truth">
             <div class="truth-title">审查发现的关键事实</div>
             <ul>
-              <li><strong>@kissjs/adapter-lit: 0 tests。</strong>项目中最危险的覆盖缺口。今天修复的两个 Bug（CSS 注入、Hydration 死锁）都在这个包。如果你不测适配器，适配器就会出 Bug——这是软件工程的必然。</li>
-              <li><strong>所有 9 个 Island 都是 eager-loaded。</strong>每个页面加载 67.8KB JS——Lighthouse 性能评分为 30。没有懒加载机制。用户为没有交互的组件支付了全部运行时成本。</li>
-              <li><strong><code>@lit-labs/ssr-client</code> 仍在依赖中。</strong>v0.5.0 已经宣布移除，但 <code>deno.json</code> 和 import map 中仍然引用。</li>
+              <li><strong>@kissjs/adapter-lit: 0 tests。</strong>项目中最危险的覆盖缺口。今天修复的两个 Bug（CSS 注入、Island upgrade 竞态）都在这个包。如果你不测适配器，适配器就会出 Bug——这是软件工程的必然。</li>
+              <li><strong>所有 9 个 Island 都是 eager-loaded。</strong>每个页面加载完整全局 island entry。没有页面级 manifest。用户为没有交互的组件支付了全部运行时成本。</li>
+              <li><strong>旧 Lit SSR client 路线仍有残留风险。</strong>依赖、术语和 client entry 必须统一清理，避免文档声称移除而运行路径仍保留旧模型。</li>
               <li><strong>3 份重复的 <code>escapeHtml</code> 实现。</strong>各自用不同编码逻辑——一个用正则、一个用 DOM API、一个手动替换。</li>
             </ul>
           </div>
@@ -217,7 +217,7 @@ export default class BlogV05Alpha1 extends LitElement {
 
           <div class="principle">
             <div class="principle-title">Adapter Test Coverage <span class="new-badge">New</span></div>
-            <p>每个 adapter 必须有测试——这不是"nice to have"，而是"上线前提"。如果 adapter-lit 有测试，CSS 注入 Bug 和 Hydration 死锁在提交前就会被测出来。</p>
+            <p>每个 adapter 必须有测试——这不是"nice to have"，而是"上线前提"。如果 adapter-lit 有测试，CSS 注入 Bug 和 upgrade 竞态在提交前就会被测出来。</p>
           </div>
 
           <div class="principle">
@@ -227,7 +227,7 @@ export default class BlogV05Alpha1 extends LitElement {
 
           <div class="principle">
             <div class="principle-title">Island Lazy by Default <span class="new-badge">New</span></div>
-            <p>所有 Island 默认懒加载。只有标记为 <code>eager</code> 或在首屏的组件才在初始 Bundle 中包含。67.8KB 的 JS 成本对没有交互的组件来说是不可接受的。</p>
+            <p>所有 Island 默认按需升级。只有标记为 <code>eager</code> 或在首屏的组件才在初始 Bundle 中包含。全局 island entry 对没有交互的页面来说是不可接受的。</p>
           </div>
 
           <div class="principle">
@@ -241,40 +241,45 @@ export default class BlogV05Alpha1 extends LitElement {
           </div>
 
           <h2>Road to v1.0</h2>
-          <p>基于审查结果，我们制定了分阶段 v1.0 路线图：</p>
+          <p>基于这次审查，新的路线图被重新排序：先修可信度与安全，再谈更大的语法和生态扩展。</p>
 
           <div class="phase">
-            <div class="phase-version">v0.5.2 — 修复基础</div>
-            <div class="phase-goal">完成 adapter-lit 测试、移除 <code>@lit-labs/ssr-client</code>、解决所有 P0 问题</div>
+            <div class="phase-version">v0.5.0 — Trust Release</div>
+            <div class="phase-goal">修复安全、quickstart、嵌套 island、manifest URL，并补齐关键测试</div>
           </div>
 
           <div class="phase">
-            <div class="phase-version">v0.6.0 — 性能升维</div>
-            <div class="phase-goal">Island 懒加载、Lighthouse 90+、去重 escapeHtml/escapeAttr</div>
+            <div class="phase-version">v0.6.0 — DSD Renderer 2</div>
+            <div class="phase-goal">统一 escape/render contract，稳定 DSD 输出与 adapter 边界</div>
           </div>
 
           <div class="phase">
-            <div class="phase-version">v0.7.0 — 质量闭环</div>
-            <div class="phase-goal">E2E 测试、结构化 inject API、中文错误信息</div>
+            <div class="phase-version">v0.7.0 — Island Upgrade</div>
+            <div class="phase-goal">页面级 island manifest、真实 eager/idle/visible 策略、性能预算</div>
           </div>
 
           <div class="phase">
-            <div class="phase-version">v0.8.0 — .kiss 编译器 Alpha</div>
-            <div class="phase-goal">零基础设施 JS（.kiss 编译器 alpha）</div>
+            <div class="phase-version">v0.8.0 — Serverless Fullstack</div>
+            <div class="phase-goal">API routes、RPC、serverless adapters 和本地开发闭环</div>
           </div>
 
           <div class="phase">
-            <div class="phase-version">v1.0.0 — API 冻结</div>
-            <div class="phase-goal">API 冻结、长期支持</div>
+            <div class="phase-version">v0.9.0 — SSG + ISR + PWA</div>
+            <div class="phase-goal">保住纯静态默认值，再提供可选 ISR 与更稳的 PWA 缓存策略</div>
+          </div>
+
+          <div class="phase">
+            <div class="phase-version">v0.10.0 — .kiss Compiler Alpha</div>
+            <div class="phase-goal">可选零框架运行时组件编译器，不阻塞 v0.5-v0.9</div>
           </div>
 
           <h2>.kiss 编译器愿景（ADR 0002）</h2>
 
           <div class="truth">
-            <div class="truth-title">消除 Lit 的运行时代价</div>
+            <div class="truth-title">把 Lit 从必选变成 adapter</div>
             <p>Lit 当前需要 58KB gzip 运行时。这个成本在首屏加载时集中出现——即使只有 1 个组件也需要整个运行时。</p>
             <p><strong>.kiss 编译器</strong>的愿景：将 <code>.kiss</code> 模板文件编译为原生 Custom Element——无框架运行时。Lit 作为可选 fallback 保留，供需要 Lit 生态（context protocol、decorators、ReactiveController）的用户选择。</p>
-            <p>这不是"替代 Lit"——这是让 Lit 从必选变成可选。零运行时始终是方向。</p>
+            <p>这不是"替代 Lit"——这是让 Lit 从必选变成可选。零框架运行时始终是方向。</p>
           </div>
 
           <h2>v0.5.0 正式版路线</h2>
@@ -283,7 +288,7 @@ export default class BlogV05Alpha1 extends LitElement {
             <div class="truth-title">P0 — 阻塞发布</div>
             <ul>
               <li><strong>A1 adapter-lit 测试</strong> — extractLitStyles + renderLitToString + installLitAdapter</li>
-              <li><strong>A2 移除 @lit-labs/ssr-client</strong> — 从 deno.json 和 client bundle 中彻底清除</li>
+              <li><strong>A2 移除旧 Lit SSR client 路线</strong> — 从依赖、术语和 client bundle 中彻底清除</li>
               <li><strong>A3 extractLitStyles 错误可见性</strong> — try/catch → console.warn</li>
               <li><strong>A4 CI 全绿</strong> — lint / fmt / test / typecheck 零错误</li>
               <li><strong>A5 版本号最终对齐</strong> — core 0.5.0, rpc 0.3.0, ui 0.5.0, create 0.4.0</li>

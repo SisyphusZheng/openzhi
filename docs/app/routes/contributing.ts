@@ -68,6 +68,17 @@ export class ContributingPage extends LitElement {
             # 启动文档站开发服务器
             deno task docs:dev</code></pre></code-block>
 
+            <h2>Deno-first 工具链</h2>
+            <p>
+              KISS 的 core CLI、SSG、Serverless API、测试、发布和文档站任务都以 Deno 2.7+
+              为默认运行环境。Vite 8 通过 <code>deno run -A npm:vite</code> 执行，不需要
+              <code>npm</code> / <code>npx</code> 作为仓库主流程。
+            </p>
+            <p>
+              如果遇到 <code>node:util.parseEnv</code> 兼容缺口，优先运行
+              <code>deno upgrade</code>。当前验证基线是 Deno 2.7.14。
+            </p>
+
             <h2>项目结构</h2>
             <code-block
             ><pre>
@@ -104,7 +115,7 @@ export class ContributingPage extends LitElement {
               <div class="layer-diagram">
                 L0 HTML5 语义 — 结构、内容、导航 L1 CSS 表现 — 视觉、布局、动画 L2 浏览器平台 API — Clipboard,
                 IntersectionObserver L3 Hono/Vite/Lit — 路由、构建、组件封装 L4 自研代码 — Island
-                水合、RPC、插件逻辑 跳过任何一层 = 违反 KISS 架构约束
+                Island upgrade、RPC、插件逻辑 跳过任何一层 = 违反 KISS 架构约束
               </div>
 
               <h3>测试</h3>

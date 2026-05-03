@@ -210,6 +210,31 @@ Deno.test('renderEntry: package islands are included in hydration', () => {
   assertStringIncludes(code, '@kissjs/ui');
 });
 
+Deno.test('renderEntry: package islands do not require default exports', () => {
+  const desc = buildEntryDescriptor(basicRoutes, {
+    packageIslands: [
+      { tagName: 'kiss-layout', modulePath: '@kissjs/ui/kiss-layout' },
+      { tagName: 'kiss-button', modulePath: '@kissjs/ui/kiss-button' },
+    ],
+  });
+  const code = renderEntry(desc);
+
+  assertStringIncludes(
+    code,
+    'const __kiss_get_default_export = (module) => module && module.default',
+  );
+  assertStringIncludes(
+    code,
+    'const __island_component_kiss_layout = __kiss_get_default_export(__island_kiss_layout)',
+  );
+  assertStringIncludes(
+    code,
+    "customElements.define('kiss-layout', __island_component_kiss_layout)",
+  );
+  assertFalse(code.includes('__island_kiss_layout.default'));
+  assertFalse(code.includes('__island_kiss_button.default'));
+});
+
 // ─── Code Structure Validation ──────────────────────────────
 
 Deno.test('renderEntry: no bare process.env references', () => {

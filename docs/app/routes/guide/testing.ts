@@ -91,7 +91,7 @@ export class TestingPage extends LitElement {
                               <li><span class="inline-code">entry-descriptor</span> —— EntryDescriptor 数据模型构建器</li>
                               <li><span class="inline-code">entry-renderer</span> —— 从描述符生成代码</li>
                               <li><span class="inline-code">route-scanner</span> —— 基于文件的路由发现</li>
-                              <li><span class="inline-code">island-transform</span> —— AST 标记 + hydration 探测</li>
+                              <li><span class="inline-code">island-transform</span> —— AST 标记 + island upgrade 探测</li>
                               <li><span class="inline-code">ssr-handler</span> —— SSR 渲染 + 错误处理</li>
                               <li><span class="inline-code">context</span> —— 请求上下文工具</li>
                               <li><span class="inline-code">errors</span> —— 错误类层级</li>

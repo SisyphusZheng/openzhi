@@ -48,11 +48,16 @@ export class GettingStartedPage extends LitElement {
 
           <div class="step">
             <h2 class="step-header">1. 创建项目</h2>
-            <p class="step-desc">使用 create-kiss CLI 一键生成脚手架 —— 零配置、零选择。</p>
+            <p class="step-desc">使用 create-kiss CLI 一键生成脚手架。v0.5.0 正在把它纳入端到端验证。</p>
             <code-block
             ><pre>
               <code>deno run -A jsr:@kissjs/create my-app
               cd my-app</code></pre></code-block>
+              <div class="note">
+                <strong>Alpha 说明：</strong>如果你正在使用 v0.5.0 alpha 前的版本，脚手架模板可能仍包含旧的
+                Lit re-export 写法。v0.5.0 Trust Release 的验收标准是新项目可以直接跑通
+                <span class="inline-code">dev</span> 和三阶段构建。
+              </div>
             </div>
 
             <div class="step">
@@ -78,7 +83,13 @@ export class GettingStartedPage extends LitElement {
               <div class="note">
                 <strong>架构说明：</strong>三阶段各自独立，每阶段输出可作为下一阶段输入。 Phase 1 产出 SSR
                 bundle 和 <span class="inline-code">.kiss/build-metadata.json</span>； Phase 2 将 Island
-                组件编译为独立 client chunk； Phase 3 渲染全部静态 HTML + 注入 hydration 脚本。
+                组件编译为独立 client chunk； Phase 3 渲染全部静态 HTML + 注入 island upgrade 入口。
+              </div>
+              <div class="note">
+                <strong>工具链说明：</strong>KISS runtime、SSG CLI 和文档站任务都是 Deno-first。请使用
+                Deno 2.7+；Vite 8 通过 <span class="inline-code">deno run -A npm:vite</span>
+                执行。如果遇到 <span class="inline-code">node:util.parseEnv</span> 兼容缺口，请先运行
+                <span class="inline-code">deno upgrade</span>。
               </div>
             </div>
 

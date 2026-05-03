@@ -72,7 +72,7 @@ export class DesignPhilosophyPage extends LitElement {
               框架 = 1 个 Vite 插件（连接器，不是新抽象）。
             </p>
             <p>
-              零交互页面：<strong>0 KB</strong> KISS 运行时。单个 Island：~6 KB（Lit 本身）。
+              零交互页面：<strong>0 KB</strong> KISS 框架运行时。交互页面只加载 island 需要的客户端代码。
             </p>
             <p>
               <span class="hard-constraint">复用 Hono/Vite/Lit 生态</span>
@@ -84,8 +84,8 @@ export class DesignPhilosophyPage extends LitElement {
             <div class="num">支柱 3</div>
             <h3>无框架绑定</h3>
             <p>
-              KISS 推荐 Lit，但你可以用别的。你可以不用 Lit 就用 @kissjs/core 做 SSR。
-              你也可以不用 KISS 就用 Lit。
+              KISS 当前文档站仍使用 Lit 编写组件，但 Lit 应被视为 adapter，
+              不是 core 的长期基础。你可以不用 Lit 就实现返回 HTML 字符串的 Web Component。
             </p>
             <p>
               Package Islands 自动探测——无需手动注册。只需从你的包
@@ -114,7 +114,7 @@ export class DesignPhilosophyPage extends LitElement {
             <div class="num">支柱 5</div>
             <h3>渐进增强</h3>
             <p>
-              KISS 默认零 JS。按组件选择加入。没有 SPA——这是架构，不是疏忽。
+              KISS 默认静态优先。按组件选择加入交互。没有 SPA——这是架构，不是疏忽。
             </p>
             <table>
               <thead>
@@ -128,12 +128,12 @@ export class DesignPhilosophyPage extends LitElement {
                 <tr>
                   <td>0</td>
                   <td>HTML + DSD（声明式 Shadow DOM）</td>
-                  <td><strong>0 KB</strong></td>
+                  <td><strong>0 KB 框架 JS</strong></td>
                 </tr>
                 <tr>
                   <td>1</td>
-                  <td>部分 Islands 带懒 Hydration</td>
-                  <td>~6 KB / island</td>
+                  <td>部分 Islands 进行 Custom Element upgrade</td>
+                  <td>按 island chunk 计</td>
                 </tr>
               </tbody>
             </table>
@@ -194,13 +194,12 @@ export class DesignPhilosophyPage extends LitElement {
             <div class="num">原则 9</div>
             <h3>Island Lazy by Default</h3>
             <p>
-              所有 Island 组件默认延迟加载（IntersectionObserver），仅关键全局 Island
-              （如 theme-toggle）允许 eager。当前 9 个 Island 全 eager 导致每页 67.8KB JS。
-              违背了 Island 架构的按需加载初衷。
+              所有 Island 组件应默认按页面和可见性延迟加载，仅关键全局 Island
+              （如 theme-toggle）允许 eager。当前实现仍偏全局 entry，v0.7.0 需要改成页面级 manifest。
             </p>
             <p>
-              <span class="hard-constraint">IntersectionObserver 默认</span>
-              <span class="hard-constraint">仅 &lt; 3 个 eager</span>
+              <span class="hard-constraint">页面级 manifest</span>
+              <span class="hard-constraint">仅关键 island eager</span>
             </p>
           </div>
 
@@ -310,7 +309,7 @@ export class DesignPhilosophyPage extends LitElement {
               <tr>
                 <td><strong>L4</strong></td>
                 <td>自定义代码</td>
-                <td>Island hydration、RPC、插件逻辑</td>
+                <td>Island upgrade、RPC、插件逻辑</td>
               </tr>
             </tbody>
           </table>

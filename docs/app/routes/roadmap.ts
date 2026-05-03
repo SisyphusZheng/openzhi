@@ -4,102 +4,92 @@
 import { css, html, LitElement } from '@kissjs/core';
 import { pageStyles } from '../components/page-styles.js';
 import '@kissjs/ui/kiss-layout';
-import '../islands/code-block.js';
 
 export class RoadmapPage extends LitElement {
   static override styles = [
     pageStyles,
     css`
-      .phase-table {
+      .truth-box {
+        margin: 1.5rem 0;
+        padding: 1rem 1.25rem;
+        border: 0.5px solid var(--kiss-border-hover);
+        background: var(--kiss-bg-surface);
+        border-radius: 4px;
+      }
+      .truth-box strong {
+        color: var(--kiss-text-primary);
+      }
+      .truth-box p {
+        margin: 0.5rem 0;
+      }
+      .roadmap-table,
+      .task-table {
         width: 100%;
         border-collapse: collapse;
         margin: 1.5rem 0;
         font-size: 0.875rem;
       }
-      .phase-table th,
-      .phase-table td {
+      .roadmap-table th,
+      .roadmap-table td,
+      .task-table th,
+      .task-table td {
         padding: 0.75rem 1rem;
         text-align: left;
+        vertical-align: top;
         border-bottom: 0.5px solid var(--kiss-border);
       }
-      .phase-table th {
+      .roadmap-table th,
+      .task-table th {
         font-size: 0.6875rem;
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 0.08em;
         color: var(--kiss-text-muted);
       }
-      .phase-table td:first-child {
+      .roadmap-table td:first-child,
+      .task-table td:first-child {
+        white-space: nowrap;
         font-weight: 600;
         color: var(--kiss-text-primary);
       }
       .status-done {
         color: var(--kiss-accent);
-        font-weight: 500;
+        font-weight: 600;
       }
-      .status-wip {
+      .status-now {
+        color: var(--kiss-text-primary);
+        font-weight: 600;
+      }
+      .status-next {
         color: var(--kiss-text-secondary);
-        font-weight: 500;
+        font-weight: 600;
       }
-      .task-list {
-        list-style: none;
-        padding: 0;
-        margin: 1rem 0;
-      }
-      .task-list li {
-        padding: 0.5rem 0;
-        padding-left: 1.5rem;
-        position: relative;
-        color: var(--kiss-text-secondary);
-        font-size: 0.875rem;
-      }
-      .task-list li::before {
-        content: "✓";
-        position: absolute;
-        left: 0;
+      .priority-p0 {
         color: var(--kiss-accent);
         font-weight: 700;
       }
-      .tech-debt-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin: 1.5rem 0;
-        font-size: 0.875rem;
+      .priority-p1 {
+        color: var(--kiss-text-primary);
+        font-weight: 600;
       }
-      .tech-debt-table th,
-      .tech-debt-table td {
-        padding: 0.75rem 1rem;
-        text-align: left;
-        border-bottom: 0.5px solid var(--kiss-border);
-      }
-      .tech-debt-table th {
-        font-size: 0.6875rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-        color: var(--kiss-text-muted);
-      }
-      .priority-high {
-        color: var(--kiss-accent);
-      }
-      .priority-medium {
-        color: var(--kiss-accent-dim);
-      }
-      .priority-low {
+      .priority-p2 {
         color: var(--kiss-text-tertiary);
+        font-weight: 600;
       }
-      .architecture-diagram {
-        padding: 1.5rem;
-        background: var(--kiss-bg-surface);
-        border: 0.5px solid var(--kiss-border);
-        border-radius: 6px;
-        margin: 1.5rem 0;
-        font-size: 0.75rem;
-        line-height: 1.6;
-        font-family: "SF Mono", "Fira Code", monospace;
-        white-space: pre;
-        overflow-x: auto;
+      .principle-list {
+        margin: 1rem 0 1.5rem;
+        padding-left: 1.25rem;
+      }
+      .principle-list li {
+        margin: 0.45rem 0;
         color: var(--kiss-text-secondary);
+      }
+      .inline-code {
+        font-family: "SF Mono", "Fira Code", monospace;
+        font-size: 0.8125rem;
+        background: var(--kiss-bg-elevated);
+        padding: 0.125rem 0.375rem;
+        border-radius: 3px;
       }
     `,
   ];
@@ -108,432 +98,297 @@ export class RoadmapPage extends LitElement {
     return html`
       <kiss-layout currentPath="/roadmap">
         <div class="container">
-          <h1>开发路线图</h1>
+          <h1>路线图</h1>
           <p class="subtitle">
-            KISS 架构：Knowledge · Isolated · Semantic · Static — 从 PoC 到 v1.0
+            KISS 的目标是成为 Web Standards-first、static-first 的全栈框架。
           </p>
 
-          <h2>里程碑概览</h2>
-          <table class="phase-table">
-            <thead>
-              <tr>
-                <th>阶段</th>
-                <th>名称</th>
-                <th>核心目标</th>
-                <th>状态</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Phase 0</td>
-                <td>PoC</td>
-                <td>技术可行性验证</td>
-                <td class="status-done">完成</td>
-              </tr>
-              <tr>
-                <td>Phase 1</td>
-                <td>Alpha</td>
-                <td>核心插件包可用</td>
-                <td class="status-done">完成</td>
-              </tr>
-              <tr>
-                <td>Phase 2</td>
-                <td>工程化补齐</td>
-                <td>P0/P1 修复 + 架构重构</td>
-                <td class="status-done">完成</td>
-              </tr>
-              <tr>
-                <td>Phase 3</td>
-                <td>文档整合</td>
-                <td>docs-site → docs</td>
-                <td class="status-done">完成</td>
-              </tr>
-              <tr>
-                <td>Phase 4</td>
-                <td>KISS Architecture 落地</td>
-                <td>K·I·S·S 四约束 + Jamstack 对齐</td>
-                <td class="status-done">完成</td>
-              </tr>
-              <tr>
-                <td>Phase 5</td>
-                <td>UI 革命与生态验证</td>
-                <td>@kissjs/ui + 设计系统</td>
-                <td class="status-done">完成</td>
-              </tr>
-              <tr>
-                <td>Phase 6</td>
-                <td>架构审计与修复</td>
-                <td>P0/P1 问题清零 + Dogfooding</td>
-                <td class="status-done">完成</td>
-              </tr>
-              <tr>
-                <td>Phase 7</td>
-                <td>文档站自举</td>
-                <td>docs 站使用自研 kiss-ui 组件</td>
-                <td class="status-done">完成</td>
-              </tr>
-              <tr>
-                <td>Phase 8</td>
-                <td>v0.3.x — 工程重构</td>
-                <td>Package Islands + 3-phase build + KISS renderer</td>
-                <td class="status-done">完成</td>
-              </tr>
-              <tr>
-                <td>Phase 9</td>
-                <td>v0.3.4 — 代码审查</td>
-                <td>全量 audit + CI 并行 + 35+ 项修复</td>
-                <td class="status-done">完成</td>
-              </tr>
-              <tr>
-                <td>Phase 10</td>
-                <td>v0.4.0 — Serverless Milestone</td>
-                <td>Serverless API CI 部署 + 全站审计归零</td>
-                <td class="status-done">完成</td>
-              </tr>
-              <tr>
-                <td>Phase 11</td>
-                <td>v0.5.0-alpha.1 — 架构审计与适配器修复</td>
-                <td>全量审查、CSS 注入修复、Island 水合修复、配置精简</td>
-                <td class="status-wip">进行中</td>
-              </tr>
-              <tr>
-                <td>Phase 11A</td>
-                <td>v0.5.2 — 稳定修复</td>
-                <td>adapter-lit 测试、移除 @lit-labs/ssr-client、P0 清零</td>
-                <td>规划中</td>
-              </tr>
-              <tr>
-                <td>Phase 11B</td>
-                <td>v0.6.0 — 性能里程碑</td>
-                <td>Island lazy loading、Lighthouse 90+、DRY 消除</td>
-                <td>规划中</td>
-              </tr>
-              <tr>
-                <td>Phase 11C</td>
-                <td>v0.7.0 — 质量里程碑</td>
-                <td>E2E 测试、结构化 inject API、中文错误</td>
-                <td>规划中</td>
-              </tr>
-              <tr>
-                <td>Phase 12</td>
-                <td>v0.6.0 — .kiss Compiler Alpha</td>
-                <td>编译器原型、零运行时组件</td>
-                <td>规划中</td>
-              </tr>
-              <tr>
-                <td>Phase 13</td>
-                <td>v0.7.0 — 生态与兼容</td>
-                <td>React 19 CE 互操作、自动 RPC 生成</td>
-                <td>规划中</td>
-              </tr>
-              <tr>
-                <td>Phase 14</td>
-                <td>v0.8.0 — 生产就绪</td>
-                <td>WASM Islands、性能基准、压力测试</td>
-                <td>规划中</td>
-              </tr>
-              <tr>
-                <td>Phase 15</td>
-                <td>v0.9.0 — API 冻结</td>
-                <td>Public API 冻结、迁移文档、弃用声明</td>
-                <td>规划中</td>
-              </tr>
-              <tr>
-                <td>Phase 16</td>
-                <td>v1.0.0 — 稳定发布</td>
-                <td>语义版本 1.0、长期支持</td>
-                <td>规划中</td>
-              </tr>
-            </tbody>
-          </table>
-
-          <h2>Phase 5：UI 革命与生态验证（已完成）</h2>
-
-          <h3>5A: 品牌视觉 + 设计系统页面</h3>
-          <ul class="task-list">
-            <li>首页风格改造 — 纯黑背景、高对比度</li>
-            <li>品牌色统一 — Logo/Nav hover/Sidebar active 全局统一</li>
-            <li>UI 设计系统页面 — /ui 路由，展示 Design Tokens</li>
-            <li>导航栏添加 UI 标签 — Docs | UI | JSR | GitHub</li>
-            <li>自定义域名修复 — base path 从 /kiss/ 改为 /</li>
-          </ul>
-
-          <h3>5B: @kissjs/ui 组件库实现</h3>
-          <ul class="task-list">
-            <li>@kissjs/ui 重构 — 基于 Lit 构建自有 Web Components</li>
-            <li>核心组件：kiss-button, kiss-card, kiss-input, kiss-code-block, kiss-layout</li>
-            <li>文档站用 @kissjs/ui 重写 — dogfooding</li>
-            <li>迁移示例文件 — examples/minimal-blog + examples/hello 迁移到 static properties</li>
-            <li>发布 @kissjs/ui@0.1.4 — JSR 发布</li>
-          </ul>
-
-          <h2>Phase 6：架构审计与修复（已完成）</h2>
-
-          <h3>6A: P0 Bug 修复</h3>
-          <ul class="task-list">
-            <li>allNoExternal 未使用 — 修复 Vite SSR 模块解析</li>
-            <li>userResolveAlias 类型不匹配 — 支持 Record 和 Alias[] 两种格式</li>
-            <li>Island 扫描配置错误 — 移动到正确目录，文件名匹配 tag name</li>
-          </ul>
-
-          <h3>6B: P1 问题清理</h3>
-          <ul class="task-list">
-            <li>code-block Island 主题适配 — CSS 变量替换硬编码颜色</li>
-            <li>kiss-layout 导航补全 — 添加 Examples + Project sections</li>
-            <li>hydrationStrategy 选项移除 — 删除未实现选项</li>
-            <li>测试覆盖扩展 — kiss-rpc + kiss-ui 测试集成</li>
-            <li>kiss-docs-kit 空壳删除 — 移除未使用包</li>
-            <li>logger.ts 删除 — 移除未使用模块</li>
-            <li>README 版本更新 — core 0.1.6, rpc 0.1.3, ui 0.1.4</li>
-          </ul>
-
-          <h3>6C: 体验优化</h3>
-          <ul class="task-list">
-            <li>docs 站 dogfooding — 25 个路由使用 kiss-layout</li>
-            <li>组件导入统一 — @kissjs/ui/kiss-layout 替代本地组件</li>
-            <li>构建验证通过 — 25 pages, 3 islands detected</li>
-            <li>deno fmt/lint 通过 — 代码风格统一</li>
-          </ul>
-
-          <h2>Phase 8：v0.3.0 工程重构（已完成）</h2>
-          <ul class="task-list">
-            <li>Package Islands 自动检测 — npm/JSR 包可导出 Islands</li>
-            <li>KissRenderer 实现 — 替代 Hono 默认 Renderer</li>
-            <li>KissBuildContext 架构 — 替代闭包共享可变状态</li>
-            <li>EntryDescriptor + renderEntry 模板化 — 替代 hono-entry.ts 字符串拼接</li>
-            <li>hydrationStrategy 四策略 — eager / lazy / idle / visible</li>
-            <li>@kissjs/ui 构建产出去 @kissjs/core 依赖 — 依赖反转</li>
-          </ul>
-
-          <h3>8A: 三阶段构建管线</h3>
-          <ul class="task-list">
-            <li>Phase 1: vite build → SSR bundle + .kiss/build-metadata.json</li>
-            <li>Phase 2: build:client → dist/client/islands/*.js</li>
-            <li>Phase 3: build:ssg → dist/*.html + 静态 SSG</li>
-            <li>消除 closeBundle 嵌套 Vite 导致 watch 模式 breakage</li>
-            <li>Vite manifest 集成 — build.manifest:true 确定性 chunk 检测</li>
-          </ul>
-
-          <h3>8B: hydration 修复</h3>
-          <ul class="task-list">
-            <li>litElementHydrateSupport 在 customElements.define 之前执行</li>
-            <li>动态 import() 确保 hydration 补丁先于组件注册</li>
-            <li>DSD polyfill 移除（现代浏览器已原生支持）</li>
-            <li>build-client.ts base=/client/ 修复 Island chunk URL</li>
-          </ul>
-
-          <h2>Phase 9：v0.3.4 代码审查（已完成）</h2>
-          <ul class="task-list">
-            <li>三轮迭代审查 + 两轮 agent 深搜 — 35+ 项修复</li>
-            <li>P0: kiss-input undefined 字符串, CLI exports 缺失, SSG CJS polyfill 时序</li>
-            <li>
-              P1: 暗色模式阴影, kiss-button nothing/arrow, kiss-rpc abort race, kiss-theme-toggle 递归
-            </li>
-            <li>CI 并行化 (typecheck + 4 test job) + actions/cache</li>
-            <li>deno-version 锁定 "2" — 防止 Deno 3.0 意外破坏</li>
-            <li>scanIslands 递归扫描 — 支持子目录 Island</li>
-            <li>coverge 自动化 + CI badge 替换手动 badge</li>
-            <li>JSR publish typecheck 修复 — noExternalPatterns 类型断言</li>
-          </ul>
-
-          <h2>Phase 10：v0.4.0 Serverless Milestone（已完成）</h2>
-          <ul class="task-list">
-            <li>
-              Serverless API CI 部署 — deploy-api.yml 自动化，CORS 修复，平台迁移 deployctl→deno deploy
-            </li>
-            <li>kiss-demo-api.sisyphuszheng.deno.net 生产在线，前端 kiss-hero-ping 一键 verify</li>
-            <li>Service Worker 修复 — PRECACHE 删除，networkFirst，动态缓存名</li>
-            <li>全站 1px→0.5px（17 文件 40+ 处）</li>
-            <li>全站硬编码色 → --kiss-* CSS 变量</li>
-            <li>首页全中文 + 比较表 + 响应式尺寸</li>
-            <li>kiss-hero-ping 提取为 @kissjs/ui 组件</li>
-            <li>全站 lint/type 归零，84/84 测试通过</li>
-            <li>SW 缓存 bug 修复（"切回首页变旧版"根因定位）</li>
-            <li>Hydration race 修复（嵌套 Island 双渲染）</li>
-          </ul>
-
-          <h2>Phase 11：v0.5.0-alpha.1 — 架构审计与适配器修复（进行中）</h2>
-          <ul class="task-list">
-            <li><strong>全量架构审计</strong> — 3 agent 深度扫描：packages (6,968行) + docs (6,000行) + CI/tests</li>
-            <li><strong>CSS 注入修复</strong> — extractLitStyles() 用 Lit 3.x cssText 替代 strings 属性，删除 42 行死代码</li>
-            <li><strong>Island 水合修复</strong> — api-consumer connectedCallback 竞态：改用 updateComplete.then()</li>
-            <li><strong>配置精简</strong> — 删除 jsr.json（冗余）+ 不必要 package.json，统一为 deno.json</li>
-            <li>10 条设计原则确立 — 包括 Lit Update Safety、Error Visibility、One Config File</li>
-            <li>代码质量审计 — 重复代码 3 处、死代码 5 处、版本不一致 5 包全部发现</li>
-          </ul>
-
-          <h2>Phase 11A：v0.5.x — 冲刺 v0.5.0 正式版（规划中）</h2>
-
-          <h3>P0 — 阻塞发布</h3>
-          <ul class="task-list">
-            <li><strong>A1 adapter-lit 测试</strong> — extractLitStyles + renderLitToString + installLitAdapter</li>
-            <li><strong>A2 移除 @lit-labs/ssr-client</strong> — deno.json 和 client bundle 彻底清除</li>
-            <li><strong>A3 extractLitStyles → console.warn</strong> — 错误不再静默</li>
-            <li><strong>A4 CI 全绿</strong> — lint / fmt / test / typecheck 零错误</li>
-            <li><strong>A5 版本号对齐</strong> — core 0.5.0, rpc 0.3.0, ui 0.5.0, create 0.4.0</li>
-            <li><strong>A6 Docs 站验证</strong> — SSG 构建 38 页通过，DSD 含 &lt;style&gt;</li>
-          </ul>
-
-          <h3>P1 — 发布附带</h3>
-          <ul class="task-list">
-            <li><strong>B1</strong> escapeHtml 统一（3→1） · <strong>B2</strong> escapeAttr 统一（2→1）</li>
-            <li><strong>B3-B5</strong> 死代码清理（renderNestedDsd / html-template / @deprecated）</li>
-            <li><strong>B6</strong> kiss-hero-ping apiUrl 修复 · <strong>B7</strong> create-kiss 模板更新</li>
-          </ul>
-
-          <h3>P2 — v0.5.1+</h3>
-          <ul class="task-list">
-            <li><strong>C1</strong> Island 懒加载 · <strong>C2</strong> OpenProps 按需</li>
-            <li><strong>C3</strong> JS/CSS minification · <strong>C4</strong> E2E 测试 (Playwright)</li>
-            <li><strong>C5</strong> 结构化 inject API · <strong>C6</strong> 无障碍 · <strong>C7</strong> SEO</li>
-          </ul>
-
-          <h2>Phase 11B：v0.6.0 — 性能里程碑（规划中）</h2>
-          <ul class="task-list">
-            <li><strong>Island lazy loading</strong> — IntersectionObserver，当前 9 island 全 eager 加载 67.8KB</li>
-            <li><strong>Lighthouse 性能 90+</strong> — 当前 30 分，FCP 3.9s→1.8s, TBT 6,090ms→200ms</li>
-            <li><strong>Open Props 按需提取</strong> — 314KB unused CSS</li>
-            <li><strong>JS/CSS minification</strong> — build-client 构建优化</li>
-          </ul>
-
-          <h2>Phase 11C：v0.7.0 — 质量里程碑（规划中）</h2>
-          <ul class="task-list">
-            <li><strong>E2E 测试</strong> — Playwright smoke tests for all pages</li>
-            <li><strong>renderer → 结构化 inject API</strong> — 废弃字符串 replace</li>
-            <li><strong>中文错误信息</strong> — SSG/SSR 异常全中文化</li>
-            <li><strong>死代码清理</strong> — renderNestedDsd, html-template, deprecated fns</li>
-          </ul>
-
-          <h2>Phase 12：v0.6.0 零基础设施 JS + .kiss Compiler Alpha（规划中）</h2>
-          <ul class="task-list">
-            <li>
-              <strong>CSS-only 暗色模式</strong> — 用 prefers-color-scheme 消除 theme-init.js（~280B）
-            </li>
-            <li><strong>SW 注册 defer</strong> — 移到 requestIdleCallback，不阻塞</li>
-            <li>目标：零交互页面零 JS（连基础设施一起消除）</li>
-            <li>.kiss 文件格式定义 — template + script + style 声明式组件</li>
-            <li>编译器原型 — .kiss → vanilla Custom Element（0 runtime deps）</li>
-            <li>消除 Lit 58kb gzip、@lit-labs/ssr、CJS polyfill</li>
-            <li>SSR 变为同步 string concat：template.innerHTML（无 hydration）</li>
-            <li>Lit 保留为可选 fallback（compiler: 'auto'）</li>
-            <li>详见证：docs/decisions/0002-kiss-compiler-eliminate-lit.md</li>
-          </ul>
-
-          <h2>Phase 13：v0.7.0 生态与兼容（规划中）</h2>
-          <ul class="task-list">
-            <li>React 19 Custom Elements 互操作 — 属性传递、事件</li>
-            <li>Vue 3 原生 CE 支持</li>
-            <li>自动 API RPC 生成 — 从 Hono 路由自动生成类型安全客户端</li>
-            <li>i18n 支持 — 多路由 locale 架构</li>
-          </ul>
-
-          <h2>Phase 14：v0.8.0 生产就绪（规划中）</h2>
-          <ul class="task-list">
-            <li>WASM Islands — 计算密集型 Island 编译为 WebAssembly</li>
-            <li>性能基准 — Lighthouse 分数、LCP/TTI/CLS 基准线</li>
-            <li>压力测试 — CDN 缓存命中率、Serverless 冷启动</li>
-            <li>可访问性审计 — WCAG 2.1 AA 合规</li>
-          </ul>
-
-          <h2>Phase 15：v0.9.0 API 冻结（规划中）</h2>
-          <ul class="task-list">
-            <li>Public API 冻结 — kiss() 选项接口、插件接口</li>
-            <li>迁移文档 — v0.x → v1.0 升级指南</li>
-            <li>弃用声明 — 旧 API 标记 deprecated</li>
-          </ul>
-
-          <h2>Phase 16：v1.0.0 稳定发布（规划中）</h2>
-          <ul class="task-list">
-            <li>语义版本 1.0 — 向后兼容承诺</li>
-            <li>长期支持 — 至少 12 个月 bug 修复</li>
-            <li>
-              版本号基线：@kissjs/core@1.0.0, @kissjs/ui@1.0.0, @kissjs/rpc@1.0.0, @kissjs/create@1.0.0
-            </li>
-          </ul>
-
-          <h2>已解决的技术债</h2>
-          <table class="tech-debt-table">
-            <thead>
-              <tr>
-                <th>问题</th>
-                <th>状态</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>8 插件闭包共享可变状态</td>
-                <td class="status-done">已重构为 KissBuildContext</td>
-              </tr>
-              <tr>
-                <td>entry-renderer.ts 字符串拼接</td>
-                <td class="status-done">已重构为 EntryDescriptor + renderEntry</td>
-              </tr>
-              <tr>
-                <td>Island 正则检测</td>
-                <td class="status-done">已改为 Rollup manifest</td>
-              </tr>
-              <tr>
-                <td>CI 串行执行</td>
-                <td class="status-done">已拆为 5 并行 job</td>
-              </tr>
-              <tr>
-                <td>deno-version 浮动</td>
-                <td class="status-done">已锁定 "2"</td>
-              </tr>
-              <tr>
-                <td>8 个 assertEquals(true,true) 僵尸断言</td>
-                <td class="status-done">已替换</td>
-              </tr>
-              <tr>
-                <td>ssg-smoke 静默跳过</td>
-                <td class="status-done">已改为 Deno.test({ ignore })</td>
-              </tr>
-            </tbody>
-          </table>
-
-          <h2>仍存在的技术债</h2>
-          <table class="tech-debt-table">
-            <thead>
-              <tr>
-                <th>问题</th>
-                <th>优先级</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr><td>adapter-lit 零测试 — 最高风险缺口</td><td class="priority-high">P0</td></tr>
-              <tr><td>所有 Island eager 加载 → 67.8KB JS，Lighthouse 30</td><td class="priority-high">P0</td></tr>
-              <tr><td>@lit-labs/ssr-client 依赖残留 — 声称已移除</td><td class="priority-high">P0</td></tr>
-              <tr><td>escapeHtml 在 3 处重复（编码不同）</td><td class="priority-medium">P1</td></tr>
-              <tr><td>5 包版本号不一致（deno.json ≠ package.json ≠ jsr.json）</td><td class="priority-medium">P1</td></tr>
-              <tr><td>kiss-ui peerDeps vite ^6 × 框架 vite ^8</td><td class="priority-medium">P1</td></tr>
-              <tr><td>renderNestedDsd() 空函数 stub</td><td class="priority-low">P2</td></tr>
-              <tr><td>html-template.ts 遗留代码</td><td class="priority-low">P2</td></tr>
-            </tbody>
-          </table>
-
-          <h2>架构概览</h2>
-          <div class="architecture-diagram">
-            用户视角：vite.config.ts
-            &#x250C;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2510;
-            &#x2502; import { kiss } from '@kissjs/core' &#x2502; &#x2502; export default defineConfig({
-            &#x2502; &#x2502; plugins: [kiss()] &#x2502; &#x2502; }) &#x2502;
-            &#x2514;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2534;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2518;
-            &#x2502;
-            &#x250C;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2534;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2510;
-            &#x2502; @kissjs/core (6 &#x5B50;&#x63D2;&#x4EF6;) &#x2502; &#x2502; &#x2502; &#x2502; 1.
-            kiss:core — &#x8DEF;&#x7531;&#x626B;&#x63CF; (K) &#x2502; &#x2502; 2. kiss:virtual-entry —
-            &#x865A;&#x62DF;&#x6A21;&#x5757; &#x2502; &#x2502; 3. @hono/vite-dev-server — dev only
-            &#x2502; &#x2502; 4. island-transform — AST &#x6807;&#x8BB0; (I) &#x2502; &#x2502; 5.
-            html-template — HTML &#x6CE8;&#x5165; (&#x9884;&#x7559;) &#x2502; &#x2502; 6. kiss:build —
-            &#x5143;&#x6570;&#x636E; (K+S) &#x2502;
-            &#x2514;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2534;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2518;
-            &#x2502;
-            &#x250C;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2534;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2510;
-            &#x2502; &#x4E24;&#x4E2A;&#x72EC;&#x7ACB;&#x90E8;&#x7F72;&#x76EE;&#x6807; &#x2502; &#x2502;
-            &#x2502; &#x2502; dist/ (&#x9759;&#x6001;&#x524D;&#x7AEF;) &#x2502; &larr; K+I+S
-            &#x7EA6;&#x675F; &#x2502; API Routes (Serverless) &larr; S &#x7EA6;&#x675F;
-            &#x2514;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2518;
+          <div class="truth-box">
+            <p>
+              <strong>定位裁定：</strong>KISS 不是 Next/Nuxt/SvelteKit 的同类翻版。
+              它的核心路线是 DSD-rendered Web Components、Island Upgrade、Hono
+              Serverless APIs、SSG-first delivery，未来再扩展 ISR。
+            </p>
+            <p>
+              <strong>术语裁定：</strong>当前实现应称为
+              <span class="inline-code">DSD + Custom Element upgrade</span>，
+              不再把它描述为传统框架 hydration。Lit 是 adapter，不是 core 的长期基础。
+            </p>
           </div>
+
+          <h2>版本线</h2>
+          <table class="roadmap-table">
+            <thead>
+              <tr>
+                <th>版本</th>
+                <th>名称</th>
+                <th>目标</th>
+                <th>状态</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>v0.4.x</td>
+                <td>Serverless Demo</td>
+                <td>SSG + DSD + Hono API demo 跑通，证明方向可行。</td>
+                <td class="status-done">已完成</td>
+              </tr>
+              <tr>
+                <td>v0.5.0</td>
+                <td>Trust Release</td>
+                <td>修复 quickstart、渲染安全、嵌套 island 路径、SSG smoke 和文档真实性。</td>
+                <td class="status-now">当前主线</td>
+              </tr>
+              <tr>
+                <td>v0.6.0</td>
+                <td>DSD Renderer 2</td>
+                <td>定义 safe/unsafe HTML 契约，补齐 nested DSD、slot/projection、错误边界。</td>
+                <td class="status-next">下一阶段</td>
+              </tr>
+              <tr>
+                <td>v0.7.0</td>
+                <td>Island Upgrade</td>
+                <td>页面级 island manifest、按页加载、eager/idle/visible 策略真实落地。</td>
+                <td>规划中</td>
+              </tr>
+              <tr>
+                <td>v0.8.0</td>
+                <td>Serverless Fullstack</td>
+                <td>Hono API 一等公民化，FormData actions、typed RPC、部署 adapter。</td>
+                <td>规划中</td>
+              </tr>
+              <tr>
+                <td>v0.9.0</td>
+                <td>SSG + ISR + PWA</td>
+                <td>revalidate、Cache API、Service Worker、Edge/CDN 缓存一致性。</td>
+                <td>规划中</td>
+              </tr>
+              <tr>
+                <td>v0.10.0</td>
+                <td>.kiss Compiler Alpha</td>
+                <td>可选零框架运行时组件编译器，验证 template/script/style 组件格式。</td>
+                <td>实验规划</td>
+              </tr>
+              <tr>
+                <td>v1.0.0</td>
+                <td>Stable API</td>
+                <td>API freeze、生产基准、迁移文档、兼容性承诺。</td>
+                <td>规划中</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h2>v0.5.0 Trust Release 任务表</h2>
+          <table class="task-table">
+            <thead>
+              <tr>
+                <th>优先级</th>
+                <th>任务</th>
+                <th>验收标准</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="priority-p0">P0</td>
+                <td>修复 <span class="inline-code">@kissjs/adapter-lit</span> 插值转义</td>
+                <td>文本、属性、布尔属性、事件/属性绑定均有 XSS 回归测试。</td>
+              </tr>
+              <tr>
+                <td class="priority-p0">P0</td>
+                <td>修复 <span class="inline-code">create-kiss</span> 模板</td>
+                <td>新项目可执行 <span class="inline-code">deno task dev</span> 与三阶段构建。</td>
+              </tr>
+              <tr>
+                <td class="priority-p0">P0</td>
+                <td>拒绝脚手架覆盖已有目录和路径逃逸</td>
+                <td>已有目录、非空目录、<span class="inline-code">../</span> 目标均失败并给出清晰错误。</td>
+              </tr>
+              <tr>
+                <td class="priority-p0">P0</td>
+                <td>修复嵌套 island SSR 路径</td>
+                <td><span class="inline-code">app/islands/foo/bar.ts</span> 能同时 SSR 和 client build。</td>
+              </tr>
+              <tr>
+                <td class="priority-p0">P0</td>
+                <td>修复 manifest chunk URL 双 <span class="inline-code">islands</span></td>
+                <td>测试断言完整 URL，不只断言包含文件名。</td>
+              </tr>
+              <tr>
+                <td class="priority-p0">P0</td>
+                <td>SSG smoke 测试默认运行</td>
+                <td>CI 真实跑 Phase 1/2/3 docs build，不再只标记 ignore。</td>
+              </tr>
+              <tr>
+                <td class="priority-p1">P1</td>
+                <td>文档术语统一</td>
+                <td>用户文档使用 Island Upgrade；历史 changelog 可保留 hydration 作为历史语境。</td>
+              </tr>
+              <tr>
+                <td class="priority-p1">P1</td>
+                <td>版本号和发布配置对齐</td>
+                <td>deno.json、package.json、README、JSR 导出无冲突。</td>
+              </tr>
+              <tr>
+                <td class="priority-p1">P1</td>
+                <td>Deno-first 工具链基线</td>
+                <td>仓库默认 <span class="inline-code">dev</span> / <span class="inline-code">build</span> / package build 不依赖 <span class="inline-code">npm</span> 或 <span class="inline-code">npx</span>；Deno 2.7+ 提供 Vite 8 所需的 <span class="inline-code">node:util.parseEnv</span> 兼容。</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h2>v0.6.0 DSD Renderer 2</h2>
+          <table class="task-table">
+            <thead>
+              <tr>
+                <th>优先级</th>
+                <th>任务</th>
+                <th>验收标准</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="priority-p0">P0</td>
+                <td>定义 <span class="inline-code">render(): string</span> 安全契约</td>
+                <td>文档明确 string render 是 unsafe HTML；提供 safe helper。</td>
+              </tr>
+              <tr>
+                <td class="priority-p0">P0</td>
+                <td>实现 safe template helper</td>
+                <td>默认文本和属性转义；显式 unsafeHTML 才允许原样插入。</td>
+              </tr>
+              <tr>
+                <td class="priority-p1">P1</td>
+                <td>nested DSD</td>
+                <td>父组件输出子 custom element 时，子组件可递归渲染为 DSD。</td>
+              </tr>
+              <tr>
+                <td class="priority-p1">P1</td>
+                <td>slot/projection 语义</td>
+                <td>layout、page、island 的 slot 投影有覆盖测试。</td>
+              </tr>
+              <tr>
+                <td class="priority-p1">P1</td>
+                <td>错误边界</td>
+                <td>组件实例化/渲染失败时构建报错可定位，不再只输出空壳。</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h2>v0.7.0 Island Upgrade</h2>
+          <table class="task-table">
+            <thead>
+              <tr>
+                <th>优先级</th>
+                <th>任务</th>
+                <th>验收标准</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="priority-p0">P0</td>
+                <td>页面级 island manifest</td>
+                <td>每个 HTML 只注入当前页面实际出现的 island entry。</td>
+              </tr>
+              <tr>
+                <td class="priority-p0">P0</td>
+                <td>真实 upgrade 策略</td>
+                <td><span class="inline-code">eager</span>、<span class="inline-code">idle</span>、<span class="inline-code">visible</span> 有浏览器测试。</td>
+              </tr>
+              <tr>
+                <td class="priority-p1">P1</td>
+                <td>Island 通信标准化</td>
+                <td>提供 CustomEvent / BroadcastChannel 官方模式，不引入全局 store。</td>
+              </tr>
+              <tr>
+                <td class="priority-p2">P2</td>
+                <td>View Transitions 增强</td>
+                <td>可选 MPA 页面过渡，不引入 SPA runtime。</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h2>v0.8.0 Serverless Fullstack</h2>
+          <table class="task-table">
+            <thead>
+              <tr>
+                <th>优先级</th>
+                <th>任务</th>
+                <th>验收标准</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="priority-p0">P0</td>
+                <td>Deno Deploy 和 Cloudflare Workers adapter</td>
+                <td>同一 Hono API routes 可产出两个部署目标。</td>
+              </tr>
+              <tr>
+                <td class="priority-p0">P0</td>
+                <td>FormData actions</td>
+                <td>原生表单提交、验证错误、重定向和 JSON 响应均可用。</td>
+              </tr>
+              <tr>
+                <td class="priority-p1">P1</td>
+                <td>typed RPC generation</td>
+                <td>从 Hono route 类型生成或导出客户端调用类型。</td>
+              </tr>
+              <tr>
+                <td class="priority-p1">P1</td>
+                <td>env/secrets 规范</td>
+                <td>dev/build/deploy 使用一致的配置入口和文档。</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h2>v0.9.0 SSG + ISR + PWA</h2>
+          <table class="task-table">
+            <thead>
+              <tr>
+                <th>优先级</th>
+                <th>任务</th>
+                <th>验收标准</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="priority-p0">P0</td>
+                <td>route-level ISR config</td>
+                <td><span class="inline-code">revalidate</span>、fallback、stale response 语义明确。</td>
+              </tr>
+              <tr>
+                <td class="priority-p0">P0</td>
+                <td>cache lock</td>
+                <td>避免 serverless 并发请求同时再生成同一路由。</td>
+              </tr>
+              <tr>
+                <td class="priority-p1">P1</td>
+                <td>PWA strategy 2</td>
+                <td>HTML network-first，assets cache-first，版本更新不会回退旧首页。</td>
+              </tr>
+              <tr>
+                <td class="priority-p1">P1</td>
+                <td>Edge/CDN cache recipes</td>
+                <td>Cloudflare、Deno Deploy、静态 CDN 至少各有一份部署文档。</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h2>v0.10.0 .kiss Compiler Alpha</h2>
+          <p>
+            <span class="inline-code">.kiss</span> compiler 仍然值得保留，但它是长期增强，
+            不应阻塞 v0.5-v0.9 的可信内核。目标是把 Lit 从推荐实现降级为可选 adapter，
+            不是在当前阶段强制迁移所有用户代码。
+          </p>
+
+          <h2>设计原则</h2>
+          <ul class="principle-list">
+            <li>Web Standards first，不用私有 runtime 复刻浏览器已经拥有的能力。</li>
+            <li>DSD first，页面内容必须在 JavaScript 加载前可见。</li>
+            <li>Island upgrade，不再把当前模型描述为传统 hydration。</li>
+            <li>SSG first，ISR 是 serverless/edge adapter 之后的增强。</li>
+            <li>Lit adapter, not foundation。Lit 可用，但 core 的长期边界必须独立。</li>
+            <li>Documentation must be falsifiable。文档只描述已实现能力，未来能力进入 roadmap。</li>
+          </ul>
 
           <div class="nav-row">
             <a href="/examples" class="nav-link">&larr; 示例</a>

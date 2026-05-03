@@ -137,7 +137,7 @@ export class FullstackDemoPage extends LitElement {
               <tr>
                 <td><strong>I</strong> — Isolated</td>
                 <td>✓ Counter Island</td>
-                <td>Shadow DOM + 懒水合</td>
+                <td>Shadow DOM + 按需升级</td>
               </tr>
               <tr>
                 <td><strong>S</strong> — Semantic</td>

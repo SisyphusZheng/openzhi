@@ -47,23 +47,20 @@ export class BlogKissCompilerPage extends LitElement {
       <kiss-layout currentPath="/blog/kiss-compiler">
         <div class="container">
           <p class="blog-meta">2026-04-30 · SisyphusZheng</p>
-          <h1>.kiss Compiler — 消灭 Lit，零运行时 Web Components</h1>
+          <h1>.kiss Compiler — 可选零框架运行时组件</h1>
 
           <p>
             KISS 框架从第一天起就选择了 Lit 作为组件基础。这个选择是对的——Lit 是 Web Components 生态中
-            最成熟的库，让我们快速验证了 K·I·S·S 架构的可行性。但经过 v0.3.x
-            三轮代码审查，我们清楚地看到： Lit 的 58kb gzip 运行时、@lit-labs/ssr 的 CJS
-            polyfill、hydration 顺序问题、以及 dprint fmt panic，
-            这些不是可以修补的小问题——是架构层面的摩擦。
+            最成熟的库，让我们快速验证了 K·I·S·S 架构的可行性。但经过后续架构审查，我们也更清楚地看到：
+            core 的长期合同不能绑定到某个组件库。Lit 应该保留为 adapter，而不是成为用户必须接受的唯一组件模型。
           </p>
 
           <h2>今天的代价</h2>
           <p>
-            每个依赖 Lit 的 KISS 页面都要下载 58kb gzip 的运行时。SSR 需要 @lit-labs/ssr， 它又依赖
-            node-domexception——一个 CJS 包，我们被迫用 globalThis.module polyfill。 客户端 hydration 需要
-            litElementHydrateSupport 在 customElements.define 之前执行， 这导致过"计数器重复渲染"的
-            bug。Deno fmt 在处理 Lit 模板字面量中的 HTML entities 时会 panic。 这些不是小问题——是 Lit 的
-            CSFirst 设计与 KISS 的 SSG-first 架构的根本摩擦。
+            依赖 Lit 编写的 island 会携带 Lit 运行时；SSR/style extraction 需要 adapter 维护；旧 Lit SSR
+            路线留下的 hydration 术语又容易和现在的 DSD + Custom Element upgrade 模型混淆。Deno fmt
+            在处理复杂 Lit 模板字面量时也曾触发上游 panic。结论不是“消灭 Lit”，而是把 Lit 放回正确的位置：
+            一个好 adapter，而不是 KISS 的定义本身。
           </p>
 
           <h2>.kiss 文件格式</h2>
@@ -88,18 +85,18 @@ export class BlogKissCompilerPage extends LitElement {
 
           <h2>消除清单</h2>
           <p>
-            — 58kb gzip lit 运行时 → 0kb<br>
-            — @lit-labs/ssr + DOM shim → template.innerHTML (同步)<br>
-            — DSD + hydrate() + 时序 bug → template.cloneNode (无 hydration)<br>
-            — node-domexception CJS polyfill → 0 polyfill<br>
-            — esbuild decorator transform → 标准 JS<br>
+            — Lit-authored islands 的框架运行时代价 → 编译产物 0 KB framework runtime<br>
+            — adapter-mediated SSR → KISS DSD renderer / template strings<br>
+            — hydration 术语漂移 → 明确的 Custom Element upgrade<br>
+            — decorator / tagged template 生态复杂度 → 标准 JS 输出<br>
             — 复杂的类型层次 → 简单的 getter/setter
           </p>
 
           <h2>路线</h2>
           <p>
-            这项工作在 roadmap 上列为 Phase 11，目标 v1.0。Lit 兼容模式在整个 v0.x 生命周期中都会保留。在
-            Phase 10 (v0.4.0) 我们聚焦于 PWA、博客模块和文档完善， 为 v1.0 的架构升级做准备。
+            这项工作不应该阻塞 v0.5-v0.9。当前路线是：先修可信度、安全、DSD renderer、Island Upgrade、
+            Serverless Fullstack 与 SSG/ISR，再在 v0.10.0 引入 <code>.kiss</code> compiler alpha。
+            Lit 兼容模式在 v0.x 生命周期中保留。
           </p>
           <p>
             详细技术设计见 <code>docs/decisions/0002-kiss-compiler-eliminate-lit.md</code>。

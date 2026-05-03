@@ -113,6 +113,7 @@ export class ChangelogPage extends LitElement {
             <a href="https://keepachangelog.com/zh-CN/1.0.0/" target="_blank"
             >Keep a Changelog</a>，本项目遵循
             <a href="https://semver.org/lang/zh-CN/" target="_blank">语义化版本 2.0.0</a>。
+            历史条目保留当时术语；当前文档统一把 KISS 的客户端模型称为 Island Upgrade，而不是传统 hydration。
           </p>
 
           <h2>v0.5.0-alpha.1 — 架构审计与精准修复 <span style="font-size:0.75rem;color:var(--kiss-text-muted);font-weight:400">2026-05-02</span></h2>
@@ -120,7 +121,7 @@ export class ChangelogPage extends LitElement {
 <h3>修复</h3>
 <ul>
   <li><strong>CSS 注入修复：</strong> extractLitStyles() 错误假设 Lit 3.x CSSResult 有 strings 属性，实际只有 cssText。修复为直接使用 cssText，删除 42 行无用代码。<code>packages/kiss-adapter-lit/src/ssr.ts</code></li>
-  <li><strong>Island 水合修复：</strong> api-consumer 在父 DSD shadow DOM 内升级时，connectedCallback 中同步调用 _fetchStatus() 导致 LitElement 更新管线竞态卡死。修复为 updateComplete.then()。<code>docs/app/islands/api-consumer.ts</code></li>
+  <li><strong>Island upgrade 修复：</strong> api-consumer 在父 DSD shadow DOM 内升级时，connectedCallback 中同步调用 _fetchStatus() 导致 LitElement 更新管线竞态卡死。修复为 updateComplete.then()。<code>docs/app/islands/api-consumer.ts</code></li>
 </ul>
 
 <h3>改进</h3>
@@ -135,8 +136,8 @@ export class ChangelogPage extends LitElement {
 <ul>
   <li>kiss-adapter-lit：0 测试（两个 Bug 都出在这里）</li>
   <li>escapeHtml 在 3 处重复编写，编码还不同（&#x27; vs &#39;）</li>
-  <li>所有 9 个 Island 全 eager 加载 → 每页 67.8KB JS → Lighthouse 30 分</li>
-  <li>@lit-labs/ssr-client 仍在依赖中（v0.5.0 声称已移除）</li>
+  <li>所有 9 个 Island 全 eager 加载 → 每页完整全局 island entry → 需要页面级 manifest</li>
+  <li>旧 Lit SSR client 路线仍在依赖/术语中残留（v0.5.0 声称已移除）</li>
   <li>renderNestedDsd() 是空函数 stub</li>
 </ul>
 
@@ -148,7 +149,7 @@ export class ChangelogPage extends LitElement {
             <div class="change-category added">
               <h4>架构精简</h4>
               <ul class="change-list">
-                <li><strong>@kissjs/core 零运行时</strong>：KissElement 废弃，Lit re-export 移除，core 成为纯构建/SSR 基础设施</li>
+                <li><strong>@kissjs/core 零框架运行时</strong>：KissElement 废弃，Lit re-export 移除，core 成为纯构建/SSR 基础设施</li>
                 <li><strong>@kissjs/rpc 原生化</strong>：移除 Lit peer dep，纯 fetch + AbortController</li>
                 <li><strong>OpenProps 设计系统</strong>：替换硬编码 hex，CSS 变量穿透 Shadow DOM</li>
                 <li><strong>Vite 8</strong>：从 Vite 6 升级到 Vite 8.0.10</li>
@@ -215,7 +216,7 @@ export class ChangelogPage extends LitElement {
               <h4>修复</h4>
               <ul class="change-list">
                 <li>
-                  <strong>Hydration race</strong>：嵌套在父 Shadow DOM 内的 Island 双渲染问题 —
+                  <strong>Upgrade race</strong>：嵌套在父 Shadow DOM 内的 Island 双渲染问题 —
                   _renderer.ts 剥离 defer-hydration
                 </li>
                 <li><strong>Hero 文字可见度</strong>：#555→#999（hero-desc），#444→#777（hero-tech）</li>
@@ -285,14 +286,13 @@ export class ChangelogPage extends LitElement {
                 <li>
                   <strong>主题切换按钮点击无响应（v0.2.x 历史问题）</strong>：kiss-theme-toggle 在 Shadow
                   DOM 中事件的 composedPath() 未正确穿透，导致点击事件被吞；data-theme
-                  未传播到所有嵌套组件的 host 元素。根因：@lit-labs/ssr 渲染后 hydration 顺序错误 —
-                  litElementHydrateSupport({LitElement}) 在 customElements.define() 之前未执行
+                  未传播到所有嵌套组件的 host 元素。根因：旧 Lit SSR client 路线要求客户端补丁先于
+                  customElements.define() 执行，而当时的执行顺序没有保证
                 </li>
                 <li>
                   <strong>Island 计数器重复渲染（v0.2.x 历史问题）</strong>：静态 import 导致
-                  customElements.define() 在 hydration 补丁执行前运行，Lit 对已定义的元素做 DSD
-                  水合时先全量渲染再 patch，造成两次渲染。修复：改为动态 import() 确保 hydration
-                  补丁先执行
+                  customElements.define() 在旧客户端补丁前运行，Lit 对已定义的元素做 DSD
+                  接管时先全量渲染再 patch，造成两次渲染。修复：改为动态 import() 保证补丁先执行
                 </li>
                 <li>
                   <strong>Island chunk 404</strong>：build-client.ts 未设置 base='/client/'，Vite 生成的
@@ -304,7 +304,7 @@ export class ChangelogPage extends LitElement {
                 </li>
                 <li>
                   <strong>P0 — kiss-input 显示 "undefined"
-                    字符串</strong>：.value="\\${this.value ??
+                    字符串</strong>：.value="\${this.value ??
                       ''}"，避免未设置值时显示文本 "undefined"
                   </li>
                   <li>
@@ -325,8 +325,8 @@ export class ChangelogPage extends LitElement {
                     阴影在黑色背景上不可见，添加 [data-theme="dark"] 亮色阴影变体
                   </li>
                   <li>
-                    <strong>P1 — kiss-button href/target 渲染 "undefined"</strong>：href=\\${hrefAttr} /
-                    target=\\${this.target} 在未设置时渲染字面量 "undefined"，改用 nothing sentinel
+                    <strong>P1 — kiss-button href/target 渲染 "undefined"</strong>：href=\${hrefAttr} /
+                    target=\${this.target} 在未设置时渲染字面量 "undefined"，改用 nothing sentinel
                   </li>
                   <li>
                     <strong>P1 — kiss-button 每次 render 创建新箭头函数</strong>：disabled 时的 @click
@@ -395,7 +395,7 @@ export class ChangelogPage extends LitElement {
                   </li>
                   <li>
                     <strong>kiss-theme-toggle Island</strong>：Dark/Light 主题切换组件，从 kiss-layout
-                    中提取为独立 Island（DSD + hydration）
+                    中提取为独立 Island（DSD + upgrade）
                   </li>
                   <li>
                     <strong>KissBuildContext 架构重构</strong>：替代闭包共享可变状态，提升构建管道的可测试性
@@ -414,7 +414,7 @@ export class ChangelogPage extends LitElement {
                     <strong>kiss-layout 简化为纯静态组件</strong>：移除 _isLight 属性、localStorage
                     读取、_handleThemeToggle 方法
                   </li>
-                  <li>L2 全局主题切换脚本已删除：由 kiss-theme-toggle Island hydration 替代</li>
+                  <li>L2 全局主题切换脚本已删除：由 kiss-theme-toggle Island upgrade 替代</li>
                   <li>客户端构建自动化生成包内 Island 导入和注册代码</li>
                   <li>
                     SSG post-processing 使用 insertBeforeBodyClose/insertAfterHead 辅助函数，替代 naive
@@ -471,7 +471,7 @@ export class ChangelogPage extends LitElement {
                     <code>kiss-layout</code> simplified to static component (no client-side state)
                   </li>
                   <li>
-                    L2 theme toggle script removed (replaced by Island hydration)
+                    L2 theme toggle script removed (replaced by Island upgrade)
                   </li>
                   <li>
                     Client build now auto-generates import and registration code for package Islands
@@ -482,7 +482,7 @@ export class ChangelogPage extends LitElement {
               <div class="change-category fixed">
                 <h4>修复</h4>
                 <ul class="change-list">
-                  <li>主题切换现在使用正确的 Island hydration (DSD + 客户端状态)</li>
+                  <li>主题切换现在使用正确的 Island upgrade (DSD + 客户端状态)</li>
                 </ul>
               </div>
             </div>
@@ -635,13 +635,12 @@ export class ChangelogPage extends LitElement {
                   <td>升级 entities 到 ^6</td>
                 </tr>
                 <tr>
-                  <td>Lit SSR + hydration 时序</td>
+                  <td>旧 Lit SSR client 时序</td>
                   <td>
-                    @lit-labs/ssr-client 的 litElementHydrateSupport() 必须在 customElements.define()
-                    之前执行，否则已注册的元素会全量渲染再 patch（双重渲染）
+                    当时的 Lit SSR client 补丁必须在 customElements.define() 之前执行，否则已注册的元素会全量渲染再 patch（双重渲染）
                   </td>
-                  <td>Island 组件双重渲染 / hydration 不匹配</td>
-                  <td>动态 import() 确保 hydration 补丁先于任何组件注册执行</td>
+                  <td>Island 组件双重渲染 / DSD 接管不匹配</td>
+                  <td>动态 import() 确保旧客户端补丁先于任何组件注册执行</td>
                 </tr>
                 <tr>
                   <td>@kissjs/core → lit resolve alias</td>

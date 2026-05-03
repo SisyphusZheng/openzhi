@@ -1,23 +1,27 @@
-# `.kiss` Compiler — Eliminate Lit, Zero Runtime
+# `.kiss` Compiler — Optional Zero-Framework Component Authoring
 
 ## Status
 
-**DRAFT** — Proposed for v1.0 roadmap.
+**DRAFT** — Proposed for v0.10.0 alpha, not a v0.5-v0.9 blocker.
 
 ## Context
 
-KISS currently depends on `lit` (npm:lit) for component authoring. This brings:
+KISS currently uses `lit` for the docs site and UI package, while core is moving toward a
+DSD-first renderer with framework adapters. Lit should remain usable, but it should not be the
+long-term foundation of the framework contract. The current Lit route brings:
 
-- 58kb gzip runtime (lit-html + @lit/reactive-element + lit-element)
-- @lit-labs/ssr for server rendering (with CJS polyfill for node-domexception)
-- Hydration ceremony: litElementHydrateSupport must run before customElements.define
-- SSR/DSD/hydration trilemma: three rendering paths must stay in sync
+- Lit runtime cost for Lit-authored islands
+- adapter complexity for server rendering and style extraction
+- upgrade/hydration terminology drift between old Lit SSR and new DSD-first rendering
+- SSR/DSD/upgrade paths that must stay in sync
 - Deno fmt panics on tagged template literals with HTML entities (dprint-core bug)
 - Unnecessary type complexity: `noImplicitOverride`, decorators, complex generics
 
 ## Proposal
 
-Introduce `.kiss` files — a component format purpose-built for KISS. A compiler transforms `.kiss` files into vanilla Custom Elements at build time. Zero runtime dependency.
+Introduce `.kiss` files — a component format purpose-built for KISS. A compiler transforms
+`.kiss` files into vanilla Custom Elements at build time. The goal is zero framework runtime for
+compiled components. Lit remains an adapter, not a forced dependency.
 
 ### `.kiss` file format
 
@@ -71,14 +75,13 @@ customElements.define('my-counter', MyCounter);
 
 ### What the compiler eliminates
 
-| Layer     | Before (Lit)                 | After (.kiss compiler)            |
-| --------- | ---------------------------- | --------------------------------- |
-| Runtime   | 58kb gzip lit                | 0kb                               |
-| SSR       | @lit-labs/ssr + DOM shim     | template.innerHTML (sync)         |
-| Hydration | DSD + hydrate() + order bug  | template.cloneNode (no hydration) |
-| Polyfills | node-domexception CJS shim   | none needed                       |
-| Build     | esbuild decorator transform  | standard TS/JS only               |
-| Tests     | need jsdom/puppeteer for Lit | native DOM works everywhere       |
+| Layer     | Before (Lit adapter)           | After (.kiss compiler)                 |
+| --------- | ------------------------------ | -------------------------------------- |
+| Runtime   | Lit runtime for Lit components | 0kb framework runtime for compiled CEs |
+| SSR       | adapter-mediated rendering     | KISS DSD renderer / template strings   |
+| Upgrade   | Custom Element upgrade         | Custom Element upgrade                 |
+| Build     | esbuild + Lit semantics        | standard TS/JS output                  |
+| Tests     | adapter tests required         | compiler fixture tests required        |
 
 ### SSG integration
 
@@ -94,14 +97,15 @@ Page `.kiss` files render directly (template is the page). Island `.kiss` files 
 
 - `vite.config.ts` option: `compiler: 'lit' | 'kiss' | 'auto'` (auto = `.kiss` files use compiler, `.ts` files use Lit)
 - Lit support retained as optional runtime throughout v0.x
-- v1.0 defaults to `.kiss` compiler, Lit becomes opt-in
+- v0.10.0 introduces `.kiss` as alpha and optional
+- v1.0 default remains an open decision; Lit compatibility must not be broken casually
 
 ## Consequences
 
 **Positive:**
 
-- Zero JS runtime cost per page
-- No hydration bugs (no hydration at all)
+- Zero framework runtime cost for compiled components
+- Fewer upgrade-order bugs because compiled components target the KISS DSD model directly
 - No upstream dependency issues (dprint, node-domexception, parse5)
 - Simpler developer API: HTML + minimal script, no class boilerplate
 - True tree-shaking: only used components produce code

@@ -322,14 +322,21 @@ export function renderEntry(desc: EntryDescriptor): string {
   // Islands need to be registered for Lit SSR's renderValue to produce DSD.
   // Without registration, <unsafeHTML> renders bare tags without Shadow DOM.
   // Uses a static import per island module (known at build time).
+  // Package islands may self-register and may not expose a default export.
+  // Read default through a helper to avoid Rollup/Vite static "missing default" warnings.
   for (const island of desc.islands) {
     const varName = `__island_${island.tagName.replace(/-/g, '_')}`;
     b.push(`import * as ${varName} from '${island.modulePath}'`);
   }
+  if (desc.islands.length > 0) {
+    b.push(`const __kiss_get_default_export = (module) => module && module.default`);
+  }
   for (const island of desc.islands) {
     const varName = `__island_${island.tagName.replace(/-/g, '_')}`;
-    b.push(`if (!customElements.get('${island.tagName}')) {`);
-    b.push(`  customElements.define('${island.tagName}', ${varName}.default)`);
+    const componentVar = `__island_component_${island.tagName.replace(/-/g, '_')}`;
+    b.push(`const ${componentVar} = __kiss_get_default_export(${varName})`);
+    b.push(`if (${componentVar} && !customElements.get('${island.tagName}')) {`);
+    b.push(`  customElements.define('${island.tagName}', ${componentVar})`);
     b.push(`}`);
   }
   b.blank();

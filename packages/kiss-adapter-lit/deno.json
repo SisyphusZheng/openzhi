@@ -6,7 +6,7 @@
     "./ssr": "./src/ssr.ts"
   },
   "tasks": {
-    "build": "deno run -A npm:vite build --config vite.config.build.ts"
+    "build": "deno check src/index.ts src/ssr.ts"
   },
   "compilerOptions": {
     "skipLibCheck": true

@@ -447,7 +447,7 @@ export class UIShowcase extends LitElement {
             <div class="cards-grid">
               <kiss-card>
                 <h3 slot="header">Island</h3>
-                <p>带 hydration 的交互式组件和 Shadow DOM。</p>
+                <p>带客户端升级的交互式组件和 Shadow DOM。</p>
                 <div slot="footer">
                   <kiss-button size="sm">使用</kiss-button>
                 </div>

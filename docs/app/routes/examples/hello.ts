@@ -76,7 +76,7 @@ export class HelloDemoPage extends LitElement {
               <kiss-card>
                 <h3 slot="header">Islands 架构</h3>
                 <p>
-                  交互式组件按需 hydration。默认零 JS，渐进增强。
+                  交互式组件按需 upgrade。默认静态优先，渐进增强。
                 </p>
               </kiss-card>
               <kiss-card>

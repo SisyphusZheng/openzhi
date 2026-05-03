@@ -46,7 +46,7 @@ export class ErrorHandlingPage extends LitElement {
             ├── <strong>ConflictError</strong> (409)<br>
             ├── <strong>RateLimitError</strong> (429)<br>
             ├── <strong>SsrRenderError</strong> (500)<br>
-            └── <strong>HydrationError</strong> (500)
+            └── <strong>HydrationError</strong> (500, legacy name for island upgrade failures)
           </div>
 
           <h2>使用错误类</h2>
@@ -102,7 +102,7 @@ export class ErrorHandlingPage extends LitElement {
                     <td>renderSsrError() 开发/生产模式。错误在构建时发生，不在运行时。</td>
                   </tr>
                   <tr>
-                    <td><strong>Hydration</strong></td>
+                    <td><strong>Island Upgrade</strong></td>
                     <td>浏览器 → Island</td>
                     <td>console.warn + 优雅回退</td>
                   </tr>
@@ -114,9 +114,9 @@ export class ErrorHandlingPage extends LitElement {
                 </tbody>
               </table>
               <p>
-                <strong>注意：</strong> KISS 中的"SSR"指的是<span class="inline-code">@lit-labs/ssr</span>
-                的<em>构建时渲染</em>， 不是运行时服务器。错误在 <span class="inline-code">vite build</span>
-                期间发生，从不在生产环境中。
+                <strong>注意：</strong> KISS 中的 SSR/SSG 指的是<em>构建时 DSD 渲染</em>，
+                不是生产运行时服务器。当前 core 通过 DSD renderer 输出静态 HTML；
+                Lit 仅通过 adapter 接入。
               </p>
 
               <div class="nav-row">

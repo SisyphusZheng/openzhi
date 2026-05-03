@@ -3,7 +3,7 @@
  *
  * I 约束演示：
  * - Shadow DOM 封装
- * - 懒水合
+ * - 客户端升级
  * - 独立 JS bundle
  */
 import { css, html, LitElement } from '@kissjs/core';

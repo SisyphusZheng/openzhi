@@ -2,8 +2,9 @@
  * API Consumer Island — JAM Pattern Interactive Demo
  *
  * A lightweight island component that calls the KISS serverless API.
- * Rendered initially as DSD, then hydrated on the client.
- * Uses firstUpdated() to avoid hydration re-render race.
+ * Rendered initially as DSD, then upgraded on the client.
+ * Defers the initial fetch until after the first Lit update to avoid
+ * upgrade-time re-render races inside a parent DSD shadow root.
  */
 import { css, html, LitElement } from '@kissjs/core';
 
@@ -212,8 +213,8 @@ export default class ApiConsumer extends LitElement {
     super.connectedCallback();
     // Wait for first render to complete before triggering fetch.
     // In LitElement, setting properties in connectedCallback races with
-    // the initial update cycle. Lit's hydration support (from
-    // @lit-labs/ssr-client) can block the second update pipeline when
+    // the initial update cycle. The old Lit SSR client route could block
+    // the second update pipeline when
     // the component is nested inside a DSD-rendered parent shadow DOM.
     this.updateComplete.then(() => this._fetchStatus());
   }

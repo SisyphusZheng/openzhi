@@ -2,7 +2,8 @@
 
 ## Status
 
-**DRAFT** — Proposed for v0.4.
+**PARTIALLY IMPLEMENTED** — available through `kiss({ pwa })` metadata and `build:ssg`.
+The service worker strategy has changed from the original full-precache design.
 
 ## Context
 
@@ -10,15 +11,15 @@ KISS generates pure static HTML with Declarative Shadow DOM. This is the ideal s
 
 - All pages are pre-rendered HTML (no server needed)
 - Assets are versioned hashes (perfect cache keys)
-- No sessions, no auth, no server state
-- Service worker can precache the entire site at install time
+- API routes can live separately on serverless platforms
+- Service worker should avoid stale HTML by using NetworkFirst for HTML/API and CacheFirst for hashed assets
 
 ## Proposal
 
 Add a `pwa` option to the `kiss()` plugin that automatically generates:
 
 1. `manifest.json` — Web App Manifest (name, icons, display, theme_color)
-2. `sw.js` — Service Worker with CacheFirst strategy
+2. `sw.js` — Service Worker with NetworkFirst (HTML/API) + CacheFirst (assets)
 3. HTML `<head>` injection — `<link rel="manifest">`, `<meta name="theme-color">`, `<link rel="service-worker">`
 
 ### API
@@ -33,8 +34,7 @@ export default defineConfig({
       themeColor: '#000000',
       backgroundColor: '#ffffff',
       icons: [{ src: '/icon-192.png', sizes: '192x192', type: 'image/png' }],
-      // Default: CacheFirst for all static assets, NetworkFirst for API routes
-      sw: { strategy: 'cache-first' },
+      // Current built-in strategy: NetworkFirst HTML/API, CacheFirst assets.
     },
   })],
 });
@@ -43,28 +43,12 @@ export default defineConfig({
 ### Service Worker Strategy
 
 ```js
-// Generated sw.js (~30 lines)
-self.addEventListener('install', (e) => {
-  e.waitUntil(
-    caches.open('kiss-v1').then((c) =>
-      c.addAll([
-        '/',
-        '/index.html',
-        '/assets/*.js',
-        '/assets/*.css',
-        // Dynamic island chunks are loaded on demand — cache on fetch
-      ])
-    ),
-  );
-});
+// Generated sw.js (~40 lines)
+self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('fetch', (e) => {
-  if (e.request.url.includes('/api/')) {
-    // NetworkFirst for API calls
-    e.respondWith(networkFirst(e.request));
-  } else {
-    // CacheFirst for static assets
-    e.respondWith(cacheFirst(e.request));
-  }
+  const url = new URL(e.request.url);
+  const isAsset = /\.[a-z0-9]+$/i.test(url.pathname) && !url.pathname.includes('/api/');
+  e.respondWith(isAsset ? cacheFirst(e.request) : networkFirst(e.request));
 });
 ```
 
@@ -89,4 +73,5 @@ if (options.pwa) {
 - **Positive**: Offline access, instant repeat visits, installable on mobile
 - **Positive**: Minimal code (~100 lines total across plugin + generator + sw script)
 - **Neutral**: Service worker scope limited to site root (no cross-site impact)
-- **Negative**: Cache invalidation needs version bumping in sw.js (solved by hash in sw name)
+- **Negative**: Offline-first HTML is intentionally not provided by default; stale static pages are a worse default
+- **Negative**: Cache invalidation needs a generated cache name; current implementation uses a build-time timestamp

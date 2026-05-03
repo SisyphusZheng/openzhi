@@ -3,7 +3,7 @@
  *
  * 展示 KISS 框架的三个范式继承：
  * - Jamstack：静态前端 + Serverless API
- * - Islands Architecture：按需水合的交互岛屿
+ * - Islands Architecture：按需升级的交互岛屿
  * - Progressive Enhancement：语义基线，无 JS 可用
  */
 import { css, html, LitElement } from '@kissjs/core';
@@ -196,7 +196,7 @@ export class ExamplesPage extends LitElement {
               </h3>
               <div class="constraint-badges">
                 <span class="constraint-badge">SSG + DSD</span>
-                <span class="constraint-badge">零运行时</span>
+                <span class="constraint-badge">零框架运行时</span>
               </div>
               <p>
                 最小化 KISS 应用。展示 SSG + DSD 输出，内容在 JS 加载前可见。 使用 @kissjs/ui 组件。

@@ -57,13 +57,13 @@ export class BlogIndexPage extends LitElement {
           <div class="blog-list">
             <a href="/blog/v0-5-alpha1" class="blog-item">
               <h2>v0.5-alpha1 — 全量架构审计与精准修复 <span style="font-size:0.7rem;color:var(--kiss-accent)">NEW</span></h2>
-              <p class="blog-desc">3 agent 扫描 13k 行源码 · CSS 注入修复 · Island 水合修复 · 6 条新设计原则 · 配置精简</p>
+              <p class="blog-desc">3 agent 扫描 13k 行源码 · CSS 注入修复 · Island 升级修复 · 6 条新设计原则 · 配置精简</p>
               <span class="blog-date">2026-05-03</span>
             </a>
 
             <a href="/blog/v0-5-0" class="blog-item">
               <h2>KISS v0.5-alpha-0 — 架构精简</h2>
-              <p class="blog-desc">零运行时 Core · 原生 RPC · OpenProps + Lit · 单 deno.json</p>
+              <p class="blog-desc">零框架运行时 Core · 原生 RPC · OpenProps + Lit · 单 deno.json</p>
               <span class="blog-date">2026-05-02</span>
             </a>
 
@@ -76,11 +76,10 @@ export class BlogIndexPage extends LitElement {
               </p>
             </a>
             <a href="/blog/kiss-compiler" class="blog-item">
-              <h2>.kiss Compiler — 消灭 Lit，零运行时 Web Components</h2>
+              <h2>.kiss Compiler — 可选零框架运行时组件</h2>
               <p class="meta">2026-04-30 · 架构决策</p>
               <p>
-                KISS 的终极目标：一个自定义编译器将声明式 .kiss 文件编译为原生 Custom Elements，彻底消除
-                58kb 的 Lit 运行时。
+                一个可选编译器将声明式 .kiss 文件编译为原生 Custom Elements，让 Lit 从必选路线变成 adapter。
               </p>
             </a>
           </div>

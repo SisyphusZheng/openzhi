@@ -2,7 +2,7 @@
  * Demo Showcase — Jamstack in Action
  *
  * SSR page layout with interactive Islands.
- * <api-consumer> is in the normal Shadow DOM template; hydration race
+ * <api-consumer> is in the normal Shadow DOM template; upgrade race
  * is avoided by using firstUpdated() instead of connectedCallback()
  * for the initial API fetch.
  */
@@ -161,7 +161,7 @@ export default class PageDemo extends LitElement {
             <div class="jam-cell">
               <span class="letter">J</span>
               <span class="label">JavaScript</span>
-              <p class="desc">Island component hydrates on the client, ready for interaction</p>
+              <p class="desc">Island component upgrades on the client, ready for interaction</p>
             </div>
             <div class="jam-cell">
               <span class="letter">A</span>
@@ -182,7 +182,7 @@ export default class PageDemo extends LitElement {
 
           <p style="font-size:0.8125rem;color:var(--kiss-text-tertiary);margin:0 0 0.5rem;line-height:1.6">
             Another Island — <strong>0.9 KB</strong> of lazy-loaded JavaScript,
-            fully interactive via Declarative Shadow DOM hydration.
+            fully interactive via Declarative Shadow DOM and Custom Element upgrade.
           </p>
           <counter-island></counter-island>
 
@@ -192,7 +192,7 @@ export default class PageDemo extends LitElement {
           <p style="font-size:0.9375rem;color:var(--kiss-text-secondary);line-height:1.7">
             This entire page was statically generated at build time by the KISS 3-phase pipeline.
             The interactive components are <strong>Islands</strong> — lazy-loaded JavaScript that
-            hydrates only the parts that need interaction. Everything else is pure static HTML.
+            upgrades only the parts that need interaction. Everything else is pure static HTML.
           </p>
 
           <div class="endpoint-label">API Endpoint</div>
@@ -205,9 +205,9 @@ export default class PageDemo extends LitElement {
 
           <div class="endpoint-label">Build Pipeline</div>
           <div class="arch-card">
-            <pre>npx vite build   → SSR bundle + metadata
-build:client     → Island client chunks (lazy-loaded)
-build:ssg        → Static HTML + DSD + clean URLs + PWA</pre>
+            <pre>deno task docs:build    → SSR bundle + metadata
+deno task build:client  → Island client chunks (lazy-loaded)
+deno task build:ssg     → Static HTML + DSD + clean URLs + PWA</pre>
           </div>
         </div>
       </kiss-layout>

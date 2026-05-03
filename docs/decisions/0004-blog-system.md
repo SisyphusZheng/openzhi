@@ -2,7 +2,8 @@
 
 ## Status
 
-**DRAFT** — Proposed for Phase 10 (after .kiss compiler).
+**DRAFT** — Proposed after v0.8.0 Serverless Fullstack. The ideal zero-framework
+version can wait for `.kiss` compiler alpha.
 
 ## Context
 
@@ -12,12 +13,13 @@ Users need a proper blog: drop in `.md` files, get automatic listing + paginatio
 
 ## Constraints
 
-The blog system must not be built on Lit. It must be designed for the `.kiss` compiler from day one:
+The blog system should not require Lit. It should work first as a plain SSG plugin,
+then gain `.kiss` compiler templates when the compiler exists:
 
-- Post templates must compile to vanilla Custom Elements (zero runtime)
+- Post templates should be able to compile to vanilla Custom Elements when `.kiss` exists
 - SSR must be synchronous string concatenation (`template.innerHTML`)
-- No hydration, no lit-html, no @lit-labs/ssr
-- The `.kiss` compiler is the rendering foundation — this package is a consumer of it
+- No page-level client runtime for plain blog pages; interactive widgets remain islands
+- The `.kiss` compiler is an optional future template backend, not a blocker for the first release
 
 ## Proposal
 
@@ -118,9 +120,10 @@ With the `.kiss` compiler:
 </style>
 ```
 
-Without the `.kiss` compiler (fallback before v1.0):
+Without the `.kiss` compiler:
 
-The same template rendered as a server-side string concatenation using `html-template.ts`. No Lit, no runtime. Just `template.innerHTML` + `Document.createDocumentFragment().cloneNode(true)`.
+The same content can be rendered through the KISS DSD renderer or a safe server-side
+HTML template helper. It should not depend on Lit for plain Markdown pages.
 
 ### MDX support (future)
 
@@ -132,9 +135,10 @@ The `.md` parser should support:
 
 ## Implementation order
 
-1. `.kiss` compiler is available (Phase 11)
-2. `@kissjs/blog` built on top of it (Phase 10 sub-task)
-3. KISS docs site eats its own dogfood — replaces the current hardcoded blog routes
+1. v0.8.0 stabilizes route/action/serverless conventions
+2. `@kissjs/blog` ships as a plain SSG plugin first
+3. `.kiss` compiler support is added when v0.10.0 alpha is available
+4. KISS docs site eats its own dogfood — replaces the current hardcoded blog routes
 
 ## Open Questions
 
@@ -147,6 +151,6 @@ The `.md` parser should support:
 
 - **Positive**: Users get a one-line blog setup, competitive with VitePress
 - **Positive**: KISS docs site can dogfood its own blog package
-- **Positive**: Zero JS runtime for blog pages (with .kiss compiler)
-- **Negative**: Blocked on .kiss compiler for the ideal architecture
+- **Positive**: Zero framework runtime for plain blog pages (with `.kiss` compiler)
+- **Negative**: The ideal compiler-backed architecture comes later
 - **Negative**: Markdown parsing at build time adds ~100ms to Phase 1

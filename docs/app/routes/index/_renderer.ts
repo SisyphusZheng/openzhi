@@ -1,9 +1,9 @@
 /**
  * _renderer.ts — Homepage renderer
  *
- * Strips defer-hydration from <kiss-hero-ping> to prevent nested
- * hydration conflict with the parent <docs-home> shadow DOM.
- * The island hydrates independently when its chunk loads.
+ * Strips the legacy defer-hydration marker from <kiss-hero-ping> to prevent
+ * nested upgrade conflict with the parent <docs-home> shadow DOM.
+ * The island upgrades independently when its chunk loads.
  */
 import type { KissRenderer } from '@kissjs/core';
 

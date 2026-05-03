@@ -207,7 +207,7 @@ export default class DocsHome extends LitElement {
               <div class="hero-kiss">KISS</div>
               <div class="hero-desc">
                 一个基于 Web 标准构建的 Jamstack 框架。<br>
-                零运行时锁定。纯粹的 Web 平台。
+                DSD 首屏渲染，Island 按需升级。纯粹的 Web 平台。
               </div>
               <div class="hero-tech">HTTP Fetch API · Web Components · ESM</div>
             </div>
@@ -220,12 +220,12 @@ export default class DocsHome extends LitElement {
             <div class="section-title">核心数据</div>
             <div class="stats">
               <div class="stat">
-                <div class="stat-val">~7KB</div>
-                <div class="stat-label">运行时 (gzip)</div>
+                <div class="stat-val">DSD</div>
+                <div class="stat-label">首屏输出</div>
               </div>
               <div class="stat">
                 <div class="stat-val">0KB</div>
-                <div class="stat-label">静态页面</div>
+                <div class="stat-label">框架 JS 基线</div>
               </div>
               <div class="stat">
                 <div class="stat-val">4</div>
@@ -266,7 +266,7 @@ class App extends LitElement {
               </div>
               <div class="feat">
                 <h3>群岛架构</h3>
-                <p>仅交互组件加载 JavaScript。零交互页面：0 KB JS。</p>
+                <p>内容先由 DSD 输出，交互组件再通过 Custom Element upgrade 接管。</p>
               </div>
               <div class="feat">
                 <h3>类型安全 RPC</h3>
@@ -274,11 +274,11 @@ class App extends LitElement {
               </div>
               <div class="feat">
                 <h3>SSG + DSD</h3>
-                <p>构建时静态生成配合声明式 Shadow DOM。HTML 在客户端瞬间激活。</p>
+                <p>构建时静态生成配合声明式 Shadow DOM。HTML 先可见，JS 后升级。</p>
               </div>
               <div class="feat">
                 <h3>多运行时</h3>
-                <p>相同代码运行在 Deno、Node.js、Bun 和 Cloudflare Workers。零运行时锁定。</p>
+                <p>API 层贴近 Fetch 标准，可面向 Deno、Node.js、Bun 和 Cloudflare Workers。</p>
               </div>
               <div class="feat">
                 <h3>渐进增强</h3>
@@ -334,8 +334,8 @@ class App extends LitElement {
               </tr>
               <tr>
                 <td>静态页面</td>
-                <td>0 KB JS</td>
-                <td>0 KB JS</td>
+                <td>0 KB 框架 JS</td>
+                <td>0 KB 框架 JS</td>
                 <td>~60 KB</td>
                 <td>~70 KB</td>
               </tr>

@@ -36,11 +36,11 @@ export default class BlogV050 extends LitElement {
 
   override render() {
     return html`
-      <kiss-layout currentPath="/blog/v0-5-alpha-0">
+      <kiss-layout currentPath="/blog/v0-5-0">
         <div class="container">
           <p class="breadcrumb"><a href="/blog">← Blog</a></p>
           <h1>KISS v0.5-alpha-0 — 架构精简：砍掉不必要的，留住核心</h1>
-          <p class="subtitle">零运行时 Core · 原生 RPC · OpenProps + Lit · 单 deno.json</p>
+          <p class="subtitle">零框架运行时 Core · 原生 RPC · OpenProps + Lit · 单 deno.json</p>
           <p class="date">2026-05-02</p>
 
           <p>v0.5-alpha-0 不做新功能。它做减法。</p>
@@ -51,14 +51,14 @@ export default class BlogV050 extends LitElement {
 
           <div class="truth">
             <div class="truth-title">一、KissElement — 废弃</div>
-            <p>KissElement 是一个"零运行时"的 Custom Element base class，用 <code>this.root.innerHTML = String(this.render())</code> 更新 DOM。这个设计有四个问题：</p>
+            <p>KissElement 是一个"零框架运行时"的 Custom Element base class，用 <code>this.root.innerHTML = String(this.render())</code> 更新 DOM。这个设计有四个问题：</p>
             <ul>
               <li>状态丢失：input focus、scroll pos、CSS 动画全部重置</li>
               <li>不安全：innerHTML 不转义</li>
               <li>不组合：全量替换破坏子组件 DOM 引用</li>
               <li>性能差：比 lit-html 细粒度 diff 差一个数量级</li>
             </ul>
-            <p>要解决这些问题需要重写一个 lit-html 级别的模板引擎——不值得维护。任何想"零运行时但又有声明式模板"的方案，最后都会变成重写 Lit。</p>
+            <p>要解决这些问题需要重写一个 lit-html 级别的模板引擎——不值得维护。任何想"零框架运行时但又有声明式模板"的方案，最后都会变成重写 Lit。</p>
           </div>
 
           <div class="truth">
@@ -94,8 +94,8 @@ export default class BlogV050 extends LitElement {
           </div>
 
           <div class="truth">
-            <div class="truth-title">DSD 渲染器 — 双通道架构不变</div>
-            <p>render-dsd.ts 的"纯字符串拼接"和"动态 import @lit-labs/ssr"两条路径继续存在。纯原生组件和 Lit 组件的 SSR 各自走各自的通道。</p>
+            <div class="truth-title">DSD 渲染器 — core / adapter 分层不变</div>
+            <p>core 负责 DSD-first 渲染与 SSG 管线；Lit 组件通过 <code>@kissjs/adapter-lit</code> 接入。后续 Trust Release 必须补齐 adapter 测试与插值转义，不能把 adapter 风险伪装成 core 的能力。</p>
           </div>
 
           <div class="truth">
@@ -105,8 +105,8 @@ export default class BlogV050 extends LitElement {
 
           <h2>新架构一览</h2>
 
-          <pre><code>@kissjs/core    — 纯构建/SSR 工具           [零运行时]
-@kissjs/rpc     — fetch + AbortController   [零运行时]
+          <pre><code>@kissjs/core    — 纯构建/SSR 工具           [零框架运行时]
+@kissjs/rpc     — fetch + AbortController   [零框架运行时]
 @kissjs/ui      — OpenProps + Lit 组件库     [仅 UI 层]
 create-kiss     — 脚手架                    [CLI 工具]</code></pre>
 
