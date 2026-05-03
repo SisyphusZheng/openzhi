@@ -1,6 +1,6 @@
 {
   "name": "@kiss/docs",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "type": "module",
   "scripts": {
     "dev": "deno run --config ../deno.json -A npm:vite",

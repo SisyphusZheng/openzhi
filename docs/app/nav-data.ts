@@ -66,6 +66,16 @@ export const SIDEBAR_NAV: NavSection[] = [
     ],
   },
   {
+    section: 'Decisions',
+    items: [
+      { path: '/decisions', label: 'ADR Index' },
+      { path: '/decisions/0001-keep-hono-vite-dev-server', label: '0001 Hono Dev Server' },
+      { path: '/decisions/0002-kiss-compiler-eliminate-lit', label: '0002 .kiss Compiler' },
+      { path: '/decisions/0003-pwa-support', label: '0003 PWA Support' },
+      { path: '/decisions/0004-blog-system', label: '0004 Blog System' },
+    ],
+  },
+  {
     section: 'UI',
     items: [{ path: '/ui', label: 'Design System' }],
   },
