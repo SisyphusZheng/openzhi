@@ -126,6 +126,7 @@ async function buildClient(): Promise<void> {
     build: {
       outDir: clientOutDir,
       emptyOutDir: true,
+      minify: 'esbuild',
       // @ts-ignore — Vite's own manifest option (not Rollup's)
       manifest: true,
       rollupOptions: {
