@@ -42,7 +42,7 @@ jobs:
         working-directory: packages/kiss-ui
         run: deno task build
       - name: Run kiss-core tests
-        run: deno test packages/kiss-core/__tests__/ --allow-read --allow-write --allow-env
+        run: deno test packages/kiss-core/__tests__/ --allow-read --allow-write --allow-env --allow-run
 
   test-rpc:
     runs-on: ubuntu-latest
@@ -93,4 +93,4 @@ jobs:
       - name: Install dependencies
         run: deno install --node-modules-dir
       - name: Run create-kiss tests
-        run: deno test packages/create-kiss/__tests__/ --allow-read --allow-write --allow-env
+        run: deno test packages/create-kiss/__tests__/ --allow-read --allow-write --allow-env --allow-run

@@ -25,24 +25,28 @@ jobs:
         working-directory: packages/kiss-ui
         run: deno task build
 
-      - name: Publish @kissjs/core
-        working-directory: packages/kiss-core
-        run: deno publish --allow-dirty
+      - name: Publish missing package versions
+        shell: bash
+        run: |
+          set -euo pipefail
 
-      - name: Publish @kissjs/rpc
-        working-directory: packages/kiss-rpc
-        run: deno publish --allow-dirty
+          publish_if_missing() {
+            local pkg="$1"
+            local dir="$2"
+            local version
+            version="$(sed -n 's/.*"version": "\([^"]*\)".*/\1/p' "$dir/deno.json" | head -n 1)"
 
-      - name: Publish @kissjs/ui
-        working-directory: packages/kiss-ui
-        run: deno publish --allow-dirty
+            if deno info --no-config "jsr:${pkg}@${version}" >/dev/null 2>&1; then
+              echo "[JSR] ${pkg}@${version} already exists; skipping."
+              return 0
+            fi
 
-      - name: Publish @kissjs/adapter-lit
-        working-directory: packages/kiss-adapter-lit
-        run: deno publish --allow-dirty
+            echo "[JSR] Publishing ${pkg}@${version}"
+            (cd "$dir" && deno publish --allow-dirty)
+          }
 
-      - name: Publish @kissjs/create
-        working-directory: packages/create-kiss
-        run: deno publish --allow-dirty
-
- 
+          publish_if_missing "@kissjs/rpc" "packages/kiss-rpc"
+          publish_if_missing "@kissjs/ui" "packages/kiss-ui"
+          publish_if_missing "@kissjs/adapter-lit" "packages/kiss-adapter-lit"
+          publish_if_missing "@kissjs/core" "packages/kiss-core"
+          publish_if_missing "@kissjs/create" "packages/create-kiss"

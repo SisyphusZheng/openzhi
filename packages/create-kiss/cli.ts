@@ -13,6 +13,7 @@ const TPL = {
   'deno.json': `{
   "imports": {
     "lit": "npm:lit@^3.2.0",
+    "@lit-labs/ssr-dom-shim": "npm:@lit-labs/ssr-dom-shim@^1.5.0",
     "@kissjs/adapter-lit": "jsr:@kissjs/adapter-lit@^0.2.0",
     "@kissjs/core": "jsr:@kissjs/core@^0.5.0",
     "@kissjs/ui": "jsr:@kissjs/ui@^0.5.0",

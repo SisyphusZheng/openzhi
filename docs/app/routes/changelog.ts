@@ -138,8 +138,8 @@ export class ChangelogPage extends LitElement {
                 </li>
                 <li>
                   <strong>0.x 公共面收口</strong>：移除未实现的
-                  <span class="inline-code">renderNestedDsd()</span> stub，nested DSD 留到 v0.6 的
-                  DSD Renderer 2 正式设计。
+                  <span class="inline-code">renderNestedDsd()</span> stub，nested DSD 留到 v0.6 的 DSD
+                  Renderer 2 正式设计。
                 </li>
                 <li>
                   <strong>Roadmap 刷新</strong>：吸收 2026-05-04 架构审查结论，明确 v0.6 优先 DSD Renderer
@@ -147,7 +147,7 @@ export class ChangelogPage extends LitElement {
                 </li>
                 <li>
                   <strong>版本号</strong>：@kissjs/core 升至 0.5.0，@kissjs/ui 升至 0.5.0，@kissjs/rpc
-                  升至 0.3.0，@kissjs/adapter-lit 升至 0.2.0，@kissjs/create 升至 0.4.0。
+                  升至 0.3.0，@kissjs/adapter-lit 升至 0.2.0，@kissjs/create 升至 0.4.1。
                 </li>
               </ul>
             </div>
@@ -166,6 +166,11 @@ export class ChangelogPage extends LitElement {
                 <li>
                   <strong>发布信任测试</strong>：SSG smoke 不再默认全部 ignore；adapter-lit 和 create-kiss
                   增加正式版阻塞测试。
+                </li>
+                <li>
+                  <strong>CI 发布补丁</strong>：GitHub Actions 测试任务显式授予
+                  <span class="inline-code">--allow-run</span>，create-kiss 模板显式安装 Lit 在 SSR
+                  分支需要的 <span class="inline-code">@lit-labs/ssr-dom-shim</span>。
                 </li>
                 <li>
                   <strong>Island 自注册</strong>：脚手架生成的 counter island 现在调用

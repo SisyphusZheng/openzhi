@@ -4,9 +4,9 @@ on:
   workflow_dispatch:
     inputs:
       packages:
-        description: 'Packages to publish (comma-separated: core,rpc,ui,create)'
+        description: 'Packages to publish (comma-separated: core,rpc,ui,adapter-lit,create)'
         required: true
-        default: 'core,rpc,ui,create'
+        default: 'core,rpc,ui,adapter-lit,create'
 
 jobs:
   publish:
@@ -21,27 +21,49 @@ jobs:
         with:
           deno-version: '2'
 
+      - name: Install dependencies
+        run: deno install --node-modules-dir
+
       - name: Build @kissjs/ui (if publishing ui)
         if: contains(github.event.inputs.packages, 'ui')
         working-directory: packages/kiss-ui
         run: deno task build
 
-      - name: Publish @kissjs/core
-        if: contains(github.event.inputs.packages, 'core')
-        working-directory: packages/kiss-core
-        run: deno publish
+      - name: Publish requested missing package versions
+        shell: bash
+        run: |
+          set -euo pipefail
 
-      - name: Publish @kissjs/rpc
-        if: contains(github.event.inputs.packages, 'rpc')
-        working-directory: packages/kiss-rpc
-        run: deno publish
+          requested=",${{ github.event.inputs.packages }},"
 
-      - name: Publish @kissjs/ui
-        if: contains(github.event.inputs.packages, 'ui')
-        working-directory: packages/kiss-ui
-        run: deno publish --allow-slow-types
+          wants() {
+            [[ "$requested" == *",$1,"* ]]
+          }
 
-      - name: Publish @kissjs/create
-        if: contains(github.event.inputs.packages, 'create')
-        working-directory: packages/create-kiss
-        run: deno publish
+          publish_if_requested_and_missing() {
+            local key="$1"
+            local pkg="$2"
+            local dir="$3"
+
+            if ! wants "$key"; then
+              echo "[JSR] ${pkg} not requested; skipping."
+              return 0
+            fi
+
+            local version
+            version="$(sed -n 's/.*"version": "\([^"]*\)".*/\1/p' "$dir/deno.json" | head -n 1)"
+
+            if deno info --no-config "jsr:${pkg}@${version}" >/dev/null 2>&1; then
+              echo "[JSR] ${pkg}@${version} already exists; skipping."
+              return 0
+            fi
+
+            echo "[JSR] Publishing ${pkg}@${version}"
+            (cd "$dir" && deno publish --allow-dirty)
+          }
+
+          publish_if_requested_and_missing "rpc" "@kissjs/rpc" "packages/kiss-rpc"
+          publish_if_requested_and_missing "ui" "@kissjs/ui" "packages/kiss-ui"
+          publish_if_requested_and_missing "adapter-lit" "@kissjs/adapter-lit" "packages/kiss-adapter-lit"
+          publish_if_requested_and_missing "core" "@kissjs/core" "packages/kiss-core"
+          publish_if_requested_and_missing "create" "@kissjs/create" "packages/create-kiss"
