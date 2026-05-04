@@ -4,9 +4,9 @@
  * Snapshot tests for renderEntry output covering:
  * - CSP middleware (with/without nonce)
  * - _renderer.ts / _middleware.ts special routes
- * - Hydration strategies (eager/lazy/idle/visible)
- * - Package islands
- * - Full code structure validation
+ * - Island upgrade strategies (eager/lazy/idle/visible)
+// Package islands
+// Code structure validation
  */
 
 import {
@@ -18,7 +18,7 @@ import {
 import { buildEntryDescriptor, generateHonoEntryCode, renderEntry } from '../src/hono-entry.ts';
 import type { RouteEntry } from '../src/types.ts';
 
-// ─── Fixtures ──────────────────────────────────────────────────
+// Fixtures
 
 const basicRoutes: RouteEntry[] = [
   { path: '/', filePath: 'index.ts', type: 'page', varName: 'pageIndex' },
@@ -157,46 +157,48 @@ Deno.test('renderEntry: _middleware.ts generates app.use scope', () => {
 Deno.test('buildEntryDescriptor: special routes are separated from page/api', () => {
   const desc = buildEntryDescriptor(withSpecialRoutes);
 
-  // Special routes should NOT be in apiRoutes or pageRoutes — they go to renderers/middlewareScopes
+  // Special routes should NOT be in apiRoutes or pageRoutes; they go to renderers/middlewareScopes
   assertEquals(desc.apiRoutes.length > 0, true);
   assertEquals(desc.pageRoutes.length > 0, true);
 
   // They should appear as renderers and middlewareScopes instead
-  assertEquals(desc.renderers.length + desc.middlewareScopes.length >= 3, true); // _renderer ×2 + _middleware ×1
+  assertEquals(desc.renderers.length + desc.middlewareScopes.length >= 3, true); // _renderer x2 + _middleware x1
 });
 
-// ─── Hydration Strategy Tests ──────────────────────────────
+// Island upgrade strategy tests
 
-Deno.test('buildEntryDescriptor: hydrationStrategy is recorded (eager)', () => {
+Deno.test('buildEntryDescriptor: upgradeStrategy is recorded (eager)', () => {
   const desc = buildEntryDescriptor(basicRoutes, {
     islandTagNames: ['my-counter'],
-    hydrationStrategy: 'eager',
+    upgradeStrategy: 'eager',
   });
 
-  assertEquals(desc.hydrationStrategy, 'eager');
+  assertEquals(desc.upgradeStrategy, 'eager');
 });
 
-Deno.test('buildEntryDescriptor: hydrationStrategy is recorded (visible)', () => {
+Deno.test('buildEntryDescriptor: upgradeStrategy is recorded (visible)', () => {
   const desc = buildEntryDescriptor(basicRoutes, {
     islandTagNames: ['lazy-image'],
-    hydrationStrategy: 'visible',
+    upgradeStrategy: 'visible',
   });
 
-  assertEquals(desc.hydrationStrategy, 'visible');
+  assertEquals(desc.upgradeStrategy, 'visible');
 });
 
-Deno.test('buildEntryDescriptor: default hydrationStrategy is lazy', () => {
+Deno.test('buildEntryDescriptor: default upgradeStrategy is lazy', () => {
   const desc = buildEntryDescriptor(basicRoutes, {
     islandTagNames: ['my-counter'],
   });
 
   // Default should be 'lazy'
-  assertEquals(desc.hydrationStrategy, 'lazy');
+  assertEquals(desc.upgradeStrategy, 'lazy');
 });
 
-// ─── Package Islands ───────────────────────────────────────
+// Package islands
 
-Deno.test('renderEntry: package islands are included in hydration', () => {
+// Package islands
+
+Deno.test('renderEntry: package islands are included in island upgrade entry', () => {
   const desc = buildEntryDescriptor(basicRoutes, {
     packageIslands: [
       { tagName: 'kiss-layout', modulePath: '@kissjs/ui/kiss-layout' },
@@ -235,7 +237,7 @@ Deno.test('renderEntry: package islands do not require default exports', () => {
   assertFalse(code.includes('__island_kiss_button.default'));
 });
 
-// ─── Code Structure Validation ──────────────────────────────
+// Code structure validation
 
 Deno.test('renderEntry: no bare process.env references', () => {
   const desc = buildEntryDescriptor(basicRoutes, {
@@ -317,7 +319,7 @@ Deno.test('generateHonoEntryCode: complex scenario with all features', () => {
     ],
     html: { lang: 'zh-CN', title: 'KISS 文档' },
     headExtras: '<link rel="stylesheet" href="/styles.css" />',
-    hydrationStrategy: 'lazy',
+    upgradeStrategy: 'lazy',
   });
 
   // All features present

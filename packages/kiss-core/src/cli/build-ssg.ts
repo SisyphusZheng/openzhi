@@ -40,7 +40,7 @@ interface BuildSSGOptions {
   packageIslands?: PackageIslandMeta[];
   headExtras?: string;
   html?: { lang?: string; title?: string };
-  hydrationStrategy?: 'eager' | 'lazy' | 'idle' | 'visible';
+  upgradeStrategy?: 'eager' | 'lazy' | 'idle' | 'visible';
   resolveAlias?: Record<string, string> | import('vite').Alias[];
   base?: string;
   pwa?: { name?: string; shortName?: string; themeColor?: string; backgroundColor?: string };
@@ -87,8 +87,7 @@ async function buildSSG(options: BuildSSGOptions = {}): Promise<void> {
     if (!metadataResolveAlias && metadata.resolveAlias) {
       metadataResolveAlias = metadata.resolveAlias as Record<string, string>;
     }
-    // Read headExtras/html/middleware/hydrationStrategy from metadata
-    // (written by Phase 1 build.ts) when not provided via CLI options
+    // Read Phase 1 metadata when values were not provided via CLI options.
     if (!options.headExtras && metadata.headExtras) {
       options.headExtras = metadata.headExtras;
     }
@@ -98,8 +97,8 @@ async function buildSSG(options: BuildSSGOptions = {}): Promise<void> {
     if (!options.middleware && metadata.middleware) {
       options.middleware = metadata.middleware;
     }
-    if (!options.hydrationStrategy && metadata.hydrationStrategy) {
-      options.hydrationStrategy = metadata.hydrationStrategy;
+    if (!options.upgradeStrategy && metadata.upgradeStrategy) {
+      options.upgradeStrategy = metadata.upgradeStrategy;
     }
     if (!options.pwa && metadata.pwa) {
       options.pwa = metadata.pwa;
@@ -107,11 +106,10 @@ async function buildSSG(options: BuildSSGOptions = {}): Promise<void> {
     if (!options.base && metadata.base) {
       options.base = metadata.base as string;
     }
-    // v0.3.0 note: hydrationStrategy controls WHEN defer-hydration is removed
-    // (eager/lazy/idle/visible), not HOW hydration works (always Lit hydrate()).
-    // The strategy IS functional — it's not deprecated, just rarely changed from 'lazy'.
+    // v0.5.0 note: upgradeStrategy controls island module import timing.
+    // It is not a client render runtime.
   } catch {
-    console.log('[KISS] No .kiss/build-metadata.json found — using provided island list');
+    console.log('[KISS] No .kiss/build-metadata.json found; using provided island list');
   }
 
   // Generate SSG entry code
@@ -133,7 +131,7 @@ async function buildSSG(options: BuildSSGOptions = {}): Promise<void> {
     packageIslands,
     headExtras: options.headExtras,
     html: options.html,
-    hydrationStrategy: options.hydrationStrategy || 'lazy',
+    upgradeStrategy: options.upgradeStrategy || 'lazy',
   });
 
   // Write temp entry file
@@ -295,10 +293,8 @@ async function buildSSG(options: BuildSSGOptions = {}): Promise<void> {
       const basePath = options.base || '/';
 
       // Inject client script tag into all HTML files
-      // The client entry (built in Phase 2) contains:
-      // - Custom element registration
-      // - Lit hydrate() from @lit-labs/ssr-client
-      // - Hydration strategy dispatch
+      // The client entry (built in Phase 2) imports island modules so
+      // custom elements can self-register and upgrade DSD markup.
       const clientManifestPath = join(root, outDir, 'client', '.vite', 'manifest.json');
       if (existsSync(clientManifestPath)) {
         try {
@@ -319,7 +315,7 @@ async function buildSSG(options: BuildSSGOptions = {}): Promise<void> {
           console.warn('[KISS SSG] Could not read client manifest for script injection:', err);
         }
       } else {
-        console.warn('[KISS SSG] No client manifest found — run build:client (Phase 2) first');
+        console.warn('[KISS SSG] No client manifest found - run the full build command first');
       }
 
       // Post-process: rewrite island paths (fallback for any inline references)

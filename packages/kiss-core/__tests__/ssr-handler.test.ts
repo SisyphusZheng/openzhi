@@ -15,11 +15,12 @@ Deno.test('ssr-handler - wrapInDocument', async (t) => {
     assertEquals(html.includes('<h1>Hello</h1>'), true);
   });
 
-  await t.step('includes hydration script', () => {
+  await t.step('includes client script', () => {
     const html = wrapInDocument('<h1>Hello</h1>', {
-      hydrateScript: '<script type="module">hydrate()</script>',
+      clientScript:
+        '<script type="module">customElements.define("x-demo", class extends HTMLElement {})</script>',
     });
-    assertEquals(html.includes('<script type="module">hydrate()</script>'), true);
+    assertEquals(html.includes('customElements.define("x-demo"'), true);
   });
 
   await t.step('supports custom lang attribute', () => {

@@ -1,15 +1,11 @@
 /**
  * @kissjs/core - Island transform plugin
- * Detects island components and injects hydration markers.
+ * Detects island components and injects build metadata markers.
  *
  * v0.3.0: This plugin ONLY injects __island and __tagName metadata markers.
- * Hydration is handled by the Vite-built client entry (entry-generators.ts),
- * which uses Lit's hydrate() from @lit-labs/ssr-client (bundled by Vite).
- *
- * The old generateHydrationScript() that produced inline <script> tags
- * has been removed — inline scripts can't import @lit-labs/ssr-client
- * (bare module specifier), and the inline hydrateElement() was not a
- * real Lit hydration (just DSD polyfill + removeAttribute).
+ * Island upgrade is handled by the Vite-built client entry
+ * (entry-generators.ts), which imports island modules so they can
+ * self-register via customElements.define().
  *
  * Web Standards alignment:
  * - Uses standard customElements.define() API
@@ -58,9 +54,8 @@ export function islandTransformPlugin(islandsDir: string): Plugin {
         );
       }
 
-      // Inject only metadata markers. The Vite-built client entry handles
-      // customElements.define() + Lit hydrate() — no registration code here.
-      // This keeps the transform lightweight and ESM-safe.
+      // Inject only metadata markers. The Vite-built client entry imports
+      // islands for side-effect registration, so no registration code lives here.
       const injected = `
 // --- KISS Island Markers (auto-injected by @kissjs/core) ---
 export const __island = true;

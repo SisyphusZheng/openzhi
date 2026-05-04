@@ -1,20 +1,22 @@
 /**
  * @kissjs/adapter-lit - SSR Adapter
  *
- * Converts Lit TemplateResult → HTML string via naive interpolation.
+ * Converts Lit TemplateResult to HTML string via safe interpolation.
  * No dependency on @lit-labs/ssr — produces clean DSD HTML without
- * Lit hydration markers (<!--lit-part-->, <!--lit-node-->).
+ * Lit SSR marker comments (<!--lit-part-->, <!--lit-node-->).
  *
  * Why not @lit-labs/ssr?
- *   @lit-labs/ssr is designed for Lit's own hydration pipeline.
+ *   @lit-labs/ssr is designed for Lit's own client reconciliation pipeline.
  *   Its output contains <!--lit-part--> markers and nested shadowroot
  *   attributes that conflict with DSD's "pure HTML, no framework marks"
- *   promise. Naive interpolation produces exactly what DSD needs:
- *   plain HTML that the browser can render without any JS.
+ *   promise. This adapter keeps output plain while escaping dynamic text
+ *   and attribute values by default.
  *
  * How it works:
  *   Lit TemplateResult = { strings: string[], values: any[] }
  *   We interleave: strings[0] + valueToString(values[0]) + strings[1] + ...
+ *   - Text content values are HTML-escaped
+ *   - Attribute values are attribute-escaped
  *   - Nested TemplateResult → recursive interpolation
  *   - Boolean attrs (?disabled) → proper HTML boolean attribute
  *   - Event bindings (@click) → stripped (can't work in static HTML)
@@ -89,15 +91,37 @@ function isNothing(value: unknown): boolean {
   return typeof value === 'symbol' && value === NOTHING_SYMBOL;
 }
 
-/**
- * Convert a template value to its string representation.
- * Handles nested TemplateResults, arrays, primitives, and null/undefined.
- */
-function stringifyValue(value: unknown): string {
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function escapeAttr(value: string): string {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
+/** Convert a template value for safe text-content insertion. */
+function stringifyContentValue(value: unknown): string {
   if (value == null || isNothing(value)) return '';
   if (isLitTemplateResult(value)) return interpolate(value);
-  if (Array.isArray(value)) return value.map(stringifyValue).join('');
-  return String(value);
+  if (Array.isArray(value)) return value.map(stringifyContentValue).join('');
+  return escapeHtml(String(value));
+}
+
+/** Convert a template value for safe HTML attribute insertion. */
+function stringifyAttributeValue(value: unknown): string {
+  if (value == null || isNothing(value)) return '';
+  if (Array.isArray(value)) return value.map(stringifyAttributeValue).join('');
+  return escapeAttr(String(value));
 }
 
 /**
@@ -108,7 +132,7 @@ function stringifyValue(value: unknown): string {
  */
 function interpolate(result: unknown): string {
   if (!isLitTemplateResult(result)) {
-    return stringifyValue(result);
+    return stringifyContentValue(result);
   }
 
   const tr = result as TemplateResultLike;
@@ -167,14 +191,14 @@ function interpolate(result: unknown): string {
             // null/undefined → empty attribute value (attr="")
             output += '';
           } else {
-            output += stringifyValue(value);
+            output += stringifyAttributeValue(value);
           }
           break;
         }
 
         case 'content':
         default: {
-          output += stringifyValue(value);
+          output += stringifyContentValue(value);
           break;
         }
       }
@@ -244,8 +268,8 @@ export function extractLitStyles(componentClass: CustomElementConstructor): stri
 /**
  * Render a Lit TemplateResult to HTML string.
  *
- * Uses naive interpolation — no @lit-labs/ssr dependency,
- * no Lit hydration markers, produces clean DSD-compatible HTML.
+ * Uses safe interpolation; no @lit-labs/ssr dependency,
+ * no Lit SSR marker comments, produces clean DSD-compatible HTML.
  *
  * @param result - The Lit TemplateResult to render
  * @param tagName - Component tag name (for error messages)
@@ -277,7 +301,7 @@ export function renderLitToString(
  *
  * This patches the DSD renderer so that when a component's render()
  * returns a Lit TemplateResult, it's automatically converted to string
- * via naive interpolation — instead of falling through to String()
+ * via safe interpolation instead of falling through to String()
  * which produces "[object Object]".
  *
  * Call this once at the top of your SSG build script or vite.config.ts:
@@ -312,7 +336,7 @@ export function installLitAdapter(): void {
   };
 
   (globalThis as Record<string, unknown>).__kissLitAdapterInstalled = true;
-  console.log('[KISS] Lit SSR adapter installed — TemplateResult → string (naive interpolation)');
+  console.log('[KISS] Lit SSR adapter installed - TemplateResult to string');
 }
 
 /**

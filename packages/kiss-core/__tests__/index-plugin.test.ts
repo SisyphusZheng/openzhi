@@ -18,7 +18,7 @@ import { kiss } from '../src/index.ts';
 import {
   ConflictError,
   ForbiddenError,
-  HydrationError,
+  IslandUpgradeError,
   KissError,
   NotFoundError,
   RateLimitError,
@@ -82,7 +82,7 @@ Deno.test('kiss() accepts options without error', () => {
     headExtras: '<link rel="stylesheet" />',
     html: { title: 'Test', lang: 'ja' },
     packageIslands: ['@kissjs/ui'],
-    island: { hydrationStrategy: 'visible' },
+    island: { upgradeStrategy: 'visible' },
     middleware: { corsOrigin: '*' },
   });
 
@@ -134,14 +134,6 @@ Deno.test('kiss() inject all combined', () => {
       headFragments: ['<meta charset="utf-8">'],
     },
   });
-  assertEquals(plugins.length, 5);
-});
-
-Deno.test('kiss() legacy ui.cdn → headExtras', () => {
-  const plugins = kiss({
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    ui: { cdn: true, version: '3.5.0' },
-  } as never);
   assertEquals(plugins.length, 5);
 });
 
@@ -254,7 +246,7 @@ Deno.test('kiss() with all options branches covered', () => {
     routesDir: 'pages',
     islandsDir: 'islands',
     packageIslands: ['@kissjs/ui'],
-    island: { hydrationStrategy: 'visible' },
+    island: { upgradeStrategy: 'visible' },
     middleware: { corsOrigin: ['http://localhost:3000'] },
     html: { title: 'Test', lang: 'ja' },
     inject: {
@@ -280,16 +272,16 @@ Deno.test('kiss() with middleware.corsOrigin as array', () => {
   assertEquals(plugins.length, 5);
 });
 
-Deno.test('kiss() with island.hydrationStrategy=eager', () => {
+Deno.test('kiss() with island.upgradeStrategy=eager', () => {
   const plugins = kiss({
-    island: { hydrationStrategy: 'eager' },
+    island: { upgradeStrategy: 'eager' },
   });
   assertEquals(plugins.length, 5);
 });
 
-Deno.test('kiss() with island.hydrationStrategy=idle', () => {
+Deno.test('kiss() with island.upgradeStrategy=idle', () => {
   const plugins = kiss({
-    island: { hydrationStrategy: 'idle' },
+    island: { upgradeStrategy: 'idle' },
   });
   assertEquals(plugins.length, 5);
 });
@@ -392,28 +384,6 @@ Deno.test('kiss() corePlugin.buildStart with packageIslands config', async () =>
   }
 });
 
-// ─── kiss() ui.cdn + headExtras warning branch ──────────
-
-Deno.test('kiss() ui.cdn with headExtras triggers warning branch', () => {
-  // This tests line 132-136: when both ui.cdn and headExtras are set,
-  // it should warn and ui.cdn is ignored
-  const origWarn = console.warn;
-  let warnMsg = '';
-  console.warn = (...args: unknown[]) => {
-    warnMsg = args.join(' ');
-  };
-
-  const plugins = kiss({
-    headExtras: '<meta name="custom" />',
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    ui: { cdn: true },
-  } as never);
-
-  assertEquals(plugins.length, 5);
-  assertExists(warnMsg.includes('ui.cdn'), 'Should warn about ui.cdn being ignored');
-  console.warn = origWarn;
-});
-
 // ─── kiss() configResolved + virtualEntry fallback ──────────
 
 Deno.test('kiss() virtualEntryPlugin.load fallback when ctx.honoEntryCode is empty', () => {
@@ -443,16 +413,6 @@ Deno.test('kiss() virtualEntryPlugin.load returns null for unknown IDs', () => {
   const virtualPlugin = plugins.find((p) => p.name === 'kiss:virtual-entry')!;
   const result = (virtualPlugin.load as Function)('unknown-id');
   assertEquals(result, undefined);
-});
-
-// ─── kiss() ui.version default branch ──────────
-
-Deno.test('kiss() ui.cdn without version uses default 3.5.0', () => {
-  const plugins = kiss({
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    ui: { cdn: true },
-  } as never);
-  assertEquals(plugins.length, 5);
 });
 
 // ─── kiss() inject with special chars (escaping) ──────────

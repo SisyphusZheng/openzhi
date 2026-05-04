@@ -125,4 +125,6 @@ export default class HeroPing extends LitElement {
   }
 }
 
-customElements.define(tagName, HeroPing);
+if (!customElements.get(tagName)) {
+  customElements.define(tagName, HeroPing);
+}

@@ -2,7 +2,7 @@
 /**
  * @kissjs/core - build / entry-generators tests (Deno)
  *
- * v0.5.0: generateClientEntry simplified — no Lit hydration, no strategy.
+ * v0.5.0: generateClientEntry simplified - no legacy SSR client runtime, no strategy.
  * Client entry just does dynamic imports + dispatches kiss:ready event.
  */
 import {
@@ -91,10 +91,10 @@ Deno.test('build - generateClientEntry', async (t) => {
     assertStringIncludes(code, 'KISS Client Entry');
   });
 
-  await t.step('no Lit hydration imports (v0.5.0 CE-native upgrade)', () => {
+  await t.step('no legacy SSR client imports (v0.5.0 CE-native upgrade)', () => {
     const islands = [{ tagName: 'my-counter', modulePath: '/app/islands/my-counter.ts' }];
     const code = generateClientEntry(islands);
-    // v0.5.0: No Lit hydration — browser CE spec handles upgrade
+    // v0.5.0: browser CE spec handles upgrade
     assertEquals(code.includes('lit-element-hydrate-support'), false);
     assertEquals(code.includes('litElementHydrateSupport'), false);
     assertEquals(code.includes('LitElement'), false);
@@ -202,7 +202,7 @@ Deno.test('buildPlugin - custom outDir and options', async (t) => {
     middleware: { cors: true },
     headExtras: '<meta name="theme-color" content="#000">',
     html: { lang: 'zh', title: 'My App' },
-    island: { hydrationStrategy: 'eager' as const },
+    island: { upgradeStrategy: 'eager' as const },
   };
   const plugin = buildPlugin(options, undefined);
   const config = makeConfig('build');
@@ -217,7 +217,7 @@ Deno.test('buildPlugin - custom outDir and options', async (t) => {
     assertEquals(meta.islandsDir, 'src/islands');
     assertEquals(meta.routesDir, 'src/routes');
     assertEquals(meta.html.lang, 'zh');
-    assertEquals(meta.hydrationStrategy, 'eager');
+    assertEquals(meta.upgradeStrategy, 'eager');
   });
 
   cleanup();

@@ -79,11 +79,10 @@ export class KissCodeBlock extends LitElement {
   };
 
   private _copyState: 'idle' | 'copied' | 'failed' = 'idle';
-  private _copyTimer: number | undefined;
+  private _copyTimer: ReturnType<typeof globalThis.setTimeout> | undefined;
 
   override disconnectedCallback() {
     super.disconnectedCallback();
-    // Clear pending timer if component disconnects before timeout fires
     if (this._copyTimer !== undefined) {
       clearTimeout(this._copyTimer);
       this._copyTimer = undefined;
@@ -100,9 +99,9 @@ export class KissCodeBlock extends LitElement {
         @click="${() => this._copy()}"
       >
         ${this._copyState === 'copied'
-          ? '✓ Copied!'
+          ? 'Copied!'
           : this._copyState === 'failed'
-          ? '✗ Failed'
+          ? 'Failed'
           : 'Copy'}
       </button>
     `;
@@ -113,13 +112,13 @@ export class KissCodeBlock extends LitElement {
       const text = this.textContent || '';
       await navigator.clipboard.writeText(text);
       this._copyState = 'copied';
-      this._copyTimer = setTimeout(() => {
+      this._copyTimer = globalThis.setTimeout(() => {
         this._copyState = 'idle';
         this._copyTimer = undefined;
       }, 2000);
     } catch {
       this._copyState = 'failed';
-      this._copyTimer = setTimeout(() => {
+      this._copyTimer = globalThis.setTimeout(() => {
         this._copyState = 'idle';
         this._copyTimer = undefined;
       }, 2000);
@@ -127,4 +126,6 @@ export class KissCodeBlock extends LitElement {
   }
 }
 
-customElements.define(tagName, KissCodeBlock);
+if (!customElements.get(tagName)) {
+  customElements.define(tagName, KissCodeBlock);
+}

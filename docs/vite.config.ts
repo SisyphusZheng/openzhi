@@ -5,7 +5,7 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 // Vite needs resolve.alias because JSR packages aren't in node_modules.
-// Generated SSR entries import runtime helpers from '@kissjs/core',
+// Generated SSR entries import runtime helpers from '@kissjs/core/kiss-runtime',
 // but at build time Vite resolves that specifier to a docs-only shim.
 // The shim only re-exports runtime APIs (renderDSD, wrapInDocument, Hono),
 // avoiding pull-in of build-time code (node:fs, Vite plugin internals).
@@ -81,7 +81,7 @@ export default defineConfig({
         find: '@kissjs/core/render-dsd',
         replacement: resolve(__dir, '../packages/kiss-core/src/render-dsd.ts'),
       },
-      { find: '@kissjs/core', replacement: runtimeShim },
+      { find: '@kissjs/core/kiss-runtime', replacement: runtimeShim },
       {
         find: '@kissjs/adapter-lit/ssr',
         replacement: resolve(__dir, '../packages/kiss-adapter-lit/src/ssr.ts'),

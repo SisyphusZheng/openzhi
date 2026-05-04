@@ -1,19 +1,10 @@
 /**
- * @kissjs/core - Hono entry generator
+ * @kissjs/core - Hono entry generator.
  *
- * Generates a virtual module string that exports a Hono app
- * with all routes registered (API + page/SSR) and middleware configured.
- *
- * Architecture:
- *   routes + options → buildEntryDescriptor() → EntryDescriptor
- *   EntryDescriptor  → renderEntry()           → string (virtual module)
- *
- * This module is the public façade that combines the two steps.
- * Each step is independently testable:
- *   - buildEntryDescriptor: test descriptor structure (JSON-serializable)
- *   - renderEntry: snapshot test the generated code
+ * Generates a virtual module string that exports a Hono app with all routes
+ * registered. This module is the small facade over the descriptor builder and
+ * renderer so both pieces stay independently testable.
  */
-
 import type { FrameworkOptions, PackageIslandMeta, RouteEntry } from './types.js';
 import { buildEntryDescriptor } from './entry-descriptor.js';
 import { renderEntry } from './entry-renderer.js';
@@ -33,7 +24,7 @@ export interface HonoEntryOptions {
   packageIslands?: PackageIslandMeta[];
   headExtras?: string;
   html?: { lang?: string; title?: string };
-  hydrationStrategy?: 'eager' | 'lazy' | 'idle' | 'visible';
+  upgradeStrategy?: 'eager' | 'lazy' | 'idle' | 'visible';
 }
 
 /**

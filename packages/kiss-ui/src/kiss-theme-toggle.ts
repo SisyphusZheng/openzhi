@@ -21,8 +21,8 @@
  * ```
  *
  * KISS Architecture:
- * - This is an Island component (has Shadow DOM + hydration)
- * - Requires eager hydration (theme should be applied immediately)
+ * - This is an Island component with Shadow DOM and client-side behavior
+ * - Requires eager upgrade (theme should be applied immediately)
  * - The `theme` attribute lets the SSR pipeline pass the resolved theme
  *   from the head inline script, avoiding a race between connectedCallback
  *   reading localStorage and the head script having already set data-theme.
@@ -196,7 +196,7 @@ export class KissThemeToggle extends LitElement {
             if (tag?.startsWith('kiss-') || el.hasAttribute?.('data-kiss')) {
               el.setAttribute('data-theme', theme);
             }
-            // Recurse into shadow roots (DSD + Lit hydration creates them)
+            // Recurse into shadow roots created by DSD and custom element upgrade
             if (el.shadowRoot) {
               propagate(el.shadowRoot, depth + 1);
             }
@@ -251,6 +251,8 @@ export class KissThemeToggle extends LitElement {
     }
   }
 
-  // Auto-register when loaded as a module
-  // This is needed for Island hydration
-  customElements.define(tagName, KissThemeToggle);
+  // Auto-register when loaded as a module.
+  // This is needed for Island upgrade and must be idempotent across SSR paths.
+  if (!customElements.get(tagName)) {
+    customElements.define(tagName, KissThemeToggle);
+  }

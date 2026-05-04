@@ -24,7 +24,11 @@
  * @module @kissjs/ui
  */
 
-import type { PackageIslandMeta } from '@kissjs/core';
+interface PackageIslandMeta {
+  tagName: string;
+  modulePath: string;
+  strategy?: 'eager' | 'lazy' | 'idle' | 'visible';
+}
 
 // Design tokens (CSS custom properties)
 export { kissDesignTokens } from './design-tokens.js';
@@ -49,10 +53,9 @@ export { kissUI } from './kiss-ui-plugin.js';
 export type { KissUIOptions } from './kiss-ui-plugin.js';
 
 // Island metadata for auto-detection by @kissjs/core
-// These components are Islands (have Shadow DOM + hydration).
-// Any component that appears in SSR output with defer-hydration MUST be
-// listed here so the client entry can register it. Otherwise the element
-// never upgrades and the DSD shadow root remains "frozen".
+// These components are Islands with Shadow DOM and client-side behavior.
+// Any component that appears in SSR output must be listed here so the
+// client entry can import it for custom element self-registration.
 export const islands: PackageIslandMeta[] = [
   {
     tagName: 'kiss-theme-toggle',
@@ -67,7 +70,7 @@ export const islands: PackageIslandMeta[] = [
   {
     tagName: 'kiss-input',
     modulePath: '@kissjs/ui/kiss-input',
-    strategy: 'lazy', // Form interaction needs JS hydration
+    strategy: 'lazy', // Form interaction needs JS
   },
   {
     tagName: 'kiss-code-block',

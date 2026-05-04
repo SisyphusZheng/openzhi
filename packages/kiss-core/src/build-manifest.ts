@@ -106,7 +106,7 @@ export function scanClientBuild(
       try {
         const fileStat = statSync(fullPath);
         if (file === 'client.js') {
-          // Client entry (shared hydration runtime)
+          // Client entry (shared island upgrade runtime)
           clientEntry = {
             name: 'client.js',
             path: 'islands/client.js',

@@ -5,7 +5,7 @@ import { assertEquals } from 'jsr:@std/assert@^1.0.0';
 import {
   ConflictError,
   ForbiddenError,
-  HydrationError,
+  IslandUpgradeError,
   KissError,
   NotFoundError,
   RateLimitError,
@@ -68,9 +68,9 @@ Deno.test('errors', async (t) => {
     assertEquals(err.cause, cause);
   });
 
-  await t.step('HydrationError is not operational', () => {
+  await t.step('IslandUpgradeError is not operational', () => {
     const cause = new Error('already defined');
-    const err = new HydrationError('my-counter', cause);
+    const err = new IslandUpgradeError('my-counter', cause);
     assertEquals(err.statusCode, 500);
     assertEquals(err.isOperational, false);
   });

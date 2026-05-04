@@ -86,4 +86,6 @@ export class KissCard extends LitElement {
   }
 }
 
-customElements.define(tagName, KissCard);
+if (!customElements.get(tagName)) {
+  customElements.define(tagName, KissCard);
+}

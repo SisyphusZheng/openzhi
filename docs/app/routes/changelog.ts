@@ -119,12 +119,17 @@ export class ChangelogPage extends LitElement {
 
           <div class="version-section">
             <div class="version-header">
-              <span class="version-number">0.5.0-alpha.5</span>
+              <span class="version-number">0.5.0</span>
               <span class="version-date">2026-05-04</span>
             </div>
             <div class="change-category changed">
               <h4>变更</h4>
               <ul class="change-list">
+                <li>
+                  <strong>正式单命令构建</strong>：用户主路径收口为
+                  <span class="inline-code">deno task build</span>，内部仍保留 SSR bundle、client island
+                  chunks、SSG 三个可观测阶段。
+                </li>
                 <li>
                   <strong>Core/Lit 边界收紧</strong>：docs route components 直接从
                   <span class="inline-code">lit</span> 导入 <span class="inline-code">css</span> /
@@ -132,12 +137,17 @@ export class ChangelogPage extends LitElement {
                   <span class="inline-code">@kissjs/core</span> 不再通过 docs runtime shim 暴露 Lit。
                 </li>
                 <li>
-                  <strong>Roadmap 刷新</strong>：吸收 2026-05-04 架构审查结论，明确 v0.6
-                  优先 DSD Renderer 2，博客/文档/内容站是近期产品化样板，CRM/admin 放到中期。
+                  <strong>0.x 公共面收口</strong>：移除未实现的
+                  <span class="inline-code">renderNestedDsd()</span> stub，nested DSD 留到 v0.6 的
+                  DSD Renderer 2 正式设计。
                 </li>
                 <li>
-                  <strong>版本号</strong>：@kissjs/core 升至 0.5.0-alpha.5，@kissjs/create 升至
-                  0.3.3。
+                  <strong>Roadmap 刷新</strong>：吸收 2026-05-04 架构审查结论，明确 v0.6 优先 DSD Renderer
+                  2，博客/文档/内容站是近期产品化样板，CRM/admin 放到中期。
+                </li>
+                <li>
+                  <strong>版本号</strong>：@kissjs/core 升至 0.5.0，@kissjs/ui 升至 0.5.0，@kissjs/rpc
+                  升至 0.3.0，@kissjs/adapter-lit 升至 0.2.0，@kissjs/create 升至 0.4.0。
                 </li>
               </ul>
             </div>
@@ -145,9 +155,17 @@ export class ChangelogPage extends LitElement {
               <h4>修复</h4>
               <ul class="change-list">
                 <li>
+                  <strong>adapter-lit 安全插值</strong>：Lit TemplateResult 的动态文本和属性值默认转义，
+                  事件绑定和 property 绑定在 SSR HTML 中剥离。
+                </li>
+                <li>
                   <strong>create-kiss 模板</strong>：新项目显式映射
                   <span class="inline-code">lit</span> / <span class="inline-code">@kissjs/core</span> /
                   <span class="inline-code">@kissjs/ui</span>，路由和 island 模板直接导入 Lit。
+                </li>
+                <li>
+                  <strong>发布信任测试</strong>：SSG smoke 不再默认全部 ignore；adapter-lit 和 create-kiss
+                  增加正式版阻塞测试。
                 </li>
                 <li>
                   <strong>Island 自注册</strong>：脚手架生成的 counter island 现在调用
@@ -265,7 +283,7 @@ export class ChangelogPage extends LitElement {
 
           <div class="version-section">
             <div class="version-header">
-              <span class="version-number">0.5.0</span>
+              <span class="version-number">0.5.0-alpha.0</span>
               <span class="version-date">2026-05-02</span>
             </div>
             <div class="change-category added">

@@ -29,7 +29,7 @@ KISS 是一个 Deno-first、Web Standards-first 的现代全栈框架，面向 s
 - 让 serverless APIs 靠近路由树
 - 通过 Deno-first 工作流运行、构建和发布
 
-KISS 目前仍是 alpha 软件。方向已经稳定，API 还在继续加固。
+KISS 0.5 是 static-first DSD + Island Upgrade 路线的 Trust Release。
 
 ## 快速开始
 
@@ -71,13 +71,13 @@ Custom Elements。
 
 ## 包
 
-| 包                    | 职责                                               | 当前版本线      |
-| --------------------- | -------------------------------------------------- | --------------- |
-| `@kissjs/core`        | Vite 插件、路由扫描、DSD 渲染、SSG 管线            | `0.5.0-alpha.5` |
-| `@kissjs/ui`          | 基于 Lit 的 Web Component 组件库和 package islands | `0.4.6`         |
-| `@kissjs/rpc`         | 轻量 fetch/RPC controller 工具                     | `0.2.4`         |
-| `@kissjs/adapter-lit` | 可选 Lit SSR 适配器                                | `0.1.4`         |
-| `@kissjs/create`      | 项目脚手架 CLI                                     | `0.3.3`         |
+| 包                    | 职责                                               | 当前版本线 |
+| --------------------- | -------------------------------------------------- | ---------- |
+| `@kissjs/core`        | Vite 插件、路由扫描、DSD 渲染、SSG 管线            | `0.5.0`    |
+| `@kissjs/ui`          | 基于 Lit 的 Web Component 组件库和 package islands | `0.5.0`    |
+| `@kissjs/rpc`         | 轻量 fetch/RPC controller 工具                     | `0.3.0`    |
+| `@kissjs/adapter-lit` | 可选 Lit SSR 适配器                                | `0.2.0`    |
+| `@kissjs/create`      | 项目脚手架 CLI                                     | `0.4.0`    |
 
 历史包 `@kissjs/vite` 和 `@kissjs/ssg` 已废弃，不建议继续使用。
 
@@ -129,15 +129,16 @@ export default class HomePage extends LitElement {
 customElements.define(tagName, HomePage);
 ```
 
-## 构建管线
+## 构建
 
-KISS 使用三阶段静态构建：
+KISS 应用的生产构建只需要一个命令：
 
 ```bash
-deno task build        # Phase 1: SSR bundle + build metadata
-deno task build:client # Phase 2: island client chunks
-deno task build:ssg    # Phase 3: static HTML + post-processing
+deno task build
 ```
+
+内部仍然保留 SSR bundle、island client chunks、SSG rendering 三个可观测阶段；这用于调试和
+CI 定位，不再是用户 quickstart 的主路径。
 
 完整仓库可运行：
 
@@ -151,7 +152,7 @@ deno task lint
 
 ## 当前状态
 
-KISS 正在准备 `v0.5.0-alpha.5` 版本线。
+KISS 当前处于 `v0.5.0` Trust Release 版本线。
 
 已经适合评估：
 
@@ -161,11 +162,9 @@ KISS 正在准备 `v0.5.0-alpha.5` 版本线。
 - Hono API routes
 - Deno-first 本地与 CI 工作流
 
-仍在加固：
+后续版本计划：
 
-- 安全的 Lit SSR 插值
-- 嵌套 island 路径处理
-- 脚手架校验
+- DSD Renderer 2：nested DSD、slot/projection、safe template helper
 - ISR/serverless 约定
 - 未来 `.kiss` compiler 方向
 

@@ -5,7 +5,9 @@ export const tagName = 'docs-home';
 
 export default class DocsHome extends LitElement {
   static override styles = css`
-    :host { display: block; }
+    :host {
+      display: block;
+    }
 
     /* Hero — 紧凑，内容居中 */
     .hero {
@@ -26,7 +28,11 @@ export default class DocsHome extends LitElement {
       gap: 2rem;
       flex-wrap: wrap;
     }
-    .hero-brand { display: flex; flex-direction: column; gap: 0.5rem; }
+    .hero-brand {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
     .hero-kiss {
       font-size: clamp(2rem, 5vw, 3.5rem);
       font-weight: 500;
@@ -52,7 +58,9 @@ export default class DocsHome extends LitElement {
       margin: 0 auto;
       padding: 3% 5%;
     }
-    .section { margin-bottom: 4%; }
+    .section {
+      margin-bottom: 4%;
+    }
     .section-title {
       font-size: clamp(0.625rem, 1vw, 0.75rem);
       font-weight: 500;
@@ -74,7 +82,9 @@ export default class DocsHome extends LitElement {
       text-align: center;
       padding: 3% 2%;
     }
-    .stat + .stat { border-left: 0.5px solid var(--kiss-border); }
+    .stat + .stat {
+      border-left: 0.5px solid var(--kiss-border);
+    }
     .stat-val {
       font-size: clamp(1.25rem, 3vw, 1.75rem);
       font-weight: 500;
@@ -99,7 +109,9 @@ export default class DocsHome extends LitElement {
       padding: 2%;
       background: var(--kiss-bg-surface);
     }
-    .code-panel + .code-panel { border-left: 0.5px solid var(--kiss-border); }
+    .code-panel + .code-panel {
+      border-left: 0.5px solid var(--kiss-border);
+    }
     .code-panel .label {
       font-size: clamp(0.5rem, 0.9vw, 0.625rem);
       color: var(--kiss-text-muted);
@@ -109,7 +121,7 @@ export default class DocsHome extends LitElement {
     }
     .code-panel pre {
       margin: 0;
-      font-family: 'SF Mono','Fira Code',monospace;
+      font-family: "SF Mono", "Fira Code", monospace;
       font-size: clamp(0.625rem, 1vw, 0.75rem);
       line-height: 1.6;
       color: var(--kiss-text-secondary);
@@ -152,7 +164,9 @@ export default class DocsHome extends LitElement {
       flex-direction: column;
       gap: 0.5rem;
     }
-    .qstep + .qstep { border-left: 0.5px solid var(--kiss-border); }
+    .qstep + .qstep {
+      border-left: 0.5px solid var(--kiss-border);
+    }
     .qstep .num {
       font-size: clamp(0.5rem, 0.8vw, 0.625rem);
       color: var(--kiss-text-muted);
@@ -186,15 +200,31 @@ export default class DocsHome extends LitElement {
       color: var(--kiss-text-muted);
       font-weight: 500;
     }
-    .cmp td { color: var(--kiss-text-tertiary); }
-    .cmp td:first-child { color: var(--kiss-text-primary); font-weight: 500; }
+    .cmp td {
+      color: var(--kiss-text-tertiary);
+    }
+    .cmp td:first-child {
+      color: var(--kiss-text-primary);
+      font-weight: 500;
+    }
 
     @media (max-width: 640px) {
-      .hero { flex-direction: column; align-items: flex-start; }
-      .code-row, .qstart { flex-direction: column; }
-      .feat-grid { grid-template-columns: 1fr; }
-      .stats { flex-wrap: wrap; }
-      .stat { flex: 1 1 50%; }
+      .hero {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .code-row, .qstart {
+        flex-direction: column;
+      }
+      .feat-grid {
+        grid-template-columns: 1fr;
+      }
+      .stats {
+        flex-wrap: wrap;
+      }
+      .stat {
+        flex: 1 1 50%;
+      }
     }
   `;
 
@@ -244,114 +274,114 @@ export default class DocsHome extends LitElement {
               <div class="code-panel">
                 <div class="label">服务端 (Hono)</div>
                 <pre>import { Hono } from 'hono'
-const app = new Hono()
-app.get('/api', (c) => c.json({ ok: true }))</pre>
+                  const app = new Hono()
+                  app.get('/api', (c) => c.json({ ok: true }))</pre>
+                </div>
+                <div class="code-panel">
+                  <div class="label">客户端 (Lit)</div>
+                  <pre>import { LitElement, html } from 'lit'
+                    class App extends LitElement {
+                      render() { return html${'`'}&lt;h1&gt;你好&lt;/h1&gt;${'`'} }
+                    }</pre>
+                  </div>
+                </div>
               </div>
-              <div class="code-panel">
-                <div class="label">客户端 (Lit)</div>
-                <pre>import { LitElement, html } from 'lit'
-class App extends LitElement {
-  render() { return html${'`'}&lt;h1&gt;你好&lt;/h1&gt;${'`'} }
-}</pre>
+
+              <div class="section">
+                <div class="section-title">为什么选择 KISS</div>
+                <div class="feat-grid">
+                  <div class="feat">
+                    <h3>Web 标准优先</h3>
+                    <p>HTTP 使用 Fetch API，UI 使用 Web Components，模块使用 ESM。了解平台即了解 KISS。</p>
+                  </div>
+                  <div class="feat">
+                    <h3>群岛架构</h3>
+                    <p>内容先由 DSD 输出，交互组件再通过 Custom Element upgrade 接管。</p>
+                  </div>
+                  <div class="feat">
+                    <h3>类型安全 RPC</h3>
+                    <p>通过 Hono RPC 实现端到端类型安全 — 服务端与客户端直接共享类型，无需代码生成。</p>
+                  </div>
+                  <div class="feat">
+                    <h3>SSG + DSD</h3>
+                    <p>构建时静态生成配合声明式 Shadow DOM。HTML 先可见，JS 后升级。</p>
+                  </div>
+                  <div class="feat">
+                    <h3>多运行时</h3>
+                    <p>API 层贴近 Fetch 标准，可面向 Deno、Node.js、Bun 和 Cloudflare Workers。</p>
+                  </div>
+                  <div class="feat">
+                    <h3>渐进增强</h3>
+                    <p>语义化约束保证内容在无 JavaScript 时依然可读。</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="section">
+                <div class="section-title">快速开始</div>
+                <div class="qstart">
+                  <div class="qstep">
+                    <span class="num">步骤 1</span>
+                    <code>deno run -A jsr:@kissjs/create my-app</code>
+                    <span class="desc">创建项目脚手架</span>
+                  </div>
+                  <div class="qstep">
+                    <span class="num">步骤 2</span>
+                    <code>cd my-app && deno task dev</code>
+                    <span class="desc">启动开发服务器</span>
+                  </div>
+                  <div class="qstep">
+                    <span class="num">步骤 3</span>
+                    <code>deno task build</code>
+                    <span class="desc">正式构建：SSR → Island → SSG</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="section">
+                <div class="section-title">与其他框架对比</div>
+                <table class="cmp">
+                  <tr>
+                    <th></th>
+                    <th>KISS</th>
+                    <th>Fresh</th>
+                    <th>Nuxt</th>
+                    <th>Next.js</th>
+                  </tr>
+                  <tr>
+                    <td>HTTP 层</td>
+                    <td>Fetch API</td>
+                    <td>Fetch API</td>
+                    <td>Nitro (定制)</td>
+                    <td>定制</td>
+                  </tr>
+                  <tr>
+                    <td>UI 层</td>
+                    <td>Web Components</td>
+                    <td>Preact/JSX</td>
+                    <td>Vue</td>
+                    <td>React</td>
+                  </tr>
+                  <tr>
+                    <td>静态页面</td>
+                    <td>0 KB 框架 JS</td>
+                    <td>0 KB 框架 JS</td>
+                    <td>~60 KB</td>
+                    <td>~70 KB</td>
+                  </tr>
+                  <tr>
+                    <td>声明式 Shadow DOM</td>
+                    <td>内置</td>
+                    <td>—</td>
+                    <td>—</td>
+                    <td>—</td>
+                  </tr>
+                </table>
               </div>
             </div>
-          </div>
+          </kiss-layout>
+        `;
+      }
+    }
 
-          <div class="section">
-            <div class="section-title">为什么选择 KISS</div>
-            <div class="feat-grid">
-              <div class="feat">
-                <h3>Web 标准优先</h3>
-                <p>HTTP 使用 Fetch API，UI 使用 Web Components，模块使用 ESM。了解平台即了解 KISS。</p>
-              </div>
-              <div class="feat">
-                <h3>群岛架构</h3>
-                <p>内容先由 DSD 输出，交互组件再通过 Custom Element upgrade 接管。</p>
-              </div>
-              <div class="feat">
-                <h3>类型安全 RPC</h3>
-                <p>通过 Hono RPC 实现端到端类型安全 — 服务端与客户端直接共享类型，无需代码生成。</p>
-              </div>
-              <div class="feat">
-                <h3>SSG + DSD</h3>
-                <p>构建时静态生成配合声明式 Shadow DOM。HTML 先可见，JS 后升级。</p>
-              </div>
-              <div class="feat">
-                <h3>多运行时</h3>
-                <p>API 层贴近 Fetch 标准，可面向 Deno、Node.js、Bun 和 Cloudflare Workers。</p>
-              </div>
-              <div class="feat">
-                <h3>渐进增强</h3>
-                <p>语义化约束保证内容在无 JavaScript 时依然可读。</p>
-              </div>
-            </div>
-          </div>
-
-          <div class="section">
-            <div class="section-title">快速开始</div>
-            <div class="qstart">
-              <div class="qstep">
-                <span class="num">步骤 1</span>
-                <code>deno run -A jsr:@kissjs/create my-app</code>
-                <span class="desc">创建项目脚手架</span>
-              </div>
-              <div class="qstep">
-                <span class="num">步骤 2</span>
-                <code>cd my-app && deno task dev</code>
-                <span class="desc">启动开发服务器</span>
-              </div>
-              <div class="qstep">
-                <span class="num">步骤 3</span>
-                <code>deno task build<br>deno task build:client<br>deno task build:ssg</code>
-                <span class="desc">三段式构建：SSR → Island → SSG</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="section">
-            <div class="section-title">与其他框架对比</div>
-            <table class="cmp">
-              <tr>
-                <th></th>
-                <th>KISS</th>
-                <th>Fresh</th>
-                <th>Nuxt</th>
-                <th>Next.js</th>
-              </tr>
-              <tr>
-                <td>HTTP 层</td>
-                <td>Fetch API</td>
-                <td>Fetch API</td>
-                <td>Nitro (定制)</td>
-                <td>定制</td>
-              </tr>
-              <tr>
-                <td>UI 层</td>
-                <td>Web Components</td>
-                <td>Preact/JSX</td>
-                <td>Vue</td>
-                <td>React</td>
-              </tr>
-              <tr>
-                <td>静态页面</td>
-                <td>0 KB 框架 JS</td>
-                <td>0 KB 框架 JS</td>
-                <td>~60 KB</td>
-                <td>~70 KB</td>
-              </tr>
-              <tr>
-                <td>声明式 Shadow DOM</td>
-                <td>内置</td>
-                <td>—</td>
-                <td>—</td>
-                <td>—</td>
-              </tr>
-            </table>
-          </div>
-        </div>
-      </kiss-layout>
-    `;
-  }
-}
-
-customElements.define('docs-home', DocsHome);
+    customElements.define('docs-home', DocsHome);

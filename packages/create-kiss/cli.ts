@@ -13,13 +13,14 @@ const TPL = {
   'deno.json': `{
   "imports": {
     "lit": "npm:lit@^3.2.0",
-    "@kissjs/core": "jsr:@kissjs/core@^0.5.0-alpha.5",
-    "@kissjs/ui": "jsr:@kissjs/ui@^0.4.6",
-    "@kissjs/ui/": "jsr:@kissjs/ui@^0.4.6/"
+    "@kissjs/adapter-lit": "jsr:@kissjs/adapter-lit@^0.2.0",
+    "@kissjs/core": "jsr:@kissjs/core@^0.5.0",
+    "@kissjs/ui": "jsr:@kissjs/ui@^0.5.0",
+    "@kissjs/ui/": "jsr:@kissjs/ui@^0.5.0/"
   },
   "tasks": {
     "dev": "deno run -A npm:vite",
-    "build": "deno task build:ssr && deno task build:client && deno task build:ssg",
+    "build": "deno run -A jsr:@kissjs/core/cli/build",
     "build:ssr": "deno run -A npm:vite build",
     "build:client": "deno run -A jsr:@kissjs/core/cli/build-client",
     "build:ssg": "deno run -A jsr:@kissjs/core/cli/build-ssg",

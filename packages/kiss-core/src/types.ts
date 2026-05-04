@@ -1,10 +1,10 @@
 /**
- * @kissjs/core - Public types
+ * @kissjs/core - Public types.
  *
- * KISS Architecture (K·I·S·S) types:
+ * KISS Architecture types:
  * - SSG is always on (no ssr.preRender option)
- * - No CSR/SPA mode (rejected by discipline)
- * - UI is generic head injection (not WebAwesome-specific)
+ * - No CSR/SPA mode
+ * - UI is generic head injection, not tied to one component library
  * - Islands are the only client JS allowed
  */
 
@@ -12,11 +12,11 @@ import type { Plugin } from 'vite';
 
 /** Package Island metadata exported from npm/JSR packages */
 export interface PackageIslandMeta {
-  /** Custom element tag name (e.g., 'kiss-theme-toggle') */
+  /** Custom element tag name (e.g. 'kiss-theme-toggle') */
   tagName: string;
-  /** Module path for import (e.g., '@kissjs/ui/kiss-theme-toggle') */
+  /** Module path for import (e.g. '@kissjs/ui/kiss-theme-toggle') */
   modulePath: string;
-  /** Hydration strategy (default: 'lazy') */
+  /** Island upgrade strategy (default: 'lazy') */
   strategy?: 'eager' | 'lazy' | 'idle' | 'visible';
 }
 
@@ -26,13 +26,13 @@ export interface FrameworkOptions {
   routesDir?: string;
   /** Directory for island components (default: 'app/islands') */
   islandsDir?: string;
-  /** Directory for shared Lit components (default: 'app/components') */
+  /** Directory for shared components (default: 'app/components') */
   componentsDir?: string;
 
   /**
    * Package islands to auto-import from npm/JSR packages.
    * Each package should export an `islands` array in its main entry.
-   * Example: ['@kissjs/ui'] will scan package.main.islands array
+   * Example: ['@kissjs/ui'] will scan package.main.islands.
    */
   packageIslands?: string[];
 
@@ -49,8 +49,8 @@ export interface FrameworkOptions {
 
   /**
    * External resource injection for UI libraries.
-   * Generic mechanism — not tied to any specific UI framework.
-   * Can be used for WebAwesome, Shoelace, custom CSS, etc.
+   * Generic mechanism, not tied to any specific UI framework.
+   * Can be used for Web Awesome, Shoelace, custom CSS, etc.
    */
   inject?: {
     /** CSS stylesheet URLs to inject into <head> */
@@ -61,19 +61,7 @@ export interface FrameworkOptions {
     headFragments?: string[];
   };
 
-  /**
-   * Legacy UI option (deprecated, use inject instead).
-   * Automatically generates headExtras from WebAwesome CDN.
-   * @deprecated Use inject.stylesheets + inject.scripts for framework-agnostic head injection
-   */
-  ui?: {
-    /** Enable WebAwesome CDN injection (default: false) */
-    cdn?: boolean;
-    /** WebAwesome version (default: '3.5.0') */
-    version?: string;
-  };
-
-  /** SSR build configuration (build-time only, no runtime) */
+  /** SSR build configuration (build-time only, no runtime server) */
   ssr?: {
     /** Packages that should not be externalized in SSR build (default: lit packages) */
     noExternal?: (string | RegExp)[];
@@ -81,14 +69,14 @@ export interface FrameworkOptions {
 
   /** Island configuration */
   island?: {
-    /** Hydration strategy for all Islands (default: 'lazy')
-     *  Controls WHEN defer-hydration is removed (not HOW hydration works).
-     *  'lazy' (default): remove on requestIdleCallback
-     *  'eager': remove immediately
-     *  'idle': remove on requestIdleCallback or window load
-     *  'visible': remove when island scrolls into view
+    /**
+     * Controls when island modules are imported for custom element upgrade.
+     * 'lazy' (default): import on requestIdleCallback
+     * 'eager': import immediately
+     * 'idle': import on requestIdleCallback or window load
+     * 'visible': import when island scrolls into view
      */
-    hydrationStrategy?: 'eager' | 'lazy' | 'idle' | 'visible';
+    upgradeStrategy?: 'eager' | 'lazy' | 'idle' | 'visible';
   };
 
   /** Build configuration */
@@ -98,10 +86,10 @@ export interface FrameworkOptions {
   };
 
   /**
-   * PWA configuration. When set, build:ssg generates:
+   * PWA configuration. When set, the SSG phase generates:
    * - manifest.json (Web App Manifest)
    * - sw.js (CacheFirst service worker)
-   * - Injects manifest link + sw registration into all HTML pages
+   * - manifest link + sw registration in all HTML pages
    */
   pwa?: {
     name?: string;
@@ -114,7 +102,7 @@ export interface FrameworkOptions {
   middleware?: {
     /** Enable CORS (default: true) */
     cors?: boolean;
-    /** Allowed CORS origins. Web Standards — no process.env. */
+    /** Allowed CORS origins. Web Standards: no process.env. */
     corsOrigin?: string | string[] | ((origin: string) => string | undefined);
     /** Enable request ID (default: true) */
     requestId?: boolean;
@@ -140,7 +128,7 @@ export interface FrameworkOptions {
       policy?: string;
       /** Auto-generate nonce for <script> tags (default: false) */
       nonce?: boolean;
-      /** Report-only mode (default: false — uses Content-Security-Policy-Report-Only) */
+      /** Report-only mode (default: false; uses Content-Security-Policy-Report-Only) */
       reportOnly?: boolean;
     };
   };
@@ -150,11 +138,11 @@ export interface FrameworkOptions {
 export type SpecialFileType = 'renderer' | 'middleware';
 
 /**
- * KissRenderer — interface for _renderer.ts files.
+ * KissRenderer interface for _renderer.ts files.
  *
  * Renderers wrap page SSR output, like Next.js layout.tsx or SvelteKit +layout.svelte.
  * They apply to their directory and all subdirectories.
- * Multiple renderers are composed outer → inner (root first, deeper dirs later).
+ * Multiple renderers are composed outer to inner (root first, deeper dirs later).
  *
  * Usage:
  * ```ts
@@ -183,7 +171,7 @@ export interface KissRenderer {
 }
 
 /**
- * KissMiddleware — interface for _middleware.ts files.
+ * KissMiddleware interface for _middleware.ts files.
  *
  * Middleware is mounted as Hono middleware on the directory prefix.
  * Like Next.js middleware.ts or SvelteKit hooks.server.ts.
@@ -205,7 +193,7 @@ export type KissMiddleware = import('hono').MiddlewareHandler;
 
 /** Resolved route entry from file-based routing */
 export interface RouteEntry {
-  /** URL path pattern (e.g., '/', '/about', '/posts/:id') */
+  /** URL path pattern (e.g. '/', '/about', '/posts/:id') */
   path: string;
   /** Relative file path from routesDir */
   filePath: string;

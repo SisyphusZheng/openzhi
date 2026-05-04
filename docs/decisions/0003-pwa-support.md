@@ -2,25 +2,29 @@
 
 ## Status
 
-**PARTIALLY IMPLEMENTED** — available through `kiss({ pwa })` metadata and `build:ssg`.
-The service worker strategy has changed from the original full-precache design.
+**PARTIALLY IMPLEMENTED** - available through `kiss({ pwa })` metadata and the
+official `deno task build` flow. The service worker strategy has changed from
+the original full-precache design.
 
 ## Context
 
-KISS generates pure static HTML with Declarative Shadow DOM. This is the ideal substrate for a Progressive Web App:
+KISS generates pure static HTML with Declarative Shadow DOM. This is the ideal
+substrate for a Progressive Web App:
 
 - All pages are pre-rendered HTML (no server needed)
 - Assets are versioned hashes (perfect cache keys)
 - API routes can live separately on serverless platforms
-- Service worker should avoid stale HTML by using NetworkFirst for HTML/API and CacheFirst for hashed assets
+- Service worker should avoid stale HTML by using NetworkFirst for HTML/API and
+  CacheFirst for hashed assets
 
 ## Proposal
 
 Add a `pwa` option to the `kiss()` plugin that automatically generates:
 
-1. `manifest.json` — Web App Manifest (name, icons, display, theme_color)
-2. `sw.js` — Service Worker with NetworkFirst (HTML/API) + CacheFirst (assets)
-3. HTML `<head>` injection — `<link rel="manifest">`, `<meta name="theme-color">`, `<link rel="service-worker">`
+1. `manifest.json` - Web App Manifest (name, icons, display, theme_color)
+2. `sw.js` - Service Worker with NetworkFirst (HTML/API) + CacheFirst (assets)
+3. HTML `<head>` injection - `<link rel="manifest">`, `<meta
+   name="theme-color">`, `<link rel="service-worker">`
 
 ### API
 
@@ -54,7 +58,7 @@ self.addEventListener('fetch', (e) => {
 
 ### SSG Integration
 
-In `build-ssg.ts`, after Phase 3:
+Inside the SSG phase, after pages are rendered:
 
 ```ts
 if (options.pwa) {
@@ -71,7 +75,10 @@ if (options.pwa) {
 ## Consequences
 
 - **Positive**: Offline access, instant repeat visits, installable on mobile
-- **Positive**: Minimal code (~100 lines total across plugin + generator + sw script)
+- **Positive**: Minimal code (~100 lines total across plugin + generator + sw
+  script)
 - **Neutral**: Service worker scope limited to site root (no cross-site impact)
-- **Negative**: Offline-first HTML is intentionally not provided by default; stale static pages are a worse default
-- **Negative**: Cache invalidation needs a generated cache name; current implementation uses a build-time timestamp
+- **Negative**: Offline-first HTML is intentionally not provided by default;
+  stale static pages are a worse default
+- **Negative**: Cache invalidation needs a generated cache name; current
+  implementation uses a build-time timestamp

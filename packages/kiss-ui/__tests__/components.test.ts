@@ -124,7 +124,7 @@ Deno.test('index: islands array has correct entries', async () => {
   for (const island of islands) {
     assertExists(island.tagName, 'island must have tagName');
     assertExists(island.modulePath, 'island must have modulePath');
-    assertExists(island.strategy, 'island must have hydration strategy');
+    assertExists(island.strategy, 'island must have an upgrade strategy');
     assertEquals(typeof island.strategy, 'string');
   }
 });

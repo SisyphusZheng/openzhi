@@ -6,7 +6,6 @@
     "jsr:@std/internal@^1.0.12": "1.0.12",
     "jsr:@std/path@1": "1.1.4",
     "npm:@hono/vite-dev-server@~0.25.3": "0.25.3_hono@4.12.16",
-    "npm:@lit-labs/ssr-dom-shim@1": "1.5.1",
     "npm:@lit/reactive-element@2": "2.1.2",
     "npm:@types/node@22": "22.19.17",
     "npm:entities@6.0.0": "6.0.0",
@@ -355,14 +354,6 @@
     },
     "@jridgewell/sourcemap-codec@1.5.5": {
       "integrity": "sha512-cYQ9310grqxueWbl+WuIUIaiUaDcj7WOq5fVhEljNVgRfOUhY9fy2zTvfoqWsnebh8Sl70VScFbICvJnLKB0Og=="
-    },
-    "@lit-labs/ssr-client@1.1.8": {
-      "integrity": "sha512-PjGh81oKsoI64m3IDjTqqjhC7dr2uC/o0jrllUb5gRAyp/RlAHxapgJrjq9kWz97faCHLQ8jUlTi6tGm+8fgyA==",
-      "dependencies": [
-        "@lit/reactive-element",
-        "lit",
-        "lit-html"
-      ]
     },
     "@lit-labs/ssr-dom-shim@1.5.1": {
       "integrity": "sha512-Aou5UdlSpr5whQe8AA/bZG0jMj96CoJIWbGfZ91qieWu5AWUMKw8VR/pAkQkJYvBNhmCcWnZlyyk5oze8JIqYA=="
@@ -1414,7 +1405,6 @@
   "workspace": {
     "dependencies": [
       "npm:@hono/vite-dev-server@~0.25.3",
-      "npm:@lit-labs/ssr-dom-shim@1",
       "npm:@lit/reactive-element@2",
       "npm:@types/node@22",
       "npm:entities@6.0.0",
@@ -1429,6 +1419,11 @@
     ],
     "members": {
       "packages/kiss-core": {
+        "dependencies": [
+          "npm:@hono/vite-dev-server@~0.25.3",
+          "npm:hono@4",
+          "npm:vite@8.0.10"
+        ],
         "packageJson": {
           "dependencies": [
             "npm:@hono/vite-dev-server@~0.25.3",
@@ -1441,8 +1436,14 @@
       },
       "packages/kiss-ui": {
         "dependencies": [
-          "npm:lit@^3.2.0"
-        ]
+          "npm:lit@^3.2.0",
+          "npm:vite@8.0.10"
+        ],
+        "packageJson": {
+          "dependencies": [
+            "npm:vite-plugin-dts@^4.5.0"
+          ]
+        }
       }
     }
   }

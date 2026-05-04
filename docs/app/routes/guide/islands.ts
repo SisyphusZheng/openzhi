@@ -174,6 +174,12 @@ customElements.define(tagName, MyCounter);</code></pre></code-block>
             可复用组件包可以导出 <span class="inline-code">islands</span> 数组。
             KISS 会在构建时读取这些元数据，用于 SSR 注册和客户端入口生成。
           </p>
+          <p>
+            这些 package islands 必须在构建和运行时都能被真实解析。发布到 JSR
+            的包名可以直接使用；本地 monorepo 或私有包需要通过 Vite alias / Deno
+            imports 显式指到可解析入口。core 的发布 dry-run 会保留一个动态导入警告，
+            这是 package islands 运行时解析契约的一部分。
+          </p>
           <code-block><pre><code>// package index.ts
 import type { PackageIslandMeta } from '@kissjs/core';
 

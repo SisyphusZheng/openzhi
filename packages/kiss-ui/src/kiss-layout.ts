@@ -12,7 +12,7 @@
  * - Footer with links
  *
  * KISS Architecture:
- * - This is a STATIC component (no hydration needed)
+ * - This is a static layout component (no client re-render needed)
  * - Theme toggle is handled by kiss-theme-toggle Island
  * - Navigation is data-driven via navItems property (no hardcoded links)
  *
@@ -43,7 +43,7 @@ import { kissDesignTokens } from './design-tokens.js';
 // so that the SSR renderer can recursively render its DSD shadow root.
 // Without this import, SSR outputs <kiss-theme-toggle></kiss-theme-toggle> without
 // DSD, which means the theme toggle button is never rendered server-side and
-// cannot hydrate on the client.
+// cannot be upgraded into a working client element.
 import './kiss-theme-toggle.js';
 
 export const tagName = 'kiss-layout';
@@ -726,4 +726,6 @@ export class KissLayout extends LitElement {
     }
   }
 
-  customElements.define(tagName, KissLayout);
+  if (!customElements.get(tagName)) {
+    customElements.define(tagName, KissLayout);
+  }

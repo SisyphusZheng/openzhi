@@ -1,5 +1,5 @@
 /**
- * Runtime shim for @kissjs/core — auto-injected by kiss() plugin.
+ * Runtime shim for @kissjs/core/kiss-runtime — auto-injected by kiss() plugin.
  *
  * v0.5.0: Core exports build/SSR APIs only.
  *   - Lit imports come directly from 'lit' in docs route components

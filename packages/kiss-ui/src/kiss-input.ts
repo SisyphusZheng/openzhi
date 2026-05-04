@@ -201,4 +201,6 @@ export class KissInput extends LitElement {
   }
 }
 
-customElements.define(tagName, KissInput);
+if (!customElements.get(tagName)) {
+  customElements.define(tagName, KissInput);
+}

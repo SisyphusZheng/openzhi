@@ -6,12 +6,17 @@
  * kills the Deno test process.
  */
 import { assertEquals, assertExists } from 'jsr:@std/assert@^1.0.0';
-import { readFileSync } from 'node:fs';
-import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { existsSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { dirname, join, sep } from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
+const repoRoot = join(__dirname, '..', '..', '..');
 const cliSource = readFileSync(join(__dirname, '..', 'cli.ts'), 'utf-8');
+
+function vitePath(path: string): string {
+  return path.replace(/\\/g, '/');
+}
 
 // Extract each template by splitting on known keys
 function extractTemplate(key: string): string {
@@ -72,15 +77,17 @@ Deno.test('create-kiss: deno.json build:ssg uses @kissjs/core', () => {
 Deno.test('create-kiss: deno.json maps Lit and package imports explicitly', () => {
   const denoJson = JSON.parse(extractTemplate('deno.json'));
   assertEquals(denoJson.imports.lit, 'npm:lit@^3.2.0');
-  assertExists(denoJson.imports['@kissjs/core'].includes('0.5.0-alpha.5'));
-  assertExists(denoJson.imports['@kissjs/ui'].includes('0.4.6'));
+  assertExists(denoJson.imports['@kissjs/adapter-lit'].includes('0.2.0'));
+  assertExists(denoJson.imports['@kissjs/core'].includes('0.5.0'));
+  assertExists(denoJson.imports['@kissjs/ui'].includes('0.5.0'));
 });
 
-Deno.test('create-kiss: deno.json build runs the full three-phase pipeline', () => {
+Deno.test('create-kiss: deno.json build uses the one-command KISS build', () => {
   const denoJson = JSON.parse(extractTemplate('deno.json'));
-  assertExists(denoJson.tasks['build'].includes('build:ssr'));
-  assertExists(denoJson.tasks['build'].includes('build:client'));
-  assertExists(denoJson.tasks['build'].includes('build:ssg'));
+  assertEquals(denoJson.tasks['build'], 'deno run -A jsr:@kissjs/core/cli/build');
+  assertExists(denoJson.tasks['build:ssr']);
+  assertExists(denoJson.tasks['build:client']);
+  assertExists(denoJson.tasks['build:ssg']);
 });
 
 Deno.test('create-kiss: refuses path escape and existing target before writing', () => {
@@ -118,4 +125,121 @@ Deno.test('create-kiss: island counter imports Lit directly and self-registers',
   assertExists(islandCounter.includes('LitElement'));
   assertExists(islandCounter.includes("tagName = 'my-counter'"));
   assertExists(islandCounter.includes('customElements.define(tagName, MyCounter)'));
+});
+
+Deno.test('create-kiss: generated project builds through the one-command pipeline', async () => {
+  const tmpRoot = Deno.makeTempDirSync({ prefix: 'kiss-create-' });
+  const projectName = 'sample-app';
+
+  try {
+    const create = new Deno.Command(Deno.execPath(), {
+      args: ['run', '-A', join(repoRoot, 'packages', 'create-kiss', 'cli.ts'), projectName],
+      cwd: tmpRoot,
+      stdout: 'piped',
+      stderr: 'piped',
+    });
+    const createResult = await create.output();
+    assertEquals(createResult.code, 0, new TextDecoder().decode(createResult.stderr));
+
+    const appDir = join(tmpRoot, projectName);
+    const denoJsonPath = join(appDir, 'deno.json');
+    const denoJson = JSON.parse(readFileSync(denoJsonPath, 'utf-8'));
+    denoJson.imports['@kissjs/core'] = pathToFileURL(
+      join(repoRoot, 'packages', 'kiss-core', 'src', 'index.ts'),
+    ).href;
+    denoJson.imports['@kissjs/core/kiss-runtime'] = pathToFileURL(
+      join(repoRoot, 'packages', 'kiss-core', 'src', 'kiss-runtime.ts'),
+    ).href;
+    denoJson.imports['@kissjs/adapter-lit'] = pathToFileURL(
+      join(repoRoot, 'packages', 'kiss-adapter-lit', 'src', 'index.ts'),
+    ).href;
+    denoJson.imports['@kissjs/adapter-lit/ssr'] = pathToFileURL(
+      join(repoRoot, 'packages', 'kiss-adapter-lit', 'src', 'ssr.ts'),
+    ).href;
+    denoJson.imports['@kissjs/ui'] = pathToFileURL(
+      join(repoRoot, 'packages', 'kiss-ui', 'src', 'index.ts'),
+    ).href;
+    denoJson.imports['@kissjs/ui/'] = pathToFileURL(
+      join(repoRoot, 'packages', 'kiss-ui', 'src') + sep,
+    ).href;
+    denoJson.imports['vite'] = 'npm:vite@8.0.10';
+    denoJson.imports['hono'] = 'npm:hono@^4';
+    denoJson.imports['@hono/vite-dev-server'] = 'npm:@hono/vite-dev-server@^0.25.3';
+    denoJson.tasks.build = `deno run -A ${
+      join(repoRoot, 'packages', 'kiss-core', 'src', 'cli', 'build.ts')
+    }`;
+    writeFileSync(denoJsonPath, JSON.stringify(denoJson, null, 2));
+
+    const uiSrc = join(repoRoot, 'packages', 'kiss-ui', 'src');
+    const aliases = [
+      {
+        find: '@kissjs/core/kiss-runtime',
+        replacement: vitePath(join(repoRoot, 'packages', 'kiss-core', 'src', 'kiss-runtime.ts')),
+      },
+      {
+        find: '@kissjs/adapter-lit/ssr',
+        replacement: vitePath(join(repoRoot, 'packages', 'kiss-adapter-lit', 'src', 'ssr.ts')),
+      },
+      {
+        find: '@kissjs/adapter-lit',
+        replacement: vitePath(join(repoRoot, 'packages', 'kiss-adapter-lit', 'src', 'index.ts')),
+      },
+      {
+        find: '@kissjs/ui/tokens/colors',
+        replacement: vitePath(join(uiSrc, 'tokens', 'colors.ts')),
+      },
+      { find: '@kissjs/ui/kiss-button', replacement: vitePath(join(uiSrc, 'kiss-button.ts')) },
+      { find: '@kissjs/ui/kiss-card', replacement: vitePath(join(uiSrc, 'kiss-card.ts')) },
+      { find: '@kissjs/ui/kiss-input', replacement: vitePath(join(uiSrc, 'kiss-input.ts')) },
+      {
+        find: '@kissjs/ui/kiss-code-block',
+        replacement: vitePath(join(uiSrc, 'kiss-code-block.ts')),
+      },
+      { find: '@kissjs/ui/kiss-layout', replacement: vitePath(join(uiSrc, 'kiss-layout.ts')) },
+      {
+        find: '@kissjs/ui/kiss-theme-toggle',
+        replacement: vitePath(join(uiSrc, 'kiss-theme-toggle.ts')),
+      },
+      {
+        find: '@kissjs/ui/kiss-hero-ping',
+        replacement: vitePath(join(uiSrc, 'kiss-hero-ping.ts')),
+      },
+      { find: '@kissjs/ui', replacement: vitePath(join(uiSrc, 'index.ts')) },
+      {
+        find: '@kissjs/core',
+        replacement: vitePath(join(repoRoot, 'packages', 'kiss-core', 'src', 'index.ts')),
+      },
+    ];
+    const viteConfigPath = join(appDir, 'vite.config.ts');
+    let viteConfig = readFileSync(viteConfigPath, 'utf-8');
+    viteConfig = viteConfig.replace(
+      'export default defineConfig({',
+      `export default defineConfig({\n  resolve: { alias: ${JSON.stringify(aliases, null, 4)} },`,
+    );
+    writeFileSync(viteConfigPath, viteConfig);
+
+    Deno.symlinkSync(join(repoRoot, 'node_modules'), join(appDir, 'node_modules'), {
+      type: 'dir',
+    });
+
+    const build = new Deno.Command(Deno.execPath(), {
+      args: ['task', 'build'],
+      cwd: appDir,
+      stdout: 'piped',
+      stderr: 'piped',
+    });
+    const buildResult = await build.output();
+    const stderr = new TextDecoder().decode(buildResult.stderr);
+    const stdout = new TextDecoder().decode(buildResult.stdout);
+    assertEquals(buildResult.code, 0, `${stdout}\n${stderr}`);
+
+    const indexHtmlPath = join(appDir, 'dist', 'index.html');
+    assertEquals(existsSync(indexHtmlPath), true);
+    assertEquals(existsSync(join(appDir, 'dist', 'client', '.vite', 'manifest.json')), true);
+    const indexHtml = readFileSync(indexHtmlPath, 'utf-8');
+    assertEquals(indexHtml.includes('Hello KISS!'), true);
+    assertEquals(indexHtml.includes('[object Object]'), false);
+  } finally {
+    rmSync(tmpRoot, { recursive: true, force: true });
+  }
 });

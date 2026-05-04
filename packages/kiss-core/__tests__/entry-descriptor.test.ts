@@ -131,7 +131,7 @@ Deno.test('renderEntry: produces valid module code', () => {
   assertStringIncludes(code, "import { Hono } from 'hono'");
   assertStringIncludes(
     code,
-    "import { renderDSD, renderDSDByName } from '@kissjs/core'",
+    "import { renderDSD, renderDSDByName } from '@kissjs/core/kiss-runtime'",
   );
   assertStringIncludes(code, 'export default app');
   assertStringIncludes(code, 'const app = new Hono()');
@@ -187,7 +187,7 @@ Deno.test('renderEntry: page routes use SSR helper and wrapInDocument', () => {
   assertStringIncludes(code, 'customElements.get(tag)');
   // v0.3.0: Uses wrapInDocument from ssr-handler.ts (single source of truth)
   assertStringIncludes(code, 'wrapInDocument(');
-  // v0.5.0: No Lit hydration artifacts
+  // v0.5.0: No legacy SSR client artifacts
   assertEquals(code.includes('generateHydrationScript'), false);
   assertEquals(code.includes('stripLitComments'), false);
   assertEquals(code.includes('lit-part'), false);

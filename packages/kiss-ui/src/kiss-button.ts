@@ -172,4 +172,6 @@ export class KissButton extends LitElement {
   }
 }
 
-customElements.define(tagName, KissButton);
+if (!customElements.get(tagName)) {
+  customElements.define(tagName, KissButton);
+}

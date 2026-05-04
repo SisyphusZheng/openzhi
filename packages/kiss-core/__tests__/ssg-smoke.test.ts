@@ -1,168 +1,110 @@
 /**
- * @kissjs/core — SSG Smoke Build Test
+ * @kissjs/core - SSG smoke build test
  *
- * End-to-end verification of the 3-phase build pipeline:
- *   Phase 1: vite build (SSR bundle + metadata)
- *   Phase 2: deno task build:client (island chunks)
- *   Phase 3: deno task build:ssg (static HTML + post-process)
+ * End-to-end verification of the official one-command build path:
+ *   deno task build
  *
- * This test requires the project to be built first (`deno task build`).
- * Tests are skipped when build output doesn't exist (normal in CI).
- *
- * Run: deno test --allow-read packages/kiss-core/__tests__/ssg-smoke.test.ts
+ * The command still runs the internal three-phase pipeline, but users
+ * should experience it as a single production build.
  */
 
 import { assert, assertEquals, assertExists, assertStringIncludes } from 'jsr:@std/assert@^1.0.0';
-import { join } from 'jsr:@std/path@^1.0.0';
-import { existsSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 
-const ROOT = join(Deno.cwd(), '..'); // kiss-review root
-const DOCS_DIST = join(ROOT, 'docs', 'dist');
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const ROOT = dirname(dirname(dirname(__dirname)));
+const DOCS_DIR = join(ROOT, 'docs');
+const DOCS_DIST = join(DOCS_DIR, 'dist');
 
-// Check if build output exists — if not, skip these smoke tests
-const HAS_BUILD = existsSync(join(DOCS_DIST, 'server', 'entry.js'));
+function hasSsrBundle(): boolean {
+  const assetsDir = join(DOCS_DIST, 'assets');
+  if (!existsSync(assetsDir)) return false;
+  return readdirSync(assetsDir).some((file) =>
+    file.startsWith('_virtual_kiss-hono-entry-') && file.endsWith('.js')
+  );
+}
 
-/** Recursively find HTML files in a directory (shared by multiple tests). */
 function findHtmlFiles(dir: string): string[] {
   const results: string[] = [];
-  try {
-    for (const entry of Deno.readDirSync(dir)) {
-      const fullPath = join(dir, entry.name);
-      if (
-        entry.isDirectory && !entry.name.startsWith('.') && entry.name !== 'client' &&
-        entry.name !== 'server'
-      ) {
-        results.push(...findHtmlFiles(fullPath));
-      } else if (entry.name.endsWith('.html')) {
-        results.push(fullPath);
-      }
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    const fullPath = join(dir, entry.name);
+    if (
+      entry.isDirectory() && !entry.name.startsWith('.') && entry.name !== 'client' &&
+      entry.name !== 'server'
+    ) {
+      results.push(...findHtmlFiles(fullPath));
+    } else if (entry.name.endsWith('.html')) {
+      results.push(fullPath);
     }
-  } catch { /* ignore */ }
+  }
   return results;
 }
 
-// ─── Phase 1: SSR Bundle Verification ──────────────────────
+async function ensureDocsBuild(): Promise<void> {
+  if (
+    hasSsrBundle() && existsSync(join(DOCS_DIST, 'index.html'))
+  ) {
+    return;
+  }
 
-Deno.test({
-  name: 'SSG smoke: phase 1 — SSR bundle exists',
-  ignore: !HAS_BUILD,
-  fn: () => {
-    const ssrBundle = join(DOCS_DIST, 'server', 'entry.js');
-    assert(existsSync(ssrBundle), 'SSR bundle should exist after Phase 1');
-    console.log('✅ Phase 1: SSR bundle found');
-  },
-});
+  const command = new Deno.Command(Deno.execPath(), {
+    args: ['task', 'build'],
+    cwd: ROOT,
+    stdout: 'piped',
+    stderr: 'piped',
+  });
+  const output = await command.output();
+  const stdout = new TextDecoder().decode(output.stdout);
+  const stderr = new TextDecoder().decode(output.stderr);
+  assertEquals(output.code, 0, `${stdout}\n${stderr}`);
+}
 
-Deno.test({
-  name: 'SSG smoke: phase 1 — build metadata exists',
-  ignore: !HAS_BUILD,
-  fn: () => {
-    const metadataPath = join(ROOT, 'docs', '.kiss', 'build-metadata.json');
-    assert(existsSync(metadataPath), 'Build metadata should exist after Phase 1');
+Deno.test('SSG smoke: one-command build produces trusted docs output', async (t) => {
+  await ensureDocsBuild();
 
-    const raw = Deno.readTextFileSync(metadataPath);
-    const meta = JSON.parse(raw);
+  await t.step('phase 1 output exists with current metadata shape', () => {
+    assert(hasSsrBundle(), 'SSR bundle should exist');
 
-    assertExists(meta.routes, 'metadata should have routes');
-    assertExists(meta.islands, 'metadata should have islands');
-    assertExists(meta.entryFile, 'metadata should have entryFile');
+    const metadataPath = join(DOCS_DIR, '.kiss', 'build-metadata.json');
+    assert(existsSync(metadataPath), 'Build metadata should exist');
 
-    console.log(
-      `✅ Phase 1: Build metadata valid (${meta.routes.length} routes, ${meta.islands.length} islands)`,
-    );
-  },
-});
+    const meta = JSON.parse(readFileSync(metadataPath, 'utf-8'));
+    assertExists(meta.islandTagNames);
+    assertExists(meta.islandFiles);
+    assertExists(meta.packageIslands);
+    assertEquals(meta.root.replace(/\\/g, '/').endsWith('/docs'), true);
+    assertEquals(meta.outDir, 'dist');
+  });
 
-// ─── Phase 2: Client Build Verification ───────────────────
-
-Deno.test({
-  name: 'SSG smoke: phase 2 — client entry exists',
-  ignore: !HAS_BUILD,
-  fn: () => {
+  await t.step('phase 2 output exists without legacy SSR client runtime', () => {
+    const manifestPath = join(DOCS_DIST, 'client', '.vite', 'manifest.json');
     const clientEntry = join(DOCS_DIST, 'client', 'islands', 'client.js');
-    assert(existsSync(clientEntry), 'Client entry should exist after Phase 2');
+    assert(existsSync(manifestPath), 'Client manifest should exist');
+    assert(existsSync(clientEntry), 'Client entry should exist');
 
-    const content = Deno.readTextFileSync(clientEntry);
-    assertStringIncludes(content, 'hydrate', 'Client entry should import/use Lit hydrate()');
+    const content = readFileSync(clientEntry, 'utf-8');
+    assertEquals(content.includes('@lit-labs/ssr-client'), false);
+    assertEquals(content.includes('defer-hydration'), false);
+  });
 
-    console.log('✅ Phase 2: Client entry valid with hydration logic');
-  },
-});
-
-Deno.test({
-  name: 'SSG smoke: phase 2 — island chunks exist for known islands',
-  ignore: !HAS_BUILD,
-  fn: () => {
-    const islandsDir = join(DOCS_DIST, 'client', 'islands');
-    assert(existsSync(islandsDir), 'Islands directory should exist after Phase 2');
-
-    const files = Array.from(Deno.readDirSync(islandsDir)).map((e) => e.name);
-    const jsFiles = files.filter((f) => f.endsWith('.js'));
-    assert(jsFiles.length > 0, 'Should have at least one island chunk');
-
-    console.log(`✅ Phase 2: ${jsFiles.length} island chunk(s) found`);
-  },
-});
-
-// ─── Phase 3: SSG Output Verification ─────────────────────
-
-Deno.test({
-  name: 'SSG smoke: phase 3 — HTML files generated',
-  ignore: !HAS_BUILD,
-  fn: () => {
+  await t.step('phase 3 output contains HTML, DSD, clean URLs, and PWA files', () => {
     const htmlFiles = findHtmlFiles(DOCS_DIST);
-    assert(htmlFiles.length > 0, 'Should have at least one HTML file');
-    console.log(`✅ Phase 3: ${htmlFiles.length} HTML file(s) generated`);
+    assert(htmlFiles.length > 0, 'Should have generated HTML files');
 
-    let validCount = 0;
     for (const filePath of htmlFiles) {
-      const content = Deno.readTextFileSync(filePath);
-      if (content.includes('<!DOCTYPE html>') || content.includes('<!doctype html>')) {
-        validCount++;
-      }
+      const content = readFileSync(filePath, 'utf-8');
+      assertStringIncludes(content.toLowerCase(), '<!doctype html>');
     }
 
-    assertEquals(
-      validCount,
-      htmlFiles.length,
-      'All HTML files should be valid documents with DOCTYPE',
+    const indexHtml = readFileSync(join(DOCS_DIST, 'index.html'), 'utf-8');
+    assert(
+      indexHtml.includes('shadowrootmode="open"') || indexHtml.includes('<template shadowroot'),
+      'SSG output should preserve Declarative Shadow DOM',
     );
-  },
-});
-
-Deno.test({
-  name: 'SSG smoke: phase 3 — client script injected in HTML',
-  ignore: !HAS_BUILD,
-  fn: () => {
-    const htmlFiles = findHtmlFiles(DOCS_DIST);
-    if (htmlFiles.length === 0) return;
-
-    let injectedCount = 0;
-    for (const filePath of htmlFiles) {
-      const content = Deno.readTextFileSync(filePath);
-      if (content.includes('<script type="module" src=')) {
-        injectedCount++;
-      }
-    }
-
-    console.log(`✅ Phase 3: ${injectedCount}/${htmlFiles.length} HTML files have client script`);
-    assert(injectedCount >= 1, 'At least index.html should have client script injected');
-  },
-});
-
-Deno.test({
-  name: 'SSG smoke: phase 3 — DSD output preserved in HTML',
-  ignore: !HAS_BUILD,
-  fn: () => {
-    if (!existsSync(join(DOCS_DIST, 'index.html'))) return;
-
-    const indexHtml = Deno.readTextFileSync(join(DOCS_DIST, 'index.html'));
-
-    const hasDsd = indexHtml.includes('shadowroot=') ||
-      indexHtml.includes('shadowrootmode=') ||
-      indexHtml.includes('<template shadowroot');
-
-    assert(hasDsd, 'SSG output should preserve Declarative Shadow DOM (S constraint)');
-    console.log('✅ Phase 3: DSD output preserved (S constraint satisfied)');
-  },
+    assert(existsSync(join(DOCS_DIST, 'roadmap', 'index.html')), 'Clean URL output should exist');
+    assert(existsSync(join(DOCS_DIST, 'manifest.json')), 'PWA manifest should exist');
+    assert(existsSync(join(DOCS_DIST, 'sw.js')), 'PWA service worker should exist');
+  });
 });

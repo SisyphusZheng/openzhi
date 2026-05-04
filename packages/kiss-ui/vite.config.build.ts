@@ -2,18 +2,40 @@
  * @kiss/ui - Vite library mode build config
  * Pure ESM output, no CJS. Multi-entry for per-component imports.
  *
- * v0.3.0: Key change — compiled dist/ replaces @kissjs/core imports
- * with direct lit imports. This matches industry standard (Shoelace,
- * Material Web, Lit official components) — consumers only need lit
- * as a peer dependency, not @kissjs/core.
- *
- * How: Vite resolve.alias maps '@kissjs/core' → 'lit' at build time.
- * Since @kissjs/core re-exports everything from lit, this is a safe
- * substitution that removes the unnecessary indirection.
+ * v0.5.0: components import Lit directly. @kissjs/core remains a
+ * build/SSR framework package, not a Lit re-export layer.
  */
-import { defineConfig } from 'vite';
+import { defineConfig, type Plugin } from 'vite';
+import dts from 'vite-plugin-dts';
+
+function jsrSelfTypes(): Plugin {
+  return {
+    name: 'kiss-ui-jsr-self-types',
+    generateBundle(_options, bundle) {
+      for (const chunk of Object.values(bundle)) {
+        if (chunk.type !== 'chunk' || !chunk.isEntry || !chunk.fileName.endsWith('.js')) {
+          continue;
+        }
+
+        const fileName = chunk.fileName.split('/').pop();
+        const declarationName = fileName?.replace(/\.js$/, '.d.ts');
+        if (!declarationName) continue;
+
+        chunk.code = `// @ts-self-types="./${declarationName}"\n${chunk.code}`;
+      }
+    },
+  };
+}
 
 export default defineConfig({
+  plugins: [
+    dts({
+      outDir: 'dist',
+      include: ['src/**/*.ts'],
+      tsconfigPath: './tsconfig.build.json',
+    }),
+    jsrSelfTypes(),
+  ],
   build: {
     lib: {
       entry: {
@@ -38,9 +60,6 @@ export default defineConfig({
         '@lit/reactive-element',
         'lit-html',
         'lit-element',
-        // NOTE: @kissjs/core is NOT externalized here.
-        // Instead, the resolve.alias below maps it to 'lit' at build time,
-        // so compiled output only imports from 'lit'.
         'vite',
       ],
       output: {
@@ -52,12 +71,5 @@ export default defineConfig({
     emptyOutDir: true,
     minify: false,
     sourcemap: true,
-  },
-  resolve: {
-    alias: {
-      // @kissjs/core re-exports lit — replace with direct lit import
-      // in compiled output so consumers don't need @kissjs/core
-      '@kissjs/core': 'lit',
-    },
   },
 });

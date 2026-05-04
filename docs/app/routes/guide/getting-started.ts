@@ -44,100 +44,92 @@ export class GettingStartedPage extends LitElement {
       <kiss-layout currentPath="/guide/getting-started">
         <div class="container">
           <h1>快速上手</h1>
-          <p class="subtitle">一条命令创建、三阶段构建、GitHub Pages 部署。</p>
+          <p class="subtitle">一条命令创建，一条命令构建，静态产物随处部署。</p>
 
           <div class="step">
             <h2 class="step-header">1. 创建项目</h2>
-            <p class="step-desc">使用 create-kiss CLI 一键生成脚手架。v0.5.0 正在把它纳入端到端验证。</p>
+            <p class="step-desc">使用 create-kiss CLI 一键生成脚手架。</p>
             <code-block
             ><pre>
               <code>deno run -A jsr:@kissjs/create my-app
               cd my-app</code></pre></code-block>
-              <div class="note">
-                <strong>Alpha 说明：</strong>如果你正在使用 v0.5.0 alpha 前的版本，脚手架模板可能仍包含旧的
-                Lit re-export 写法。v0.5.0 Trust Release 的验收标准是新项目可以直接跑通
-                <span class="inline-code">dev</span> 和三阶段构建。
-              </div>
+            <div class="note">
+              <strong>版本说明：</strong>v0.5.0 起，新项目直接从
+              <span class="inline-code">lit</span> 导入 Lit API，生产构建使用
+              <span class="inline-code">deno task build</span> 单命令主路径。
+            </div>
+          </div>
+
+          <div class="step">
+            <h2 class="step-header">2. 启动开发服务器</h2>
+            <p class="step-desc">Vite 开发服务器 + Hono SSR，实时刷新。</p>
+            <code-block><pre><code>deno task dev</code></pre></code-block>
+            <p>打开 <span class="inline-code">localhost:5173</span> 查看页面。</p>
+          </div>
+
+          <div class="step">
+            <h2 class="step-header">3. 构建</h2>
+            <p class="step-desc">KISS 使用单命令生产构建，输出静态 HTML 和必要的 island JS。</p>
+            <code-block><pre>
+              <code>deno task build</code></pre></code-block>
+            <div class="note">
+              <strong>架构说明：</strong>单命令内部仍保留三个可观测阶段：SSR bundle +
+              <span class="inline-code">.kiss/build-metadata.json</span>、Island client chunks、SSG static
+              HTML。分阶段是调试和 CI 边界，不是 quickstart 主心智。
+            </div>
+            <div class="note">
+              <strong>工具链说明：</strong>KISS runtime、SSG CLI 和文档站任务都是 Deno-first。请使用 Deno
+              2.7+；Vite 8 通过 <span class="inline-code">deno run -A npm:vite</span>
+              执行。如果遇到 <span class="inline-code">node:util.parseEnv</span> 兼容缺口，请先运行
+              <span class="inline-code">deno upgrade</span>。
+            </div>
+          </div>
+
+          <div class="step">
+            <h2 class="step-header">4. 预览构建产物</h2>
+            <code-block><pre><code>deno task preview</code></pre></code-block>
+          </div>
+
+          <div class="step">
+            <h2 class="step-header">5. 部署到 GitHub Pages</h2>
+            <p class="step-desc">
+              <span class="inline-code">dist/</span> 目录为纯静态网站，可直接部署到任意静态托管平台。
+            </p>
+            <code-block
+            ><pre>
+              <code># 示例：gh-pages 分支
+              cd dist
+              git init
+              git add -A
+              git commit -m "Deploy"
+              git push -f https://github.com/USER/REPO.git HEAD:gh-pages</code></pre></code-block>
             </div>
 
             <div class="step">
-              <h2 class="step-header">2. 启动开发服务器</h2>
-              <p class="step-desc">Vite 开发服务器 + Hono SSR，实时刷新。</p>
-              <code-block><pre><code>deno task dev</code></pre></code-block>
-              <p>打开 <span class="inline-code">localhost:5173</span> 查看页面。</p>
-            </div>
-
-            <div class="step">
-              <h2 class="step-header">3. 构建（三阶段）</h2>
-              <p class="step-desc">KISS 使用三阶段构建管线，分步验证、增量输出。</p>
+              <h2 class="step-header">项目结构</h2>
               <code-block
               ><pre>
-                <code># Phase 1 — SSR bundle + build metadata
-                deno task build
-
-                # Phase 2 — Island client chunks
-                deno task build:client
-
-                # Phase 3 — SSG static HTML
-                deno task build:ssg</code></pre></code-block>
-              <div class="note">
-                <strong>架构说明：</strong>三阶段各自独立，每阶段输出可作为下一阶段输入。 Phase 1 产出 SSR
-                bundle 和 <span class="inline-code">.kiss/build-metadata.json</span>； Phase 2 将 Island
-                组件编译为独立 client chunk； Phase 3 渲染全部静态 HTML + 注入 island upgrade 入口。
+                <code>my-app/
+                ├── app/
+                │   ├── routes/          # 页面组件（LitElement）
+                │   │   ├── index.ts     # 首页 /
+                │   │   └── ...
+                │   └── islands/         # 交互式 Island（LitElement）
+                │       └── my-counter.ts
+                ├── deno.json            # 任务定义 + 依赖
+                └── vite.config.ts       # KISS 插件配置</code></pre></code-block>
               </div>
-              <div class="note">
-                <strong>工具链说明：</strong>KISS runtime、SSG CLI 和文档站任务都是 Deno-first。请使用
-                Deno 2.7+；Vite 8 通过 <span class="inline-code">deno run -A npm:vite</span>
-                执行。如果遇到 <span class="inline-code">node:util.parseEnv</span> 兼容缺口，请先运行
-                <span class="inline-code">deno upgrade</span>。
+
+              <div class="nav-row">
+                <a href="/guide/design-philosophy" class="nav-link">设计哲学 &rarr;</a>
+                <a href="/examples" class="nav-link">示例 &rarr;</a>
               </div>
             </div>
-
-            <div class="step">
-              <h2 class="step-header">4. 预览构建产物</h2>
-              <code-block><pre><code>deno task preview</code></pre></code-block>
-            </div>
-
-            <div class="step">
-              <h2 class="step-header">5. 部署到 GitHub Pages</h2>
-              <p class="step-desc">
-                <span class="inline-code">dist/</span> 目录为纯静态网站，可直接部署到任意静态托管平台。
-              </p>
-              <code-block
-              ><pre>
-                <code># 示例：gh-pages 分支
-                cd dist
-                git init
-                git add -A
-                git commit -m "Deploy"
-                git push -f https://github.com/USER/REPO.git HEAD:gh-pages</code></pre></code-block>
-              </div>
-
-              <div class="step">
-                <h2 class="step-header">项目结构</h2>
-                <code-block
-                ><pre>
-                  <code>my-app/
-                  ├── app/
-                  │   ├── routes/          # 页面组件（LitElement）
-                  │   │   ├── index.ts     # 首页 /
-                  │   │   └── ...
-                  │   └── islands/         # 交互式 Island（LitElement）
-                  │       └── my-counter.ts
-                  ├── deno.json            # 任务定义 + 依赖
-                  └── vite.config.ts       # KISS 插件配置</code></pre></code-block>
-                </div>
-
-                <div class="nav-row">
-                  <a href="/guide/design-philosophy" class="nav-link">设计哲学 &rarr;</a>
-                  <a href="/examples" class="nav-link">示例 &rarr;</a>
-                </div>
-              </div>
-            </kiss-layout>
-          `;
-        }
+          </kiss-layout>
+        `;
       }
+    }
 
-      customElements.define('page-getting-started', GettingStartedPage);
-      export default GettingStartedPage;
-      export const tagName = 'page-getting-started';
+    customElements.define('page-getting-started', GettingStartedPage);
+    export default GettingStartedPage;
+    export const tagName = 'page-getting-started';

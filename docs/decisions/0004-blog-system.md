@@ -1,25 +1,31 @@
-# `@kissjs/blog` — Standalone Blog Package
+# `@kissjs/blog` - Standalone Blog Package
 
 ## Status
 
-**DRAFT** — Proposed after v0.8.0 Serverless Fullstack. The ideal zero-framework
-version can wait for `.kiss` compiler alpha.
+**DRAFT** - proposed after v0.8.0 Serverless Fullstack. The ideal
+zero-framework version can wait for `.kiss` compiler alpha.
 
 ## Context
 
-KISS currently has two hardcoded blog route pages (`/blog/` + `/blog/kiss-compiler`) on its own docs site. These are hand-written LitElement pages — not a reusable system.
+KISS currently has two hardcoded blog route pages (`/blog/` +
+`/blog/kiss-compiler`) on its own docs site. These are hand-written custom
+element pages, not a reusable system.
 
-Users need a proper blog: drop in `.md` files, get automatic listing + pagination + RSS + tags. Like VitePress's blog feature, but as a KISS plugin.
+Users need a proper blog: drop in `.md` files, get automatic listing +
+pagination + RSS + tags. Like VitePress's blog feature, but as a KISS plugin.
 
 ## Constraints
 
-The blog system should not require Lit. It should work first as a plain SSG plugin,
-then gain `.kiss` compiler templates when the compiler exists:
+The blog system should not require Lit. It should work first as a plain SSG
+plugin, then gain `.kiss` compiler templates when the compiler exists:
 
-- Post templates should be able to compile to vanilla Custom Elements when `.kiss` exists
+- Post templates should be able to compile to vanilla Custom Elements when
+  `.kiss` exists
 - SSR must be synchronous string concatenation (`template.innerHTML`)
-- No page-level client runtime for plain blog pages; interactive widgets remain islands
-- The `.kiss` compiler is an optional future template backend, not a blocker for the first release
+- No page-level client runtime for plain blog pages; interactive widgets remain
+  islands
+- The `.kiss` compiler is an optional future template backend, not a blocker
+  for the first release
 
 ## Proposal
 
@@ -28,8 +34,9 @@ then gain `.kiss` compiler templates when the compiler exists:
 A Vite plugin that:
 
 1. **Scans** a user-defined directory for `.md` files with YAML frontmatter
-2. **Generates** route entries at build time (like route-scanner does for `.ts` files)
-3. **Renders** listing pages, post pages, tag pages, and RSS feed during SSG (Phase 3)
+2. **Generates** route entries at build time (like route-scanner does for `.ts`
+   files)
+3. **Renders** listing pages, post pages, tag pages, and RSS feed during SSG
 
 ### User experience
 
@@ -76,22 +83,20 @@ This is my first post.
 
 The `kissBlog()` plugin hooks into the KISS build pipeline:
 
-```
+```text
 vite.config.ts
-  │
-  kissBlog()  ── reads content/blog/*.md
-  │               extracts frontmatter → metadata.json
-  │               registers virtual routes
-  │
-  Phase 1: Vite build ── SSR bundle includes blog routes
-  Phase 2: build:client  (no island chunks needed for blog)
-  Phase 3: build:ssg  ── renders /blog/* pages
-  │                      generates /feed.xml
-  │
-  dist/
-  ├── blog/index.html
-  ├── blog/hello-world/index.html
-  └── feed.xml
+  -> kissBlog() reads content/blog/*.md
+       extracts frontmatter -> metadata.json
+       registers virtual routes
+  -> deno task build
+       Phase 1: Vite SSR build
+       Phase 2: buildClient() (no island chunks needed for blog)
+       Phase 3: buildSSG() renders /blog/* pages
+            generates /feed.xml
+  -> dist/
+       blog/index.html
+       blog/hello-world/index.html
+       feed.xml
 ```
 
 ### Post rendering
@@ -111,7 +116,7 @@ With the `.kiss` compiler:
 
 <script>
   // post data injected at compile time by the plugin
-  post = { title: '', html: '', tags: [], isoDate: '', displayDate: '' }
+  post = { title: "", html: "", tags: [], isoDate: "", displayDate: "" }
 </script>
 
 <style>
@@ -122,15 +127,17 @@ With the `.kiss` compiler:
 
 Without the `.kiss` compiler:
 
-The same content can be rendered through the KISS DSD renderer or a safe server-side
-HTML template helper. It should not depend on Lit for plain Markdown pages.
+The same content can be rendered through the KISS DSD renderer or a safe
+server-side HTML template helper. It should not depend on Lit for plain Markdown
+pages.
 
 ### MDX support (future)
 
 The `.md` parser should support:
 
-- **Basic**: Gray-matter frontmatter + marked/ markdown-it
-- **Extended (v2)**: MDX - embed Lit Components or `.kiss` components inline in markdown
+- **Basic**: Gray-matter frontmatter + marked/markdown-it
+- **Extended (v2)**: MDX - embed Lit Components or `.kiss` components inline in
+  markdown
 - **Code blocks**: Syntax highlighting at build time (not client-side)
 
 ## Implementation order
@@ -138,12 +145,15 @@ The `.md` parser should support:
 1. v0.8.0 stabilizes route/action/serverless conventions
 2. `@kissjs/blog` ships as a plain SSG plugin first
 3. `.kiss` compiler support is added when v0.10.0 alpha is available
-4. KISS docs site eats its own dogfood — replaces the current hardcoded blog routes
+4. KISS docs site eats its own dogfood and replaces the current hardcoded blog
+   routes
 
 ## Open Questions
 
-1. Markdown parser: `marked` (lightweight) vs `markdown-it` (plugin ecosystem) vs custom?
-2. Should the blog template be customizable via `kissBlog({ template: 'my-template.kiss' })`?
+1. Markdown parser: `marked` (lightweight) vs `markdown-it` (plugin ecosystem)
+   vs custom?
+2. Should the blog template be customizable via
+   `kissBlog({ template: "my-template.kiss" })`?
 3. RSS vs Atom vs both?
 4. Comments? (Disqus, utteranc.es, or leave it to the user)
 
@@ -151,6 +161,7 @@ The `.md` parser should support:
 
 - **Positive**: Users get a one-line blog setup, competitive with VitePress
 - **Positive**: KISS docs site can dogfood its own blog package
-- **Positive**: Zero framework runtime for plain blog pages (with `.kiss` compiler)
+- **Positive**: Zero framework runtime for plain blog pages (with `.kiss`
+  compiler)
 - **Negative**: The ideal compiler-backed architecture comes later
 - **Negative**: Markdown parsing at build time adds ~100ms to Phase 1

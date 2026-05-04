@@ -1,18 +1,18 @@
 /**
- * @kissjs/adapter-lit - Lit Adapter for KISS Framework
+ * @kissjs/adapter-lit - Lit adapter for KISS Framework.
  *
- * Bridges Lit's TemplateResult → string for DSD SSR rendering.
- * Uses naive interpolation — no @lit-labs/ssr dependency.
- * Produces clean DSD HTML without Lit hydration markers.
+ * Bridges Lit TemplateResult values to strings for DSD SSR rendering.
+ * Uses safe interpolation without @lit-labs/ssr.
+ * Produces clean DSD HTML without Lit SSR marker comments.
  *
  * Architecture:
- *   @kissjs/core        — renderDSD() only accepts render(): string
- *   @kissjs/adapter-lit — converts TemplateResult → string at build time
- *   @kissjs/ui          — LitElement components (Lit + OpenProps)
+ *   @kissjs/core        renderDSD() only accepts render(): string
+ *   @kissjs/adapter-lit converts TemplateResult to string at build time
+ *   @kissjs/ui          LitElement components (Lit + OpenProps)
  *
  * Usage (in vite.config.ts or build config):
  *   import { installLitAdapter } from '@kissjs/adapter-lit';
- *   installLitAdapter();  // patches renderDSD to handle Lit TemplateResult
+ *   installLitAdapter(); // patches renderDSD to handle Lit TemplateResult
  *
  * @module @kissjs/adapter-lit
  */

@@ -175,8 +175,8 @@ export async function scanRoutes(
  * Includes special file imports (_renderer, _middleware).
  *
  * @deprecated Use buildEntryDescriptor() + renderEntry() instead.
- *   This function is kept for backward compat and tests only — the main
- *   entry pipeline now uses the structured EntryDescriptor approach.
+ *   This helper is retained for focused tests; the main entry pipeline uses
+ *   the structured EntryDescriptor approach.
  */
 export function generateRoutesModule(routes: RouteEntry[], routesDir: string): string {
   const regularRoutes = routes.filter((r) => !r.special);
@@ -242,8 +242,8 @@ ${middlewareDefs || '  // No _middleware.ts files found'}
  * Generate the virtual:islands module code.
  *
  * @deprecated Use buildEntryDescriptor() + renderEntry() instead.
- *   This function is kept for backward compat and tests only — the main
- *   entry pipeline now uses the structured EntryDescriptor approach.
+ *   This helper is retained for focused tests; the main entry pipeline uses
+ *   the structured EntryDescriptor approach.
  */
 export function generateIslandsModule(
   islandsDir: string,

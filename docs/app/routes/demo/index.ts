@@ -53,7 +53,10 @@ export default class PageDemo extends LitElement {
       color: var(--kiss-text-secondary);
       font-size: 0.9375rem;
     }
-    strong { color: var(--kiss-text-primary); font-weight: 600; }
+    strong {
+      color: var(--kiss-text-primary);
+      font-weight: 600;
+    }
     a {
       color: var(--kiss-text-primary);
       text-decoration: underline;
@@ -70,7 +73,7 @@ export default class PageDemo extends LitElement {
       gap: 0;
       margin: 1.5rem 0 2rem;
       /* 0.5px: reduced to match kiss-ui spec */
-          border: 0.5px solid var(--kiss-border);
+      border: 0.5px solid var(--kiss-border);
       border-radius: 8px;
       overflow: hidden;
     }
@@ -111,7 +114,7 @@ export default class PageDemo extends LitElement {
 
     .arch-card {
       /* 0.5px: reduced to match kiss-ui spec */
-          border: 0.5px solid var(--kiss-border);
+      border: 0.5px solid var(--kiss-border);
       border-radius: 8px;
       overflow: hidden;
     }
@@ -132,9 +135,11 @@ export default class PageDemo extends LitElement {
       border-bottom: 0.5px solid var(--kiss-border);
       font-size: 0.8125rem;
       color: var(--kiss-text-secondary);
-      font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+      font-family: "SF Mono", "Fira Code", "Consolas", monospace;
     }
-    .arch-card .endpoint-bar a { text-decoration: none; }
+    .arch-card .endpoint-bar a {
+      text-decoration: none;
+    }
     .endpoint-label {
       font-size: 0.6875rem;
       font-weight: 700;
@@ -152,9 +157,8 @@ export default class PageDemo extends LitElement {
           <span class="overline">Showcase</span>
           <h1>JAM Pattern in Action</h1>
           <p class="subtitle">
-            A live demonstration of the <strong>JAMstack</strong> pipeline —
-            statically generated HTML that talks to a serverless API at runtime.
-            Zero backend. Zero server maintenance.
+            A live demonstration of the <strong>JAMstack</strong> pipeline — statically generated HTML
+            that talks to a serverless API at runtime. Zero backend. Zero server maintenance.
           </p>
 
           <div class="jam-grid">
@@ -180,9 +184,11 @@ export default class PageDemo extends LitElement {
 
           <hr class="divider" />
 
-          <p style="font-size:0.8125rem;color:var(--kiss-text-tertiary);margin:0 0 0.5rem;line-height:1.6">
-            Another Island — <strong>0.9 KB</strong> of lazy-loaded JavaScript,
-            fully interactive via Declarative Shadow DOM and Custom Element upgrade.
+          <p
+            style="font-size:0.8125rem;color:var(--kiss-text-tertiary);margin:0 0 0.5rem;line-height:1.6"
+          >
+            Another Island — <strong>0.9 KB</strong> of lazy-loaded JavaScript, fully interactive via
+            Declarative Shadow DOM and Custom Element upgrade.
           </p>
           <counter-island></counter-island>
 
@@ -190,24 +196,26 @@ export default class PageDemo extends LitElement {
 
           <h2>Architecture</h2>
           <p style="font-size:0.9375rem;color:var(--kiss-text-secondary);line-height:1.7">
-            This entire page was statically generated at build time by the KISS 3-phase pipeline.
-            The interactive components are <strong>Islands</strong> — lazy-loaded JavaScript that
-            upgrades only the parts that need interaction. Everything else is pure static HTML.
+            This entire page was statically generated at build time by the KISS 3-phase pipeline. The
+            interactive components are <strong>Islands</strong> — lazy-loaded JavaScript that upgrades
+            only the parts that need interaction. Everything else is pure static HTML.
           </p>
 
           <div class="endpoint-label">API Endpoint</div>
           <div class="arch-card">
             <div class="endpoint-bar">
               <span>https://kiss-demo-api.sisyphuszheng.deno.net</span>
-              <a href="https://kiss-demo-api.sisyphuszheng.deno.net/api" target="_blank" style="font-size:0.75rem;color:var(--kiss-text-primary);text-decoration:underline;text-underline-offset:3px">Open →</a>
+              <a
+                href="https://kiss-demo-api.sisyphuszheng.deno.net/api"
+                target="_blank"
+                style="font-size:0.75rem;color:var(--kiss-text-primary);text-decoration:underline;text-underline-offset:3px"
+              >Open →</a>
             </div>
           </div>
 
           <div class="endpoint-label">Build Pipeline</div>
           <div class="arch-card">
-            <pre>deno task docs:build    → SSR bundle + metadata
-deno task build:client  → Island client chunks (lazy-loaded)
-deno task build:ssg     → Static HTML + DSD + clean URLs + PWA</pre>
+            <pre>deno task build → SSR bundle + island chunks + static HTML + DSD + clean URLs + PWA</pre>
           </div>
         </div>
       </kiss-layout>

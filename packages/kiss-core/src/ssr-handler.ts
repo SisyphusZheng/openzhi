@@ -1,19 +1,13 @@
 /**
- * @kissjs/core - SSR Handler
- * KISS Architecture (K·I·S·S): rendering is build-time only.
+ * @kissjs/core - SSR Handler.
  *
- * This module provides:
- * - Build-time rendering functions (used by SSG plugin and dev server)
+ * This module provides build-time rendering helpers used by SSG and dev:
  * - Error page rendering
  * - HTML document wrapping
  *
- * What was removed (KISS Architecture):
- * - renderPageToString() — runtime SSR function that took ViteDevServer
- * - collectIslands() — regex-based island detection (moved to build-time map)
- *
- * What remains:
- * - renderSsrError() — error page HTML generation
- * - wrapInDocument() — HTML document wrapping
+ * What was removed:
+ * - renderPageToString(): runtime SSR function that took ViteDevServer
+ * - collectIslands(): regex-based island detection, replaced by build metadata
  */
 
 import type { RouteEntry } from './types.js';
@@ -74,19 +68,20 @@ export function wrapInDocument(
   options: {
     title?: string;
     lang?: string;
-    hydrateScript?: string;
+    /** Client-side module script injected after rendered HTML. */
+    clientScript?: string;
     meta?: { description?: string };
     devMode?: boolean;
     routeModulePath?: string;
     headExtras?: string;
-    /** CSP nonce — if provided, added to all <script> tags for CSP compliance */
+    /** CSP nonce, if provided, added to all generated <script> tags. */
     cspNonce?: string;
   } = {},
 ): string {
   const {
     title = 'KISS App',
     lang = 'en',
-    hydrateScript = '',
+    clientScript = '',
     meta,
     devMode = false,
     routeModulePath,
@@ -94,13 +89,12 @@ export function wrapInDocument(
     cspNonce,
   } = options;
   const nonceAttr = cspNonce ? ` nonce="${cspNonce}"` : '';
-  // Escape dynamic values to prevent XSS injection
+
   const safeTitle = escapeHtml(title);
   const safeLang = escapeHtmlAttr(lang);
-  const safeHeadExtras = headExtras; // headExtras is developer-provided HTML — do NOT escape
+  const safeHeadExtras = headExtras; // developer-provided HTML, intentionally not escaped
   const metaTags: string[] = [];
   if (meta?.description) {
-    // Escape HTML attribute special characters to prevent injection
     const safeDesc = meta.description
       .replace(/&/g, '&amp;')
       .replace(/"/g, '&quot;')
@@ -110,7 +104,6 @@ export function wrapInDocument(
   }
   const metaBlock = metaTags.length > 0 ? '\n' + metaTags.join('\n') + '\n' : '';
 
-  // Dev mode: inject Vite client + component registration
   const devScripts = devMode
     ? `
   <script type="module" src="/@vite/client"${nonceAttr}></script>
@@ -134,7 +127,7 @@ export function wrapInDocument(
 </head>
 <body>
   ${html}
-  ${hydrateScript}${devScripts}
+  ${clientScript}${devScripts}
 </body>
 </html>`;
 }

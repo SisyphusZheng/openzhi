@@ -94,10 +94,10 @@ Deno.test('island-transform - islandTransformPlugin', async (t) => {
 });
 
 Deno.test('entry-generators - generateClientEntry (v0.5.0 CE upgrade)', async (t) => {
-  await t.step('no Lit hydration imports — CE-native upgrade', () => {
+  await t.step('no legacy SSR client imports - CE-native upgrade', () => {
     const islands = [{ tagName: 'my-counter', modulePath: '/app/islands/my-counter.ts' }];
     const code = generateClientEntry(islands);
-    // v0.5.0: No Lit hydration — browser CE spec upgrades elements automatically
+    // v0.5.0: browser CE spec upgrades elements automatically
     assertEquals(
       code.includes('lit-element-hydrate-support'),
       false,
@@ -127,7 +127,7 @@ Deno.test('entry-generators - generateClientEntry (v0.5.0 CE upgrade)', async (t
   await t.step('dispatches kiss:ready event after upgrade', () => {
     const islands = [{ tagName: 'my-counter', modulePath: '/app/islands/my-counter.ts' }];
     const code = generateClientEntry(islands);
-    // v0.5.0: No defer-hydration, no Lit hydration — CE-native upgrade
+    // v0.5.0: no old marker, CE-native upgrade
     assertEquals(code.includes('defer-hydration'), false);
     assertEquals(code.includes('kiss:ready'), true);
     assertEquals(code.includes('LitElement'), false);

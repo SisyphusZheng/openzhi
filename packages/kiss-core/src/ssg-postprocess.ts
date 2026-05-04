@@ -144,10 +144,8 @@ export function buildIslandChunkMap(
  * Inject client script tag into all HTML files.
  *
  * After SSG rendering, each HTML file needs a <script> tag that loads
- * the Vite-built client entry. This entry:
- * 1. Registers all island custom elements
- * 2. Imports and calls Lit's hydrate() from @lit-labs/ssr-client
- * 3. Applies the configured hydration strategy (eager/lazy/idle/visible)
+ * the Vite-built client entry. This entry imports island modules so
+ * custom elements can self-register and upgrade existing DSD markup.
  *
  * Uses insertBeforeBodyClose() for robustness against whitespace/case issues.
  */
@@ -219,16 +217,14 @@ export function injectCspMeta(
 }
 
 /**
- * Walk all HTML files in dist and rewrite hydration script Island paths.
+ * Walk all HTML files in dist and rewrite legacy island import paths.
  *
  * Before: import('/app/islands/code-block.ts')
  * After:  import('/client/islands/island-code-block-abc123.js')
  *
- * NOTE: With the v0.3.0 hydration architecture (hydration logic in the
- * Vite-built client entry, not inline scripts), this function is mostly
- * a fallback. The client entry resolves island imports during the Vite
- * build, so path rewriting is not needed for hydration scripts.
- * It remains for backward compat and any residual source path references.
+ * NOTE: With the v0.5.0 upgrade architecture, island imports live in the
+ * Vite-built client entry, not inline scripts. This function catches any
+ * residual source path references left by older generated HTML fixtures.
  */
 export function rewriteHtmlFiles(
   dir: string,
@@ -243,7 +239,7 @@ export function rewriteHtmlFiles(
       let content = readFileSync(fullPath, 'utf-8');
       let modified = false;
 
-      // Rewrite Island hydration paths
+      // Rewrite legacy island import paths
       for (const [tagName, chunkPath] of Object.entries(islandChunkMap)) {
         const sourcePattern = `import('/app/islands/${tagName}.ts')`;
         if (content.includes(sourcePattern)) {

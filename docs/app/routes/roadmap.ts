@@ -105,35 +105,33 @@ export class RoadmapPage extends LitElement {
 
           <div class="truth-box">
             <p>
-              <strong>定位裁定：</strong>KISS 不是 Next/Nuxt/SvelteKit 的同类翻版。
-              它的核心路线是 DSD-rendered Web Components、Island Upgrade、Hono
-              Serverless APIs、SSG-first delivery，未来再扩展 ISR。
+              <strong>定位裁定：</strong>KISS 不是 Next/Nuxt/SvelteKit 的同类翻版。 它的核心路线是
+              DSD-rendered Web Components、Island Upgrade、Hono Serverless APIs、SSG-first
+              delivery，未来再扩展 ISR。
             </p>
             <p>
               <strong>术语裁定：</strong>当前实现应称为
-              <span class="inline-code">DSD + Custom Element upgrade</span>，
-              不再把它描述为传统框架 hydration。Lit 是 adapter，不是 core 的长期基础。
+              <span class="inline-code">DSD + Custom Element upgrade</span>， 不再把它描述为传统框架
+              hydration。Lit 是 adapter，不是 core 的长期基础。
             </p>
           </div>
 
           <h2>架构审查裁定</h2>
           <ul class="principle-list">
             <li>
-              KISS 的主线是 Web Standards-first、static-first、DSD-rendered Web
-              Components + Island Upgrade，不追随 React/Vue/Svelte 元框架路线。
+              KISS 的主线是 Web Standards-first、static-first、DSD-rendered Web Components + Island
+              Upgrade，不追随 React/Vue/Svelte 元框架路线。
             </li>
             <li>
-              近期产品化样板应优先选择博客、文档、内容站、营销页和轻量 serverless
-              应用；这些场景最能发挥 SSG、DSD 和低 JS 的优势。
+              近期产品化样板应优先选择博客、文档、内容站、营销页和轻量 serverless 应用；这些场景最能发挥
+              SSG、DSD 和低 JS 的优势。
             </li>
             <li>
               CRM/admin 可以作为中期目标，但不应成为 v0.5-v0.6 的主打叙事；它需要
-              forms/actions、auth/session、validation、data table 和 revalidation
-              约定成熟后再推进。
+              forms/actions、auth/session、validation、data table 和 revalidation 约定成熟后再推进。
             </li>
             <li>
-              未来计划本轮先进入路线图和设计文档；运行时 API、包导出、CLI 行为不在
-              本次变更中提前实现。
+              未来计划本轮先进入路线图和设计文档；运行时 API、包导出、CLI 行为不在 本次变更中提前实现。
             </li>
           </ul>
 
@@ -157,13 +155,16 @@ export class RoadmapPage extends LitElement {
               <tr>
                 <td>v0.5.0</td>
                 <td>Trust Release</td>
-                <td>修复 quickstart、渲染安全、嵌套 island 路径、SSG smoke 和文档真实性。</td>
-                <td class="status-now">当前主线</td>
+                <td>单命令 build、渲染安全、脚手架 E2E、SSG smoke 和文档真实性收口。</td>
+                <td class="status-done">已完成</td>
               </tr>
               <tr>
                 <td>v0.6.0</td>
                 <td>DSD Renderer 2</td>
-                <td>渲染内核优先：safe/unsafe HTML 契约、safe template helper、nested DSD、slot/projection、错误定位。</td>
+                <td>
+                  渲染内核优先：safe/unsafe HTML 契约、safe template helper、nested
+                  DSD、slot/projection、错误定位。
+                </td>
                 <td class="status-next">下一阶段</td>
               </tr>
               <tr>
@@ -175,7 +176,10 @@ export class RoadmapPage extends LitElement {
               <tr>
                 <td>v0.8.0</td>
                 <td>Serverless Fullstack</td>
-                <td>Hono API 一等公民化，FormData actions、typed RPC、部署 adapter；为博客/内容插件提供稳定约定。</td>
+                <td>
+                  Hono API 一等公民化，FormData actions、typed RPC、部署
+                  adapter；为博客/内容插件提供稳定约定。
+                </td>
                 <td>规划中</td>
               </tr>
               <tr>
@@ -217,17 +221,29 @@ export class RoadmapPage extends LitElement {
               <tr>
                 <td class="priority-p0">P0</td>
                 <td>修复 <span class="inline-code">create-kiss</span> 模板</td>
-                <td>新项目可执行 <span class="inline-code">deno task dev</span> 与三阶段构建。</td>
+                <td>新项目可执行 <span class="inline-code">deno task dev</span> 与单命令构建。</td>
+              </tr>
+              <tr>
+                <td class="priority-p0">P0</td>
+                <td>新增单命令构建入口</td>
+                <td>
+                  <span class="inline-code">@kissjs/core/cli/build</span> 串起 SSR bundle、client chunks
+                  和 SSG。
+                </td>
               </tr>
               <tr>
                 <td class="priority-p0">P0</td>
                 <td>拒绝脚手架覆盖已有目录和路径逃逸</td>
-                <td>已有目录、非空目录、<span class="inline-code">../</span> 目标均失败并给出清晰错误。</td>
+                <td>
+                  已有目录、非空目录、<span class="inline-code">../</span> 目标均失败并给出清晰错误。
+                </td>
               </tr>
               <tr>
                 <td class="priority-p0">P0</td>
                 <td>修复嵌套 island SSR 路径</td>
-                <td><span class="inline-code">app/islands/foo/bar.ts</span> 能同时 SSR 和 client build。</td>
+                <td>
+                  <span class="inline-code">app/islands/foo/bar.ts</span> 能同时 SSR 和 client build。
+                </td>
               </tr>
               <tr>
                 <td class="priority-p0">P0</td>
@@ -237,7 +253,7 @@ export class RoadmapPage extends LitElement {
               <tr>
                 <td class="priority-p0">P0</td>
                 <td>SSG smoke 测试默认运行</td>
-                <td>CI 真实跑 Phase 1/2/3 docs build，不再只标记 ignore。</td>
+                <td>CI 真实跑单命令 docs build，不再只标记 ignore。</td>
               </tr>
               <tr>
                 <td class="priority-p1">P1</td>
@@ -252,7 +268,12 @@ export class RoadmapPage extends LitElement {
               <tr>
                 <td class="priority-p1">P1</td>
                 <td>Deno-first 工具链基线</td>
-                <td>仓库默认 <span class="inline-code">dev</span> / <span class="inline-code">build</span> / package build 不依赖 <span class="inline-code">npm</span> 或 <span class="inline-code">npx</span>；Deno 2.7+ 提供 Vite 8 所需的 <span class="inline-code">node:util.parseEnv</span> 兼容。</td>
+                <td>
+                  仓库默认 <span class="inline-code">dev</span> / <span class="inline-code">build</span> /
+                  package build 不依赖 <span class="inline-code">npm</span> 或 <span class="inline-code"
+                  >npx</span>；Deno 2.7+ 提供 Vite 8 所需的 <span class="inline-code"
+                  >node:util.parseEnv</span> 兼容。
+                </td>
               </tr>
             </tbody>
           </table>
@@ -274,7 +295,11 @@ export class RoadmapPage extends LitElement {
               <tr>
                 <td class="priority-p0">P0</td>
                 <td>定义 <span class="inline-code">render(): string</span> 安全契约</td>
-                <td>文档明确 string render 是 unsafe HTML；设计 safe template helper 与显式 <span class="inline-code">unsafeHTML</span> 边界。</td>
+                <td>
+                  文档明确 string render 是 unsafe HTML；设计 safe template helper 与显式 <span
+                    class="inline-code"
+                  >unsafeHTML</span> 边界。
+                </td>
               </tr>
               <tr>
                 <td class="priority-p0">P0</td>
@@ -317,7 +342,11 @@ export class RoadmapPage extends LitElement {
               <tr>
                 <td class="priority-p0">P0</td>
                 <td>真实 upgrade 策略</td>
-                <td><span class="inline-code">eager</span>、<span class="inline-code">idle</span>、<span class="inline-code">visible</span> 有浏览器测试。</td>
+                <td>
+                  <span class="inline-code">eager</span>、<span class="inline-code">idle</span>、<span
+                    class="inline-code"
+                  >visible</span> 有浏览器测试。
+                </td>
               </tr>
               <tr>
                 <td class="priority-p1">P1</td>
@@ -334,9 +363,9 @@ export class RoadmapPage extends LitElement {
 
           <h2>v0.8.0 Serverless Fullstack</h2>
           <p>
-            v0.8 之后再展开更完整的应用约定。博客系统是近期最合适的产品化样板；
-            CRM/admin 属于更靠后的中期目标，等 forms、auth、validation 和 data
-            loading 约定稳定后再作为官方示例推进。
+            v0.8 之后再展开更完整的应用约定。博客系统是近期最合适的产品化样板； CRM/admin
+            属于更靠后的中期目标，等 forms、auth、validation 和 data loading
+            约定稳定后再作为官方示例推进。
           </p>
           <table class="task-table">
             <thead>
@@ -370,7 +399,10 @@ export class RoadmapPage extends LitElement {
               <tr>
                 <td class="priority-p2">P2</td>
                 <td><span class="inline-code">@kissjs/blog</span> 设计落地</td>
-                <td>Markdown/frontmatter、listing、post、tag、pagination、feed 和 sitemap 作为 plain SSG plugin 先行。</td>
+                <td>
+                  Markdown/frontmatter、listing、post、tag、pagination、feed 和 sitemap 作为 plain SSG
+                  plugin 先行。
+                </td>
               </tr>
             </tbody>
           </table>
@@ -410,8 +442,8 @@ export class RoadmapPage extends LitElement {
 
           <h2>v0.10.0 .kiss Compiler Alpha</h2>
           <p>
-            <span class="inline-code">.kiss</span> compiler 仍然值得保留，但它是长期增强，
-            不应阻塞 v0.5-v0.9 的可信内核。目标是把 Lit 从推荐实现降级为可选 adapter，
+            <span class="inline-code">.kiss</span> compiler 仍然值得保留，但它是长期增强， 不应阻塞
+            v0.5-v0.9 的可信内核。目标是把 Lit 从推荐实现降级为可选 adapter，
             不是在当前阶段强制迁移所有用户代码。
           </p>
 

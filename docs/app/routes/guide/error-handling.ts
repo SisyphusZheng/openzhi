@@ -46,7 +46,7 @@ export class ErrorHandlingPage extends LitElement {
             ├── <strong>ConflictError</strong> (409)<br>
             ├── <strong>RateLimitError</strong> (429)<br>
             ├── <strong>SsrRenderError</strong> (500)<br>
-            └── <strong>HydrationError</strong> (500, legacy name for island upgrade failures)
+            └── <strong>IslandUpgradeError</strong> (500, island upgrade failures)
           </div>
 
           <h2>使用错误类</h2>
@@ -115,8 +115,7 @@ export class ErrorHandlingPage extends LitElement {
               </table>
               <p>
                 <strong>注意：</strong> KISS 中的 SSR/SSG 指的是<em>构建时 DSD 渲染</em>，
-                不是生产运行时服务器。当前 core 通过 DSD renderer 输出静态 HTML；
-                Lit 仅通过 adapter 接入。
+                不是生产运行时服务器。当前 core 通过 DSD renderer 输出静态 HTML； Lit 仅通过 adapter 接入。
               </p>
 
               <div class="nav-row">

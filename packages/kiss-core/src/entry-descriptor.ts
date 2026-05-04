@@ -92,7 +92,7 @@ export type RouteDecl = ApiRouteDecl | PageRouteDecl;
 
 // ─── Island declarations ───────────────────────────────────────
 
-/** Island component declaration for runtime hydration detection */
+/** Island component declaration for runtime upgrade detection */
 export interface IslandDecl {
   /** Custom element tag name */
   tagName: string;
@@ -155,7 +155,7 @@ export interface EntryDescriptor {
   /** Page route registrations */
   pageRoutes: PageRouteDecl[];
 
-  /** Known islands for runtime detection */
+  /** Known islands for runtime upgrade detection */
   islands: IslandDecl[];
 
   /** Renderer declarations (from _renderer.ts files) — v0.3.0 */
@@ -167,8 +167,8 @@ export interface EntryDescriptor {
   /** Document wrapping config */
   document: DocumentConfig;
 
-  /** Hydration strategy for Islands (default: 'lazy') */
-  hydrationStrategy?: 'eager' | 'lazy' | 'idle' | 'visible';
+  /** Island upgrade strategy for Islands (default: 'lazy') */
+  upgradeStrategy?: 'eager' | 'lazy' | 'idle' | 'visible';
 
   /** Route info for debug endpoint (dev only) */
   debugRoutes?: Array<{ path: string; type: string }>;
@@ -193,7 +193,7 @@ export function buildEntryDescriptor(
     packageIslands?: PackageIslandMeta[];
     headExtras?: string;
     html?: { lang?: string; title?: string };
-    hydrationStrategy?: 'eager' | 'lazy' | 'idle' | 'visible';
+    upgradeStrategy?: 'eager' | 'lazy' | 'idle' | 'visible';
   } = {},
 ): EntryDescriptor {
   const routesDir = options.routesDir || 'app/routes';
@@ -205,11 +205,11 @@ export function buildEntryDescriptor(
 
   // Always needed
   imports.push({ from: 'hono', names: ['Hono'] });
-  // v0.5.0: DSD renderer replaces @lit-labs/ssr + lit + html + unsafeHTML + collectResult
+  // v0.5.0: DSD renderer replaces the old Lit SSR pipeline.
   // Components use render(): string — no TemplateResult, no <!--lit-part--> markers.
-  // Note: import from @kissjs/core (not @kissjs/core/render-dsd) so Vite alias works correctly
-  // with the docs/.kiss-runtime.ts shim which re-exports renderDSD.
-  imports.push({ from: '@kissjs/core', names: ['renderDSD', 'renderDSDByName'] });
+  // Import from the lightweight runtime export so SSG never loads the Vite plugin
+  // or dev-server dependency graph.
+  imports.push({ from: '@kissjs/core/kiss-runtime', names: ['renderDSD', 'renderDSDByName'] });
 
   // Conditional middleware imports
   const mw = options.middleware;
@@ -362,7 +362,7 @@ export function buildEntryDescriptor(
     renderers,
     middlewareScopes,
     document,
-    hydrationStrategy: options.hydrationStrategy || 'lazy',
+    upgradeStrategy: options.upgradeStrategy || 'lazy',
     debugRoutes,
   };
 }

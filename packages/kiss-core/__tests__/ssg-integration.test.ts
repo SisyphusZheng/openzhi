@@ -39,7 +39,7 @@ async function setupSsgFixtures() {
     "const t='theme-toggle';customElements.define(t,Toggle);",
   );
 
-  // Simulate SSG HTML output with DSD + hydration + sidebar
+  // Simulate SSG HTML output with DSD + legacy inline island loader + sidebar
   const htmlDir = join(FIXTURES_DIR, 'dist');
   await Deno.writeTextFile(
     join(htmlDir, 'index.html'),
@@ -51,25 +51,25 @@ async function setupSsgFixtures() {
 </head>
 <body>
 <docs-home><template shadowroot="open" shadowrootmode="open"><style>:host { display: block; }</style>
-  <app-layout currentpath="/" defer-hydration><template shadowroot="open" shadowrootmode="open"><style>:host { display: block; }</style>
+  <app-layout currentpath="/"><template shadowroot="open" shadowrootmode="open"><style>:host { display: block; }</style>
     <nav class="docs-sidebar">
       <a href="/" class="" aria-current="">Home</a>
       <a href="/about" class="" aria-current="">About</a>
     </nav>
   </template></app-layout>
 </template></docs-home>
-<script type="module" data-kiss-hydrate>
+<script type="module" data-kiss-island-loader>
 (function() {
   const loaders = {
     'my-counter': () => import('/app/islands/my-counter.ts'),
     'theme-toggle': () => import('/app/islands/theme-toggle.ts')
   };
-  async function hydrate(tag, loader) {
+  async function upgradeIsland(tag, loader) {
     try { const m = await loader(); if (m.default && !customElements.get(tag)) customElements.define(tag, m.default); }
-    catch(e) { console.warn("[KISS] Island hydration failed:", e); }
+    catch(e) { console.warn("[KISS] Island upgrade failed:", e); }
   }
-  if ("requestIdleCallback" in window) requestIdleCallback(() => { for (const [t,l] of Object.entries(loaders)) hydrate(t,l); });
-  else setTimeout(() => { for (const [t,l] of Object.entries(loaders)) hydrate(t,l); }, 200);
+  if ("requestIdleCallback" in window) requestIdleCallback(() => { for (const [t,l] of Object.entries(loaders)) upgradeIsland(t,l); });
+  else setTimeout(() => { for (const [t,l] of Object.entries(loaders)) upgradeIsland(t,l); }, 200);
 })();
 </script>
 </body>
@@ -89,14 +89,14 @@ async function setupSsgFixtures() {
 </head>
 <body>
 <docs-about><template shadowroot="open" shadowrootmode="open"><style>:host { display: block; }</style>
-  <app-layout currentpath="/about" defer-hydration><template shadowroot="open" shadowrootmode="open"><style>:host { display: block; }</style>
+  <app-layout currentpath="/about"><template shadowroot="open" shadowrootmode="open"><style>:host { display: block; }</style>
     <nav class="docs-sidebar">
       <a href="/" class="" aria-current="">Home</a>
       <a href="/about" class="" aria-current="">About</a>
     </nav>
   </template></app-layout>
 </template></docs-about>
-<script type="module" data-kiss-hydrate>
+<script type="module" data-kiss-island-loader>
 (function() {
   const loaders = {
     'my-counter': () => import('/app/islands/my-counter.ts')
@@ -149,7 +149,7 @@ Deno.test('SSG integration', { permissions: { read: true, write: true } }, async
     assertEquals(Object.keys(chunkMap).length, 0);
   });
 
-  await t.step('rewriteHtmlFiles - rewrites Island hydration paths', () => {
+  await t.step('rewriteHtmlFiles - rewrites legacy island import paths', () => {
     const chunkMap: Record<string, string> = {
       'my-counter': '/kiss/client/islands/island-my-counter-abc123.js',
       'theme-toggle': '/kiss/client/islands/island-theme-toggle-def456.js',
@@ -193,11 +193,11 @@ Deno.test('SSG integration', { permissions: { read: true, write: true } }, async
     assertStringIncludes(html, 'docs-sidebar');
   });
 
-  await t.step('rewriteHtmlFiles - preserves hydration script (I constraint)', () => {
+  await t.step('rewriteHtmlFiles - preserves legacy inline loader (I constraint)', () => {
     const html = Deno.readTextFileSync(join(FIXTURES_DIR, 'dist', 'index.html'));
 
-    // Hydration script must exist with rewritten paths
-    assertStringIncludes(html, 'data-kiss-hydrate');
+    // Legacy inline loader must exist with rewritten paths
+    assertStringIncludes(html, 'data-kiss-island-loader');
     assertStringIncludes(html, '/kiss/client/islands/');
   });
 

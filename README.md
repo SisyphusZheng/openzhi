@@ -31,7 +31,7 @@ direction:
 - keep serverless APIs close to the route tree
 - publish and run through Deno-first workflows
 
-KISS is currently alpha software. The direction is stable; the APIs are still being hardened.
+KISS 0.5 is the trust release for the static-first DSD + Island Upgrade path.
 
 ## Quick Start
 
@@ -74,13 +74,13 @@ needed.
 
 ## Packages
 
-| Package               | Role                                                     | Current line    |
-| --------------------- | -------------------------------------------------------- | --------------- |
-| `@kissjs/core`        | Vite plugin, route scanning, DSD rendering, SSG pipeline | `0.5.0-alpha.5` |
-| `@kissjs/ui`          | Lit-based Web Component library and package islands      | `0.4.6`         |
-| `@kissjs/rpc`         | Small fetch/RPC controller utilities                     | `0.2.4`         |
-| `@kissjs/adapter-lit` | Optional Lit SSR adapter                                 | `0.1.4`         |
-| `@kissjs/create`      | Project scaffolding CLI                                  | `0.3.3`         |
+| Package               | Role                                                     | Current line |
+| --------------------- | -------------------------------------------------------- | ------------ |
+| `@kissjs/core`        | Vite plugin, route scanning, DSD rendering, SSG pipeline | `0.5.0`      |
+| `@kissjs/ui`          | Lit-based Web Component library and package islands      | `0.5.0`      |
+| `@kissjs/rpc`         | Small fetch/RPC controller utilities                     | `0.3.0`      |
+| `@kissjs/adapter-lit` | Optional Lit SSR adapter                                 | `0.2.0`      |
+| `@kissjs/create`      | Project scaffolding CLI                                  | `0.4.0`      |
 
 Deprecated historical packages such as `@kissjs/vite` and `@kissjs/ssg` should not be used.
 
@@ -133,15 +133,17 @@ export default class HomePage extends LitElement {
 customElements.define(tagName, HomePage);
 ```
 
-## Build Pipeline
+## Build
 
-KISS uses a three-phase static build:
+KISS apps use one production build command:
 
 ```bash
-deno task build        # Phase 1: SSR bundle + build metadata
-deno task build:client # Phase 2: island client chunks
-deno task build:ssg    # Phase 3: static HTML + post-processing
+deno task build
 ```
+
+Internally, `@kissjs/core/cli/build` still keeps SSR bundling, island client chunks, and SSG
+rendering as separate observable phases. The split is for debugging and CI, not for the main user
+workflow.
 
 For the full repository:
 
@@ -156,7 +158,7 @@ not part of the main workflow.
 
 ## Status
 
-KISS is currently preparing the `v0.5.0-alpha.5` line.
+KISS is on the `v0.5.0` trust release line.
 
 Stable enough to evaluate:
 
@@ -166,11 +168,9 @@ Stable enough to evaluate:
 - Hono API routes
 - Deno-first local and CI workflows
 
-Still being hardened:
+Planned for later releases:
 
-- safe Lit SSR interpolation
-- nested island path handling
-- scaffold validation
+- DSD Renderer 2: nested DSD, slot/projection, safe template helpers
 - ISR/serverless conventions
 - future `.kiss` compiler direction
 

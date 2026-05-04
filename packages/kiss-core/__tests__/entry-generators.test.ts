@@ -46,7 +46,7 @@ Deno.test('mixed eager+lazy', () => {
   }
 });
 
-Deno.test('no Lit hydration', () => {
+Deno.test('no legacy SSR client runtime', () => {
   const code = generateClientEntry([
     { tagName: 'my-counter', modulePath: './counter.ts' },
   ]);

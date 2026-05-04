@@ -80,12 +80,12 @@ export class SsrRenderError extends KissError {
   }
 }
 
-/** Island hydration failed (HTTP 500, non-operational) */
-export class HydrationError extends KissError {
+/** Island upgrade failed (HTTP 500, non-operational) */
+export class IslandUpgradeError extends KissError {
   constructor(
     public readonly tagName: string,
     public override readonly cause: Error,
   ) {
-    super(`Hydration failed for <${tagName}>`, 'HYDRATION_ERROR', 500, false);
+    super(`Island upgrade failed for <${tagName}>`, 'ISLAND_UPGRADE_ERROR', 500, false);
   }
 }

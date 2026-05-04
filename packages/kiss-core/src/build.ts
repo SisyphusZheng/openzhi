@@ -6,17 +6,18 @@
  *
  * v0.3.0: closeBundle no longer nests viteBuild() + createServer().
  * Instead, it writes .kiss/build-metadata.json and instructs the user
- * to run the CLI build pipeline:
+ * to run the official build command:
  *
- *   Phase 1: vite build          → SSR bundle + .kiss/build-metadata.json
- *   Phase 2: deno task build:client → dist/client/islands/*.js + manifest
- *   Phase 3: deno task build:ssg    → dist/*.html + post-process
+ *   deno task build
+ *     Phase 1: vite build  -> SSR bundle + .kiss/build-metadata.json
+ *     Phase 2: buildClient -> dist/client/islands/*.js + manifest
+ *     Phase 3: buildSSG    -> dist/*.html + post-process
  *
  * This eliminates:
  *   - Watch mode breakage from nested viteBuild() inside Vite hooks
  *   - Cross-instance error stacks that are impossible to debug
  *
- * The old closeBundle logic lives in cli/build-client.ts and cli/build-ssg.ts.
+ * Phase 2/3 remain available as debug CLIs under src/cli/.
  */
 
 import type { Plugin, ResolvedConfig } from 'vite';
@@ -32,19 +33,22 @@ import { mkdirSync, writeFileSync } from 'node:fs';
  */
 function serializeAlias(
   alias: Record<string, string> | import('vite').Alias[] | undefined | null,
-): Record<string, string> | null {
+): Record<string, string> | Array<{ find: string; replacement: string }> | null {
   if (!alias) return null;
-  // Already a simple object map
-  if (!Array.isArray(alias)) return alias;
-  // Convert Alias[] to Record<string, string>
-  const result: Record<string, string> = {};
+  if (!Array.isArray(alias)) {
+    return Object.entries(alias)
+      .map(([find, replacement]) => ({ find, replacement }))
+      .sort((a, b) => b.find.length - a.find.length);
+  }
+  const result: Array<{ find: string; replacement: string }> = [];
   for (const entry of alias) {
     if (typeof entry.find === 'string') {
-      result[entry.find] = entry.replacement;
+      result.push({ find: entry.find, replacement: entry.replacement });
     }
     // Skip RegExp find patterns — they can't be JSON-serialized
   }
-  return Object.keys(result).length > 0 ? result : null;
+  result.sort((a, b) => b.find.length - a.find.length);
+  return result.length > 0 ? result : null;
 }
 
 /** Vite plugin: writes build metadata for CLI build pipeline */
@@ -100,9 +104,9 @@ export function buildPlugin(options: FrameworkOptions = {}, ctx?: KissBuildConte
         headExtras: options.headExtras || '',
         html: options.html || {},
         pwa: options.pwa || null,
-        // hydrationStrategy controls WHEN defer-hydration is removed (not HOW).
-        // It IS functional — see build-ssg.ts for usage.
-        hydrationStrategy: options.island?.hydrationStrategy || 'lazy',
+        // upgradeStrategy controls when island modules are imported.
+        // It is an upgrade timing hint, not a client render runtime.
+        upgradeStrategy: options.island?.upgradeStrategy || 'lazy',
       };
       const metadataPath = join(kissTmpDir, 'build-metadata.json');
       writeFileSync(metadataPath, JSON.stringify(metadata, null, 2), 'utf-8');
@@ -111,12 +115,11 @@ export function buildPlugin(options: FrameworkOptions = {}, ctx?: KissBuildConte
 
       console.log('[KISS] Phase 1 complete — SSR bundle + metadata written');
       if (totalIslands > 0) {
-        console.log(`[KISS] ${totalIslands} island(s) detected — run next phases:`);
-        console.log('[KISS]   deno task build:client   (Phase 2: compile island JS)');
-        console.log('[KISS]   deno task build:ssg      (Phase 3: render static HTML)');
+        console.log(`[KISS] ${totalIslands} island(s) detected — run the full build command next.`);
+        console.log('[KISS]   deno task build          (compile islands + render static HTML)');
       } else {
         console.log('[KISS] No islands — static pages only, zero client JS');
-        console.log('[KISS] Run: deno task build:ssg   (Phase 3: render static HTML)');
+        console.log('[KISS] Run: deno task build       (render static HTML)');
       }
     },
   };

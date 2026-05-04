@@ -77,8 +77,8 @@ async function buildClient(): Promise<void> {
   const islandEntries: ClientIslandEntry[] = [
     ...localIslands.map((tagName: string, i: number) => ({
       tagName,
-      // Use file path if available (supports subdirectory islands),
-      // fall back to tagName.ts for backward compat
+      // Use file path if available (supports subdirectory islands).
+      // The tagName fallback keeps generated test metadata compact.
       modulePath: resolve(
         root,
         localIslandFiles[i]
@@ -148,9 +148,7 @@ async function buildClient(): Promise<void> {
       },
     },
     // Pass user's resolve alias from Phase 1 so island imports resolve correctly
-    resolve: metadata.resolveAlias
-      ? { alias: metadata.resolveAlias as Record<string, string> }
-      : undefined,
+    resolve: metadata.resolveAlias ? { alias: metadata.resolveAlias } : undefined,
     // SSR noExternal: ensures packages like @kissjs/ui (with decorators)
     // are bundled by Vite instead of left as bare imports
     ssr: {

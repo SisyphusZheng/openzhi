@@ -13,7 +13,7 @@ import type {
   SpecialFileType,
   SsrContext,
 } from '../src/types.ts';
-// v0.5.0: HydrationStrategy type is defined inline in types.ts (FrameworkOptions.island.hydrationStrategy)
+// v0.5.0: UpgradeStrategy type is defined inline in types.ts (FrameworkOptions.island.upgradeStrategy)
 // No longer exported from entry-generators.ts
 
 // Compile-time type existence checks (lint compliance: consume the imported types)
@@ -34,7 +34,7 @@ Deno.test('types: FrameworkOptions has expected shape', () => {
     componentsDir: 'app/components',
     headExtras: '<link />',
     html: { title: 'Test', lang: 'en' },
-    island: { hydrationStrategy: 'lazy' },
+    island: { upgradeStrategy: 'lazy' },
     middleware: { corsOrigin: '*' },
     packageIslands: ['@kissjs/ui'],
     ssr: { noExternal: [/^lit/] },

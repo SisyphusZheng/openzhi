@@ -61,17 +61,20 @@ export class ArchitecturePage extends LitElement {
           </table>
 
           <h2>当前构建管线</h2>
+          <p>
+            用户主路径是 <span class="inline-code">deno task build</span>。内部仍按阶段执行：
+          </p>
           <code-block><pre><code>Phase 1: vite build
   - scan routes / islands / package islands
   - generate virtual Hono entry
   - write .kiss/build-metadata.json
 
-Phase 2: build:client
+Phase 2: buildClient()
   - read .kiss/build-metadata.json
   - generate client island entry
   - build dist/client/islands/*.js
 
-Phase 3: build:ssg
+Phase 3: buildSSG()
   - create Vite SSR server
   - load generated Hono app
   - render routes to DSD HTML

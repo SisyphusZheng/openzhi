@@ -1,40 +1,29 @@
 /**
- * @kissjs/core - DSD Renderer
+ * @kissjs/core - DSD Renderer.
  *
  * Pure string-based Declarative Shadow DOM SSR renderer.
- * Framework-agnostic — no Lit dependency, no TemplateResult knowledge.
+ * Framework-agnostic: no Lit dependency and no TemplateResult knowledge.
  *
- * KISS Architecture (v0.5.1+):
- * - Takes a registered Custom Element class + props → DSD HTML string
- * - Components MUST implement render(): string (pure function from state → HTML)
- * - Rendering is synchronous string concatenation — no DOM shim needed
- * - Framework adapters (e.g. @kissjs/adapter-lit) can hook into the
- *   rendering pipeline via globalThis to handle framework-specific types
+ * KISS Architecture (v0.5.0):
+ * - Takes a registered Custom Element class + props and returns DSD HTML
+ * - Components MUST implement render(): string
+ * - Rendering is synchronous string concatenation; no DOM shim needed
+ * - Framework adapters can hook into the pipeline via globalThis
  *
- * SSR Lifecycle:
- *   1. Instantiate component class (new Class())
+ * SSR lifecycle:
+ *   1. Instantiate component class
  *   2. Set attributes/properties from props
  *   3. Call render() to get Shadow DOM HTML string
  *   4. Wrap in <template shadowrootmode="open">
- *   5. Recurse for nested custom elements (optional, Phase 2)
  *
- * Adapter Protocol:
- *   Adapters register via globalThis hooks (set by installLitAdapter()):
- *   - __kissLitTemplateCheck(value) → boolean  (is this a framework object?)
- *   - __kissLitSsrRenderer(value, tagName) → Promise<string>  (convert to string)
- *   Core never imports any framework — adapters are opt-in.
- *
- * Client Lifecycle (no hydration needed):
- *   1. Browser parses DSD → attaches Shadow DOM automatically
+ * Client lifecycle:
+ *   1. Browser parses DSD and attaches Shadow DOM automatically
  *   2. customElements.define() upgrades existing elements
- *   3. connectedCallback fires — add event listeners to existing DOM
- *   4. No duplicate rendering, no hydrate() call needed
+ *   3. connectedCallback fires and attaches event listeners to existing DOM
+ *   4. No duplicate client render is needed
  *
  * @module @kissjs/core/render-dsd
  */
-
-// ─── HTML Escaping ───────────────────────────────────────────────
-
 /** Escape text content for safe HTML insertion */
 export function escapeHtml(str: string): string {
   return str
@@ -283,26 +272,6 @@ export async function renderDSDByName(
   }
 
   return await renderDSD(tagName, cls as CustomElementConstructor, props);
-}
-
-/**
- * Scan an HTML string for custom element tags and recursively render them.
- *
- * @param html - HTML string possibly containing custom element tags
- * @param renderFn - Function to render each detected component
- * @returns HTML with all custom elements replaced by their DSD-rendered output
- *
- * Phase 2 enhancement: This enables recursive rendering of nested components.
- * Currently returns the original HTML — full recursive implementation pending
- * the component registry integration.
- */
-export function renderNestedDsd(
-  html: string,
-  _renderFn: (tag: string, props: Record<string, string>) => Promise<string> = renderDSDByName,
-): string {
-  // Phase 2: Implement regex or lightweight parser for custom element detection.
-  // For v0.5.0 alpha, components are responsible for rendering their own children.
-  return html;
 }
 
 // ─── Document Wrapping ──────────────────────────────────────────

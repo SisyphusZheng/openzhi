@@ -15,15 +15,13 @@ export class SSGGuidePage extends LitElement {
             KISS 当前稳定交付形态是 SSG：构建时把路由渲染为带 DSD 的静态 HTML。
           </p>
 
-          <h2>三阶段构建</h2>
+          <h2>单命令构建</h2>
           <p>
-            KISS 不在一个 Vite hook 里隐式完成所有工作，而是把构建拆成三个可验证阶段。
+            用户只需要运行一个生产构建命令；内部仍保留三个可验证阶段，方便定位问题。
           </p>
-          <code-block><pre><code>deno task build          # Phase 1: SSR bundle + .kiss/build-metadata.json
-deno task build:client   # Phase 2: client island entry/chunks
-deno task build:ssg      # Phase 3: static HTML + post-processing</code></pre></code-block>
+          <code-block><pre><code>deno task build</code></pre></code-block>
 
-          <h2>Phase 1：SSR bundle</h2>
+          <h2>内部 Phase 1：SSR bundle</h2>
           <ol>
             <li>扫描 <span class="inline-code">app/routes/</span>。</li>
             <li>扫描 <span class="inline-code">app/islands/</span> 与 package islands。</li>
@@ -31,7 +29,7 @@ deno task build:ssg      # Phase 3: static HTML + post-processing</code></pre></
             <li>写出 <span class="inline-code">.kiss/build-metadata.json</span>。</li>
           </ol>
 
-          <h2>Phase 2：Island client build</h2>
+          <h2>内部 Phase 2：Island client build</h2>
           <p>
             客户端构建读取 Phase 1 的元数据，生成 island entry 并交给 Vite 输出
             <span class="inline-code">dist/client/islands/*.js</span>。
@@ -40,7 +38,7 @@ deno task build:ssg      # Phase 3: static HTML + post-processing</code></pre></
             当前仍以全局 island entry 为主。页面级 island manifest 是 v0.7.0 目标。
           </p>
 
-          <h2>Phase 3：DSD HTML 输出</h2>
+          <h2>内部 Phase 3：DSD HTML 输出</h2>
           <p>
             SSG 阶段创建 Vite SSR server，加载 generated Hono app，
             对页面路由发起请求并写出静态 HTML。页面组件通过 DSD renderer 输出：

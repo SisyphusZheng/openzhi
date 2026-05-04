@@ -25,17 +25,8 @@ jobs:
       - name: Install dependencies
         run: deno install --node-modules-dir
 
-      - name: Build @kissjs/ui (needed by SSR bundle)
-        run: deno task build:ui
-
-      - name: Phase 1 — SSR bundle
-        run: deno run -A npm:vite build docs --config docs/vite.config.ts
-
-      - name: Phase 2 — Client island chunks
-        run: deno task build:client
-
-      - name: Phase 3 — SSG static HTML
-        run: deno task build:ssg
+      - name: Build docs
+        run: deno task build:docs
 
       - name: Deploy to gh-pages branch
         run: |

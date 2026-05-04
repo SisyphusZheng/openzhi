@@ -3,17 +3,15 @@
  *
  * Pure function: EntryDescriptor → string (virtual module code).
  *
- * KISS Architecture (v0.3.0):
+ * KISS Architecture (v0.5.0):
  * - API routes use Hono standard app.route() (not app.all + fetch transform)
- * - Hydration is handled by the client entry (built by Vite in Phase 2),
- *   which uses Lit's hydrate() from @lit-labs/ssr-client.
- *   No inline script in SSG HTML — the client entry is a Vite-built module
- *   referenced via <script type="module" src="...">.
+ * - Island upgrade is handled by the client entry (built by Vite in Phase 2).
+ *   No inline script in SSG HTML; the client entry is a Vite-built module
+ *   referenced via <script type="module" src="..."> and imports island modules
+ *   for side-effect custom element registration.
  * - HTML document wrapping delegates to wrapInDocument from ssr-handler.ts
  *   (imported at runtime — single source of truth, no duplicate HTML logic)
- * - NO stripLitComments: <!--lit-part--> markers are ESSENTIAL for Lit hydration.
- *   Removing them breaks hydrate()'s ability to re-associate template
- *   expressions with DOM nodes, forcing client-render (destroying SSR output).
+ * - DSD output must remain plain HTML, without Lit SSR marker comments.
  */
 
 import type {
@@ -191,7 +189,7 @@ function renderPageRoute(
   b.push(`app.get('${route.path}', async (c) => {`);
   b.push(`  try {`);
   b.push(`    const tag = ${route.varName}.tagName || '${route.defaultTagName}'`);
-  // v0.5.0: DSD renderer — no <!--lit-part--> markers, no defer-hydration.
+  // v0.5.0: DSD renderer - no <!--lit-part--> markers, no old upgrade marker.
   // __ssr() uses renderDSD() which outputs standard DSD HTML.
   // Components receive route params as props for SSR-time data access.
   b.push(`    const raw = await __ssr(tag, c.req.param())`);
@@ -245,16 +243,12 @@ function renderPageRoute(
  *
  * Pure function — deterministic, testable, side-effect-free.
  *
- * v0.3.0: Hydration is handled by the Vite-built client entry (Phase 2),
- * not by inline scripts in SSG HTML. The client entry:
- *   1. Imports and registers all island custom elements
- *   2. Imports hydrate() from @lit-labs/ssr-client (bundled by Vite)
- *   3. Waits for customElements.whenDefined()
- *   4. Calls hydrate(el) on elements with defer-hydration
- *   5. Removes defer-hydration attribute
+ * v0.5.0: Island upgrade is handled by the Vite-built client entry (Phase 2),
+ * not by inline scripts in SSG HTML. The client entry imports each island
+ * module so custom elements can self-register and upgrade existing DSD markup.
  *
- * SSR output preserves <!--lit-part--> comments for hydration.
- * No inline scripts, no bare module imports — browser-safe.
+ * SSR output is plain DSD HTML. No Lit SSR marker comments, no bare module
+ * imports, and no duplicate client render ceremony.
  *
  * The client script <script> tag is injected by build-ssg.ts (Phase 3)
  * after reading the Vite client build manifest.
@@ -271,10 +265,10 @@ export function renderEntry(desc: EntryDescriptor): string {
     b.push(renderImport(imp));
   }
 
-  // --- Island hydration (build-time known list) ---
+  // --- Island lookup (build-time known list) ---
   // This map is used by the SSR helper to know which custom elements
-  // to render. The CLIENT-SIDE hydration is handled by the client entry
-  // (built separately by Vite in Phase 2).
+  // to render. Client-side upgrade is handled by the client entry
+  // that imports island modules separately in Phase 2.
   const islandLookup: Record<string, string> = {};
   for (const island of desc.islands) {
     islandLookup[island.tagName] = island.modulePath;
@@ -286,10 +280,9 @@ export function renderEntry(desc: EntryDescriptor): string {
 
   // --- Document wrapper ---
   // Uses wrapInDocument from ssr-handler.ts (single source of truth).
-  // Import via @kissjs/core — during SSR build, Vite resolves this to
-  // the local source via resolve.alias.
-  // This eliminates the duplicate HTML wrapping that was previously inlined.
-  b.push(`import { wrapInDocument } from '@kissjs/core';`);
+  // Import via the lightweight runtime export so SSR does not load the
+  // Vite plugin or dev-server dependency graph.
+  b.push(`import { wrapInDocument } from '@kissjs/core/kiss-runtime';`);
   b.blank();
 
   // --- Route module imports ---
@@ -306,8 +299,7 @@ export function renderEntry(desc: EntryDescriptor): string {
   b.blank();
 
   // --- Register page components in SSR customElements registry ---
-  // This is essential for Lit SSR's renderValue to find and render Shadow DOM.
-  // Without registration, <unsafeHTML> produces bare tags without DSD content.
+  // This is essential for renderDSD() to find and render Shadow DOM.
   // Each SSR route module exports { default: ComponentClass, tagName: string }.
   for (const route of desc.pageRoutes) {
     b.push(`if (!customElements.get(${route.varName}.tagName || '${route.defaultTagName}')) {`);
@@ -319,8 +311,7 @@ export function renderEntry(desc: EntryDescriptor): string {
   b.blank();
 
   // --- Register island components in SSR customElements registry ---
-  // Islands need to be registered for Lit SSR's renderValue to produce DSD.
-  // Without registration, <unsafeHTML> renders bare tags without Shadow DOM.
+  // Islands need to be registered so renderDSD() can produce DSD.
   // Uses a static import per island module (known at build time).
   // Package islands may self-register and may not expose a default export.
   // Read default through a helper to avoid Rollup/Vite static "missing default" warnings.
@@ -347,9 +338,9 @@ export function renderEntry(desc: EntryDescriptor): string {
   // otherwise customElements.get() returns undefined.
   // Each component's render() returns a plain HTML string (no TemplateResult).
   // Output is standard DSD: <tag><template shadowrootmode="open">...</template></tag>
-  // No defer-hydration, no <!--lit-part-->, no hydration ceremony needed.
+  // No old upgrade marker, no <!--lit-part-->, no client render ceremony needed.
   b.push('// SSR helper: render a registered custom element to DSD HTML');
-  b.push('// Outputs standard DSD — no hydration markers needed');
+  b.push('// Outputs standard DSD; no client render markers needed');
   b.push('async function __ssr(tag, props = {}) {');
   b.push('  // Validate tag name — must be a valid Custom Element (contains hyphen)');
   b.push('  if (!tag || !tag.includes("-")) {');
