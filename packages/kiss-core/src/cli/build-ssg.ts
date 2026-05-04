@@ -319,7 +319,9 @@ async function buildSSG(options: BuildSSGOptions = {}): Promise<void> {
       }
 
       // Post-process: rewrite island paths (fallback for any inline references)
-      const { buildIslandChunkMap, rewriteHtmlFiles, injectCspMeta } = await import('../ssg-postprocess.js');
+      const { buildIslandChunkMap, rewriteHtmlFiles, injectCspMeta } = await import(
+        '../ssg-postprocess.js'
+      );
       const islandChunkMap = buildIslandChunkMap(root, outDir, islandTagNames, basePath);
       if (Object.keys(islandChunkMap).length > 0) {
         rewriteHtmlFiles(outputDir, islandChunkMap);

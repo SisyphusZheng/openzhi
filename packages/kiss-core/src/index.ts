@@ -192,7 +192,12 @@ export function kiss(options: FrameworkOptions = {}): Plugin[] {
       if (resolvedConfig.resolve?.alias && !ctx.userResolveAlias) {
         ctx.userResolveAlias = resolvedConfig.resolve.alias;
       }
-      ctx.honoEntryCode = generateEntry([], ctx.islandTagNames, ctx.packageIslands, ctx.islandFiles);
+      ctx.honoEntryCode = generateEntry(
+        [],
+        ctx.islandTagNames,
+        ctx.packageIslands,
+        ctx.islandFiles,
+      );
     },
 
     async buildStart() {
@@ -215,7 +220,12 @@ export function kiss(options: FrameworkOptions = {}): Plugin[] {
           }
         }
 
-        ctx.honoEntryCode = generateEntry(routes, ctx.islandTagNames, ctx.packageIslands, ctx.islandFiles);
+        ctx.honoEntryCode = generateEntry(
+          routes,
+          ctx.islandTagNames,
+          ctx.packageIslands,
+          ctx.islandFiles,
+        );
         const pageCount = routes.filter((r) => r.type === 'page' && !r.special).length;
         const apiCount = routes.filter((r) => r.type === 'api' && !r.special).length;
         const totalIslands = ctx.islandTagNames.length + ctx.packageIslands.length;
@@ -243,7 +253,8 @@ export function kiss(options: FrameworkOptions = {}): Plugin[] {
 
     load(id) {
       if (id === RESOLVED_ENTRY_ID) {
-        return ctx.honoEntryCode || generateEntry([], ctx.islandTagNames, ctx.packageIslands, ctx.islandFiles);
+        return ctx.honoEntryCode ||
+          generateEntry([], ctx.islandTagNames, ctx.packageIslands, ctx.islandFiles);
       }
     },
   };

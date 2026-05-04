@@ -73,8 +73,18 @@ Deno.test('package island strategy:eager is preserved in client entry', () => {
   // kiss-theme-toggle (strategy: 'eager') was treated as lazy.
   // Fix: strategy is now passed through from metadata.
   const code = generateClientEntry([
-    { tagName: 'kiss-theme-toggle', modulePath: '@kissjs/ui/kiss-theme-toggle', strategy: 'eager', isPackage: true },
-    { tagName: 'kiss-button', modulePath: '@kissjs/ui/kiss-button', strategy: 'lazy', isPackage: true },
+    {
+      tagName: 'kiss-theme-toggle',
+      modulePath: '@kissjs/ui/kiss-theme-toggle',
+      strategy: 'eager',
+      isPackage: true,
+    },
+    {
+      tagName: 'kiss-button',
+      modulePath: '@kissjs/ui/kiss-button',
+      strategy: 'lazy',
+      isPackage: true,
+    },
   ]);
 
   // Eager island must appear in the immediate-load array

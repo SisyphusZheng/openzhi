@@ -11,7 +11,7 @@
 - 5 个子包: core(0.5.2), ui(0.5.1), rpc(0.3.0), adapter-lit(0.2.0), create(0.4.5)
 - 3-Phase Build: vite build → build-client → build-ssg
 
-## 已知问题 (2026-05-04 审查 → Trust Release 修复后)
+## 已知问题 (2026-05-05 Trust Release 修复后)
 - ✅ 根 middleware scope `'//*'` → 已修
 - ✅ SSG 丢失 CSP 注入 → 已修
 - ✅ 嵌套 islands 路径错误 → 已修
@@ -19,11 +19,16 @@
 - ✅ buildIslandChunkMap 双前缀 → 已修
 - ✅ kiss-layout.ts DEFAULT_NAV 不同步 → 已修
 - ✅ escapeHtml 重复实现 → 已标注 canonical 位置
+- ✅ lit html 模板反引号破坏构建 → 已修 (└ 替代 `)
 - docs/public/*.js lint 失败 (29 个 no-var 错误) — 第三方文件
 - deno fmt --check 多处失败 + Deno 2.7.14 Windows panic — Deno 上游问题
 - 首页硬编码颜色 (#000, #222, #aaa) 破坏主题
 - Demo renderer 用 HTML 注释作占位符
-- scanPackageIslands 测试有 Deno signal listener 泄漏（非项目 bug）
+- scanPackageIslands 测试有 Deno signal listener 泄漏（Deno 上游问题）
+
+## 构建验证
+- 309/310 tests passed, deno task build 全流程通过
+- Commit: 0065b50 (v0.5 alpha trust release)
 
 ## 用户偏好
 - 中文交流，偏好极简技术风格 UI
