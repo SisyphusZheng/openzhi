@@ -75,7 +75,12 @@ export default class CodeBlock extends LitElement {
     _copyState: { state: true },
   };
 
-  private _copyState: 'idle' | 'copied' | 'failed' = 'idle';
+  declare private _copyState: 'idle' | 'copied' | 'failed';
+
+  constructor() {
+    super();
+    this._copyState = 'idle';
+  }
 
   override render() {
     return html`
@@ -113,4 +118,6 @@ export default class CodeBlock extends LitElement {
   }
 }
 
-customElements.define(tagName, CodeBlock);
+if (!customElements.get(tagName)) {
+  customElements.define(tagName, CodeBlock);
+}

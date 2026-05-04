@@ -196,14 +196,26 @@ export default class ApiConsumer extends LitElement {
     helloError: { type: String },
   };
 
-  apiUrl = '';
-  apiData: Record<string, unknown> | null = null;
-  apiLoading = false;
-  apiError = '';
-  name = '';
-  helloMsg = '';
-  helloLoading = false;
-  helloError = '';
+  declare apiUrl: string;
+  declare apiData: Record<string, unknown> | null;
+  declare apiLoading: boolean;
+  declare apiError: string;
+  declare name: string;
+  declare helloMsg: string;
+  declare helloLoading: boolean;
+  declare helloError: string;
+
+  constructor() {
+    super();
+    this.apiUrl = '';
+    this.apiData = null;
+    this.apiLoading = false;
+    this.apiError = '';
+    this.name = '';
+    this.helloMsg = '';
+    this.helloLoading = false;
+    this.helloError = '';
+  }
 
   private get _base(): string {
     return this.apiUrl || 'https://kiss-demo-api.sisyphuszheng.deno.net';
@@ -319,8 +331,11 @@ export default class ApiConsumer extends LitElement {
             @input="${this._onInput}"
             @keydown="${this._onKey}"
           />
-          <button class="btn primary" @click="${this._sayHello}" ?disabled="${this.helloLoading ||
-            !this.name.trim()}">
+          <button
+            class="btn primary"
+            @click="${this._sayHello}"
+            ?disabled="${this.helloLoading || !this.name.trim()}"
+          >
             ${this.helloLoading ? 'Sending...' : 'Say Hello →'}
           </button>
         </div>
@@ -338,4 +353,6 @@ export default class ApiConsumer extends LitElement {
   }
 }
 
-customElements.define(tagName, ApiConsumer);
+if (!customElements.get(tagName)) {
+  customElements.define(tagName, ApiConsumer);
+}

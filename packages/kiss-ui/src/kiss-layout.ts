@@ -504,19 +504,30 @@ export class KissLayout extends LitElement {
     };
 
     /** Whether to show the home layout (no sidebar, full-width) */
-    home = false;
+    declare home: boolean;
     /** Current URL path, used to highlight the active navigation link */
-    currentPath = '';
+    declare currentPath: string;
     /** Sidebar navigation sections (data-driven; falls back to default KISS docs nav) */
-    navItems?: NavSection[];
+    declare navItems: NavSection[] | undefined;
     /** Header navigation links (data-driven; falls back to default) */
-    headerNav?: HeaderNavLink[];
+    declare headerNav: HeaderNavLink[] | undefined;
     /** Logo text (default: "KISS") */
-    logoText = 'KISS';
+    declare logoText: string;
     /** Logo subtitle (default: "framework") */
-    logoSub = 'framework';
+    declare logoSub: string;
     /** GitHub repository URL (default: KISS repo) */
-    githubUrl = 'https://github.com/SisyphusZheng/kiss';
+    declare githubUrl: string;
+
+    constructor() {
+      super();
+      this.home = false;
+      this.currentPath = '';
+      this.navItems = undefined;
+      this.headerNav = undefined;
+      this.logoText = 'KISS';
+      this.logoSub = 'framework';
+      this.githubUrl = 'https://github.com/SisyphusZheng/kiss';
+    }
 
     /** Default KISS docs navigation — single source of truth for the docs site */
     private static readonly DEFAULT_NAV: NavSection[] = [

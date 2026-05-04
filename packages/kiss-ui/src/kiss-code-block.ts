@@ -78,8 +78,13 @@ export class KissCodeBlock extends LitElement {
     _copyState: { state: true },
   };
 
-  private _copyState: 'idle' | 'copied' | 'failed' = 'idle';
+  declare private _copyState: 'idle' | 'copied' | 'failed';
   private _copyTimer: ReturnType<typeof globalThis.setTimeout> | undefined;
+
+  constructor() {
+    super();
+    this._copyState = 'idle';
+  }
 
   override disconnectedCallback() {
     super.disconnectedCallback();

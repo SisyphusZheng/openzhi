@@ -51,7 +51,7 @@ export default class CounterIsland extends LitElement {
     count: { type: Number },
   };
 
-  count = 0;
+  declare count: number;
 
   constructor() {
     super();
@@ -69,4 +69,6 @@ export default class CounterIsland extends LitElement {
   }
 }
 
-customElements.define(tagName, CounterIsland);
+if (!customElements.get(tagName)) {
+  customElements.define(tagName, CounterIsland);
+}

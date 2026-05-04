@@ -127,17 +127,27 @@ export class KissButton extends LitElement {
   };
 
   /** Button variant style: 'default' (outlined), 'primary' (filled), or 'ghost' (no border) */
-  variant: 'default' | 'primary' | 'ghost' = 'default';
+  declare variant: 'default' | 'primary' | 'ghost';
   /** Button size: 'sm', 'md' (default), or 'lg' */
-  size: 'sm' | 'md' | 'lg' = 'md';
+  declare size: 'sm' | 'md' | 'lg';
   /** Whether the button is disabled */
-  disabled = false;
+  declare disabled: boolean;
   /** If set, renders as an anchor link instead of a button */
-  href?: string;
+  declare href: string | undefined;
   /** Target attribute for link mode (e.g. '_blank') */
-  target?: string;
+  declare target: string | undefined;
   /** Button type: 'submit', 'button', or 'reset' (default: 'button'). Only applies in button mode (no href). */
-  type: 'submit' | 'button' | 'reset' = 'button';
+  declare type: 'submit' | 'button' | 'reset';
+
+  constructor() {
+    super();
+    this.variant = 'default';
+    this.size = 'md';
+    this.disabled = false;
+    this.href = undefined;
+    this.target = undefined;
+    this.type = 'button';
+  }
 
   /** Prevent default on disabled anchor clicks */
   private _preventClick(e: Event) {

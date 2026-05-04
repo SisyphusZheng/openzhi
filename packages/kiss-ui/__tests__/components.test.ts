@@ -156,6 +156,32 @@ const COMPONENT_CLASSES = [
   ['kiss-theme-toggle', 'KissThemeToggle'],
 ];
 
+const REACTIVE_PROPERTY_CASES = [
+  ['kiss-button', 'KissButton', ['variant', 'size', 'disabled', 'href', 'target', 'type']],
+  ['kiss-card', 'KissCard', ['variant']],
+  ['kiss-input', 'KissInput', [
+    'type',
+    'placeholder',
+    'label',
+    'value',
+    'name',
+    'disabled',
+    'required',
+    'error',
+  ]],
+  ['kiss-code-block', 'KissCodeBlock', ['_copyState']],
+  ['kiss-layout', 'KissLayout', [
+    'home',
+    'currentPath',
+    'navItems',
+    'headerNav',
+    'logoText',
+    'logoSub',
+    'githubUrl',
+  ]],
+  ['kiss-theme-toggle', 'KissThemeToggle', ['theme', '_isLight']],
+];
+
 for (const [fileName, className] of COMPONENT_CLASSES) {
   Deno.test(`kiss-${fileName}: can be instantiated and render()`, async () => {
     const mod = await import(`../src/${fileName}.ts`);
@@ -163,6 +189,21 @@ for (const [fileName, className] of COMPONENT_CLASSES) {
     const instance = new Cls();
     const result = instance.render();
     assertExists(result, `${className}.render() should return a TemplateResult`);
+  });
+}
+
+for (const [fileName, className, props] of REACTIVE_PROPERTY_CASES) {
+  Deno.test(`kiss-${fileName}: reactive properties are not shadowed by class fields`, async () => {
+    const mod = await import(`../src/${fileName}.ts`);
+    const Cls = mod[className as keyof typeof mod] as { new (): object };
+    const instance = new Cls() as Record<string, unknown>;
+
+    for (const prop of props as string[]) {
+      assertFalse(
+        Object.prototype.hasOwnProperty.call(instance, prop),
+        `${className}.${prop} must use Lit's generated accessor, not an own class field`,
+      );
+    }
   });
 }
 

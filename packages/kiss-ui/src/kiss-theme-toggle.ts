@@ -97,10 +97,16 @@ export class KissThemeToggle extends LitElement {
     };
 
     /** Initial theme attribute — set by SSR or head inline script */
-    theme?: string;
+    declare theme: string | undefined;
 
     /** Whether the current theme is light (false = dark) */
-    _isLight = false;
+    declare _isLight: boolean;
+
+    constructor() {
+      super();
+      this.theme = undefined;
+      this._isLight = false;
+    }
 
     override connectedCallback() {
       super.connectedCallback();

@@ -114,21 +114,33 @@ export class KissInput extends LitElement {
   };
 
   /** Input type: 'text', 'email', 'password', 'number', or 'url' (default: 'text') */
-  type: 'text' | 'email' | 'password' | 'number' | 'url' = 'text';
+  declare type: 'text' | 'email' | 'password' | 'number' | 'url';
   /** Placeholder text shown when input is empty */
-  placeholder?: string;
+  declare placeholder: string | undefined;
   /** Label text displayed above the input */
-  label?: string;
+  declare label: string | undefined;
   /** Current value of the input */
-  value?: string;
+  declare value: string | undefined;
   /** Name attribute for form submission */
-  name?: string;
+  declare name: string | undefined;
   /** Whether the input is disabled */
-  disabled = false;
+  declare disabled: boolean;
   /** Whether the input is required (shows * after label) */
-  required = false;
+  declare required: boolean;
   /** Error message displayed below the input (also applies error styling) */
-  error?: string;
+  declare error: string | undefined;
+
+  constructor() {
+    super();
+    this.type = 'text';
+    this.placeholder = undefined;
+    this.label = undefined;
+    this.value = undefined;
+    this.name = undefined;
+    this.disabled = false;
+    this.required = false;
+    this.error = undefined;
+  }
 
   override connectedCallback() {
     super.connectedCallback();

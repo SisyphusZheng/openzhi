@@ -115,7 +115,12 @@ export default class MyCounter extends LitElement {
 
   static override properties = { count: { type: Number } };
 
-  count = 0;
+  declare count: number;
+
+  constructor() {
+    super();
+    this.count = 0;
+  }
 
   override render() {
     return html\`
@@ -126,8 +131,10 @@ export default class MyCounter extends LitElement {
   }
 }
 
-customElements.define(tagName, MyCounter);
-`,
+if (!customElements.get(tagName)) {
+  customElements.define(tagName, MyCounter);
+}
+  `,
 };
 
 async function main() {
