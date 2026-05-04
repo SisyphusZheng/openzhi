@@ -64,6 +64,13 @@ Deno.test('create-kiss: deno.json has all required tasks', () => {
   assertExists(denoJson.tasks['preview'], 'Missing preview task');
 });
 
+Deno.test('create-kiss: gitignore hides generated build artifacts', () => {
+  const gitignore = extractTemplate('.gitignore');
+  assertExists(gitignore.includes('.kiss/'));
+  assertExists(gitignore.includes('dist/'));
+  assertExists(gitignore.includes('node_modules/'));
+});
+
 Deno.test('create-kiss: deno.json build:client uses @kissjs/core', () => {
   const denoJson = JSON.parse(extractTemplate('deno.json'));
   assertExists(denoJson.tasks['build:client'].includes('@kissjs/core'));
@@ -80,8 +87,8 @@ Deno.test('create-kiss: deno.json maps Lit and package imports explicitly', () =
   assertEquals(denoJson.imports.vite, 'npm:vite@8.0.10');
   assertEquals(denoJson.imports['@lit-labs/ssr-dom-shim'], 'npm:@lit-labs/ssr-dom-shim@^1.5.0');
   assertExists(denoJson.imports['@kissjs/adapter-lit'].includes('0.2.0'));
-  assertExists(denoJson.imports['@kissjs/core'].includes('0.5.1'));
-  assertExists(denoJson.imports['@kissjs/core/kiss-runtime'].includes('0.5.1'));
+  assertExists(denoJson.imports['@kissjs/core'].includes('0.5.2'));
+  assertExists(denoJson.imports['@kissjs/core/kiss-runtime'].includes('0.5.2'));
   assertExists(denoJson.imports['@kissjs/ui'].includes('0.5.0'));
   assertExists(denoJson.imports['@kissjs/ui/tokens/colors'].includes('0.5.0'));
   assertExists(denoJson.imports['@kissjs/ui/'].includes('0.5.0/'));
@@ -115,6 +122,8 @@ Deno.test('create-kiss: vite.config.ts imports kiss plugin', () => {
 Deno.test('create-kiss: vite.config.ts includes packageIslands config', () => {
   const viteConfig = extractTemplate('vite.config.ts');
   assertExists(viteConfig.includes('@kissjs/ui'));
+  assertExists(viteConfig.includes('kissUiAliases'));
+  assertExists(viteConfig.includes('https://jsr.io/@kissjs/ui/0.5.0/src/kiss-button.ts'));
 });
 
 Deno.test('create-kiss: route index imports Lit directly', () => {
@@ -242,8 +251,8 @@ Deno.test('create-kiss: generated project builds through the one-command pipelin
       `packageIslands: [${JSON.stringify(pathToFileURL(join(uiSrc, 'index.ts')).href)}],`,
     );
     viteConfig = viteConfig.replace(
-      'export default defineConfig({',
-      `export default defineConfig({\n  resolve: { alias: ${JSON.stringify(aliases, null, 4)} },`,
+      'alias: kissUiAliases',
+      `alias: ${JSON.stringify(aliases, null, 4)}`,
     );
     writeFileSync(viteConfigPath, viteConfig);
 

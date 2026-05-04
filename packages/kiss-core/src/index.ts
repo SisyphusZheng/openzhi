@@ -14,9 +14,9 @@
 import type { Plugin } from 'vite';
 import type { FrameworkOptions, PackageIslandMeta, RouteEntry } from './types.js';
 
-import { join } from 'node:path';
+import { mkdirSync, writeFileSync } from 'node:fs';
+import { join, resolve } from 'node:path';
 import process from 'node:process';
-import { fileURLToPath } from 'node:url';
 import { KissError } from './errors.js';
 
 import honoDevServer from '@hono/vite-dev-server';
@@ -25,6 +25,7 @@ import { buildPlugin } from './build.js';
 import { generateHonoEntryCode } from './hono-entry.js';
 import { islandTransformPlugin } from './island-transform.js';
 import { fileToTagName, scanIslands, scanPackageIslands, scanRoutes } from './route-scanner.js';
+import { createRuntimeShimCode } from './runtime-shim.js';
 
 export type {
   FrameworkOptions,
@@ -164,11 +165,17 @@ export function kiss(options: FrameworkOptions = {}): Plugin[] {
         return buildConfig;
       }
 
-      if (!import.meta.url.startsWith('file:')) {
-        return buildConfig;
-      }
+      const kissTmpDir = resolve(process.cwd(), '.kiss');
+      mkdirSync(kissTmpDir, { recursive: true });
+      const runtimePath = join(kissTmpDir, '.kiss-runtime.ts');
+      writeFileSync(runtimePath, createRuntimeShimCode(), 'utf-8');
+      ctx.userResolveAlias = Array.isArray(userAlias)
+        ? [{ find: '@kissjs/core/kiss-runtime', replacement: runtimePath }, ...userAlias]
+        : {
+          ...(userAlias || {}),
+          '@kissjs/core/kiss-runtime': runtimePath,
+        };
 
-      const runtimePath = fileURLToPath(new URL('./kiss-runtime.ts', import.meta.url));
       return {
         resolve: {
           alias: {

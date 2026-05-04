@@ -146,8 +146,8 @@ export class ChangelogPage extends LitElement {
                   2，博客/文档/内容站是近期产品化样板，CRM/admin 放到中期。
                 </li>
                 <li>
-                  <strong>版本号</strong>：@kissjs/core 升至 0.5.1，@kissjs/ui 升至 0.5.0，@kissjs/rpc
-                  升至 0.3.0，@kissjs/adapter-lit 升至 0.2.0，@kissjs/create 升至 0.4.2。
+                  <strong>版本号</strong>：@kissjs/core 升至 0.5.2，@kissjs/ui 升至 0.5.0，@kissjs/rpc
+                  升至 0.3.0，@kissjs/adapter-lit 升至 0.2.0，@kissjs/create 升至 0.4.3。
                 </li>
               </ul>
             </div>
@@ -171,8 +171,8 @@ export class ChangelogPage extends LitElement {
                   <strong>CI 发布补丁</strong>：GitHub Actions 测试任务显式授予
                   <span class="inline-code">--allow-run</span>，create-kiss 模板显式安装 Vite 和 Lit 在
                   SSR 分支需要的 <span class="inline-code">@lit-labs/ssr-dom-shim</span>，并修复 JSR
-                  远程运行时的 <span class="inline-code">@kissjs/core/kiss-runtime</span>
-                  解析路径。
+                  远程运行时的 <span class="inline-code">@kissjs/core/kiss-runtime</span>、
+                  <span class="inline-code">@kissjs/ui</span> package island、Lit adapter 解析路径。
                 </li>
                 <li>
                   <strong>Island 自注册</strong>：脚手架生成的 counter island 现在调用

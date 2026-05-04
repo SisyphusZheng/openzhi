@@ -98,6 +98,8 @@ export interface IslandDecl {
   tagName: string;
   /** Module path for dynamic import (e.g. '/app/islands/counter.ts') */
   modulePath: string;
+  /** Package islands are upgraded by the client entry and are not SSR-registered here. */
+  isPackage?: boolean;
 }
 
 // ─── Special file declarations (v0.3.0) ─────────────────────────
@@ -335,6 +337,7 @@ export function buildEntryDescriptor(
   const packageIslandDecls: IslandDecl[] = packageIslands.map((island) => ({
     tagName: island.tagName,
     modulePath: island.modulePath,
+    isPackage: true,
   }));
 
   // Merge all islands

@@ -24,8 +24,7 @@ import { readdirSync, readFileSync, unlinkSync } from 'node:fs';
 import type { FrameworkOptions, PackageIslandMeta } from '../types.js';
 import { SsrRenderError } from '../errors.js';
 
-// Lit adapter is installed after the Vite SSR server is created,
-// so that the adapter can be resolved through Vite's alias system.
+// Lit adapter is installed after the Vite SSR server is created.
 // The adapter uses naive TemplateResult interpolation — no DOM shim
 // or @lit-labs/ssr dependency needed.
 
@@ -205,11 +204,10 @@ async function buildSSG(options: BuildSSGOptions = {}): Promise<void> {
       },
     });
 
-    // Install Lit adapter through Vite's module resolution (respects aliases).
-    // This must happen AFTER createServer() so that Vite can resolve
-    // @kissjs/adapter-lit through the alias config.
+    // Install Lit adapter through Deno resolution, so JSR projects do not need
+    // Vite to resolve @kissjs/adapter-lit from node_modules.
     try {
-      const adapterModule = await server.ssrLoadModule('@kissjs/adapter-lit');
+      const adapterModule = await import('@kissjs/adapter-lit');
       if (typeof adapterModule.installLitAdapter === 'function') {
         adapterModule.installLitAdapter();
       }

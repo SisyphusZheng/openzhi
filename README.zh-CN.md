@@ -73,11 +73,11 @@ Custom Elements。
 
 | 包                    | 职责                                               | 当前版本线 |
 | --------------------- | -------------------------------------------------- | ---------- |
-| `@kissjs/core`        | Vite 插件、路由扫描、DSD 渲染、SSG 管线            | `0.5.1`    |
+| `@kissjs/core`        | Vite 插件、路由扫描、DSD 渲染、SSG 管线            | `0.5.2`    |
 | `@kissjs/ui`          | 基于 Lit 的 Web Component 组件库和 package islands | `0.5.0`    |
 | `@kissjs/rpc`         | 轻量 fetch/RPC controller 工具                     | `0.3.0`    |
 | `@kissjs/adapter-lit` | 可选 Lit SSR 适配器                                | `0.2.0`    |
-| `@kissjs/create`      | 项目脚手架 CLI                                     | `0.4.2`    |
+| `@kissjs/create`      | 项目脚手架 CLI                                     | `0.4.3`    |
 
 历史包 `@kissjs/vite` 和 `@kissjs/ssg` 已废弃，不建议继续使用。
 

@@ -212,7 +212,7 @@ Deno.test('renderEntry: package islands are included in island upgrade entry', (
   assertStringIncludes(code, '@kissjs/ui');
 });
 
-Deno.test('renderEntry: package islands do not require default exports', () => {
+Deno.test('renderEntry: package islands are not imported by SSR entry', () => {
   const desc = buildEntryDescriptor(basicRoutes, {
     packageIslands: [
       { tagName: 'kiss-layout', modulePath: '@kissjs/ui/kiss-layout' },
@@ -221,18 +221,10 @@ Deno.test('renderEntry: package islands do not require default exports', () => {
   });
   const code = renderEntry(desc);
 
-  assertStringIncludes(
-    code,
-    'const __kiss_get_default_export = (module) => module && module.default',
-  );
-  assertStringIncludes(
-    code,
-    'const __island_component_kiss_layout = __kiss_get_default_export(__island_kiss_layout)',
-  );
-  assertStringIncludes(
-    code,
-    "customElements.define('kiss-layout', __island_component_kiss_layout)",
-  );
+  assertStringIncludes(code, '"kiss-layout":"@kissjs/ui/kiss-layout"');
+  assertFalse(code.includes("import * as __island_kiss_layout from '@kissjs/ui/kiss-layout'"));
+  assertFalse(code.includes('__kiss_get_default_export'));
+  assertFalse(code.includes("customElements.define('kiss-layout'"));
   assertFalse(code.includes('__island_kiss_layout.default'));
   assertFalse(code.includes('__island_kiss_button.default'));
 });

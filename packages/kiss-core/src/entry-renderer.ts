@@ -313,16 +313,18 @@ export function renderEntry(desc: EntryDescriptor): string {
   // --- Register island components in SSR customElements registry ---
   // Islands need to be registered so renderDSD() can produce DSD.
   // Uses a static import per island module (known at build time).
-  // Package islands may self-register and may not expose a default export.
-  // Read default through a helper to avoid Rollup/Vite static "missing default" warnings.
-  for (const island of desc.islands) {
+  // Package islands are imported by the client entry for browser upgrade.
+  // SSR only imports local app islands, which avoids forcing Vite to resolve
+  // package-manager-specific JSR specifiers in the server module runner.
+  for (const island of desc.islands.filter((island) => !island.isPackage)) {
     const varName = `__island_${island.tagName.replace(/-/g, '_')}`;
     b.push(`import * as ${varName} from '${island.modulePath}'`);
   }
-  if (desc.islands.length > 0) {
+  const ssrIslands = desc.islands.filter((island) => !island.isPackage);
+  if (ssrIslands.length > 0) {
     b.push(`const __kiss_get_default_export = (module) => module && module.default`);
   }
-  for (const island of desc.islands) {
+  for (const island of ssrIslands) {
     const varName = `__island_${island.tagName.replace(/-/g, '_')}`;
     const componentVar = `__island_component_${island.tagName.replace(/-/g, '_')}`;
     b.push(`const ${componentVar} = __kiss_get_default_export(${varName})`);
