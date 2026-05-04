@@ -52,7 +52,7 @@ function countTrailingBackslashes(s: string, pos: number): number {
   return count;
 }
 
-// ─── Scaffold Tests ────────────────────────────────────────
+// --- Scaffold Tests ---
 
 Deno.test('create-kiss: deno.json has all required tasks', () => {
   const denoJson = JSON.parse(extractTemplate('deno.json'));
@@ -77,15 +77,23 @@ Deno.test('create-kiss: deno.json build:ssg uses @kissjs/core', () => {
 Deno.test('create-kiss: deno.json maps Lit and package imports explicitly', () => {
   const denoJson = JSON.parse(extractTemplate('deno.json'));
   assertEquals(denoJson.imports.lit, 'npm:lit@^3.2.0');
+  assertEquals(denoJson.imports.vite, 'npm:vite@8.0.10');
   assertEquals(denoJson.imports['@lit-labs/ssr-dom-shim'], 'npm:@lit-labs/ssr-dom-shim@^1.5.0');
   assertExists(denoJson.imports['@kissjs/adapter-lit'].includes('0.2.0'));
-  assertExists(denoJson.imports['@kissjs/core'].includes('0.5.0'));
+  assertExists(denoJson.imports['@kissjs/core'].includes('0.5.1'));
+  assertExists(denoJson.imports['@kissjs/core/kiss-runtime'].includes('0.5.1'));
   assertExists(denoJson.imports['@kissjs/ui'].includes('0.5.0'));
+  assertExists(denoJson.imports['@kissjs/ui/tokens/colors'].includes('0.5.0'));
+  assertExists(denoJson.imports['@kissjs/ui/'].includes('0.5.0/'));
+  assertEquals(denoJson.nodeModulesDir, 'auto');
 });
 
 Deno.test('create-kiss: deno.json build uses the one-command KISS build', () => {
   const denoJson = JSON.parse(extractTemplate('deno.json'));
-  assertEquals(denoJson.tasks['build'], 'deno run -A jsr:@kissjs/core/cli/build');
+  assertEquals(
+    denoJson.tasks['build'],
+    'deno run --config deno.json -A jsr:@kissjs/core/cli/build',
+  );
   assertExists(denoJson.tasks['build:ssr']);
   assertExists(denoJson.tasks['build:client']);
   assertExists(denoJson.tasks['build:ssg']);
@@ -213,6 +221,26 @@ Deno.test('create-kiss: generated project builds through the one-command pipelin
     ];
     const viteConfigPath = join(appDir, 'vite.config.ts');
     let viteConfig = readFileSync(viteConfigPath, 'utf-8');
+    viteConfig = viteConfig.replace(
+      "import { kiss } from '@kissjs/core';",
+      `import { kiss } from ${
+        JSON.stringify(
+          pathToFileURL(join(repoRoot, 'packages', 'kiss-core', 'src', 'index.ts')).href,
+        )
+      };`,
+    );
+    viteConfig = viteConfig.replace(
+      "import { kissRootColorCSS } from '@kissjs/ui/tokens/colors';",
+      `import { kissRootColorCSS } from ${
+        JSON.stringify(
+          pathToFileURL(join(uiSrc, 'tokens', 'colors.ts')).href,
+        )
+      };`,
+    );
+    viteConfig = viteConfig.replace(
+      "packageIslands: ['@kissjs/ui'],",
+      `packageIslands: [${JSON.stringify(pathToFileURL(join(uiSrc, 'index.ts')).href)}],`,
+    );
     viteConfig = viteConfig.replace(
       'export default defineConfig({',
       `export default defineConfig({\n  resolve: { alias: ${JSON.stringify(aliases, null, 4)} },`,

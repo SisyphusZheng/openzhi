@@ -13,19 +13,23 @@ const TPL = {
   'deno.json': `{
   "imports": {
     "lit": "npm:lit@^3.2.0",
+    "vite": "npm:vite@8.0.10",
     "@lit-labs/ssr-dom-shim": "npm:@lit-labs/ssr-dom-shim@^1.5.0",
     "@kissjs/adapter-lit": "jsr:@kissjs/adapter-lit@^0.2.0",
-    "@kissjs/core": "jsr:@kissjs/core@^0.5.0",
+    "@kissjs/core": "jsr:@kissjs/core@^0.5.1",
+    "@kissjs/core/kiss-runtime": "jsr:@kissjs/core@^0.5.1/kiss-runtime",
     "@kissjs/ui": "jsr:@kissjs/ui@^0.5.0",
+    "@kissjs/ui/tokens/colors": "jsr:@kissjs/ui@^0.5.0/tokens/colors",
     "@kissjs/ui/": "jsr:@kissjs/ui@^0.5.0/"
   },
+  "nodeModulesDir": "auto",
   "tasks": {
-    "dev": "deno run -A npm:vite",
-    "build": "deno run -A jsr:@kissjs/core/cli/build",
-    "build:ssr": "deno run -A npm:vite build",
-    "build:client": "deno run -A jsr:@kissjs/core/cli/build-client",
-    "build:ssg": "deno run -A jsr:@kissjs/core/cli/build-ssg",
-    "preview": "deno run -A npm:vite preview"
+    "dev": "deno run --config deno.json -A npm:vite",
+    "build": "deno run --config deno.json -A jsr:@kissjs/core/cli/build",
+    "build:ssr": "deno run --config deno.json -A npm:vite build",
+    "build:client": "deno run --config deno.json -A jsr:@kissjs/core/cli/build-client",
+    "build:ssg": "deno run --config deno.json -A jsr:@kissjs/core/cli/build-ssg",
+    "preview": "deno run --config deno.json -A npm:vite preview"
   },
   "compilerOptions": { "lib": ["ES2022", "DOM", "DOM.Iterable"] }
 }

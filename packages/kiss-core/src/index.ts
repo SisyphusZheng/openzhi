@@ -1,7 +1,7 @@
 /**
  * @kissjs/core - Main entry.
  *
- * KISS 0.5.0 is a static-first framework package:
+ * KISS 0.5 is a static-first framework package:
  * - routes are scanned at build time
  * - pages are rendered to DSD HTML
  * - islands upgrade through Custom Elements
@@ -164,7 +164,11 @@ export function kiss(options: FrameworkOptions = {}): Plugin[] {
         return buildConfig;
       }
 
-      const runtimePath = fileURLToPath(new URL('./kiss-runtime.js', import.meta.url));
+      if (!import.meta.url.startsWith('file:')) {
+        return buildConfig;
+      }
+
+      const runtimePath = fileURLToPath(new URL('./kiss-runtime.ts', import.meta.url));
       return {
         resolve: {
           alias: {

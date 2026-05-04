@@ -175,6 +175,15 @@ Deno.test('kiss() corePlugin.config returns rollupOptions with virtual entry', (
 
 // ─── kiss() configResolved + generateEntry ───────────────────
 
+Deno.test('kiss() corePlugin.config aliases runtime to source file for local installs', () => {
+  const plugins = kiss();
+  const corePlugin = plugins.find((p) => p.name === 'kiss:core')!;
+  const result = (corePlugin.config as Function)({} as never) as Record<string, unknown>;
+  const resolve = result.resolve as Record<string, unknown>;
+  const alias = resolve.alias as Record<string, string>;
+  assertStringIncludes(alias['@kissjs/core/kiss-runtime'], 'kiss-runtime.ts');
+});
+
 Deno.test('kiss() corePlugin.configResolved sets honoEntryCode', () => {
   const plugins = kiss();
   const corePlugin = plugins.find((p) => p.name === 'kiss:core')!;
