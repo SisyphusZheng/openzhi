@@ -22,7 +22,7 @@ import {
 
 // ─── Test fixtures ─────────────────────────────────────────────
 
-const FIXTURES_DIR = join(Deno.cwd(), 'packages/kiss-core/__test_fixtures__/ssg');
+const FIXTURES_DIR = join(Deno.cwd(), 'packages/core/__test_fixtures__/ssg');
 
 async function setupSsgFixtures() {
   // Simulate a client build output directory structure

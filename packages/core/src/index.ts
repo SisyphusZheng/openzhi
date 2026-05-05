@@ -138,7 +138,7 @@ export function kiss(options: FrameworkOptions = {}): Plugin[] {
   }
 
   const corePlugin: Plugin = {
-    name: 'kiss:core',
+    name: 'less:core',
 
     config(userConfig) {
       if (userConfig.resolve?.alias && !ctx.userResolveAlias) {
@@ -245,7 +245,7 @@ export function kiss(options: FrameworkOptions = {}): Plugin[] {
   };
 
   const virtualEntryPlugin: Plugin = {
-    name: 'kiss:virtual-entry',
+    name: 'less:virtual-entry',
 
     resolveId(id) {
       if (id === VIRTUAL_ENTRY_ID) return RESOLVED_ENTRY_ID;

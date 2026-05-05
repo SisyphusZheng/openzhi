@@ -54,9 +54,9 @@ export default defineConfig({
           '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/open-props@1.7.20/open-props.min.css" media="print" onload="this.media=\'all\'">',
           // Anti-flash: CLS prevention — removed by theme-init.js
           '<style id="less-anti-flash">html{visibility:hidden}</style>',
-          // Favicon
-          '<link rel="icon" type="image/svg+xml" href="/assets/less-favicon.svg" />',
-          '<link rel="apple-touch-icon" href="/assets/less-favicon.svg" />',
+          // Favicon (transparent bg, less-than symbol)
+          '<link rel="icon" type="image/svg+xml" href="/assets/less-logo.svg" />',
+          '<link rel="apple-touch-icon" href="/assets/less-logo.svg" />',
           // DSD (Declarative Shadow DOM) polyfill removed — all modern browsers
           // (Chrome 90+, Safari 16.4+, Firefox 123+) support native DSD.
           // The old document.write() polyfill caused:

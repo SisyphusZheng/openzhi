@@ -58,9 +58,9 @@ Deno.test('kiss() plugins have names starting with kiss:', () => {
   for (const name of names) {
     if (name === '@hono/vite-dev-server') continue; // external
     assertEquals(
-      name.startsWith('kiss:') || name.startsWith('less:'),
+      name.startsWith('less:'),
       true,
-      `Plugin "${name}" should start with "kiss:" or "less:"`,
+      `Plugin "${name}" should start with "kiss:"`,
     );
   }
 });

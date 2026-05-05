@@ -11,7 +11,7 @@ import {
   scanRoutes,
 } from '../src/route-scanner.ts';
 
-const FIXTURES_DIR = join(Deno.cwd(), 'packages/vite/__test_fixtures__');
+const FIXTURES_DIR = join(Deno.cwd(), 'packages/core/__test_fixtures__');
 
 Deno.test('route-scanner', { permissions: { read: true, write: true } }, async (t) => {
   // Setup fixtures
