@@ -780,8 +780,8 @@ Deno.test('less-theme-toggle: connectedCallback reads document data-theme', asyn
 });
 
 Deno.test('less-theme-toggle: connectedCallback reads localStorage fallback', async () => {
-  const orig = localStorage.getItem('kiss-theme');
-  localStorage.setItem('kiss-theme', 'light');
+  const orig = localStorage.getItem('less-theme');
+  localStorage.setItem('less-theme', 'light');
   const savedDoc = (globalThis as any).document;
   (globalThis as any).document = {
     documentElement: { dataset: {}, setAttribute: () => {} },
@@ -791,21 +791,21 @@ Deno.test('less-theme-toggle: connectedCallback reads localStorage fallback', as
     const { KissThemeToggle } = await import('../src/less-theme-toggle.ts');
     const instance = new KissThemeToggle();
     // Simulate localStorage fallback logic
-    const saved = localStorage.getItem('kiss-theme');
+    const saved = localStorage.getItem('less-theme');
     if (saved === 'light') {
       (instance as any)._isLight = true;
     }
     assertEquals((instance as any)._isLight, true);
   } finally {
     (globalThis as any).document = savedDoc;
-    if (orig === null) localStorage.removeItem('kiss-theme');
-    else localStorage.setItem('kiss-theme', orig);
+    if (orig === null) localStorage.removeItem('less-theme');
+    else localStorage.setItem('less-theme', orig);
   }
 });
 
 Deno.test('less-theme-toggle: connectedCallback defaults to dark', async () => {
-  const orig = localStorage.getItem('kiss-theme');
-  localStorage.removeItem('kiss-theme');
+  const orig = localStorage.getItem('less-theme');
+  localStorage.removeItem('less-theme');
   const savedDoc = (globalThis as any).document;
   (globalThis as any).document = {
     documentElement: { dataset: {}, setAttribute: () => {} },
@@ -817,12 +817,12 @@ Deno.test('less-theme-toggle: connectedCallback defaults to dark', async () => {
     assertEquals((instance as any)._isLight, false);
   } finally {
     (globalThis as any).document = savedDoc;
-    if (orig !== null) localStorage.setItem('kiss-theme', orig);
+    if (orig !== null) localStorage.setItem('less-theme', orig);
   }
 });
 
 Deno.test('less-theme-toggle: _handleToggle switches dark→light', async () => {
-  const orig = localStorage.getItem('kiss-theme');
+  const orig = localStorage.getItem('less-theme');
   const savedDoc = (globalThis as any).document;
   (globalThis as any).document = {
     documentElement: {
@@ -837,11 +837,11 @@ Deno.test('less-theme-toggle: _handleToggle switches dark→light', async () => 
     (instance as any)._isLight = false; // Start dark
     (instance as any)._handleToggle();
     assertEquals((instance as any)._isLight, true);
-    assertEquals(localStorage.getItem('kiss-theme'), 'light');
+    assertEquals(localStorage.getItem('less-theme'), 'light');
   } finally {
     (globalThis as any).document = savedDoc;
-    if (orig === null) localStorage.removeItem('kiss-theme');
-    else localStorage.setItem('kiss-theme', orig);
+    if (orig === null) localStorage.removeItem('less-theme');
+    else localStorage.setItem('less-theme', orig);
   }
 });
 
@@ -896,7 +896,7 @@ Deno.test('less-theme-toggle: _propagateTheme isolates failures (I-constraint)',
   try {
     // Create an element that throws on setAttribute
     const failingElement = {
-      tagName: 'KISS-BAD',
+      tagName: 'LESS-BAD',
       setAttribute: () => {
         throw new Error('Cannot set attribute');
       },
@@ -904,7 +904,7 @@ Deno.test('less-theme-toggle: _propagateTheme isolates failures (I-constraint)',
       shadowRoot: null,
     };
     const okElement = {
-      tagName: 'KISS-GOOD',
+      tagName: 'LESS-GOOD',
       setAttribute: () => {},
       hasAttribute: () => false,
       shadowRoot: null,
@@ -1080,8 +1080,8 @@ Deno.test('less-theme-toggle: connectedCallback reads document.documentElement.d
 });
 
 Deno.test('less-theme-toggle: connectedCallback reads localStorage fallback', async () => {
-  const orig = localStorage.getItem('kiss-theme');
-  localStorage.setItem('kiss-theme', 'light');
+  const orig = localStorage.getItem('less-theme');
+  localStorage.setItem('less-theme', 'light');
   const savedDoc = (globalThis as any).document;
   const savedLS = (globalThis as any).localStorage;
   try {
@@ -1106,14 +1106,14 @@ Deno.test('less-theme-toggle: connectedCallback reads localStorage fallback', as
   } finally {
     (globalThis as any).document = savedDoc;
     (globalThis as any).localStorage = savedLS;
-    if (orig === null) localStorage.removeItem('kiss-theme');
-    else localStorage.setItem('kiss-theme', orig);
+    if (orig === null) localStorage.removeItem('less-theme');
+    else localStorage.setItem('less-theme', orig);
   }
 });
 
 Deno.test('less-theme-toggle: connectedCallback defaults to dark theme', async () => {
-  const orig = localStorage.getItem('kiss-theme');
-  localStorage.removeItem('kiss-theme');
+  const orig = localStorage.getItem('less-theme');
+  localStorage.removeItem('less-theme');
   const savedDoc = (globalThis as any).document;
   const savedLS = (globalThis as any).localStorage;
   try {
@@ -1138,7 +1138,7 @@ Deno.test('less-theme-toggle: connectedCallback defaults to dark theme', async (
   } finally {
     (globalThis as any).document = savedDoc;
     (globalThis as any).localStorage = savedLS;
-    if (orig !== null) localStorage.setItem('kiss-theme', orig);
+    if (orig !== null) localStorage.setItem('less-theme', orig);
   }
 });
 

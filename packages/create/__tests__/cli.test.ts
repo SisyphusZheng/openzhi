@@ -126,7 +126,7 @@ Deno.test('create-kiss: vite.config.ts includes packageIslands config', () => {
   const viteConfig = extractTemplate('vite.config.ts');
   assertExists(viteConfig.includes('@lessjs/ui'));
   assertExists(viteConfig.includes('kissUiAliases'));
-  assertExists(viteConfig.includes('https://jsr.io/@lessjs/ui/0.5.2/src/kiss-button.ts'));
+  assertExists(viteConfig.includes('https://jsr.io/@lessjs/ui/0.5.2/src/less-button.ts'));
 });
 
 Deno.test('create-kiss: route index imports Lit directly', () => {
@@ -210,21 +210,21 @@ Deno.test('create-kiss: generated project builds through the one-command pipelin
         find: '@lessjs/ui/tokens/colors',
         replacement: vitePath(join(uiSrc, 'tokens', 'colors.ts')),
       },
-      { find: '@lessjs/ui/kiss-button', replacement: vitePath(join(uiSrc, 'kiss-button.ts')) },
-      { find: '@lessjs/ui/kiss-card', replacement: vitePath(join(uiSrc, 'kiss-card.ts')) },
-      { find: '@lessjs/ui/kiss-input', replacement: vitePath(join(uiSrc, 'kiss-input.ts')) },
+      { find: '@lessjs/ui/less-button', replacement: vitePath(join(uiSrc, 'less-button.ts')) },
+      { find: '@lessjs/ui/less-card', replacement: vitePath(join(uiSrc, 'less-card.ts')) },
+      { find: '@lessjs/ui/less-input', replacement: vitePath(join(uiSrc, 'less-input.ts')) },
       {
-        find: '@lessjs/ui/kiss-code-block',
-        replacement: vitePath(join(uiSrc, 'kiss-code-block.ts')),
+        find: '@lessjs/ui/less-code-block',
+        replacement: vitePath(join(uiSrc, 'less-code-block.ts')),
       },
-      { find: '@lessjs/ui/kiss-layout', replacement: vitePath(join(uiSrc, 'kiss-layout.ts')) },
+      { find: '@lessjs/ui/less-layout', replacement: vitePath(join(uiSrc, 'less-layout.ts')) },
       {
-        find: '@lessjs/ui/kiss-theme-toggle',
-        replacement: vitePath(join(uiSrc, 'kiss-theme-toggle.ts')),
+        find: '@lessjs/ui/less-theme-toggle',
+        replacement: vitePath(join(uiSrc, 'less-theme-toggle.ts')),
       },
       {
-        find: '@lessjs/ui/kiss-hero-ping',
-        replacement: vitePath(join(uiSrc, 'kiss-hero-ping.ts')),
+        find: '@lessjs/ui/less-hero-ping',
+        replacement: vitePath(join(uiSrc, 'less-hero-ping.ts')),
       },
       { find: '@lessjs/ui', replacement: vitePath(join(uiSrc, 'index.ts')) },
       {
@@ -243,8 +243,8 @@ Deno.test('create-kiss: generated project builds through the one-command pipelin
       };`,
     );
     viteConfig = viteConfig.replace(
-      "import { kissRootColorCSS } from '@lessjs/ui/tokens/colors';",
-      `import { kissRootColorCSS } from ${
+      "import { lessRootColorCSS } from '@lessjs/ui/tokens/colors';",
+      `import { lessRootColorCSS } from ${
         JSON.stringify(
           pathToFileURL(join(uiSrc, 'tokens', 'colors.ts')).href,
         )

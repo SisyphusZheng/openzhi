@@ -11,7 +11,7 @@ Deno.test('island-transform - islandTransformPlugin', async (t) => {
   const plugin = islandTransformPlugin('app/islands');
 
   await t.step('returns a Vite plugin', () => {
-    assertEquals(plugin.name, 'kiss:island-transform');
+    assertEquals(plugin.name, 'less:island-transform');
     assertEquals(typeof plugin.transform, 'function');
   });
 
