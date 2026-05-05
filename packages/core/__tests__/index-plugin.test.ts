@@ -57,7 +57,11 @@ Deno.test('kiss() plugins have names starting with kiss:', () => {
   // All KISS plugins should have the kiss: prefix
   for (const name of names) {
     if (name === '@hono/vite-dev-server') continue; // external
-    assertEquals(name.startsWith('kiss:') || name.startsWith('less:'), true, `Plugin "${name}" should start with "kiss:" or "less:"`);
+    assertEquals(
+      name.startsWith('kiss:') || name.startsWith('less:'),
+      true,
+      `Plugin "${name}" should start with "kiss:" or "less:"`,
+    );
   }
 });
 

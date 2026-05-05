@@ -115,7 +115,9 @@ export function buildPlugin(options: FrameworkOptions = {}, ctx?: KissBuildConte
 
       console.log('[LessJS] Phase 1 complete — SSR bundle + metadata written');
       if (totalIslands > 0) {
-        console.log(`[LessJS] ${totalIslands} island(s) detected — run the full build command next.`);
+        console.log(
+          `[LessJS] ${totalIslands} island(s) detected — run the full build command next.`,
+        );
         console.log('[LessJS]   deno task build          (compile islands + render static HTML)');
       } else {
         console.log('[LessJS] No islands — static pages only, zero client JS');
