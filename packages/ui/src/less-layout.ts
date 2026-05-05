@@ -266,9 +266,13 @@ export class LessLayout extends LitElement {
           scrollbar-width: thin;
         }
 
-        /* Home layout: hide sidebar on desktop, keep it for mobile hamburger */
+        /* Home layout: collapse sidebar on desktop (not display:none which kills transform) */
         :host([home]) .docs-sidebar {
-          display: none;
+          width: 0;
+          min-width: 0;
+          padding: 0;
+          overflow: hidden;
+          border: none;
         }
 
         .nav-section {
@@ -400,9 +404,14 @@ export class LessLayout extends LitElement {
             box-shadow: none;
           }
 
-          /* Home layout: show sidebar on mobile when menu is open */
+          /* Home layout: restore sidebar on mobile for hamburger menu */
           :host([home]) .docs-sidebar {
-            display: block;
+            width: min(300px, 80vw);
+            min-width: unset;
+            padding: var(--less-size-4) 0;
+            overflow-y: auto;
+            border-right: 0.5px solid var(--less-border);
+            border-bottom: none;
           }
 
           :host([menu-open]) .docs-sidebar {
