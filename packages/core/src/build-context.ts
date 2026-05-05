@@ -1,7 +1,7 @@
 /**
- * @lessjs/core - Kiss Build Context
+ * @lessjs/core - LessJS Build Context
  *
- * Shared mutable state for all KISS Vite plugins.
+ * Shared mutable state for all LessJS Vite plugins.
  * Replaces the closure-captured variables (honoEntryCode, scannedIslandTagNames, etc.)
  * with a single object that's explicitly passed around.
  *
@@ -14,7 +14,7 @@
 import type { Alias, ResolvedConfig } from 'vite';
 import type { FrameworkOptions, PackageIslandMeta } from './types.js';
 
-export class KissBuildContext {
+export class LessBuildContext {
   /** The generated Hono entry module code (virtual module content) */
   honoEntryCode: string = '';
 

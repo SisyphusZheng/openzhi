@@ -1,5 +1,5 @@
 /**
- * @kiss/rpc - Vite library mode build config
+ * @lessjs/rpc - Vite library mode build config
  * Replaces tsup with native Vite lib mode.
  * Pure ESM output, no CJS.
  */

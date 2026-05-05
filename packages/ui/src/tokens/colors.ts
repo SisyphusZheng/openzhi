@@ -1,7 +1,7 @@
 /**
  * @lessjs/ui - Design Tokens: Color Themes
  *
- * KISS Design System based on OpenProps design tokens.
+ * LessJS Design System based on OpenProps design tokens.
  * Light theme by default, Dark via data-theme attribute.
  *
  * Token naming: --less-{category}-{variant}
@@ -18,18 +18,18 @@
  * when a component's `:host` rule declares a custom property,
  * it shadows (overrides) the inherited value from `:root`.
  *
- * KISS theme strategy:
+ * LessJS theme strategy:
  *   1. `:host` declares light-theme defaults — provides fallback
  *      for standalone usage (without global <style>).
  *   2. `:host([data-theme="dark"])` overrides for dark theme.
  *   3. The less-theme-toggle Island propagates `data-theme` to
- *      both `<html>` AND every KISS component host element,
+ *      both `<html>` AND every LessJS component host element,
  *      so both `:root` vars (for light DOM) and `:host([data-theme])`
  *      selectors (for Shadow DOM) work correctly.
  *
  * DRY enforcement:
- *   - `kissColorValues` is the single source of truth
- *   - `kissColorTokens` generates `:host` CSS for Shadow DOM components
+ *   - `lessColorValues` is the single source of truth
+ *   - `lessColorTokens` generates `:host` CSS for Shadow DOM components
  *   - `lessRootColorCSS` generates `:root` CSS for page-level injection
  *   - Both MUST stay in sync — editing the object keeps them in sync
  */
@@ -103,7 +103,7 @@ function declarations(values: Readonly<Record<string, string>>): string {
 }
 
 /** Color theme CSS custom properties for Shadow DOM components (:host) */
-export const kissColorTokens = css`
+export const lessColorTokens = css`
   :host,
   :host([data-theme="light"]) {
     ${unsafeCSS(declarations(lessLightColors))};
@@ -141,4 +141,4 @@ export const lessRootColorCSS = `:root,[data-theme="light"]{${
  * Minified CSS for scaffolding (create-kiss template).
  * Same content as lessRootColorCSS but formatted for inline <style>.
  */
-export const kissScaffoldColorCSS = lessRootColorCSS;
+export const lessScaffoldColorCSS = lessRootColorCSS;

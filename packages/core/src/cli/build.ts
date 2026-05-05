@@ -1,10 +1,10 @@
 /**
  * @lessjs/core - CLI: Full Static Build
  *
- * Official one-command build pipeline for KISS apps.
+ * Official one-command build pipeline for LessJS apps.
  *
  * Internally this keeps the three build phases separate and observable:
- *   Phase 1: Vite SSR build writes the server bundle + .kiss metadata
+ *   Phase 1: Vite SSR build writes the server bundle + .less metadata
  *   Phase 2: Client island build writes dist/client/islands
  *   Phase 3: SSG renders static HTML and post-processes the output
  *

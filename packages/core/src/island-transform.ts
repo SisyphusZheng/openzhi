@@ -57,10 +57,10 @@ export function islandTransformPlugin(islandsDir: string): Plugin {
       // Inject only metadata markers. The Vite-built client entry imports
       // islands for side-effect registration, so no registration code lives here.
       const injected = `
-// --- KISS Island Markers (auto-injected by @lessjs/core) ---
+// --- LessJS Island Markers (auto-injected by @lessjs/core) ---
 export const __island = true;
 export const __tagName = '${tagName}';
-// --- End KISS Island Markers ---
+// --- End LessJS Island Markers ---
 `;
 
       return code + '\n' + injected;

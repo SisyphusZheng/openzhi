@@ -309,7 +309,7 @@ Deno.test('generateHonoEntryCode: complex scenario with all features', () => {
     packageIslands: [
       { tagName: 'less-layout', modulePath: '@lessjs/ui/less-layout' },
     ],
-    html: { lang: 'zh-CN', title: 'KISS 文档' },
+    html: { lang: 'zh-CN', title: 'LessJS 文档' },
     headExtras: '<link rel="stylesheet" href="/styles.css" />',
     upgradeStrategy: 'lazy',
   });
@@ -322,7 +322,7 @@ Deno.test('generateHonoEntryCode: complex scenario with all features', () => {
   assertStringIncludes(code, '_middleware');
   assertStringIncludes(code, 'less-layout');
   assertStringIncludes(code, 'lang: "zh-CN"');
-  assertStringIncludes(code, 'KISS 文档');
+  assertStringIncludes(code, 'LessJS 文档');
   assertStringIncludes(code, '/styles.css');
   // No process.env
   const codeLines = code.split('\n').filter((l) => !l.trimStart().startsWith('//'));

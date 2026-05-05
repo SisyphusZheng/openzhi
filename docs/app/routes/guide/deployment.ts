@@ -86,11 +86,11 @@ export class DeploymentPage extends LitElement {
           <code-block
           ><pre><code>// vite.config.ts
             import { defineConfig } from 'vite';
-            import { kiss } from '@lessjs/core';
+            import { less } from '@lessjs/core';
 
             export default defineConfig({
               base: '/repo/',
-              plugins: [kiss()],
+              plugins: [less()],
             });</code></pre></code-block>
 
             <h2>API Deployment</h2>

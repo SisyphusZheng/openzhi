@@ -48,7 +48,7 @@ export class MinimalBlogDemoPage extends LitElement {
       }
       .post-item p {
         margin: 0;
-        color: var(--kiss-text-muted);
+        color: var(--less-text-muted);
         font-size: 0.875rem;
       }
       .nav-highlight-demo {

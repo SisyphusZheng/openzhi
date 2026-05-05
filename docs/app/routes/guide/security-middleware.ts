@@ -83,7 +83,7 @@ export default async function adminOnly(c: Context, next: Next) {
             post-processing.
           </p>
           <code-block><pre><code>// vite.config.ts
-kiss({
+less({
   middleware: {
     csp: {
       policy: "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'",
@@ -98,7 +98,7 @@ kiss({
             Configure CORS deliberately for API routes. Content pages often do not need cross-origin access;
             API routes often do.
           </p>
-          <code-block><pre><code>kiss({
+          <code-block><pre><code>less({
   middleware: {
     corsOrigin: 'https://example.com',
   },

@@ -1,5 +1,5 @@
 /**
- * @lessjs/ui - KISS UI Component Library
+ * @lessjs/ui - LessJS UI Component Library
  *
  * Swiss International Style: Pure B&W, minimal, typography-driven.
  * Built on Lit + design tokens CSS custom properties.
@@ -18,7 +18,7 @@
  * import '@lessjs/ui';
  *
  * // Or import specific components
- * import { KissButton } from '@lessjs/ui/less-button';
+ * import { LessButton } from '@lessjs/ui/less-button';
  * ```
  *
  * @module @lessjs/ui
@@ -33,24 +33,24 @@ interface PackageIslandMeta {
 // Design tokens (CSS custom properties)
 export { lessDesignTokens } from './design-tokens.js';
 // Individual token sub-modules (for partial imports)
-export { kissSpacingTokens } from './tokens/spacing.js';
-export { kissTypographyTokens } from './tokens/typography.js';
-export { kissColorTokens } from './tokens/colors.js';
-export { kissEffectTokens } from './tokens/effects.js';
+export { lessSpacingTokens } from './tokens/spacing.js';
+export { lessTypographyTokens } from './tokens/typography.js';
+export { lessColorTokens } from './tokens/colors.js';
+export { lessEffectTokens } from './tokens/effects.js';
 
 // Components
-export { KissButton, tagName as kissButtonTagName } from './less-button.js';
-export { KissCard, tagName as kissCardTagName } from './less-card.js';
-export { KissInput, tagName as kissInputTagName } from './less-input.js';
-export { KissCodeBlock, tagName as kissCodeBlockTagName } from './less-code-block.js';
-export { KissLayout, tagName as kissLayoutTagName } from './less-layout.js';
+export { LessButton, tagName as lessButtonTagName } from './less-button.js';
+export { LessCard, tagName as lessCardTagName } from './less-card.js';
+export { LessInput, tagName as lessInputTagName } from './less-input.js';
+export { LessCodeBlock, tagName as lessCodeBlockTagName } from './less-code-block.js';
+export { LessLayout, tagName as lessLayoutTagName } from './less-layout.js';
 export type { HeaderNavLink, NavItem, NavSection } from './less-layout.js';
-export { KissThemeToggle, tagName as kissThemeToggleTagName } from './less-theme-toggle.js';
-export { default as KissHeroPing, tagName as kissHeroPingTagName } from './less-hero-ping.js';
+export { LessThemeToggle, tagName as lessThemeToggleTagName } from './less-theme-toggle.js';
+export { default as LessHeroPing, tagName as lessHeroPingTagName } from './less-hero-ping.js';
 
 // Vite plugin for Web Awesome CDN injection (convenience only)
-export { kissUI } from './less-ui-plugin.js';
-export type { KissUIOptions } from './less-ui-plugin.js';
+export { lessUI } from './less-ui-plugin.js';
+export type { LessUIOptions } from './less-ui-plugin.js';
 
 // Island metadata for auto-detection by @lessjs/core
 // These components are Islands with Shadow DOM and client-side behavior.

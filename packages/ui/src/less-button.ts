@@ -27,7 +27,7 @@ import { lessDesignTokens } from './design-tokens.js';
 
 export const tagName = 'less-button';
 
-export class KissButton extends LitElement {
+export class LessButton extends LitElement {
   static override styles: CSSResult[] = [
     lessDesignTokens,
     css`
@@ -184,5 +184,5 @@ export class KissButton extends LitElement {
 
 // Guard: idempotent across SSR paths
 try {
-  customElements.define(tagName, KissButton);
+  customElements.define(tagName, LessButton);
 } catch { /* already defined */ }

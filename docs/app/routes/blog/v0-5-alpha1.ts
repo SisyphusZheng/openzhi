@@ -57,13 +57,13 @@ export default class BlogV05Alpha1 extends LitElement {
         border-radius: 4px;
         padding: 1.25rem;
         margin: 1.25rem 0;
-        border-left: 3px solid var(--kiss-primary);
+        border-left: 3px solid var(--less-primary);
       }
       .bug-card .bug-label {
         font-size: 0.75rem;
         text-transform: uppercase;
         letter-spacing: 0.05em;
-        color: var(--kiss-primary);
+        color: var(--less-primary);
         font-weight: 600;
         margin-bottom: 0.25rem;
       }
@@ -81,7 +81,7 @@ export default class BlogV05Alpha1 extends LitElement {
       }
       .new-badge {
         display: inline-block;
-        background: var(--kiss-primary);
+        background: var(--less-primary);
         color: #fff;
         font-size: 0.625rem;
         text-transform: uppercase;
@@ -100,7 +100,7 @@ export default class BlogV05Alpha1 extends LitElement {
       }
       .phase-version {
         font-weight: 700;
-        color: var(--kiss-primary);
+        color: var(--less-primary);
         font-size: 0.9375rem;
       }
       .phase-goal {
@@ -127,11 +127,11 @@ export default class BlogV05Alpha1 extends LitElement {
         letter-spacing: 0.05em;
       }
       .good {
-        color: var(--kiss-success, #22c55e);
+        color: var(--less-success, #22c55e);
         font-weight: 600;
       }
       .bad {
-        color: var(--kiss-danger, #ef4444);
+        color: var(--less-danger, #ef4444);
         font-weight: 600;
       }
     `,
@@ -338,11 +338,11 @@ export default class BlogV05Alpha1 extends LitElement {
             </div>
 
             <div class="phase">
-              <div class="phase-version">v0.10.0 — .kiss Compiler Alpha</div>
+              <div class="phase-version">v0.10.0 — .less Compiler Alpha</div>
               <div class="phase-goal">可选零框架运行时组件编译器，不阻塞 v0.5-v0.9</div>
             </div>
 
-            <h2>.kiss 编译器愿景（ADR 0002）</h2>
+            <h2>.less 编译器愿景（ADR 0002）</h2>
 
             <div class="truth">
               <div class="truth-title">把 Lit 从必选变成 adapter</div>
@@ -351,7 +351,7 @@ export default class BlogV05Alpha1 extends LitElement {
                 个组件也需要整个运行时。
               </p>
               <p>
-                <strong>.kiss 编译器</strong>的愿景：将 <code>.kiss</code> 模板文件编译为原生 Custom
+                <strong>.less 编译器</strong>的愿景：将 <code>.less</code> 模板文件编译为原生 Custom
                 Element——无框架运行时。Lit 作为可选 fallback 保留，供需要 Lit 生态（context
                 protocol、decorators、ReactiveController）的用户选择。
               </p>

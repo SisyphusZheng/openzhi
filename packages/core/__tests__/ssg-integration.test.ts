@@ -5,7 +5,7 @@
  *   1. buildIslandChunkMap — scan client build output → tagName → chunk path mapping
  *   2. rewriteHtmlFiles — rewrite Island paths + apply aria-current active highlights
  *
- * KISS Architecture constraints verified:
+ * LessJS Architecture constraints verified:
  *   - S (Static): DSD content visible without JS
  *   - K+I (Knowledge + Isolated): Islands are the only JS
  *   - I (Isolated): No Island does what CSS can do

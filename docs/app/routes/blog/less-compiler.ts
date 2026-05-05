@@ -1,17 +1,17 @@
 /**
- * Blog Post — .kiss Compiler Vision
+ * Blog Post — .less Compiler Vision
  */
 import { css, html, LitElement } from 'lit';
 import { pageStyles } from '../../components/page-styles.js';
 import '@lessjs/ui/less-layout';
 
-export class BlogKissCompilerPage extends LitElement {
+export class BlogLessCompilerPage extends LitElement {
   static override styles = [
     pageStyles,
     css`
       .blog-meta {
         font-size: 0.75rem;
-        color: var(--kiss-text-muted);
+        color: var(--less-text-muted);
         margin-bottom: 1.5rem;
       }
       h2 {
@@ -27,7 +27,7 @@ export class BlogKissCompilerPage extends LitElement {
       }
       .code-block {
         background: var(--less-bg-surface);
-        /* 0.5px: reduced to match kiss-ui spec */
+        /* 0.5px: reduced to match less-ui spec */
         border: 0.5px solid var(--less-border);
         border-radius: 4px;
         padding: 1rem;
@@ -44,10 +44,10 @@ export class BlogKissCompilerPage extends LitElement {
 
   override render() {
     return html`
-      <less-layout currentPath="/blog/kiss-compiler">
+      <less-layout currentPath="/blog/less-compiler">
         <div class="container">
           <p class="blog-meta">2026-04-30 · SisyphusZheng</p>
-          <h1>.kiss Compiler — 可选零框架运行时组件</h1>
+          <h1>.less Compiler — 可选零框架运行时组件</h1>
 
           <p>
             LessJS 框架从第一天起就选择了 Lit 作为组件基础。这个选择是对的——Lit 是 Web Components 生态中
@@ -63,7 +63,7 @@ export class BlogKissCompilerPage extends LitElement {
             一个好 adapter，而不是 LessJS 的定义本身。
           </p>
 
-          <h2>.kiss 文件格式</h2>
+          <h2>.less 文件格式</h2>
           <p>一个组件一个文件。没有 class 声明，没有 decorator，没有 import：</p>
           <div class="code-block">
             &lt;!-- my-counter.kiss --&gt; &lt;template&gt; &lt;button
@@ -95,7 +95,7 @@ export class BlogKissCompilerPage extends LitElement {
           <h2>路线</h2>
           <p>
             这项工作不应该阻塞 v0.5-v0.9。当前路线是：先修可信度、安全、DSD renderer、Island Upgrade、
-            Serverless Fullstack 与 SSG/ISR，再在 v0.10.0 引入 <code>.kiss</code> compiler alpha。
+            Serverless Fullstack 与 SSG/ISR，再在 v0.10.0 引入 <code>.less</code> compiler alpha。
             Lit 兼容模式在 v0.x 生命周期中保留。
           </p>
           <p>
@@ -111,6 +111,6 @@ export class BlogKissCompilerPage extends LitElement {
   }
 }
 
-customElements.define('page-blog-kiss-compiler', BlogKissCompilerPage);
-export default BlogKissCompilerPage;
-export const tagName = 'page-blog-kiss-compiler';
+customElements.define('page-blog-less-compiler', BlogLessCompilerPage);
+export default BlogLessCompilerPage;
+export const tagName = 'page-blog-less-compiler';

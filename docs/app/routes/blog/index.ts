@@ -16,7 +16,7 @@ export class BlogIndexPage extends LitElement {
       }
       .blog-item {
         padding: 1rem 1.25rem;
-        /* 0.5px: reduced to match kiss-ui spec */
+        /* 0.5px: reduced to match less-ui spec */
         border: 0.5px solid var(--less-border);
         border-radius: 4px;
         margin-bottom: 0.75rem;
@@ -36,7 +36,7 @@ export class BlogIndexPage extends LitElement {
       }
       .blog-item .meta {
         font-size: 0.75rem;
-        color: var(--kiss-text-muted);
+        color: var(--less-text-muted);
         margin: 0;
       }
       .blog-item p {
@@ -56,7 +56,7 @@ export class BlogIndexPage extends LitElement {
 
           <div class="blog-list">
             <a href="/blog/v0-5-alpha1" class="blog-item">
-              <h2>v0.5-alpha1 — 全量架构审计与精准修复 <span style="font-size:0.7rem;color:var(--kiss-accent)">NEW</span></h2>
+              <h2>v0.5-alpha1 — 全量架构审计与精准修复 <span style="font-size:0.7rem;color:var(--less-accent)">NEW</span></h2>
               <p class="blog-desc">3 agent 扫描 13k 行源码 · CSS 注入修复 · Island 升级修复 · 6 条新设计原则 · 配置精简</p>
               <span class="blog-date">2026-05-03</span>
             </a>
@@ -75,11 +75,11 @@ export class BlogIndexPage extends LitElement {
                 errors。从"能跑起来"到"真正能用"的里程碑。
               </p>
             </a>
-            <a href="/blog/kiss-compiler" class="blog-item">
-              <h2>.kiss Compiler — 可选零框架运行时组件</h2>
+            <a href="/blog/less-compiler" class="blog-item">
+              <h2>.less Compiler — 可选零框架运行时组件</h2>
               <p class="meta">2026-04-30 · 架构决策</p>
               <p>
-                一个可选编译器将声明式 .kiss 文件编译为原生 Custom Elements，让 Lit 从必选路线变成 adapter。
+                一个可选编译器将声明式 .less 文件编译为原生 Custom Elements，让 Lit 从必选路线变成 adapter。
               </p>
             </a>
           </div>

@@ -1,14 +1,14 @@
-# PWA Support for KISS SSG
+# PWA Support for LessJS SSG
 
 ## Status
 
-**PARTIALLY IMPLEMENTED** - available through `kiss({ pwa })` metadata and the
+**PARTIALLY IMPLEMENTED** - available through `less({ pwa })` metadata and the
 official `deno task build` flow. The service worker strategy has changed from
 the original full-precache design.
 
 ## Context
 
-KISS generates pure static HTML with Declarative Shadow DOM. This is the ideal
+LessJS generates pure static HTML with Declarative Shadow DOM. This is the ideal
 substrate for a Progressive Web App:
 
 - All pages are pre-rendered HTML (no server needed)
@@ -19,7 +19,7 @@ substrate for a Progressive Web App:
 
 ## Proposal
 
-Add a `pwa` option to the `kiss()` plugin that automatically generates:
+Add a `pwa` option to the `less()` plugin that automatically generates:
 
 1. `manifest.json` - Web App Manifest (name, icons, display, theme_color)
 2. `sw.js` - Service Worker with NetworkFirst (HTML/API) + CacheFirst (assets)
@@ -31,10 +31,10 @@ Add a `pwa` option to the `kiss()` plugin that automatically generates:
 ```ts
 // vite.config.ts
 export default defineConfig({
-  plugins: [kiss({
+  plugins: [less({
     pwa: {
-      name: 'My KISS App',
-      shortName: 'KISS',
+      name: 'My LessJS App',
+      shortName: 'LessJS',
       themeColor: '#000000',
       backgroundColor: '#ffffff',
       icons: [{ src: '/icon-192.png', sizes: '192x192', type: 'image/png' }],

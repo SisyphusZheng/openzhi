@@ -2,7 +2,7 @@
  * Build-time runtime shim generation.
  *
  * Vite/Rolldown does not resolve JSR bare specifiers inside generated virtual
- * modules. The KISS plugin writes this small local file into `.kiss/` and
+ * modules. The LessJS plugin writes this small local file into `.less/` and
  * aliases `@lessjs/core/less-runtime` to it so generated SSR entries stay
  * package-manager agnostic.
  */
@@ -38,6 +38,7 @@ function serializeAttributes(props = {}) {
   for (const [key, val] of Object.entries(props)) {
     if (val === false || val === null || val === undefined) continue;
     if (val === true) parts.push(key);
+    else if (typeof val === 'object') parts.push(\`\${key}="\${escapeAttr(JSON.stringify(val))}"\`);
     else parts.push(\`\${key}="\${escapeAttr(val)}"\`);
   }
   return parts.length > 0 ? ' ' + parts.join(' ') : '';

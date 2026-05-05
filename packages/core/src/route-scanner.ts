@@ -16,7 +16,7 @@
  */
 
 import type { PackageIslandMeta, RouteEntry, SpecialFileType } from './types.js';
-import { KissError } from './errors.js';
+import { LessError } from './errors.js';
 import { readdir, stat } from 'node:fs/promises';
 import { join, posix, sep } from 'node:path';
 
@@ -378,8 +378,8 @@ export async function scanPackageIslands(
     } catch (e) {
       // Package scan failure is fatal — misconfigured packages should break
       // the build, not silently produce a broken site. This is consistent
-      // with how route scanning failures are handled (throw KissError).
-      throw new KissError(
+      // with how route scanning failures are handled (throw LessError).
+      throw new LessError(
         `Failed to scan package islands from "${pkg}": ${
           e instanceof Error ? e.message : String(e)
         }`,

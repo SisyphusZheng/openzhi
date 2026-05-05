@@ -6,7 +6,7 @@ import {
   ConflictError,
   ForbiddenError,
   IslandUpgradeError,
-  KissError,
+  LessError,
   NotFoundError,
   RateLimitError,
   SsrRenderError,
@@ -15,12 +15,12 @@ import {
 } from '../src/errors.ts';
 
 Deno.test('errors', async (t) => {
-  await t.step('KissError has code and statusCode', () => {
-    const err = new KissError('test', 'TEST_ERROR', 400);
+  await t.step('LessError has code and statusCode', () => {
+    const err = new LessError('test', 'TEST_ERROR', 400);
     assertEquals(err.code, 'TEST_ERROR');
     assertEquals(err.statusCode, 400);
     assertEquals(err.isOperational, true);
-    assertEquals(err.name, 'KissError');
+    assertEquals(err.name, 'LessError');
   });
 
   await t.step('NotFoundError maps to 404', () => {

@@ -3,7 +3,7 @@
  *
  * Pure function: EntryDescriptor → string (virtual module code).
  *
- * KISS Architecture (v0.5.0):
+ * LessJS Architecture (v0.5.0):
  * - API routes use Hono standard app.route() (not app.all + fetch transform)
  * - Island upgrade is handled by the client entry (built by Vite in Phase 2).
  *   No inline script in SSG HTML; the client entry is a Vite-built module
@@ -322,12 +322,12 @@ export function renderEntry(desc: EntryDescriptor): string {
   }
   const ssrIslands = desc.islands.filter((island) => !island.isPackage);
   if (ssrIslands.length > 0) {
-    b.push(`const __kiss_get_default_export = (module) => module && module.default`);
+    b.push(`const __less_get_default_export = (module) => module && module.default`);
   }
   for (const island of ssrIslands) {
     const varName = `__island_${island.tagName.replace(/-/g, '_')}`;
     const componentVar = `__island_component_${island.tagName.replace(/-/g, '_')}`;
-    b.push(`const ${componentVar} = __kiss_get_default_export(${varName})`);
+    b.push(`const ${componentVar} = __less_get_default_export(${varName})`);
     b.push(`if (${componentVar} && !customElements.get('${island.tagName}')) {`);
     b.push(`  customElements.define('${island.tagName}', ${componentVar})`);
     b.push(`}`);

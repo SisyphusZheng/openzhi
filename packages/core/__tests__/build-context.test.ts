@@ -2,15 +2,15 @@
  * @lessjs/core - build-context.ts tests (Deno)
  */
 import { assertEquals, assertExists } from 'jsr:@std/assert@^1.0.0';
-import { KissBuildContext } from '../src/build-context.ts';
+import { LessBuildContext } from '../src/build-context.ts';
 
-Deno.test('KissBuildContext creates instance without error', () => {
-  const ctx = new KissBuildContext({});
+Deno.test('LessBuildContext creates instance without error', () => {
+  const ctx = new LessBuildContext({});
   assertExists(ctx);
 });
 
-Deno.test('KissBuildContext has empty default mutable state', () => {
-  const ctx = new KissBuildContext({});
+Deno.test('LessBuildContext has empty default mutable state', () => {
+  const ctx = new LessBuildContext({});
 
   // Empty state
   assertEquals(ctx.honoEntryCode, '');
@@ -21,8 +21,8 @@ Deno.test('KissBuildContext has empty default mutable state', () => {
   assertEquals(ctx.userResolveAlias, null);
 });
 
-Deno.test('KissBuildContext reset clears all mutable state', () => {
-  const ctx = new KissBuildContext({});
+Deno.test('LessBuildContext reset clears all mutable state', () => {
+  const ctx = new LessBuildContext({});
 
   // Mutate
   ctx.honoEntryCode = 'test code';

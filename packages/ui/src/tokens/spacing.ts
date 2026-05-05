@@ -1,14 +1,14 @@
 /**
  * @lessjs/ui - Design Tokens: Spacing & Layout
  *
- * KISS spacing scale based on 4px base unit (Swiss grid).
+ * LessJS spacing scale based on 4px base unit (Swiss grid).
  * Consistent rhythm across all components.
  */
 
 import { css } from 'lit';
 
 /** Spacing & layout CSS custom properties */
-export const kissSpacingTokens = css`
+export const lessSpacingTokens = css`
   :host {
     /* === Spacing Scale (4px base unit) === */
     --less-size-1: 0.25rem; /* 4px */

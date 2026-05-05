@@ -1,7 +1,7 @@
 /**
  * @lessjs/core - ssr-handler.ts tests (Deno)
  *
- * KISS Architecture: collectIslands removed (moved to build-time map).
+ * LessJS Architecture: collectIslands removed (moved to build-time map).
  * Only renderSsrError and wrapInDocument remain.
  */
 import { assertEquals } from 'jsr:@std/assert@^1.0.0';

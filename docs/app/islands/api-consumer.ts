@@ -44,13 +44,13 @@ export default class ApiConsumer extends LitElement {
       display: inline-block;
     }
     .status-dot.loading {
-      background: var(--kiss-accent-dim);
+      background: var(--less-accent-dim);
     }
     .status-dot.connected {
       background: #22c55e;
     }
     .status-dot.error {
-      background: var(--kiss-error);
+      background: var(--less-error);
     }
 
     .data-grid {
@@ -90,7 +90,7 @@ export default class ApiConsumer extends LitElement {
       padding: 0.4rem 0.85rem;
       border: 0.5px solid var(--less-border);
       border-radius: 6px;
-      background: var(--kiss-bg-card);
+      background: var(--less-bg-card);
       color: var(--less-text-secondary);
       font-size: 0.8125rem;
       cursor: pointer;
@@ -99,23 +99,23 @@ export default class ApiConsumer extends LitElement {
     .btn:hover {
       border-color: var(--less-border-hover);
       color: var(--less-text-primary);
-      background: var(--kiss-bg-hover);
+      background: var(--less-bg-hover);
     }
     .btn:disabled {
       opacity: 0.4;
       cursor: not-allowed;
     }
     .btn.primary {
-      background: var(--kiss-accent);
+      background: var(--less-accent);
       color: var(--less-bg-base);
-      border-color: var(--kiss-accent);
+      border-color: var(--less-accent);
     }
     .btn.primary:hover {
       opacity: 0.85;
     }
     .btn.primary:disabled {
       opacity: 0.25;
-      background: var(--kiss-text-muted);
+      background: var(--less-text-muted);
       border-color: transparent;
     }
 
@@ -136,7 +136,7 @@ export default class ApiConsumer extends LitElement {
       padding: 0.45rem 0.7rem;
       border: 0.5px solid var(--less-border);
       border-radius: 6px;
-      background: var(--kiss-bg-card);
+      background: var(--less-bg-card);
       color: var(--less-text-primary);
       font-size: 0.8125rem;
       outline: none;
@@ -146,7 +146,7 @@ export default class ApiConsumer extends LitElement {
       border-color: var(--less-border-hover);
     }
     .form-row input::placeholder {
-      color: var(--kiss-text-muted);
+      color: var(--less-text-muted);
     }
 
     .greeting {
@@ -155,9 +155,9 @@ export default class ApiConsumer extends LitElement {
       border-radius: 6px;
       font-size: 0.9375rem;
       font-weight: 500;
-      background: color-mix(in srgb, var(--kiss-accent) 6%, transparent);
+      background: color-mix(in srgb, var(--less-accent) 6%, transparent);
       // TODO: 0.5px after color-mix support
-      border: 1px solid color-mix(in srgb, var(--kiss-accent) 15%, transparent);
+      border: 1px solid color-mix(in srgb, var(--less-accent) 15%, transparent);
       color: var(--less-text-primary);
       animation: fadeSlide 0.25s ease;
     }
@@ -166,10 +166,10 @@ export default class ApiConsumer extends LitElement {
       padding: 0.6rem 0.85rem;
       border-radius: 6px;
       font-size: 0.8125rem;
-      background: color-mix(in srgb, var(--kiss-error) 8%, transparent);
+      background: color-mix(in srgb, var(--less-error) 8%, transparent);
       // TODO: 0.5px after color-mix support
-      border: 1px solid color-mix(in srgb, var(--kiss-error) 20%, transparent);
-      color: var(--kiss-error);
+      border: 1px solid color-mix(in srgb, var(--less-error) 20%, transparent);
+      color: var(--less-error);
       animation: fadeSlide 0.25s ease;
     }
 
@@ -218,7 +218,7 @@ export default class ApiConsumer extends LitElement {
   }
 
   private get _base(): string {
-    return this.apiUrl || 'https://kiss-demo-api.sisyphuszheng.deno.net';
+    return this.apiUrl || 'https://less-demo-api.sisyphuszheng.deno.net';
   }
 
   override connectedCallback() {
@@ -310,7 +310,7 @@ export default class ApiConsumer extends LitElement {
           `
           : ''} ${this.apiError
           ? html`
-            <div class="pre-box" style="color:var(--kiss-error)">${this.apiError}</div>
+            <div class="pre-box" style="color:var(--less-error)">${this.apiError}</div>
           `
           : ''}
         <button class="btn" @click="${this._fetchStatus}" ?disabled="${this

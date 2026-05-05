@@ -151,7 +151,7 @@ export const pageStyles = css`
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    color: var(--kiss-text-muted);
+    color: var(--less-text-muted);
     margin-bottom: 0.25rem;
   }
   .pillar h3 {

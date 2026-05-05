@@ -1,11 +1,14 @@
-# KISS
+# LessJS
 
-[English](./README.md) | [简体中文](./README.zh-CN.md)
+[简体中文](./README.md) | [English](./README.en.md)
 
-KISS 是一个 Deno-first、Web Standards-first 的现代全栈框架，面向 static-first 应用。
+LessJS is a Deno-first, Web Standards-first modern full-stack framework for static-first applications.
 
-它把 Declarative Shadow DOM、Web Components、Island Upgrade、SSG、Hono serverless APIs
-和 Vite 组合成一个很小的框架表面。KISS 的目标不是隐藏 Web 平台，而是让平台本身变得更好用。
+It combines Declarative Shadow DOM, Web Components, Island Upgrade, SSG, Hono serverless APIs,
+and Vite into a minimal framework surface. LessJS aims not to hide the Web platform, but to make
+the platform itself more usable.
+
+LessJS evolved from the KISS framework (Keep It Simple, Stupid), continuing the same philosophy.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![CI](https://github.com/lessjs-run/LessJS/actions/workflows/test.yml/badge.svg)](https://github.com/lessjs-run/LessJS/actions/workflows/test.yml)
@@ -18,20 +21,19 @@ KISS 是一个 Deno-first、Web Standards-first 的现代全栈框架，面向 s
 [![Hono](https://img.shields.io/badge/Hono-4.x-E36002)](https://hono.dev/)
 [![Lit](https://img.shields.io/badge/Lit-optional-325CFF)](https://lit.dev/)
 
-## 为什么是 KISS
+## Why LessJS
 
-很多现代前端栈把 HTML 变成运行时产物。KISS 反过来，从 HTML 和 Web 平台本身出发：
+Most modern frontend stacks treat HTML as a runtime artifact. LessJS takes the opposite approach,
+starting from HTML and the Web platform itself:
 
-- 在构建期渲染语义化 HTML
-- 用 Declarative Shadow DOM 保留组件边界
-- 只升级真正需要 JavaScript 的交互岛屿
-- 优先使用原生 Web APIs，而不是先制造框架抽象
-- 让 serverless APIs 靠近路由树
-- 通过 Deno-first 工作流运行、构建和发布
+- Render semantic HTML at build time
+- Preserve component boundaries with Declarative Shadow DOM
+- Only upgrade the interactive islands that truly need JavaScript
+- Prefer native Web APIs over framework abstractions
+- Keep serverless APIs close to the route tree
+- Run, build, and publish through a Deno-first workflow
 
-KISS 0.5 是 static-first DSD + Island Upgrade 路线的 Trust Release。
-
-## 快速开始
+## Quick Start
 
 ```bash
 deno run -A jsr:@lessjs/create my-app
@@ -39,23 +41,23 @@ cd my-app
 deno task dev
 ```
 
-要求：
+Requirements:
 
-- Deno 2.7 或更新版本
-- 支持 Declarative Shadow DOM 的现代浏览器
+- Deno 2.7 or later
+- A modern browser with Declarative Shadow DOM support
 
-## 架构
+## Architecture
 
-KISS 不只是“代码少”。它是一组架构约束：
+LessJS is not just about "less code." It is a set of architectural constraints:
 
-| 字母 | 约束      | 含义                                                             |
-| ---- | --------- | ---------------------------------------------------------------- |
-| K    | Knowledge | 优先使用构建期知识，而不是运行时发现。                           |
-| I    | Isolated  | 客户端 JavaScript 应该待在 island 和组件边界内。                 |
-| S    | Semantic  | HTML 仍然是主要文档格式，也是可访问性的基础。                    |
-| S    | Static    | SSG 产物应该能作为静态文件部署，serverless APIs 是可选动态边缘。 |
+| Letter | Constraint | Meaning                                                      |
+| ------ | ---------- | ------------------------------------------------------------ |
+| K      | Knowledge  | Prefer build-time knowledge over runtime discovery.          |
+| I      | Isolated   | Client JavaScript should stay within island and component boundaries. |
+| S      | Semantic   | HTML remains the primary document format and the foundation of accessibility. |
+| S      | Static     | SSG output should be deployable as static files; serverless APIs are optional dynamic edges. |
 
-当前渲染模型：
+Current rendering model:
 
 ```text
 Route module
@@ -66,22 +68,25 @@ Route module
   -> Custom Element upgrade in the browser
 ```
 
-这和完整客户端 hydration 模型有意不同。KISS 不尝试在客户端重建应用树，而是在需要交互的位置升级
-Custom Elements。
+This differs intentionally from a full client hydration model. LessJS does not attempt
+to rebuild the application tree on the client — it upgrades Custom Elements at interaction
+points.
 
-## 包
+Current version v0.5.3 is a Trust Release on the static-first DSD + Island Upgrade track.
 
-| 包                    | 职责                                               | 当前版本线 |
-| --------------------- | -------------------------------------------------- | ---------- |
-| `@lessjs/core`        | Vite 插件、路由扫描、DSD 渲染、SSG 管线            | `0.5.2`    |
-| `@lessjs/ui`          | 基于 Lit 的 Web Component 组件库和 package islands | `0.5.0`    |
-| `@lessjs/rpc`         | 轻量 fetch/RPC controller 工具                     | `0.3.0`    |
-| `@lessjs/adapter-lit` | 可选 Lit SSR 适配器                                | `0.2.0`    |
-| `@lessjs/create`      | 项目脚手架 CLI                                     | `0.4.4`    |
+## Packages
 
-历史包 `@lessjs/vite` 和 `@lessjs/ssg` 已废弃，不建议继续使用。
+| Package               | Responsibility                                     | Current Version |
+| --------------------- | -------------------------------------------------- | --------------- |
+| `@lessjs/core`        | Vite plugin, route scanning, DSD rendering, SSG pipeline | 0.5.3    |
+| `@lessjs/ui`          | Lit-based Web Component library and package islands | 0.5.2          |
+| `@lessjs/rpc`         | Lightweight fetch/RPC controller tools             | 0.3.0          |
+| `@lessjs/adapter-lit` | Optional Lit SSR adapter                           | 0.2.0          |
+| `@lessjs/create`      | Project scaffolding CLI                            | 0.4.5          |
 
-## 项目结构
+Legacy packages `@lessjs/vite` and `@lessjs/ssg` are deprecated.
+
+## Project Structure
 
 ```text
 my-app/
@@ -99,9 +104,10 @@ my-app/
   vite.config.ts
 ```
 
-页面是文件路由。API 文件导出 Hono apps。Islands 是注册 Custom Elements 的客户端 chunk。
+Pages are file-routed. API files export Hono apps. Islands are client chunks that register
+Custom Elements.
 
-## 路由示例
+## Route Example
 
 ```ts
 import { css, html, LitElement } from 'lit';
@@ -119,7 +125,7 @@ export default class HomePage extends LitElement {
   override render() {
     return html`
       <main>
-        <h1>Hello from KISS</h1>
+        <h1>Hello from LessJS</h1>
         <counter-island></counter-island>
       </main>
     `;
@@ -129,18 +135,18 @@ export default class HomePage extends LitElement {
 customElements.define(tagName, HomePage);
 ```
 
-## 构建
+## Build
 
-KISS 应用的生产构建只需要一个命令：
+Building a LessJS application for production takes a single command:
 
 ```bash
 deno task build
 ```
 
-内部仍然保留 SSR bundle、island client chunks、SSG rendering 三个可观测阶段；这用于调试和
-CI 定位，不再是用户 quickstart 的主路径。
+Internally, three observable phases remain — SSR bundle, island client chunks, SSG rendering —
+for debugging and CI diagnostics. These are no longer part of the user-facing quickstart path.
 
-完整仓库可运行：
+Full repository commands:
 
 ```bash
 deno task build:all
@@ -148,31 +154,14 @@ deno task test
 deno task lint
 ```
 
-本仓库是 Deno-first。Vite 通过 `deno run -A npm:vite` 执行；Node/npm/npx 不是主工作流的一部分。
+This repository is Deno-first. Vite runs via `deno run -A npm:vite`; Node/npm/npx is not
+part of the primary workflow.
 
-## 当前状态
-
-KISS 当前处于 `v0.5.0` Trust Release 版本线。
-
-已经适合评估：
-
-- DSD-first 静态渲染
-- package islands
-- SSG 输出
-- Hono API routes
-- Deno-first 本地与 CI 工作流
-
-后续版本计划：
-
-- DSD Renderer 2：nested DSD、slot/projection、safe template helper
-- ISR/serverless 约定
-- 未来 `.kiss` compiler 方向
-
-## 文档
+## Documentation
 
 - Docs site: [lessjs.com](https://lessjs.com/)
 - Roadmap: [docs/app/routes/roadmap.ts](./docs/app/routes/roadmap.ts)
-- 架构决策：[docs/decisions](./docs/decisions)
+- Architecture decisions: [docs/decisions](./docs/decisions)
 
 ## License
 

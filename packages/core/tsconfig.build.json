@@ -5,7 +5,7 @@
     "moduleResolution": "bundler",
     "baseUrl": ".",
     "paths": {
-      "@lessjs/adapter-lit": ["../kiss-adapter-lit/src/index.ts"]
+      "@lessjs/adapter-lit": ["../adapter-lit/src/index.ts"]
     },
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "types": ["node"],

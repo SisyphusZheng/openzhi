@@ -3,9 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>KISS Framework</title>
+    <title>LessJS Framework</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <!-- Theme vars are injected by kiss() headFragments in production -->
+    <!-- Theme vars are injected by less() headFragments in production -->
     <!-- This fallback is for Vite dev server only -->
     <style>
       :root, [data-theme='dark'] {
@@ -63,7 +63,7 @@
     </style>
     <script>
       (function () {
-        var s = localStorage.getItem('kiss-theme');
+        var s = localStorage.getItem('less-theme');
         var p = window.matchMedia('(prefers-color-scheme:light)').matches;
         var t = s || (p ? 'light' : 'dark');
         document.documentElement.setAttribute('data-theme', t);

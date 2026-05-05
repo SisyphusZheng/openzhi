@@ -3,7 +3,7 @@ import { pageStyles } from '../../components/page-styles.js';
 import '@lessjs/ui/less-layout';
 import '../../islands/code-block.js';
 
-export class KissUIPage extends LitElement {
+export class LessUIPage extends LitElement {
   static override styles = [
     pageStyles,
     css`
@@ -15,7 +15,7 @@ export class KissUIPage extends LitElement {
         border-radius: 0 3px 3px 0;
       }
       .callout.warn {
-        border-left-color: var(--kiss-text-muted);
+        border-left-color: var(--less-text-muted);
       }
       .component-grid {
         display: grid;
@@ -34,14 +34,14 @@ export class KissUIPage extends LitElement {
       }
       .component-card p {
         margin: 0;
-        color: var(--kiss-text-muted);
+        color: var(--less-text-muted);
         font-size: 0.875rem;
       }
     `,
   ];
   override render() {
     return html`
-      <less-layout currentPath="/styling/kiss-ui">
+      <less-layout currentPath="/styling/less-ui">
         <div class="container">
           <h1>@lessjs/ui</h1>
           <p class="subtitle">
@@ -114,9 +114,9 @@ export class KissUIPage extends LitElement {
 
               // 可用的 CSS 自定义属性：
               // --less-bg-base, --less-text-primary, --less-border-base
-              // --kiss-spacing-sm, --kiss-spacing-md, --kiss-spacing-lg
-              // --kiss-font-sans, --kiss-font-mono
-              // --kiss-radius-sm, --kiss-radius-md</code></pre></code-block>
+              // --less-spacing-sm, --less-spacing-md, --less-spacing-lg
+              // --less-font-sans, --less-font-mono
+              // --less-radius-sm, --less-radius-md</code></pre></code-block>
 
               <h2>设计原则</h2>
               <p>@lessjs/ui 遵循 LessJS Architecture 四约束：</p>
@@ -136,7 +136,7 @@ export class KissUIPage extends LitElement {
               <p>
                 所有组件使用 <span class="inline-code">static properties</span> 而非
                 <span class="inline-code">@property</span> 装饰器，确保 Vite SSR 兼容。详见
-                <a href="/guide/ssg#ssr-compatibility" style="color: var(--kiss-accent);">SSG 文档</a>。
+                <a href="/guide/ssg#ssr-compatibility" style="color: var(--less-accent);">SSG 文档</a>。
               </p>
 
               <div class="callout warn">
@@ -157,6 +157,6 @@ export class KissUIPage extends LitElement {
       }
     }
 
-    customElements.define('page-kiss-ui', KissUIPage);
-    export default KissUIPage;
-    export const tagName = 'page-kiss-ui';
+    customElements.define('page-less-ui', LessUIPage);
+    export default LessUIPage;
+    export const tagName = 'page-less-ui';

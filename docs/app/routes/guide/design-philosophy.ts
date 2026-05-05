@@ -46,7 +46,7 @@ export class DesignPhilosophyPage extends LitElement {
             <div class="num">Principle 04</div>
             <h3>Adapters Extend, They Do Not Define</h3>
             <p>
-              Lit 是当前最现实的作者体验；未来的 <span class="inline-code">.kiss</span>
+              Lit 是当前最现实的作者体验；未来的 <span class="inline-code">.less</span>
               compiler 是优化路径，不是框架成立的前提。运行时、构建和文档都应该保持 adapter 边界清晰。
             </p>
           </div>

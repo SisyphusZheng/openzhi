@@ -54,7 +54,7 @@ export const SIDEBAR_NAV: NavSection[] = [
     section: 'Packages',
     items: [
       { path: '/ui', label: 'Design System' },
-      { path: '/styling/kiss-ui', label: '@lessjs/ui' },
+      { path: '/styling/less-ui', label: '@lessjs/ui' },
       { path: '/styling/web-awesome', label: 'Web Awesome' },
       { path: '/examples', label: 'Examples' },
     ],
@@ -63,7 +63,7 @@ export const SIDEBAR_NAV: NavSection[] = [
     section: 'Strategy',
     items: [
       { path: '/roadmap', label: 'Roadmap' },
-      { path: '/guide/kiss-compiler', label: '.kiss Compiler' },
+      { path: '/guide/less-compiler', label: '.less Compiler' },
       { path: '/guide/pwa', label: 'PWA Support' },
       { path: '/guide/blog-system', label: 'Blog System' },
       { path: '/decisions', label: 'Architecture Decisions' },
@@ -85,7 +85,7 @@ export const SIDEBAR_NAV: NavSection[] = [
       { path: '/blog/v0-5-alpha1', label: 'v0.5 Alpha 1' },
       { path: '/blog/v0-5-0', label: 'v0.5.0' },
       { path: '/blog/v0-4-0', label: 'v0.4.0' },
-      { path: '/blog/kiss-compiler', label: '.kiss Compiler Note' },
+      { path: '/blog/less-compiler', label: '.less Compiler Note' },
       { path: '/changelog', label: 'Changelog' },
       { path: '/contributing', label: 'Contributing' },
     ],

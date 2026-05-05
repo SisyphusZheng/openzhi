@@ -1,7 +1,7 @@
 /**
  * @lessjs/core - Public types.
  *
- * KISS Architecture types:
+ * LessJS Architecture types:
  * - SSG is always on (no ssr.preRender option)
  * - No CSR/SPA mode
  * - UI is generic head injection, not tied to one component library
@@ -16,9 +16,16 @@ export interface PackageIslandMeta {
   tagName: string;
   /** Module path for import (e.g. '@lessjs/ui/less-theme-toggle') */
   modulePath: string;
-  /** Island upgrade strategy (default: 'lazy') */
-  strategy?: 'eager' | 'lazy' | 'idle' | 'visible';
+  /** Island upgrade strategy metadata */
+  strategy?: 'eager' | 'lazy';
 }
+
+/** @deprecated Planned for v0.6 — not yet implemented. @see FrameworkOptions.island.upgradeStrategy */
+/**
+ * @deprecated Planned for v0.6 — not yet implemented.
+ * @see FrameworkOptions.island.upgradeStrategy
+ */
+export type PlannedIslandStrategy = 'idle' | 'visible';
 
 /** Framework configuration options */
 export interface FrameworkOptions {
@@ -36,7 +43,15 @@ export interface FrameworkOptions {
    */
   packageIslands?: string[];
 
-  /** Extra HTML to inject into <head> (e.g. CDN links, analytics) */
+  /**
+   * Extra HTML to inject into <head> (e.g. CDN links, analytics).
+   *
+   * @dangerous This value is injected as-is without sanitization. Only use
+   * with content you fully control (e.g. hardcoded CDN links). Never pass
+   * user-supplied strings here — that would create an XSS vector. For
+   * user-controllable URLs, use `inject.stylesheets` or `inject.scripts`
+   * instead, which validate and escape URLs.
+   */
   headExtras?: string;
 
   /** Document <html> attributes */
@@ -73,10 +88,9 @@ export interface FrameworkOptions {
      * Controls when island modules are imported for custom element upgrade.
      * 'lazy' (default): import on requestIdleCallback
      * 'eager': import immediately
-     * 'idle': import on requestIdleCallback or window load
-     * 'visible': import when island scrolls into view
+     * NOTE: 'idle' and 'visible' are planned for v0.6 (see PlannedIslandStrategy).
      */
-    upgradeStrategy?: 'eager' | 'lazy' | 'idle' | 'visible';
+    upgradeStrategy?: 'eager' | 'lazy';
   };
 
   /** Build configuration */
@@ -138,7 +152,7 @@ export interface FrameworkOptions {
 export type SpecialFileType = 'renderer' | 'middleware';
 
 /**
- * KissRenderer interface for _renderer.ts files.
+ * LessRenderer interface for _renderer.ts files.
  *
  * Renderers wrap page SSR output, like Next.js layout.tsx or SvelteKit +layout.svelte.
  * They apply to their directory and all subdirectories.
@@ -147,9 +161,9 @@ export type SpecialFileType = 'renderer' | 'middleware';
  * Usage:
  * ```ts
  * // app/routes/_renderer.ts
- * import type { KissRenderer } from '@lessjs/core';
+ * import type { LessRenderer } from '@lessjs/core';
  *
- * const renderer: KissRenderer = {
+ * const renderer: LessRenderer = {
  *   wrap(html, ctx) {
  *     return `<div class="layout"><nav>...</nav><main>${html}</main></div>`;
  *   }
@@ -157,7 +171,7 @@ export type SpecialFileType = 'renderer' | 'middleware';
  * export default renderer;
  * ```
  */
-export interface KissRenderer {
+export interface LessRenderer {
   /**
    * Wrap page HTML with layout chrome.
    * @param html - The page's SSR-rendered HTML
@@ -171,7 +185,7 @@ export interface KissRenderer {
 }
 
 /**
- * KissMiddleware interface for _middleware.ts files.
+ * LessMiddleware interface for _middleware.ts files.
  *
  * Middleware is mounted as Hono middleware on the directory prefix.
  * Like Next.js middleware.ts or SvelteKit hooks.server.ts.
@@ -179,7 +193,7 @@ export interface KissRenderer {
  * Usage:
  * ```ts
  * // app/routes/api/_middleware.ts
- * import type { KissMiddleware } from '@lessjs/core';
+ * import type { LessMiddleware } from '@lessjs/core';
  * import type { MiddlewareHandler } from 'hono';
  *
  * const middleware: MiddlewareHandler = async (c, next) => {
@@ -189,7 +203,7 @@ export interface KissRenderer {
  * export default middleware;
  * ```
  */
-export type KissMiddleware = import('hono').MiddlewareHandler;
+export type LessMiddleware = import('hono').MiddlewareHandler;
 
 /** Resolved route entry from file-based routing */
 export interface RouteEntry {
@@ -216,5 +230,5 @@ export interface RouteMeta {
 
 export type { SsrContext } from './context.js';
 
-/** The main kiss() function signature */
+/** The main less() function signature */
 export type FrameworkPlugin = (options?: FrameworkOptions) => Plugin[];

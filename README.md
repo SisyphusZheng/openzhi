@@ -154,7 +154,7 @@ deno task lint
 
 ## 文档
 
-- 文档站：[kiss.js.org](https://kiss.js.org/)（即将迁移至 lessjs.com）
+- 文档站：[lessjs.com](https://lessjs.com/)
 - 路线图：[docs/app/routes/roadmap.ts](./docs/app/routes/roadmap.ts)
 - 架构决策：[docs/decisions](./docs/decisions)
 

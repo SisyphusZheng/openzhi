@@ -1,4 +1,4 @@
-# `.kiss` Compiler — Optional Zero-Framework Component Authoring
+# `.less` Compiler — Optional Zero-Framework Component Authoring
 
 ## Status
 
@@ -6,7 +6,7 @@
 
 ## Context
 
-KISS currently uses `lit` for the docs site and UI package, while core is moving toward a
+LessJS currently uses `lit` for the docs site and UI package, while core is moving toward a
 DSD-first renderer with framework adapters. Lit should remain usable, but it should not be the
 long-term foundation of the framework contract. The current Lit route brings:
 
@@ -19,14 +19,14 @@ long-term foundation of the framework contract. The current Lit route brings:
 
 ## Proposal
 
-Introduce `.kiss` files — a component format purpose-built for KISS. A compiler transforms
-`.kiss` files into vanilla Custom Elements at build time. The goal is zero framework runtime for
+Introduce `.less` files — a component format purpose-built for LessJS. A compiler transforms
+`.less` files into vanilla Custom Elements at build time. The goal is zero framework runtime for
 compiled components. Lit remains an adapter, not a forced dependency.
 
-### `.kiss` file format
+### `.less` file format
 
-```kiss
-<!-- my-counter.kiss -->
+```less
+<!-- my-counter.less -->
 <template>
   <button @click="decrement">−</button>
   <span>{count}</span>
@@ -75,29 +75,29 @@ customElements.define('my-counter', MyCounter);
 
 ### What the compiler eliminates
 
-| Layer     | Before (Lit adapter)           | After (.kiss compiler)                 |
+| Layer     | Before (Lit adapter)           | After (.less compiler)                 |
 | --------- | ------------------------------ | -------------------------------------- |
 | Runtime   | Lit runtime for Lit components | 0kb framework runtime for compiled CEs |
-| SSR       | adapter-mediated rendering     | KISS DSD renderer / template strings   |
+| SSR       | adapter-mediated rendering     | LessJS DSD renderer / template strings   |
 | Upgrade   | Custom Element upgrade         | Custom Element upgrade                 |
 | Build     | esbuild + Lit semantics        | standard TS/JS output                  |
 | Tests     | adapter tests required         | compiler fixture tests required        |
 
 ### SSG integration
 
-The route scanner (route-scanner.ts) already maps `app/routes/*.ts` → URL paths. Extend it to also scan `.kiss` files:
+The route scanner (route-scanner.ts) already maps `app/routes/*.ts` → URL paths. Extend it to also scan `.less` files:
 
-- `app/routes/blog/hello-world.kiss` → `/blog/hello-world`
-- `app/routes/blog.kiss` → `/blog`
-- `app/islands/my-counter.kiss` → Island component
+- `app/routes/blog/hello-world.less` → `/blog/hello-world`
+- `app/routes/blog.less` → `/blog`
+- `app/islands/my-counter.less` → Island component
 
-Page `.kiss` files render directly (template is the page). Island `.kiss` files get lazy chunk treatment like today's Lit islands.
+Page `.less` files render directly (template is the page). Island `.less` files get lazy chunk treatment like today's Lit islands.
 
 ### Backward compatibility
 
-- `vite.config.ts` option: `compiler: 'lit' | 'kiss' | 'auto'` (auto = `.kiss` files use compiler, `.ts` files use Lit)
+- `vite.config.ts` option: `compiler: 'lit' | 'less' | 'auto'` (auto = `.less` files use compiler, `.ts` files use Lit)
 - Lit support retained as optional runtime throughout v0.x
-- v0.10.0 introduces `.kiss` as alpha and optional
+- v0.10.0 introduces `.less` as alpha and optional
 - v1.0 default remains an open decision; Lit compatibility must not be broken casually
 
 ## Consequences
@@ -105,7 +105,7 @@ Page `.kiss` files render directly (template is the page). Island `.kiss` files 
 **Positive:**
 
 - Zero framework runtime cost for compiled components
-- Fewer upgrade-order bugs because compiled components target the KISS DSD model directly
+- Fewer upgrade-order bugs because compiled components target the LessJS DSD model directly
 - No upstream dependency issues (dprint, node-domexception, parse5)
 - Simpler developer API: HTML + minimal script, no class boilerplate
 - True tree-shaking: only used components produce code
@@ -121,6 +121,6 @@ Page `.kiss` files render directly (template is the page). Island `.kiss` files 
 ## Open Questions
 
 1. Dev mode: run compiler on save, or fall back to Lit runtime for HMR?
-2. Islands in `.kiss` format — does the `<script>` get extracted as a lazy module?
+2. Islands in `.less` format — does the `<script>` get extracted as a lazy module?
 3. Slot/projection semantics — full HTML spec compliance needed in template compiler?
 4. SSR rendering — `template.innerHTML` is identical to client, but lifecycle hooks (connectedCallback) need SSG treatment

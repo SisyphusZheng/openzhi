@@ -1,4 +1,4 @@
-import { kiss } from '../packages/core/src/index.js';
+import { less } from '../packages/core/src/index.js';
 import { lessRootColorCSS } from '../packages/ui/src/tokens/colors.js';
 import { defineConfig } from 'vite';
 import { dirname, resolve } from 'node:path';
@@ -15,7 +15,7 @@ const runtimeShim = resolve(__dir, 'app/.less-runtime.ts');
 const uiSrcDir = resolve(__dir, '../packages/ui/src');
 
 // DRY: All color token values come from a single source of truth.
-// lessRootColorCSS is generated from kissDarkColors/kissLightColors in tokens/colors.ts.
+// lessRootColorCSS is generated from lessDarkColors/lessLightColors in tokens/colors.ts.
 // Do NOT hand-write color values here — edit the source objects instead.
 const colorTokensStyle =
   `<style>${lessRootColorCSS}body{margin:0;background:var(--less-bg-base);color:var(--less-text-primary);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}</style>`;
@@ -23,7 +23,7 @@ const colorTokensStyle =
 export default defineConfig({
   base: '/',
   plugins: [
-    kiss({
+    less({
       routesDir: 'app/routes',
       islandsDir: 'app/islands',
       componentsDir: 'app/components',
@@ -31,7 +31,7 @@ export default defineConfig({
         title: 'LessJS',
       },
       // Use packageIslands to consume @lessjs/ui components
-      // (kiss-theme-toggle is no longer a local copy — it comes from the package)
+      // (less-theme-toggle is no longer a local copy — it comes from the package)
       packageIslands: ['@lessjs/ui'],
       // SSR configuration: bundle @lessjs/ui instead of externalizing
       // This fixes "Unsupported decorator location: field" error in SSR
@@ -68,10 +68,8 @@ export default defineConfig({
           colorTokensStyle,
           // Init theme from localStorage or prefers-color-scheme
           '<script src="/theme-init.js"></script>',
-          // Mobile sidebar: close on backdrop click
-          '<script defer src="/mobile-sidebar.js"></script>',
-          // :has() fallback for older browsers (Safari < 15.4, Firefox < 121)
-          '<script defer src="/has-fallback.js"></script>',
+          // Mobile sidebar: universal JS for open/close (all browsers)
+          '<script defer src="/mobile-menu.js"></script>',
         ],
       },
     }),

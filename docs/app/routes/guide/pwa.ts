@@ -11,7 +11,7 @@ export class PwaPage extends LitElement {
     css`
       .adr-meta {
         font-size: 0.75rem;
-        color: var(--kiss-text-muted);
+        color: var(--less-text-muted);
         margin-bottom: 1.5rem;
       }
       h2 {
@@ -79,7 +79,7 @@ export class PwaPage extends LitElement {
 
           <h3>API</h3>
           <div class="code-block">
-            // vite.config.ts export default defineConfig({ plugins: [kiss({ pwa: { name: 'My LessJS App',
+            // vite.config.ts export default defineConfig({ plugins: [less({ pwa: { name: 'My LessJS App',
             shortName: 'LessJS', themeColor: '#000000', backgroundColor: '#ffffff', }, })], })
           </div>
 
@@ -95,7 +95,7 @@ export class PwaPage extends LitElement {
           <p>
             The <code>build-ssg.ts</code> script accepts a <code>pwa</code> option. When provided, it
             generates manifest.json and sw.js in the output directory, and injects manifest links + sw
-            registration into every HTML file. The <code>kiss()</code> plugin already carries this option
+            registration into every HTML file. The <code>less()</code> plugin already carries this option
             through build metadata.
           </p>
           <p>
@@ -105,7 +105,7 @@ export class PwaPage extends LitElement {
           </p>
 
           <div class="nav-row" style="margin-top:2rem">
-            <a href="/guide/kiss-compiler" class="nav-link">&larr; LessJS Compiler</a>
+            <a href="/guide/less-compiler" class="nav-link">&larr; LessJS Compiler</a>
             <a href="/roadmap" class="nav-link">Roadmap &rarr;</a>
           </div>
         </div>

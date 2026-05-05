@@ -2,11 +2,11 @@
  * @lessjs/core - CLI: SSG Build
  *
  * Standalone SSG rendering + post-processing.
- * Reads the SSR entry from .kiss/, creates a Vite SSR server,
+ * Reads the SSR entry from .less/, creates a Vite SSR server,
  * renders all pages to static HTML, then post-processes island paths.
  *
- * This is Phase 3 of the KISS build pipeline:
- *   Phase 1 (vite build): SSR bundle + .kiss/ metadata
+ * This is Phase 3 of the LessJS build pipeline:
+ *   Phase 1 (vite build): SSR bundle + .less/ metadata
  *   Phase 2 (build-client.ts): Client island chunks
  *   Phase 3 (this script): SSG rendering + post-processing
  *
@@ -73,7 +73,7 @@ async function buildSSG(options: BuildSSGOptions = {}): Promise<void> {
   const islandsDir = options.islandsDir || 'app/islands';
 
   // Read island metadata from Phase 1
-  const metadataPath = join(root, '.kiss', 'build-metadata.json');
+  const metadataPath = join(root, '.less', 'build-metadata.json');
   let islandTagNames = options.islandTagNames || [];
   let packageIslands = options.packageIslands || [];
   let metadataResolveAlias = options.resolveAlias;
@@ -108,7 +108,7 @@ async function buildSSG(options: BuildSSGOptions = {}): Promise<void> {
     // v0.5.0 note: upgradeStrategy controls island module import timing.
     // It is not a client render runtime.
   } catch {
-    console.log('[LessJS] No .kiss/build-metadata.json found; using provided island list');
+    console.log('[LessJS] No .less/build-metadata.json found; using provided island list');
   }
 
   // Generate SSG entry code
@@ -136,10 +136,10 @@ async function buildSSG(options: BuildSSGOptions = {}): Promise<void> {
   });
 
   // Write temp entry file
-  const kissTmpDir = join(root, '.kiss');
-  const tmpEntryPath = join(kissTmpDir, '.kiss-ssg-entry.ts');
+  const lessTmpDir = join(root, '.less');
+  const tmpEntryPath = join(lessTmpDir, '.less-ssg-entry.ts');
   const { mkdirSync, writeFileSync } = await import('node:fs');
-  mkdirSync(kissTmpDir, { recursive: true });
+  mkdirSync(lessTmpDir, { recursive: true });
   writeFileSync(tmpEntryPath, ssgEntryCode, 'utf-8');
 
   try {
@@ -243,7 +243,7 @@ async function buildSSG(options: BuildSSGOptions = {}): Promise<void> {
       const app = module.default;
 
       if (!app) {
-        throw new SsrRenderError('.kiss-ssg-entry.ts', new Error('Failed to load Hono app'));
+        throw new SsrRenderError('.less-ssg-entry.ts', new Error('Failed to load Hono app'));
       }
 
       const { toSSG } = await import('hono/ssg');
@@ -320,9 +320,9 @@ async function buildSSG(options: BuildSSGOptions = {}): Promise<void> {
           const manifestRaw = readFileSync(clientManifestPath, 'utf-8');
           const manifest = JSON.parse(manifestRaw);
           // Find the client entry in the manifest
-          // The key is the source path of .kiss/.kiss-client-entry.ts
+          // The key is the source path of .less/.less-client-entry.ts
           for (const [src, entry] of Object.entries(manifest) as [string, { file?: string }][]) {
-            if (src.includes('.kiss-client-entry') && entry.file) {
+            if (src.includes('.less-client-entry') && entry.file) {
               const scriptSrc = `${basePath}client/${entry.file}`;
               const { injectClientScript } = await import('../ssg-postprocess.js');
               injectClientScript(outputDir, scriptSrc);
@@ -377,7 +377,7 @@ async function buildSSG(options: BuildSSGOptions = {}): Promise<void> {
       if (pwa) {
         const manifest = {
           name: pwa.name || 'LessJS',
-          short_name: pwa.shortName || 'KISS',
+          short_name: pwa.shortName || 'LessJS',
           start_url: basePath,
           display: 'standalone' as const,
           theme_color: pwa.themeColor || '#000000',

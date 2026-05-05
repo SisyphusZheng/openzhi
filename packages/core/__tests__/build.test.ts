@@ -16,7 +16,7 @@ import { buildPlugin } from '../src/build.ts';
 import { join } from 'node:path';
 import { existsSync, readFileSync, rmSync } from 'node:fs';
 
-const KISS_TMP = join(Deno.cwd(), '.kiss');
+const LESS_TMP = join(Deno.cwd(), '.less');
 
 /**
  * Call a Vite ObjectHook that may be a plain function or { handler, order? }.
@@ -42,7 +42,7 @@ async function callAsyncHook(hook: unknown, ...args: any[]): Promise<void> {
 
 function cleanup() {
   try {
-    rmSync(KISS_TMP, { recursive: true, force: true });
+    rmSync(LESS_TMP, { recursive: true, force: true });
   } catch { /* ignore */ }
 }
 
@@ -129,7 +129,7 @@ Deno.test('buildPlugin - closeBundle (build mode, no islands)', async (t) => {
   await callAsyncHook(plugin.closeBundle);
 
   await t.step('writes build-metadata.json', () => {
-    const metaPath = join(KISS_TMP, 'build-metadata.json');
+    const metaPath = join(LESS_TMP, 'build-metadata.json');
     const raw = readFileSync(metaPath, 'utf-8');
     const meta = JSON.parse(raw);
     assertEquals(meta.islandTagNames, []);
@@ -163,7 +163,7 @@ Deno.test('buildPlugin - closeBundle (build mode, with islands)', async (t) => {
   await callAsyncHook(plugin.closeBundle);
 
   await t.step('writes islandTagNames and packageIslands', () => {
-    const metaPath = join(KISS_TMP, 'build-metadata.json');
+    const metaPath = join(LESS_TMP, 'build-metadata.json');
     const raw = readFileSync(metaPath, 'utf-8');
     const meta = JSON.parse(raw);
     assertEquals(meta.islandTagNames.length, 2);
@@ -173,7 +173,7 @@ Deno.test('buildPlugin - closeBundle (build mode, with islands)', async (t) => {
 
   await t.step('prints island count message', () => {
     // closeBundle completed without error; verify metadata was written
-    const metaPath = join(KISS_TMP, 'build-metadata.json');
+    const metaPath = join(LESS_TMP, 'build-metadata.json');
     assertExists(metaPath, 'build-metadata.json should exist after closeBundle');
   });
 
@@ -189,7 +189,7 @@ Deno.test('buildPlugin - closeBundle (dev mode, skips write)', async (t) => {
 
   await t.step('does NOT write build-metadata.json in dev mode', () => {
     // In dev mode, closeBundle returns early — file should not exist
-    const metaPath = join(KISS_TMP, 'build-metadata.json');
+    const metaPath = join(LESS_TMP, 'build-metadata.json');
     assertEquals(existsSync(metaPath), false, 'metadata should NOT be written in dev mode');
   });
 
@@ -213,7 +213,7 @@ Deno.test('buildPlugin - custom outDir and options', async (t) => {
   await callAsyncHook(plugin.closeBundle);
 
   await t.step('writes custom options to metadata', () => {
-    const metaPath = join(KISS_TMP, 'build-metadata.json');
+    const metaPath = join(LESS_TMP, 'build-metadata.json');
     const raw = readFileSync(metaPath, 'utf-8');
     const meta = JSON.parse(raw);
     assertEquals(meta.outDir, 'custom-dist');
@@ -237,7 +237,7 @@ Deno.test('buildPlugin - ssr.noExternal RegExp serialization', async (t) => {
   await callAsyncHook(plugin.closeBundle);
 
   await t.step('serializes RegExp as __type objects', () => {
-    const metaPath = join(KISS_TMP, 'build-metadata.json');
+    const metaPath = join(LESS_TMP, 'build-metadata.json');
     const raw = readFileSync(metaPath, 'utf-8');
     const meta = JSON.parse(raw);
     assertExists(meta.ssrNoExternal);
@@ -257,7 +257,7 @@ Deno.test('buildPlugin - base without trailing slash', async (t) => {
   await callAsyncHook(plugin.closeBundle);
 
   await t.step('ensures base ends with /', () => {
-    const metaPath = join(KISS_TMP, 'build-metadata.json');
+    const metaPath = join(LESS_TMP, 'build-metadata.json');
     const raw = readFileSync(metaPath, 'utf-8');
     const meta = JSON.parse(raw);
     assertEquals(meta.base, '/base/');

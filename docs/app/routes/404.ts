@@ -25,7 +25,7 @@ export class NotFoundPage extends LitElement {
       .home-link {
         display: inline-block;
         padding: 0.5rem 1.25rem;
-        /* 0.5px: reduced to match kiss-ui spec */
+        /* 0.5px: reduced to match less-ui spec */
         border: 0.5px solid var(--less-border);
         border-radius: 4px;
         color: var(--less-text-primary);

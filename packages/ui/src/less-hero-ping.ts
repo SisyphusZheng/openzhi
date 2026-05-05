@@ -95,7 +95,7 @@ export default class HeroPing extends LitElement {
     this._msg = '';
     this.requestUpdate();
     try {
-      const r = await fetch('https://kiss-demo-api.sisyphuszheng.deno.net/api');
+      const r = await fetch('https://less-demo-api.sisyphuszheng.deno.net/api');
       if (!r.ok) throw new Error(`HTTP ${r.status}`);
       const d = await r.json();
       this._state = 'ok';

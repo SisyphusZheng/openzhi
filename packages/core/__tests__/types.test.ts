@@ -6,8 +6,8 @@
 import { assertExists } from 'jsr:@std/assert@^1.0.0';
 import type {
   FrameworkOptions,
-  KissMiddleware,
-  KissRenderer,
+  LessMiddleware,
+  LessRenderer,
   PackageIslandMeta,
   RouteEntry,
   SpecialFileType,
@@ -17,8 +17,8 @@ import type {
 // No longer exported from entry-generators.ts
 
 // Compile-time type existence checks (lint compliance: consume the imported types)
-type _KissMiddleware = KissMiddleware;
-type _KissRenderer = KissRenderer;
+type _LessMiddleware = LessMiddleware;
+type _LessRenderer = LessRenderer;
 type _SpecialFileType = SpecialFileType;
 
 // These are compile-time assertions — if the types don't exist or have

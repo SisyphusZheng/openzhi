@@ -3,9 +3,9 @@
  *
  * This test asserts that the local ReactiveElement and ReactiveController
  * interfaces are self-consistent and structurally compatible with any
- * framework's lifecycle host (Lit, KissElement, or native HTMLElement).
+ * framework's lifecycle host (Lit, LessElement, or native HTMLElement).
  *
- * Run: deno check packages/kiss-rpc/__tests__/type-compat.ts
+ * Run: deno check packages/rpc/__tests__/type-compat.ts
  */
 
 // Local interface mirrors (must stay in sync with src/index.ts)

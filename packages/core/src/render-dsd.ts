@@ -4,7 +4,7 @@
  * Pure string-based Declarative Shadow DOM SSR renderer.
  * Framework-agnostic: no Lit dependency and no TemplateResult knowledge.
  *
- * KISS Architecture (v0.5.0):
+ * LessJS Architecture (v0.5.0):
  * - Takes a registered Custom Element class + props and returns DSD HTML
  * - Components MUST implement render(): string
  * - Rendering is synchronous string concatenation; no DOM shim needed
@@ -94,12 +94,17 @@ function getAdapterStylesExtractor(): StylesExtractorFn | undefined {
 // ─── DSD Rendering ──────────────────────────────────────────────
 
 /** Serialize key-value strings to HTML attribute string */
-export function serializeAttributes(props: Record<string, string | boolean | undefined>): string {
+export function serializeAttributes(props: Record<string, unknown>): string {
   const parts: string[] = [];
   for (const [key, val] of Object.entries(props)) {
     if (val === false || val === null || val === undefined) continue;
     if (val === true) {
       parts.push(key);
+    } else if (typeof val === 'object') {
+      // Array or Object: JSON-encode and escape for safe HTML attribute embedding.
+      // Client-side Lit deserializes via property setter (not attribute), so the
+      // JSON string only needs to survive HTML parsing, not be human-readable.
+      parts.push(`${key}="${escapeAttrValue(JSON.stringify(val))}"`);
     } else {
       parts.push(`${key}="${escapeAttrValue(val)}"`);
     }
@@ -135,7 +140,7 @@ export interface DsdComponent {
  *
  * @example
  * ```ts
- * const html = renderDSD('less-button', KissButton, { variant: 'primary' })
+ * const html = renderDSD('less-button', LessButton, { variant: 'primary' })
  * // → <less-button variant="primary">
  * //      <template shadowrootmode="open">
  * //        <style>:host{...}</style>
@@ -147,7 +152,7 @@ export interface DsdComponent {
 export async function renderDSD(
   tagName: string,
   componentClass: CustomElementConstructor,
-  props: Record<string, string | boolean | undefined> = {},
+  props: Record<string, unknown> = {},
 ): Promise<string> {
   // 1. Instantiate the component
   //    Note: In Node.js/Deno SSR, no DOM lifecycle fires.
@@ -261,7 +266,7 @@ function isLitTemplateResultHeuristic(value: unknown): boolean {
  */
 export async function renderDSDByName(
   tagName: string,
-  props: Record<string, string | boolean | undefined> = {},
+  props: Record<string, unknown> = {},
 ): Promise<string> {
   const cls = globalThis.customElements?.get(tagName);
 

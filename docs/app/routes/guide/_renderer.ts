@@ -6,17 +6,17 @@
  * already provides section context, so no additional wrapping is needed.
  *
  * Convention:
- *   - _renderer.ts default-exports a KissRenderer object
+ *   - _renderer.ts default-exports a LessRenderer object
  *   - The `.wrap(html, ctx)` method receives the page's SSR HTML
  *   - Return the wrapped HTML (can be async)
  *   - ctx.req.path gives the current URL path for active nav highlighting
  *
- * @see {@link ../packages/kiss-core/src/types.ts} for KissRenderer interface
+ * @see {@link ../packages/less-core/src/types.ts} for LessRenderer interface
  */
 
-import type { KissRenderer } from '@lessjs/core';
+import type { LessRenderer } from '@lessjs/core';
 
-const renderer: KissRenderer = {
+const renderer: LessRenderer = {
   wrap(html, _ctx) {
     // Pass-through: <less-layout> sidebar already provides navigation context.
     // No breadcrumb or section wrapper needed — it would render outside

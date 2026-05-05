@@ -1,15 +1,15 @@
 /**
  * @lessjs/core - Build plugin
- * KISS Architecture (K·I·S·S): Knowledge · Isolated · Semantic · Static
+ * LessJS Architecture (K·I·S·S): Knowledge · Isolated · Semantic · Static
  * Build produces only static files (K+S), Islands are the only JS (I).
  * API Routes (S — Serverless extension) deploy separately.
  *
  * v0.3.0: closeBundle no longer nests viteBuild() + createServer().
- * Instead, it writes .kiss/build-metadata.json and instructs the user
+ * Instead, it writes .less/build-metadata.json and instructs the user
  * to run the official build command:
  *
  *   deno task build
- *     Phase 1: vite build  -> SSR bundle + .kiss/build-metadata.json
+ *     Phase 1: vite build  -> SSR bundle + .less/build-metadata.json
  *     Phase 2: buildClient -> dist/client/islands/*.js + manifest
  *     Phase 3: buildSSG    -> dist/*.html + post-process
  *
@@ -22,7 +22,7 @@
 
 import type { Plugin, ResolvedConfig } from 'vite';
 import type { FrameworkOptions } from './types.js';
-import type { KissBuildContext } from './build-context.js';
+import type { LessBuildContext } from './build-context.js';
 import { join } from 'node:path';
 import { mkdirSync, writeFileSync } from 'node:fs';
 
@@ -52,7 +52,7 @@ function serializeAlias(
 }
 
 /** Vite plugin: writes build metadata for CLI build pipeline */
-export function buildPlugin(options: FrameworkOptions = {}, ctx?: KissBuildContext): Plugin {
+export function buildPlugin(options: FrameworkOptions = {}, ctx?: LessBuildContext): Plugin {
   const outDir = options.build?.outDir || 'dist';
 
   let config: ResolvedConfig;
@@ -73,8 +73,8 @@ export function buildPlugin(options: FrameworkOptions = {}, ctx?: KissBuildConte
       if (config.command !== 'build') return;
 
       const root = config.root;
-      const kissTmpDir = join(root, '.kiss');
-      mkdirSync(kissTmpDir, { recursive: true });
+      const lessTmpDir = join(root, '.less');
+      mkdirSync(lessTmpDir, { recursive: true });
 
       // Write build metadata — this is the bridge to Phase 2/3 CLI scripts
       const metadata = {
@@ -88,7 +88,7 @@ export function buildPlugin(options: FrameworkOptions = {}, ctx?: KissBuildConte
         // can replicate the same module resolution
         // Priority: ctx.userResolveAlias (from config hook) → config.resolve.alias (from configResolved)
         resolveAlias: serializeAlias(ctx?.userResolveAlias || config.resolve?.alias),
-        // Priority: options.ssr (from kiss() plugin options) → config.ssr (from Vite config)
+        // Priority: options.ssr (from less() plugin options) → config.ssr (from Vite config)
         ssrNoExternal: ((options.ssr?.noExternal ||
           (config.ssr as { noExternal?: (string | RegExp)[] } | undefined)?.noExternal) || [])
           .map((item) => {
@@ -108,7 +108,7 @@ export function buildPlugin(options: FrameworkOptions = {}, ctx?: KissBuildConte
         // It is an upgrade timing hint, not a client render runtime.
         upgradeStrategy: options.island?.upgradeStrategy || 'lazy',
       };
-      const metadataPath = join(kissTmpDir, 'build-metadata.json');
+      const metadataPath = join(lessTmpDir, 'build-metadata.json');
       writeFileSync(metadataPath, JSON.stringify(metadata, null, 2), 'utf-8');
 
       const totalIslands = (ctx?.islandTagNames?.length || 0) + (ctx?.packageIslands?.length || 0);

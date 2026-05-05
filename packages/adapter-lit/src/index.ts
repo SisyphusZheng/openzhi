@@ -1,5 +1,5 @@
 /**
- * @lessjs/adapter-lit - Lit adapter for KISS Framework.
+ * @lessjs/adapter-lit - Lit adapter for LessJS Framework.
  *
  * Bridges Lit TemplateResult values to strings for DSD SSR rendering.
  * Uses safe interpolation without @lit-labs/ssr.

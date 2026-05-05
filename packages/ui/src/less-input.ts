@@ -20,7 +20,7 @@
  * </form>
  * ```
  *
- * KISS Architecture (S — Semantic):
+ * LessJS Architecture (S — Semantic):
  * Form-associated custom elements integrate with native <form>,
  * maintaining progressive enhancement and semantic correctness.
  */
@@ -30,7 +30,7 @@ import { lessDesignTokens } from './design-tokens.js';
 
 export const tagName = 'less-input';
 
-export class KissInput extends LitElement {
+export class LessInput extends LitElement {
   /** Enable form association for native <form> participation */
   static formAssociated = true;
 
@@ -162,7 +162,7 @@ export class KissInput extends LitElement {
   }
 
   override render(): TemplateResult {
-    // KISS S-constraint: use aria-describedby + aria-errormessage for
+    // LessJS S-constraint: use aria-describedby + aria-errormessage for
     // accessible error association; <small role="alert"> is semantic.
     const errorId = this.error ? 'input-error' : undefined;
     return html`
@@ -200,7 +200,7 @@ export class KissInput extends LitElement {
     this.value = input.value;
     // Sync form value for native <form> submission
     this._internals?.setFormValue(input.value);
-    // KISS I-constraint: composed:false keeps events within Shadow DOM.
+    // LessJS I-constraint: composed:false keeps events within Shadow DOM.
     // Parent islands must listen via `addEventListener('less-input', ...)` on
     // the <less-input> host element — NOT by capturing from the light DOM.
     this.dispatchEvent(
@@ -215,5 +215,5 @@ export class KissInput extends LitElement {
 
 // Guard: idempotent across SSR paths
 try {
-  customElements.define(tagName, KissInput);
+  customElements.define(tagName, LessInput);
 } catch { /* already defined */ }

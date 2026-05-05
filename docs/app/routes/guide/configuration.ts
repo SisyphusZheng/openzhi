@@ -19,10 +19,10 @@ export class ConfigurationPage extends LitElement {
           <h2>Minimal Config</h2>
           <code-block><pre><code>// vite.config.ts
 import { defineConfig } from 'vite';
-import { kiss } from '@lessjs/core';
+import { less } from '@lessjs/core';
 
 export default defineConfig({
-  plugins: [kiss()],
+  plugins: [less()],
 });</code></pre></code-block>
 
           <h2>Main Options</h2>
@@ -64,7 +64,7 @@ export default defineConfig({
           </table>
 
           <h2>Document Metadata</h2>
-          <code-block><pre><code>kiss({
+          <code-block><pre><code>less({
   html: {
     lang: 'en',
     title: 'My LessJS App',
@@ -76,7 +76,7 @@ export default defineConfig({
             Use <span class="inline-code">inject</span> for external stylesheets, module scripts and small head fragments.
             URLs are validated before being added to the generated document.
           </p>
-          <code-block><pre><code>kiss({
+          <code-block><pre><code>less({
   inject: {
     stylesheets: [
       'https://cdn.example.com/theme.css',
@@ -95,7 +95,7 @@ export default defineConfig({
             Package islands are reusable Web Components discovered at build time.
             This is how <span class="inline-code">@lessjs/ui</span> contributes interactive components to the docs site.
           </p>
-          <code-block><pre><code>kiss({
+          <code-block><pre><code>less({
   packageIslands: ['@lessjs/ui'],
 });</code></pre></code-block>
 
@@ -104,14 +104,14 @@ export default defineConfig({
             The framework option declares the default upgrade strategy. Current implementation still needs hardening
             so this metadata consistently reaches the client build.
           </p>
-          <code-block><pre><code>kiss({
+          <code-block><pre><code>less({
   island: {
     upgradeStrategy: 'idle',
   },
 });</code></pre></code-block>
 
           <h2>Middleware</h2>
-          <code-block><pre><code>kiss({
+          <code-block><pre><code>less({
   middleware: {
     logger: true,
     requestId: true,
@@ -131,7 +131,7 @@ export default defineConfig({
             PWA support generates manifest and service worker assets during SSG. Treat it as an enhancement,
             not as a replacement for static HTML correctness.
           </p>
-          <code-block><pre><code>kiss({
+          <code-block><pre><code>less({
   pwa: {
     name: 'My LessJS App',
     shortName: 'LessJS',
@@ -144,7 +144,7 @@ export default defineConfig({
           <code-block><pre><code>export default defineConfig({
   base: '/',
   plugins: [
-    kiss({
+    less({
       routesDir: 'app/routes',
       islandsDir: 'app/islands',
       componentsDir: 'app/components',

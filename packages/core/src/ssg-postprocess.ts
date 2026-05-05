@@ -31,7 +31,7 @@ import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 // We DON'T use parse5 because:
 //   1. SSG output from Hono/toSSG() is always well-formed HTML5
 //   2. Our operations are 3 specific insertions, not arbitrary DOM manipulation
-//   3. Adding 200KB+ dependency violates KISS philosophy
+//   3. Adding 200KB+ dependency violates LessJS philosophy
 
 /** Insert content immediately after <head> opening tag (handles attributes) */
 function insertAfterHead(html: string, content: string): string {

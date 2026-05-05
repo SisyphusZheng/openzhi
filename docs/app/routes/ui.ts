@@ -32,7 +32,7 @@ export class UIShowcase extends LitElement {
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 0.16em;
-        color: var(--kiss-text-muted);
+        color: var(--less-text-muted);
         margin-bottom: 1.5rem;
         padding-bottom: 0.75rem;
         border-bottom: 0.5px solid var(--less-border);
@@ -70,7 +70,7 @@ export class UIShowcase extends LitElement {
       }
 
       .palette-dark .palette-name {
-        color: var(--kiss-text-muted);
+        color: var(--less-text-muted);
       }
 
       .palette-light .palette-name {
@@ -110,7 +110,7 @@ export class UIShowcase extends LitElement {
       }
 
       .palette-dark .swatch-label {
-        color: var(--kiss-text-muted);
+        color: var(--less-text-muted);
       }
 
       .palette-light .swatch-label {
@@ -162,7 +162,7 @@ export class UIShowcase extends LitElement {
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 0.1em;
-        color: var(--kiss-text-muted);
+        color: var(--less-text-muted);
       }
 
       .type-sample {
@@ -198,7 +198,7 @@ export class UIShowcase extends LitElement {
         letter-spacing: 0.08em;
         padding: 0.25rem 0.5rem;
         border-radius: 3px;
-        background: var(--kiss-accent-subtle);
+        background: var(--less-accent-subtle);
         color: var(--less-text-secondary);
         border: 0.5px solid var(--less-border);
       }
@@ -240,7 +240,7 @@ export class UIShowcase extends LitElement {
         align-items: center;
         gap: 0.625rem;
         padding: 0.625rem 1.25rem;
-        background: var(--kiss-bg-elevated);
+        background: var(--less-bg-elevated);
         border: 0.5px solid var(--less-border);
         border-radius: 4px;
         font-family: "SF Mono", "Fira Code", "Consolas", monospace;
@@ -249,7 +249,7 @@ export class UIShowcase extends LitElement {
       }
 
       .install-cmd .prompt {
-        color: var(--kiss-text-muted);
+        color: var(--less-text-muted);
       }
 
       .install-section p {
@@ -520,7 +520,7 @@ export class UIShowcase extends LitElement {
 
             <div class="nav-row">
               <a href="/guide/deployment" class="nav-link">&larr; 部署</a>
-              <a href="/styling/kiss-ui" class="nav-link">Kiss UI 文档 &rarr;</a>
+              <a href="/styling/less-ui" class="nav-link">LessJS UI 文档 &rarr;</a>
             </div>
           </div>
         </less-layout>

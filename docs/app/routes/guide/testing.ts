@@ -57,7 +57,7 @@ export class TestingPage extends LitElement {
               ><pre><code>deno test --allow-read --allow-write --allow-env --allow-net --allow-run
                 deno lint packages/
                 deno fmt --check packages/
-                deno check packages/kiss-core/src/index.ts packages/kiss-rpc/src/index.ts packages/kiss-ui/src/index.ts
+                deno check packages/core/src/index.ts packages/rpc/src/index.ts packages/ui/src/index.ts
                 deno task build:all</code></pre></code-block>
 
                 <h2>High-Value Regression Tests</h2>

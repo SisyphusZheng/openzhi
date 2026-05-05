@@ -1,35 +1,35 @@
-# `@kissjs/blog` - Standalone Blog Package
+# `@lessjs/blog` - Standalone Blog Package
 
 ## Status
 
 **DRAFT** - proposed after v0.8.0 Serverless Fullstack. The ideal
-zero-framework version can wait for `.kiss` compiler alpha.
+zero-framework version can wait for `.less` compiler alpha.
 
 ## Context
 
-KISS currently has two hardcoded blog route pages (`/blog/` +
-`/blog/kiss-compiler`) on its own docs site. These are hand-written custom
+LessJS currently has two hardcoded blog route pages (`/blog/` +
+`/blog/less-compiler`) on its own docs site. These are hand-written custom
 element pages, not a reusable system.
 
 Users need a proper blog: drop in `.md` files, get automatic listing +
-pagination + RSS + tags. Like VitePress's blog feature, but as a KISS plugin.
+pagination + RSS + tags. Like VitePress's blog feature, but as a LessJS plugin.
 
 ## Constraints
 
 The blog system should not require Lit. It should work first as a plain SSG
-plugin, then gain `.kiss` compiler templates when the compiler exists:
+plugin, then gain `.less` compiler templates when the compiler exists:
 
 - Post templates should be able to compile to vanilla Custom Elements when
-  `.kiss` exists
+  `.less` exists
 - SSR must be synchronous string concatenation (`template.innerHTML`)
 - No page-level client runtime for plain blog pages; interactive widgets remain
   islands
-- The `.kiss` compiler is an optional future template backend, not a blocker
+- The `.less` compiler is an optional future template backend, not a blocker
   for the first release
 
 ## Proposal
 
-### `@kissjs/blog` package
+### `@lessjs/blog` package
 
 A Vite plugin that:
 
@@ -42,13 +42,13 @@ A Vite plugin that:
 
 ```ts
 // vite.config.ts
-import { kiss } from '@kissjs/core';
-import { kissBlog } from '@kissjs/blog';
+import { less } from '@lessjs/core';
+import { lessBlog } from '@lessjs/blog';
 
 export default defineConfig({
   plugins: [
-    kiss(),
-    kissBlog({
+    less(),
+    lessBlog({
       dir: 'content/blog', // where your .md files live
       title: 'My Blog',
       postsPerPage: 10,
@@ -63,7 +63,7 @@ export default defineConfig({
 ---
 title: Hello World
 date: 2026-05-01
-tags: [kiss, meta]
+tags: [lessjs, meta]
 ---
 
 This is my first post.
@@ -76,16 +76,16 @@ This is my first post.
 | `/blog/`            | Post listing (paginated, newest first) |
 | `/blog/hello-world` | Individual post (rendered from .md)    |
 | `/blog/page/2`      | Page 2 of listing                      |
-| `/blog/tags/kiss`   | Filter by tag                          |
+| `/blog/tags/lessjs`   | Filter by tag                          |
 | `/blog/feed.xml`    | RSS 2.0 / Atom feed                    |
 
 ### Plugin architecture
 
-The `kissBlog()` plugin hooks into the KISS build pipeline:
+The `lessBlog()` plugin hooks into the LessJS build pipeline:
 
 ```text
 vite.config.ts
-  -> kissBlog() reads content/blog/*.md
+  -> lessBlog() reads content/blog/*.md
        extracts frontmatter -> metadata.json
        registers virtual routes
   -> deno task build
@@ -101,10 +101,10 @@ vite.config.ts
 
 ### Post rendering
 
-With the `.kiss` compiler:
+With the `.less` compiler:
 
-```kiss
-<!-- blog post template (built into @kissjs/blog) -->
+```less
+<!-- blog post template (built into @lessjs/blog) -->
 <template>
   <article>
     <h1>{post.title}</h1>
@@ -121,13 +121,13 @@ With the `.kiss` compiler:
 
 <style>
   .content :host { max-width: 720px; margin: 0 auto; }
-  time { font-size: 0.75rem; color: var(--kiss-text-muted); }
+  time { font-size: 0.75rem; color: var(--less-text-muted); }
 </style>
 ```
 
-Without the `.kiss` compiler:
+Without the `.less` compiler:
 
-The same content can be rendered through the KISS DSD renderer or a safe
+The same content can be rendered through the LessJS DSD renderer or a safe
 server-side HTML template helper. It should not depend on Lit for plain Markdown
 pages.
 
@@ -136,16 +136,16 @@ pages.
 The `.md` parser should support:
 
 - **Basic**: Gray-matter frontmatter + marked/markdown-it
-- **Extended (v2)**: MDX - embed Lit Components or `.kiss` components inline in
+- **Extended (v2)**: MDX - embed Lit Components or `.less` components inline in
   markdown
 - **Code blocks**: Syntax highlighting at build time (not client-side)
 
 ## Implementation order
 
 1. v0.8.0 stabilizes route/action/serverless conventions
-2. `@kissjs/blog` ships as a plain SSG plugin first
-3. `.kiss` compiler support is added when v0.10.0 alpha is available
-4. KISS docs site eats its own dogfood and replaces the current hardcoded blog
+2. `@lessjs/blog` ships as a plain SSG plugin first
+3. `.less` compiler support is added when v0.10.0 alpha is available
+4. LessJS docs site eats its own dogfood and replaces the current hardcoded blog
    routes
 
 ## Open Questions
@@ -153,15 +153,15 @@ The `.md` parser should support:
 1. Markdown parser: `marked` (lightweight) vs `markdown-it` (plugin ecosystem)
    vs custom?
 2. Should the blog template be customizable via
-   `kissBlog({ template: "my-template.kiss" })`?
+   `lessBlog({ template: "my-template.less" })`?
 3. RSS vs Atom vs both?
 4. Comments? (Disqus, utteranc.es, or leave it to the user)
 
 ## Consequences
 
 - **Positive**: Users get a one-line blog setup, competitive with VitePress
-- **Positive**: KISS docs site can dogfood its own blog package
-- **Positive**: Zero framework runtime for plain blog pages (with `.kiss`
+- **Positive**: LessJS docs site can dogfood its own blog package
+- **Positive**: Zero framework runtime for plain blog pages (with `.less`
   compiler)
 - **Negative**: The ideal compiler-backed architecture comes later
 - **Negative**: Markdown parsing at build time adds ~100ms to Phase 1

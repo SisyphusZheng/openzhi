@@ -32,7 +32,7 @@ export class ErrorHandlingPage extends LitElement {
           </p>
 
           <h2>Error Hierarchy</h2>
-          <div class="error-hierarchy">KissError
+          <div class="error-hierarchy">LessError
 |-- NotFoundError          404
 |-- UnauthorizedError      401
 |-- ForbiddenError         403
@@ -103,7 +103,7 @@ app.post('/api/posts', async (c) => {
 
           <h2>API Error Shape</h2>
           <p>
-            <span class="inline-code">KissError#toJSON()</span> returns a small structured payload.
+            <span class="inline-code">LessError#toJSON()</span> returns a small structured payload.
             API routes can use that shape directly when adding global error middleware.
           </p>
           <code-block><pre><code>{

@@ -54,7 +54,7 @@ function countTrailingBackslashes(s: string, pos: number): number {
 
 // --- Scaffold Tests ---
 
-Deno.test('create-kiss: deno.json has all required tasks', () => {
+Deno.test('create-less: deno.json has all required tasks', () => {
   const denoJson = JSON.parse(extractTemplate('deno.json'));
 
   assertExists(denoJson.tasks['dev'], 'Missing dev task');
@@ -64,24 +64,24 @@ Deno.test('create-kiss: deno.json has all required tasks', () => {
   assertExists(denoJson.tasks['preview'], 'Missing preview task');
 });
 
-Deno.test('create-kiss: gitignore hides generated build artifacts', () => {
+Deno.test('create-less: gitignore hides generated build artifacts', () => {
   const gitignore = extractTemplate('.gitignore');
-  assertExists(gitignore.includes('.kiss/'));
+  assertExists(gitignore.includes('.less/'));
   assertExists(gitignore.includes('dist/'));
   assertExists(gitignore.includes('node_modules/'));
 });
 
-Deno.test('create-kiss: deno.json build:client uses @lessjs/core', () => {
+Deno.test('create-less: deno.json build:client uses @lessjs/core', () => {
   const denoJson = JSON.parse(extractTemplate('deno.json'));
   assertExists(denoJson.tasks['build:client'].includes('@lessjs/core'));
 });
 
-Deno.test('create-kiss: deno.json build:ssg uses @lessjs/core', () => {
+Deno.test('create-less: deno.json build:ssg uses @lessjs/core', () => {
   const denoJson = JSON.parse(extractTemplate('deno.json'));
   assertExists(denoJson.tasks['build:ssg'].includes('@lessjs/core'));
 });
 
-Deno.test('create-kiss: deno.json maps Lit and package imports explicitly', () => {
+Deno.test('create-less: deno.json maps Lit and package imports explicitly', () => {
   const denoJson = JSON.parse(extractTemplate('deno.json'));
   assertEquals(denoJson.imports.lit, 'npm:lit@^3.2.0');
   assertEquals(denoJson.imports['@lit/reactive-element'], 'npm:@lit/reactive-element@^2');
@@ -98,7 +98,7 @@ Deno.test('create-kiss: deno.json maps Lit and package imports explicitly', () =
   assertEquals(denoJson.nodeModulesDir, 'auto');
 });
 
-Deno.test('create-kiss: deno.json build uses the one-command KISS build', () => {
+Deno.test('create-less: deno.json build uses the one-command LessJS build', () => {
   const denoJson = JSON.parse(extractTemplate('deno.json'));
   assertEquals(
     denoJson.tasks['build'],
@@ -109,27 +109,27 @@ Deno.test('create-kiss: deno.json build uses the one-command KISS build', () => 
   assertExists(denoJson.tasks['build:ssg']);
 });
 
-Deno.test('create-kiss: refuses path escape and existing target before writing', () => {
+Deno.test('create-less: refuses path escape and existing target before writing', () => {
   assertExists(cliSource.includes('relative(cwd, targetDir)'));
   assertExists(cliSource.includes('Refusing to create project outside the current directory'));
   assertExists(cliSource.includes('Directory "${name}" already exists.'));
   assertExists(cliSource.includes('Deno.stat(targetDir)'));
 });
 
-Deno.test('create-kiss: vite.config.ts imports kiss plugin', () => {
+Deno.test('create-less: vite.config.ts imports less plugin', () => {
   const viteConfig = extractTemplate('vite.config.ts');
-  assertExists(viteConfig.includes("import { kiss } from '@lessjs/core'"));
-  assertExists(viteConfig.includes('kiss({'));
+  assertExists(viteConfig.includes("import { less } from '@lessjs/core'"));
+  assertExists(viteConfig.includes('less({'));
 });
 
-Deno.test('create-kiss: vite.config.ts includes packageIslands config', () => {
+Deno.test('create-less: vite.config.ts includes packageIslands config', () => {
   const viteConfig = extractTemplate('vite.config.ts');
   assertExists(viteConfig.includes('@lessjs/ui'));
   assertExists(viteConfig.includes('lessUiAliases'));
   assertExists(viteConfig.includes('https://jsr.io/@lessjs/ui/0.5.2/src/less-button.ts'));
 });
 
-Deno.test('create-kiss: route index imports Lit directly', () => {
+Deno.test('create-less: route index imports Lit directly', () => {
   const routeIndex = extractTemplate('app/routes/index.ts');
   assertExists(routeIndex.includes("from 'lit'"));
   assertEquals(routeIndex.includes('@lessjs/core'), false);
@@ -139,7 +139,7 @@ Deno.test('create-kiss: route index imports Lit directly', () => {
   assertExists(routeIndex.includes('tagName'));
 });
 
-Deno.test('create-kiss: island counter imports Lit directly and self-registers', () => {
+Deno.test('create-less: island counter imports Lit directly and self-registers', () => {
   const islandCounter = extractTemplate('app/islands/my-counter.ts');
   assertExists(islandCounter.includes("from 'lit'"));
   assertEquals(islandCounter.includes('@lessjs/core'), false);
@@ -149,8 +149,8 @@ Deno.test('create-kiss: island counter imports Lit directly and self-registers',
   assertExists(islandCounter.includes('customElements.define(tagName, MyCounter)'));
 });
 
-Deno.test('create-kiss: generated project builds through the one-command pipeline', async () => {
-  const tmpRoot = Deno.makeTempDirSync({ prefix: 'kiss-create-' });
+Deno.test('create-less: generated project builds through the one-command pipeline', async () => {
+  const tmpRoot = Deno.makeTempDirSync({ prefix: 'less-create-' });
   const projectName = 'sample-app';
 
   try {
@@ -250,8 +250,8 @@ Deno.test('create-kiss: generated project builds through the one-command pipelin
     const viteConfigPath = join(appDir, 'vite.config.ts');
     let viteConfig = readFileSync(viteConfigPath, 'utf-8');
     viteConfig = viteConfig.replace(
-      "import { kiss } from '@lessjs/core';",
-      `import { kiss } from ${
+      "import { less } from '@lessjs/core';",
+      `import { less } from ${
         JSON.stringify(
           vitePath(join(repoRoot, 'packages', 'core', 'src', 'index.ts')),
         )

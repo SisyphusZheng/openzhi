@@ -1,13 +1,13 @@
 /**
  * @lessjs/core - Main entry.
  *
- * KISS 0.5 is a static-first framework package:
+ * LessJS 0.5 is a static-first framework package:
  * - routes are scanned at build time
  * - pages are rendered to DSD HTML
  * - islands upgrade through Custom Elements
  * - Lit is imported directly by user code or adapters, not re-exported by core
  *
- * kiss() returns the Vite plugins that provide route scanning, virtual Hono
+ * less() returns the Vite plugins that provide route scanning, virtual Hono
  * entry generation, dev-server integration, island marking, and build metadata.
  */
 
@@ -17,10 +17,10 @@ import type { FrameworkOptions, PackageIslandMeta, RouteEntry } from './types.js
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import process from 'node:process';
-import { KissError } from './errors.js';
+import { LessError } from './errors.js';
 
 import honoDevServer from '@hono/vite-dev-server';
-import { KissBuildContext } from './build-context.js';
+import { LessBuildContext } from './build-context.js';
 import { buildPlugin } from './build.js';
 import { generateHonoEntryCode } from './hono-entry.js';
 import { islandTransformPlugin } from './island-transform.js';
@@ -29,8 +29,8 @@ import { createRuntimeShimCode } from './runtime-shim.js';
 
 export type {
   FrameworkOptions,
-  KissMiddleware,
-  KissRenderer,
+  LessMiddleware,
+  LessRenderer,
   PackageIslandMeta,
   RouteEntry,
   SpecialFileType,
@@ -40,7 +40,7 @@ export {
   ConflictError,
   ForbiddenError,
   IslandUpgradeError,
-  KissError,
+  LessError,
   NotFoundError,
   RateLimitError,
   SsrRenderError,
@@ -61,12 +61,12 @@ export { escapeHtml, renderDSD, renderDSDByName, wrapDsdDocument } from './rende
 export { Hono } from 'hono';
 
 /**
- * KISS Framework Vite plugin.
+ * LessJS Framework Vite plugin.
  * Jamstack: M=SSG+DSD, A=API Routes, J=Islands.
  *
- * kiss() handles dev mode plus Phase 1 metadata for production builds.
+ * less() handles dev mode plus Phase 1 metadata for production builds.
  */
-export function kiss(options: FrameworkOptions = {}): Plugin[] {
+export function less(options: FrameworkOptions = {}): Plugin[] {
   let headExtras = options.headExtras;
 
   const escapeHtmlAttr = (str: string): string =>
@@ -76,7 +76,7 @@ export function kiss(options: FrameworkOptions = {}): Plugin[] {
   const validateSafeUrl = (url: string, context: string): string => {
     const trimmed = url.trim().toLowerCase();
     if (trimmed.startsWith('javascript:') || trimmed.startsWith('data:')) {
-      throw new KissError(
+      throw new LessError(
         `Unsafe URL in ${context}: "${url}" - javascript: and data: protocols are not allowed`,
         'UNSAFE_URL',
         400,
@@ -112,9 +112,9 @@ export function kiss(options: FrameworkOptions = {}): Plugin[] {
     headExtras,
   };
 
-  const ctx = new KissBuildContext(resolvedOptions);
+  const ctx = new LessBuildContext(resolvedOptions);
 
-  const VIRTUAL_ENTRY_ID = 'virtual:kiss-hono-entry';
+  const VIRTUAL_ENTRY_ID = 'virtual:less-hono-entry';
   const RESOLVED_ENTRY_ID = '\0' + VIRTUAL_ENTRY_ID;
 
   function generateEntry(
@@ -167,9 +167,9 @@ export function kiss(options: FrameworkOptions = {}): Plugin[] {
         return buildConfig;
       }
 
-      const kissTmpDir = resolve(process.cwd(), '.kiss');
-      mkdirSync(kissTmpDir, { recursive: true });
-      const runtimePath = join(kissTmpDir, '.less-runtime.ts');
+      const lessTmpDir = resolve(process.cwd(), '.less');
+      mkdirSync(lessTmpDir, { recursive: true });
+      const runtimePath = join(lessTmpDir, '.less-runtime.ts');
       writeFileSync(runtimePath, createRuntimeShimCode(), 'utf-8');
       ctx.userResolveAlias = Array.isArray(userAlias)
         ? [{ find: '@lessjs/core/less-runtime', replacement: runtimePath }, ...userAlias]
@@ -231,10 +231,10 @@ export function kiss(options: FrameworkOptions = {}): Plugin[] {
         const totalIslands = ctx.islandTagNames.length + ctx.packageIslands.length;
         console.log(
           `[LessJS] Routes: ${pageCount} page(s), ${apiCount} API route(s), ` +
-            `${totalIslands} island(s) - KISS Architecture`,
+            `${totalIslands} island(s) - LessJS Architecture`,
         );
       } catch (err) {
-        throw new KissError(
+        throw new LessError(
           `Route scan failed: ${err instanceof Error ? err.message : String(err)}`,
           'ROUTE_SCAN_ERROR',
           500,
@@ -273,4 +273,4 @@ export function kiss(options: FrameworkOptions = {}): Plugin[] {
   ];
 }
 
-export default kiss;
+export default less;

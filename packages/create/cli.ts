@@ -1,16 +1,16 @@
 /**
- * @lessjs/create - Minimal project scaffold for KISS framework.
+ * @lessjs/create - Minimal project scaffold for LessJS framework.
  *
  * Usage: deno run -A jsr:@lessjs/create my-app
  *
- * KISS Architecture: Keep It Simple, Stupid.
+ * LessJS Architecture: Keep It Simple, Stupid.
  * One template, zero prompts, instant start.
  */
 
 import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
 
 const TPL = {
-  '.gitignore': `.kiss/
+  '.gitignore': `.less/
 dist/
 node_modules/
 `,
@@ -41,7 +41,7 @@ node_modules/
   "compilerOptions": { "lib": ["ES2022", "DOM", "DOM.Iterable"] }
 }
 `,
-  'vite.config.ts': `import { kiss } from '@lessjs/core';
+  'vite.config.ts': `import { less } from '@lessjs/core';
 import { lessRootColorCSS } from '@lessjs/ui/tokens/colors';
 import { defineConfig } from 'vite';
 
@@ -66,7 +66,7 @@ export default defineConfig({
   resolve: {
     alias: lessUiAliases,
   },
-  plugins: [kiss({
+  plugins: [less({
     html: { title: 'My LessJS App' },
     // Use pre-built UI components from @lessjs/ui
     // (JSR distributes compiled JS - no decorator errors)
@@ -181,7 +181,7 @@ async function main() {
     console.log(`  created ${path}`);
   }
 
-  console.log(`\nKISS project created at ./${relativeTarget}/`);
+  console.log(`\nLessJS project created at ./${relativeTarget}/`);
   console.log(`\n  cd ${relativeTarget}`);
   console.log('  deno task dev');
 }

@@ -15,7 +15,7 @@ export abstract class DecisionDocumentPage extends LitElement {
         gap: 0.5rem;
         align-items: center;
         margin: 0.75rem 0 2rem;
-        color: var(--kiss-text-muted);
+        color: var(--less-text-muted);
         font-size: 0.75rem;
       }
       .badge {

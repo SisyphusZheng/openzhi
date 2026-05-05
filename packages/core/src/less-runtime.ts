@@ -1,7 +1,7 @@
 /**
- * LessJS runtime shim — built-in, auto-injected by kiss() plugin.
+ * LessJS runtime shim — built-in, auto-injected by less() plugin.
  *
- * v0.5.0: Pure build/SSR runtime. No KissElement, no Lit.
+ * v0.5.0: Pure build/SSR runtime. No LessElement, no Lit.
  * Lit exports are handled by @lessjs/ui — users import components directly.
  */
 export { renderDSD, renderDSDByName } from './render-dsd.js';

@@ -32,7 +32,7 @@ export class DecisionsIndexPage extends LitElement {
         font-weight: 500;
       }
       .decision-status {
-        color: var(--kiss-text-muted);
+        color: var(--less-text-muted);
         font-size: 0.75rem;
         white-space: nowrap;
       }

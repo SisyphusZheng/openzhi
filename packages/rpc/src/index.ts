@@ -50,7 +50,7 @@ interface ReactiveElement {
 /**
  * RPC Error — thrown when an API call fails.
  *
- * Aligned with @lessjs/core KissError structure:
+ * Aligned with @lessjs/core LessError structure:
  * provides status, code, and message for structured error handling.
  */
 export class RpcError extends Error {
@@ -74,7 +74,7 @@ export class RpcError extends Error {
     this.details = details;
   }
 
-  /** Structured JSON representation, compatible with KissError.toJSON() */
+  /** Structured JSON representation, compatible with LessError.toJSON() */
   toJSON(): { error: { code: string; message: string; status: number } } {
     return {
       error: {
@@ -172,7 +172,7 @@ export class RpcController implements ReactiveController {
   /**
    * Call an API endpoint with automatic loading/error handling.
    *
-   * KISS Architecture: throws RpcError on failure instead of returning null.
+   * LessJS Architecture: throws RpcError on failure instead of returning null.
    * The error is still stored in this.error for template access,
    * but callers who want to handle errors must catch.
    *

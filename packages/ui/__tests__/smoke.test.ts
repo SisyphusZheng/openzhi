@@ -6,7 +6,7 @@
  */
 import { assertEquals, assertExists } from 'jsr:@std/assert@^1.0.0';
 
-Deno.test('kiss-ui — index exports islands array', async () => {
+Deno.test('less-ui — index exports islands array', async () => {
   const mod = await import('../src/index.ts');
   assertExists(mod.islands, 'islands export should exist');
   assertEquals(Array.isArray(mod.islands), true);
@@ -20,18 +20,18 @@ Deno.test('kiss-ui — index exports islands array', async () => {
   assertEquals(mod.islands[5].tagName, 'less-hero-ping');
 });
 
-Deno.test('kiss-ui — less-theme-toggle exports tagName', async () => {
+Deno.test('less-ui — less-theme-toggle exports tagName', async () => {
   const mod = await import('../src/less-theme-toggle.ts');
   assertEquals(mod.tagName, 'less-theme-toggle');
-  assertExists(mod.KissThemeToggle, 'KissThemeToggle class should be exported');
+  assertExists(mod.LessThemeToggle, 'LessThemeToggle class should be exported');
 });
 
-Deno.test('kiss-ui — design-tokens exports lessDesignTokens', async () => {
+Deno.test('less-ui — design-tokens exports lessDesignTokens', async () => {
   const mod = await import('../src/design-tokens.ts');
   assertExists(mod.lessDesignTokens, 'lessDesignTokens should be exported');
 });
 
-Deno.test('kiss-ui — all components export tagName', async () => {
+Deno.test('less-ui — all components export tagName', async () => {
   const components = [
     'less-button',
     'less-card',

@@ -13,7 +13,7 @@ export class ContributingPage extends LitElement {
       .layer-diagram {
         padding: 1.25rem;
         background: var(--less-bg-surface);
-        /* 0.5px: reduced to match kiss-ui spec */
+        /* 0.5px: reduced to match less-ui spec */
         border: 0.5px solid var(--less-border);
         border-radius: 6px;
         margin: 1.5rem 0;
@@ -33,13 +33,13 @@ export class ContributingPage extends LitElement {
       .commit-type {
         padding: 0.75rem 1rem;
         background: var(--less-bg-surface);
-        /* 0.5px: reduced to match kiss-ui spec */
+        /* 0.5px: reduced to match less-ui spec */
         border: 0.5px solid var(--less-border);
         border-radius: 4px;
         font-size: 0.875rem;
       }
       .commit-type code {
-        color: var(--kiss-accent);
+        color: var(--less-accent);
         font-weight: 600;
       }
     `,
@@ -57,7 +57,7 @@ export class ContributingPage extends LitElement {
           ><pre>
             <code># 克隆仓库
             git clone https://github.com/lessjs-run/LessJS.git
-            cd kiss
+            cd lessjs
 
             # 安装依赖
             deno install
@@ -82,13 +82,14 @@ export class ContributingPage extends LitElement {
             <h2>项目结构</h2>
             <code-block
             ><pre>
-              <code>kiss/
+              <code>lessjs/
               ├── packages/
-              │   ├── kiss-core/    # 核心 Vite 插件
-              │   ├── kiss-rpc/     # RPC 客户端控制器
-              │   └── kiss-ui/      # UI 插件
-              ├── docs/             # 文档站（自举）
-              └── scripts/          # 工具脚本</code></pre></code-block>
+              │   ├── core/       # 核心 Vite 插件
+              │   ├── rpc/        # RPC 客户端控制器
+              │   ├── ui/         # UI 插件
+              │   └── adapter-lit/ # Lit adapter
+              ├── docs/           # 文档站（自举）
+              └── scripts/        # 工具脚本</code></pre></code-block>
 
               <h2>开发规范</h2>
 

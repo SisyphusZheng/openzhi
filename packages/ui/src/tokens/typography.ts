@@ -8,7 +8,7 @@
 import { css } from 'lit';
 
 /** Typography CSS custom properties */
-export const kissTypographyTokens = css`
+export const lessTypographyTokens = css`
   :host {
     /* === Font Families === */
     --less-font-sans:

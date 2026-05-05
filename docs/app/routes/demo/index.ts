@@ -23,7 +23,7 @@ export default class PageDemo extends LitElement {
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.24em;
-      color: var(--kiss-text-muted);
+      color: var(--less-text-muted);
       margin-bottom: 1.75rem;
       display: block;
     }
@@ -72,7 +72,7 @@ export default class PageDemo extends LitElement {
       display: flex;
       gap: 0;
       margin: 1.5rem 0 2rem;
-      /* 0.5px: reduced to match kiss-ui spec */
+      /* 0.5px: reduced to match less-ui spec */
       border: 0.5px solid var(--less-border);
       border-radius: 8px;
       overflow: hidden;
@@ -98,7 +98,7 @@ export default class PageDemo extends LitElement {
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.12em;
-      color: var(--kiss-text-muted);
+      color: var(--less-text-muted);
       display: block;
       margin-bottom: 0.3rem;
     }
@@ -109,11 +109,11 @@ export default class PageDemo extends LitElement {
       margin: 0;
     }
     .jam-cell:hover {
-      background: var(--kiss-bg-hover);
+      background: var(--less-bg-hover);
     }
 
     .arch-card {
-      /* 0.5px: reduced to match kiss-ui spec */
+      /* 0.5px: reduced to match less-ui spec */
       border: 0.5px solid var(--less-border);
       border-radius: 8px;
       overflow: hidden;
@@ -145,7 +145,7 @@ export default class PageDemo extends LitElement {
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.08em;
-      color: var(--kiss-text-muted);
+      color: var(--less-text-muted);
       margin: 1.5rem 0 0.5rem;
     }
   `;
@@ -170,7 +170,7 @@ export default class PageDemo extends LitElement {
             <div class="jam-cell">
               <span class="letter">A</span>
               <span class="label">API</span>
-              <p class="desc">fetch() calls the KISS serverless API hosted on Deno Deploy</p>
+              <p class="desc">fetch() calls the LessJS serverless API hosted on Deno Deploy</p>
             </div>
             <div class="jam-cell">
               <span class="letter">M</span>
@@ -196,7 +196,7 @@ export default class PageDemo extends LitElement {
 
           <h2>Architecture</h2>
           <p style="font-size:0.9375rem;color:var(--less-text-secondary);line-height:1.7">
-            This entire page was statically generated at build time by the KISS 3-phase pipeline. The
+            This entire page was statically generated at build time by the LessJS 3-phase pipeline. The
             interactive components are <strong>Islands</strong> — lazy-loaded JavaScript that upgrades
             only the parts that need interaction. Everything else is pure static HTML.
           </p>
@@ -204,9 +204,9 @@ export default class PageDemo extends LitElement {
           <div class="endpoint-label">API Endpoint</div>
           <div class="arch-card">
             <div class="endpoint-bar">
-              <span>https://kiss-demo-api.sisyphuszheng.deno.net</span>
+              <span>https://less-demo-api.sisyphuszheng.deno.net</span>
               <a
-                href="https://kiss-demo-api.sisyphuszheng.deno.net/api"
+                href="https://less-demo-api.sisyphuszheng.deno.net/api"
                 target="_blank"
                 style="font-size:0.75rem;color:var(--less-text-primary);text-decoration:underline;text-underline-offset:3px"
               >Open →</a>

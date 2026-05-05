@@ -8,9 +8,9 @@
  *   - It upgrades independently when its chunk defines the custom element
  *   - No simultaneous upgrade conflict with the parent shadow DOM
  */
-import type { KissRenderer } from '@lessjs/core';
+import type { LessRenderer } from '@lessjs/core';
 
-const renderer: KissRenderer = {
+const renderer: LessRenderer = {
   wrap(html, _ctx) {
     // Replace the placeholder comment with the actual <api-consumer> tag.
     // No legacy upgrade marker; it would cause a dual-upgrade conflict.

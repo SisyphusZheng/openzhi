@@ -13,7 +13,7 @@ export class ChangelogPage extends LitElement {
         margin: 2rem 0;
         padding: 1.5rem;
         background: var(--less-bg-surface);
-        /* 0.5px: reduced to match kiss-ui spec */
+        /* 0.5px: reduced to match less-ui spec */
         border: 0.5px solid var(--less-border);
         border-radius: 6px;
       }
@@ -127,7 +127,7 @@ export class ChangelogPage extends LitElement {
               <ul class="change-list">
                 <li>
                   <strong>全面品牌重塑 KISS → LessJS</strong>：组件标签 <span class="inline-code">kiss-*</span>
-                  → <span class="inline-code">less-*</span>（8 个组件），CSS 变量 <span class="inline-code">--kiss-*</span>
+                  → <span class="inline-code">less-*</span>（8 个组件），CSS 变量 <span class="inline-code">--less-*</span>
                   → <span class="inline-code">--less-*</span>（60+ 变量），事件名 <span class="inline-code">kiss:ready</span>
                   → <span class="inline-code">less:ready</span>，Vite 插件名统一为 <span class="inline-code">less:*</span>。
                 </li>
@@ -399,7 +399,7 @@ export class ChangelogPage extends LitElement {
                   </li>
                   <li>
                     <strong>Roadmap 与架构文档重整</strong>：v0.5 到 v1.0 的 DSD Renderer、Island
-                    Upgrade、Serverless、SSG/ISR、.kiss compiler 路线重新分层。
+                    Upgrade、Serverless、SSG/ISR、.less compiler 路线重新分层。
                   </li>
                   <li>
                     <strong>版本号</strong>：@lessjs/core 升至 0.5.0-alpha.4，@lessjs/ui 升至
@@ -423,7 +423,7 @@ export class ChangelogPage extends LitElement {
                     ADR 入口，文档站可直接发现架构决策记录。
                   </li>
                   <li>
-                    <strong>Phase 2/3 工作目录</strong>：build:client 和 build:ssg 从 docs 目录读取 .kiss
+                    <strong>Phase 2/3 工作目录</strong>：build:client 和 build:ssg 从 docs 目录读取 .less
                     metadata，build:all 不再依赖残留产物。
                   </li>
                 </ul>
@@ -509,7 +509,7 @@ export class ChangelogPage extends LitElement {
                 <h4>新增</h4>
                 <ul class="change-list">
                   <li>
-                    <strong>Serverless API CI 部署</strong>：kiss-demo-api.sisyphuszheng.deno.net
+                    <strong>Serverless API CI 部署</strong>：less-demo-api.sisyphuszheng.deno.net
                     生产在线，deploy-api.yml 自动化（CORS 修复、平台迁移 deployctl→deno deploy）
                   </li>
                   <li>
@@ -609,7 +609,7 @@ export class ChangelogPage extends LitElement {
                     spacing, typography 独立导出
                   </li>
                   <li>
-                    <strong>kiss-error CSS 变量</strong>：组件错误状态统一使用可配置的 --kiss-error 变量
+                    <strong>kiss-error CSS 变量</strong>：组件错误状态统一使用可配置的 --less-error 变量
                   </li>
                   <li>
                     <strong>less-layout 可配置 header 高度</strong>：56px 硬编码替换为

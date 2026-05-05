@@ -38,7 +38,7 @@ coverage/
 __test_fixtures__/
 
 # Framework internals
-.kiss/
+.less/
 .workbuddy/
 
 # Vite cache

@@ -15,16 +15,16 @@ Provides:
 ## Current Usage
 
 ```
-packages/kiss-core/src/index.ts  →  import honoDevServer from '@hono/vite-dev-server'
+packages/less-core/src/index.ts  →  import honoDevServer from '@hono/vite-dev-server'
                                    →  honoDevServer({ entry: VIRTUAL_ENTRY_ID, injectClientScript: true })
-packages/kiss-core/vite.config.build.ts →  external: ['@hono/vite-dev-server']  (dev-only!)
+packages/less-core/vite.config.build.ts →  external: ['@hono/vite-dev-server']  (dev-only!)
 ```
 
 ## Why It Exists (Not Removed)
 
 ### The Alternative: Manual Implementation
 
-To replace `@hono/vite-dev-server`, KISS would need a custom Vite plugin that:
+To replace `@hono/vite-dev-server`, LessJS would need a custom Vite plugin that:
 
 | Feature                        |  Lines of Code | Complexity | Maintenance Risk                         |
 | ------------------------------ | -------------: | ---------: | ---------------------------------------- |
@@ -54,7 +54,7 @@ To replace `@hono/vite-dev-server`, KISS would need a custom Vite plugin that:
    - From Hono's own org (not a random package)
    - Already a transitive dep of `hono` ecosystem users likely have
 
-2. **"Locks us to Hono"** — True, but KISS _is_ a Hono framework.
+2. **"Locks us to Hono"** — True, but LessJS _is_ a Hono framework.
    Replacing Hono would require rewriting everything regardless of this plugin.
 
 3. **"Could break on Vite major bumps"** — True, but:

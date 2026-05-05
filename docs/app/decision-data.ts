@@ -1,5 +1,5 @@
 import adr0001 from '../decisions/0001-keep-hono-vite-dev-server.md?raw';
-import adr0002 from '../decisions/0002-kiss-compiler-eliminate-lit.md?raw';
+import adr0002 from '../decisions/0002-less-compiler-eliminate-lit.md?raw';
 import adr0003 from '../decisions/0003-pwa-support.md?raw';
 import adr0004 from '../decisions/0004-blog-system.md?raw';
 
@@ -23,7 +23,7 @@ export const DECISIONS: DecisionDoc[] = [
   },
   {
     id: '0002',
-    title: '.kiss Compiler',
+    title: '.less Compiler',
     status: 'Draft',
     path: '/decisions/0002-kiss-compiler-eliminate-lit',
     summary:

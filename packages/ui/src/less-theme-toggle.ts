@@ -20,7 +20,7 @@
  * <less-theme-toggle></less-theme-toggle>
  * ```
  *
- * KISS Architecture:
+ * LessJS Architecture:
  * - This is an Island component with Shadow DOM and client-side behavior
  * - Requires eager upgrade (theme should be applied immediately)
  * - The `theme` attribute lets the SSR pipeline pass the resolved theme
@@ -33,7 +33,7 @@ import { lessDesignTokens } from './design-tokens.js';
 
 export const tagName = 'less-theme-toggle';
 
-export class KissThemeToggle extends LitElement {
+export class LessThemeToggle extends LitElement {
   static override styles: CSSResult[] = [
     lessDesignTokens,
     css`
@@ -125,14 +125,14 @@ export class KissThemeToggle extends LitElement {
         //
         // L2 EXEMPTION: reading document.documentElement.dataset is a platform API
         // (browser infrastructure), not a cross-Island dependency. Allowed under
-        // the KISS L2 infrastructure exemption rule.
+        // the LessJS L2 infrastructure exemption rule.
         this._isLight = true;
       } else {
         // Fallback: read from localStorage directly (edge case where neither
         // attribute nor data-theme is set)
         //
         // L2 EXEMPTION: localStorage is a browser platform API (infrastructure).
-        // Not a cross-Island dependency — allowed under KISS L2 exemption.
+        // Not a cross-Island dependency — allowed under LessJS L2 exemption.
         // try-catch: localStorage may throw in private browsing mode or when
         // storage is disabled by browser policy.
         try {
@@ -161,17 +161,17 @@ export class KissThemeToggle extends LitElement {
       } catch {
         // Silently ignore — localStorage may be unavailable in private browsing
       }
-      // Propagate data-theme to all KISS component host elements.
+      // Propagate data-theme to all LessJS component host elements.
       // Shadow DOM `:host([data-theme="light"])` selectors only match
       // when the host element itself has the attribute — CSS custom
       // properties declared on `:host` shadow the inherited `:root` values.
       this._propagateTheme(theme);
     }
 
-    /** Propagate data-theme to all KISS UI components in the document.
+    /** Propagate data-theme to all LessJS UI components in the document.
      *
      * Uses convention-based selectors instead of a hardcoded tag list:
-     *   1. All elements with `kiss-` prefixed tag names (KISS built-in components)
+     *   1. All elements with `less-` prefixed tag names (LessJS built-in components)
      *   2. All elements with `[data-less]` attribute (user custom components)
      *
      * This ensures custom components using lessDesignTokens are also themed,
@@ -184,9 +184,9 @@ export class KissThemeToggle extends LitElement {
      */
     private _propagateTheme(theme: string) {
       // CRITICAL: document.querySelectorAll() does NOT pierce Shadow DOM.
-      // KISS components like less-layout live inside other components' shadow roots
+      // LessJS components like less-layout live inside other components' shadow roots
       // (e.g. page-fullstack-demo's shadow root). We must recursively walk all
-      // shadow roots to find and update every KISS component.
+      // shadow roots to find and update every LessJS component.
       //
       // I-CONSTRAINT ISOLATION: each element is wrapped in try/catch so that
       // one Island's setAttribute failure does NOT prevent other Islands from
@@ -198,7 +198,7 @@ export class KissThemeToggle extends LitElement {
         root.querySelectorAll('*').forEach((el) => {
           try {
             const tag = el.tagName?.toLowerCase();
-            // All KISS built-in components (kiss-* prefix)
+            // All LessJS built-in components (less-* prefix)
             if (tag?.startsWith('less-') || el.hasAttribute?.('data-less')) {
               el.setAttribute('data-theme', theme);
             }
@@ -259,5 +259,5 @@ export class KissThemeToggle extends LitElement {
 
   // Guard: idempotent across SSR paths (SSR dom shim may not support get())
   try {
-    customElements.define(tagName, KissThemeToggle);
+    customElements.define(tagName, LessThemeToggle);
   } catch { /* already defined */ }

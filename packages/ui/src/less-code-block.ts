@@ -17,7 +17,7 @@ import { lessDesignTokens } from './design-tokens.js';
 
 export const tagName = 'less-code-block';
 
-export class KissCodeBlock extends LitElement {
+export class LessCodeBlock extends LitElement {
   static override styles: CSSResult[] = [
     lessDesignTokens,
     css`
@@ -133,5 +133,5 @@ export class KissCodeBlock extends LitElement {
 
 // Guard: idempotent across SSR paths
 try {
-  customElements.define(tagName, KissCodeBlock);
+  customElements.define(tagName, LessCodeBlock);
 } catch { /* already defined */ }

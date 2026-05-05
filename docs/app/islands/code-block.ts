@@ -36,14 +36,14 @@ export default class CodeBlock extends LitElement {
       line-height: 1.6;
       color: var(--less-text-secondary);
       scrollbar-width: thin;
-      scrollbar-color: var(--kiss-scrollbar-thumb) transparent;
+      scrollbar-color: var(--less-scrollbar-thumb) transparent;
     }
 
     .copy-btn {
       position: absolute;
       top: 0.5rem;
       right: 0.5rem;
-      background: var(--kiss-bg-elevated);
+      background: var(--less-bg-elevated);
       color: var(--less-text-tertiary);
       border: 0.5px solid var(--less-border);
       padding: 0.25rem 0.625rem;
@@ -66,8 +66,8 @@ export default class CodeBlock extends LitElement {
     }
 
     .copy-btn.failed {
-      color: var(--kiss-error, #e55);
-      border-color: var(--kiss-error, #e55);
+      color: var(--less-error, #e55);
+      border-color: var(--less-error, #e55);
     }
   `;
 

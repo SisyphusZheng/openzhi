@@ -1,5 +1,5 @@
 /**
- * @kiss/vite - Vite library mode build config
+ * @lessjs/core - Vite library mode build config
  * Replaces tsup + patch-node-prefix with native Vite lib mode.
  *
  * Key advantages:

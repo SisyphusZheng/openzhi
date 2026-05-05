@@ -47,10 +47,10 @@ export class ExamplesPage extends LitElement {
         font-weight: 500;
       }
       .example-card .tag.k {
-        color: var(--kiss-accent);
+        color: var(--less-accent);
       }
       .example-card .tag.i {
-        color: var(--kiss-accent-dim);
+        color: var(--less-accent-dim);
       }
       .example-card .tag.s1 {
         color: var(--less-text-secondary);
@@ -98,7 +98,7 @@ export class ExamplesPage extends LitElement {
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 0.08em;
-        color: var(--kiss-text-muted);
+        color: var(--less-text-muted);
         min-width: 120px;
       }
       .arch-value {
@@ -282,7 +282,7 @@ export class ExamplesPage extends LitElement {
             S — 引入了服务端进程？     → 只允许静态文件 + Serverless API</code></pre></code-block>
 
             <div class="nav-row">
-              <a href="/styling/kiss-ui" class="nav-link">&larr; @lessjs/ui</a>
+              <a href="/styling/less-ui" class="nav-link">&larr; @lessjs/ui</a>
               <a href="/guide/deployment" class="nav-link">Deployment &rarr;</a>
             </div>
           </div>

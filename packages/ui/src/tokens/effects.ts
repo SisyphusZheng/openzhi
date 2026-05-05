@@ -7,7 +7,7 @@
 import { css } from 'lit';
 
 /** Shadow/effect CSS custom properties */
-export const kissEffectTokens = css`
+export const lessEffectTokens = css`
   :host {
     --less-shadow-sm: var(--shadow-1);
     --less-shadow-md: var(--shadow-3);

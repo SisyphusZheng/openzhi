@@ -18,10 +18,10 @@ jobs:
       - name: Deploy to Deno Deploy
         run: |
           # Copy to a clean dir (no workspace config)
-          cp -r demo /tmp/kiss-api
-          cd /tmp/kiss-api
+          cp -r demo /tmp/less-api
+          cd /tmp/less-api
           deno deploy \
-            --app=kiss-demo-api \
+            --app=less-demo-api \
             --prod \
             --token="${{ secrets.DENO_DEPLOY_TOKEN }}" \
             .

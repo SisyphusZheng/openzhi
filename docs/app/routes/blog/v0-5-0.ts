@@ -89,8 +89,8 @@ export default class BlogV050 extends LitElement {
 
           <div class="truth">
             <div class="truth-title">Lit 保留在 @lessjs/ui</div>
-            <p>Lit 是 Web Component 最成熟的工具库。kiss-ui 的九个组件已经用 Lit 写好、无 bug、正在跑。15KB gzip 不可见成本（被所有组件共享）。</p>
-            <p>Lit 现在是 <code>@lessjs/ui</code> 的实现细节。用户写 <code>&lt;less-button variant="primary"&gt;</code> 不需要知道里面有 Lit。需要自定义组件的用户可以自己写 <code>class extends HTMLElement</code>，和 kiss-ui 组件同页面共存。</p>
+            <p>Lit 是 Web Component 最成熟的工具库。less-ui 的九个组件已经用 Lit 写好、无 bug、正在跑。15KB gzip 不可见成本（被所有组件共享）。</p>
+            <p>Lit 现在是 <code>@lessjs/ui</code> 的实现细节。用户写 <code>&lt;less-button variant="primary"&gt;</code> 不需要知道里面有 Lit。需要自定义组件的用户可以自己写 <code>class extends HTMLElement</code>，和 less-ui 组件同页面共存。</p>
           </div>
 
           <div class="truth">

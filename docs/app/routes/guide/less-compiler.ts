@@ -1,17 +1,17 @@
 /**
- * LessJS Compiler — .kiss file compiler architecture decision
+ * LessJS Compiler — .less file compiler architecture decision
  */
 import { css, html, LitElement } from 'lit';
 import { pageStyles } from '../../components/page-styles.js';
 import '@lessjs/ui/less-layout';
 
-export class KissCompilerPage extends LitElement {
+export class LessCompilerPage extends LitElement {
   static override styles = [
     pageStyles,
     css`
       .adr-meta {
         font-size: 0.75rem;
-        color: var(--kiss-text-muted);
+        color: var(--less-text-muted);
         margin-bottom: 1.5rem;
       }
       h2 {
@@ -65,10 +65,10 @@ export class KissCompilerPage extends LitElement {
 
   override render() {
     return html`
-      <less-layout currentPath="/guide/kiss-compiler">
+      <less-layout currentPath="/guide/less-compiler">
         <div class="container">
           <p class="adr-meta">ADR 0002 · 2026-04-30 · Draft · v0.10.0 alpha target</p>
-          <h1>.kiss Compiler — Optional Zero-Framework Authoring</h1>
+          <h1>.less Compiler — Optional Zero-Framework Authoring</h1>
 
           <h2>Context</h2>
           <p>
@@ -84,12 +84,12 @@ export class KissCompilerPage extends LitElement {
 
           <h2>Proposal</h2>
           <p>
-            引入可选的 <code>.kiss</code> 文件格式。编译器在 build time 将它转换成 vanilla Custom
+            引入可选的 <code>.less</code> 文件格式。编译器在 build time 将它转换成 vanilla Custom
             Elements，让这类组件做到 0 KB framework runtime。Lit 继续作为 adapter 存在，不作为 v0.5-v0.9
             的阻塞项，也不在 v0.x 被草率移除。
           </p>
 
-          <h3>.kiss file format</h3>
+          <h3>.less file format</h3>
           <div class="code-block">
             &lt;!-- my-counter.kiss --&gt; &lt;template&gt; &lt;button
             @click="decrement"&gt;−&lt;/button&gt; &lt;span&gt;{count}&lt;/span&gt; &lt;button
@@ -103,7 +103,7 @@ export class KissCompilerPage extends LitElement {
             <tr>
               <th>Layer</th>
               <th>Before (Lit adapter)</th>
-              <th>After (.kiss compiler)</th>
+              <th>After (.less compiler)</th>
             </tr>
             <tr>
               <td>Runtime</td>
@@ -135,14 +135,14 @@ export class KissCompilerPage extends LitElement {
           <h2>SSG integration</h2>
           <p>
             The route scanner already maps <code>app/routes/*.ts</code> to URL paths. Extend it to also
-            scan .kiss files. Page .kiss files render directly (template is the page). Island .kiss files
+            scan .less files. Page .less files render directly (template is the page). Island .less files
             get lazy chunk treatment.
           </p>
 
           <h2>Backward compatibility</h2>
           <p>
             可能的配置形态是 <code>compiler: 'lit' | 'kiss' | 'auto'</code>。其中
-            <code>auto</code> 表示 <code>.kiss</code> 文件走编译器，<code>.ts</code> 组件继续走现有
+            <code>auto</code> 表示 <code>.less</code> 文件走编译器，<code>.ts</code> 组件继续走现有
             adapter。v0.10.0 只应把它作为 alpha 能力引入；v1.0 是否默认启用仍是开放决策。
           </p>
 
@@ -156,6 +156,6 @@ export class KissCompilerPage extends LitElement {
   }
 }
 
-customElements.define('page-kiss-compiler', KissCompilerPage);
-export default KissCompilerPage;
-export const tagName = 'page-kiss-compiler';
+customElements.define('page-less-compiler', LessCompilerPage);
+export default LessCompilerPage;
+export const tagName = 'page-less-compiler';

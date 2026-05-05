@@ -21,7 +21,7 @@ export class RoadmapPage extends LitElement {
       .status {
         display: inline-block;
         margin-bottom: 0.35rem;
-        color: var(--kiss-text-muted);
+        color: var(--less-text-muted);
         font-size: 0.6875rem;
         letter-spacing: 0.06em;
         text-transform: uppercase;
@@ -45,7 +45,7 @@ export class RoadmapPage extends LitElement {
             </p>
           </div>
 
-          <h2>Now: DSD Renderer 2</h2>
+          <h2>Now: DSD + Island Communication</h2>
           <p>
             v0.5.3 Trust Release 已完成，文档承诺与构建产物对齐。下一阶段聚焦渲染内核硬化。
           </p>
@@ -112,7 +112,7 @@ export class RoadmapPage extends LitElement {
 
           <div class="phase">
             <span class="status">v0.6</span>
-            <h3>DSD Renderer 2</h3>
+            <h3>DSD + Island Communication</h3>
             <p>
               Define safe/unsafe HTML contracts, preserve Lit escaping semantics, support nested DSD,
               improve slot/projection behavior, and make render failures point to route/tag/source.
@@ -148,7 +148,7 @@ export class RoadmapPage extends LitElement {
 
           <div class="phase">
             <span class="status">v0.10</span>
-            <h3>.kiss Compiler Alpha</h3>
+            <h3>.less Compiler Alpha</h3>
             <p>
               Explore a compiler that can reduce runtime cost and make Lit optional. It remains an
               optimization path, not a prerequisite for the current framework model.

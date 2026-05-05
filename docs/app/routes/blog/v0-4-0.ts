@@ -25,7 +25,7 @@ export default class BlogV040 extends LitElement {
       }
       .cmp th {
         background: var(--less-bg-surface);
-        color: var(--kiss-text-muted);
+        color: var(--less-text-muted);
         font-weight: 500;
       }
       .cmp td {
@@ -39,7 +39,7 @@ export default class BlogV040 extends LitElement {
         color: #2ecc40;
       }
       .cmp td.no {
-        color: var(--kiss-text-muted);
+        color: var(--less-text-muted);
       }
       h2 {
         margin-top: 2rem;
@@ -67,7 +67,7 @@ export default class BlogV040 extends LitElement {
       <less-layout currentPath="/blog">
         <div class="container">
           <h1>LessJS v0.4.0 — Serverless Integration Milestone</h1>
-          <p class="meta" style="color:var(--kiss-text-muted);font-size:0.8125rem;margin-bottom:2rem">
+          <p class="meta" style="color:var(--less-text-muted);font-size:0.8125rem;margin-bottom:2rem">
             2026-04-30 · 版本发布
           </p>
 
@@ -120,7 +120,7 @@ export default class BlogV040 extends LitElement {
           </table>
 
           <p>
-            最终成果：<code>kiss-demo-api.sisyphuszheng.deno.net</code> 生产在线，CI 自动部署，前端 <code
+            最终成果：<code>less-demo-api.sisyphuszheng.deno.net</code> 生产在线，CI 自动部署，前端 <code
             >less-hero-ping</code> 一键 verify。 这是 LessJS Jamstack 承诺的 "J"（Markup）+ "A"（API）+
             "M"（Markup） 全链路闭环。
           </p>
@@ -254,7 +254,7 @@ export default class BlogV040 extends LitElement {
             </tr>
             <tr>
               <td>主题</td>
-              <td>所有非 Hero 区域硬编码色 → --kiss-* CSS 变量</td>
+              <td>所有非 Hero 区域硬编码色 → --less-* CSS 变量</td>
             </tr>
             <tr>
               <td>Hero 可见度</td>
@@ -441,11 +441,11 @@ export default class BlogV040 extends LitElement {
             支持和更快的 HMR 将直接受益于 LessJS 的构建管线。
           </p>
 
-          <h3>.kiss 编译器</h3>
+          <h3>.less 编译器</h3>
           <p>
-            消灭 Lit 运行时依赖是终极目标。自定义编译器将 .kiss 文件编译为原生 <code>HTMLElement</code>，
+            消灭 Lit 运行时依赖是终极目标。自定义编译器将 .less 文件编译为原生 <code>HTMLElement</code>，
             消除 58KB 的 Lit 运行时。这不仅是大小优化——它意味着 <strong>真正的零依赖</strong>。
-            目前编译器已经完成了设计文档（<a href="/blog/kiss-compiler">详见博文</a>），新的路线图把它后移为
+            目前编译器已经完成了设计文档（<a href="/blog/less-compiler">详见博文</a>），新的路线图把它后移为
             v0.10.0 alpha：先把 DSD、Island、Serverless 与 SSG/ISR 做稳，再讨论默认组件语法。
           </p>
 

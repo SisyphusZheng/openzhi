@@ -11,7 +11,7 @@ export class BlogSystemPage extends LitElement {
     css`
       .adr-meta {
         font-size: 0.75rem;
-        color: var(--kiss-text-muted);
+        color: var(--less-text-muted);
         margin-bottom: 1.5rem;
       }
       h2 {
@@ -71,8 +71,8 @@ export class BlogSystemPage extends LitElement {
 
           <h2>User experience</h2>
           <div class="code-block">
-            // vite.config.ts import { kiss } from '@lessjs/core' import { kissBlog } from '@lessjs/blog'
-            export default defineConfig({ plugins: [ kiss(), kissBlog({ dir: 'content/blog', // .md files
+            // vite.config.ts import { less } from '@lessjs/core' import { kissBlog } from '@lessjs/blog'
+            export default defineConfig({ plugins: [ less(), kissBlog({ dir: 'content/blog', // .md files
             go here title: 'My Blog', postsPerPage: 10, }), ], })
           </div>
 
@@ -97,7 +97,7 @@ export class BlogSystemPage extends LitElement {
             framework runtime; interactive widgets remain islands.
           </p>
           <p>
-            The <code>.kiss</code> compiler is an ideal future template backend, not a release blocker.
+            The <code>.less</code> compiler is an ideal future template backend, not a release blocker.
             When v0.10.0 alpha exists, blog templates can gain compiler-backed Custom Elements.
           </p>
 
@@ -105,7 +105,7 @@ export class BlogSystemPage extends LitElement {
           <ol style="font-size:0.8125rem;line-height:1.8;color:var(--less-text-secondary)">
             <li>v0.8.0 stabilizes route/action/serverless conventions</li>
             <li><code>@lessjs/blog</code> ships as a plain SSG plugin first</li>
-            <li><code>.kiss</code> compiler support is added after v0.10.0 alpha</li>
+            <li><code>.less</code> compiler support is added after v0.10.0 alpha</li>
             <li>LessJS docs site dogfoods it and replaces current hardcoded blog routes</li>
           </ol>
 

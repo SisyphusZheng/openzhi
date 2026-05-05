@@ -30,7 +30,7 @@ export class WebAwesomePage extends LitElement {
 
           <h2>工作原理</h2>
           <p>
-            在 <span class="inline-code">kiss()</span> 配置中设置 <span class="inline-code">inject</span> 选项，
+            在 <span class="inline-code">less()</span> 配置中设置 <span class="inline-code">inject</span> 选项，
             将 Web Awesome 的 CSS 和 loader 注入到 <span class="inline-code">&lt;head&gt;</span>。
             所有 <span class="inline-code">&lt;wa-*&gt;</span> 自定义元素全局可用——无需逐组件导入。
           </p>
@@ -83,12 +83,12 @@ export class WebAwesomePage extends LitElement {
           <p>通过 <span class="inline-code">inject</span> 选项启用 Web Awesome（推荐）：</p>
           <code-block>
             <pre><code>// vite.config.ts
-import { kiss } from '@lessjs/core'
+import { less } from '@lessjs/core'
 import { defineConfig } from 'vite'
 
 export default defineConfig({
   plugins: [
-    kiss({
+    less({
       inject: {
         stylesheets: ['https://cdn.jsdelivr.net/npm/@awesome-webcomponents/webawesome@3.5.0/dist/styles.css'],
         scripts: ['https://cdn.jsdelivr.net/npm/@awesome-webcomponents/webawesome@3.5.0/dist/webawesome.loader.js'],
@@ -104,10 +104,10 @@ export default defineConfig({
           </p>
           <code-block>
             <pre><code>// 之前（已弃用）
-kiss({ ui: { cdn: true } })
+less({ ui: { cdn: true } })
 
 // 之后（推荐）
-kiss({
+less({
   inject: {
     stylesheets: ['https://cdn.jsdelivr.net/npm/@awesome-webcomponents/webawesome@3.5.0/dist/styles.css'],
     scripts: ['https://cdn.jsdelivr.net/npm/@awesome-webcomponents/webawesome@3.5.0/dist/webawesome.loader.js'],

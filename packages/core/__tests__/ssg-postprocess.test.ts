@@ -54,7 +54,7 @@ Deno.test('buildIslandChunkMap scans manifest.json for island chunks', () => {
     const manifest = {
       'src/islands/counter.ts': { file: 'islands/island-counter-abc123.js' },
       'src/islands/theme.ts': { file: 'islands/island-theme-def456.js' },
-      '.kiss-client-entry.ts': { file: 'islands/client.js' },
+      '.less-client-entry.ts': { file: 'islands/client.js' },
     };
     writeFileSync(join(viteDir, 'manifest.json'), JSON.stringify(manifest), 'utf-8');
 

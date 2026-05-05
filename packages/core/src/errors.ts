@@ -1,10 +1,10 @@
 /**
  * @lessjs/core - Error classes
- * Type-safe error hierarchy for the KISS framework.
+ * Type-safe error hierarchy for the LessJS framework.
  */
 
-/** Base error class for all KISS framework errors */
-export class KissError extends Error {
+/** Base error class for all LessJS framework errors */
+export class LessError extends Error {
   constructor(
     message: string,
     public readonly code: string,
@@ -12,7 +12,7 @@ export class KissError extends Error {
     public readonly isOperational: boolean = true,
   ) {
     super(message);
-    this.name = 'KissError';
+    this.name = 'LessError';
   }
 
   toJSON(): { error: { code: string; message: string } } {
@@ -26,28 +26,28 @@ export class KissError extends Error {
 }
 
 /** Resource not found (HTTP 404) */
-export class NotFoundError extends KissError {
+export class NotFoundError extends LessError {
   constructor(resource: string, id: string) {
     super(`${resource} not found: ${id}`, 'NOT_FOUND', 404);
   }
 }
 
 /** Authentication required (HTTP 401) */
-export class UnauthorizedError extends KissError {
+export class UnauthorizedError extends LessError {
   constructor(message = 'Authentication required') {
     super(message, 'UNAUTHORIZED', 401);
   }
 }
 
 /** Insufficient permissions (HTTP 403) */
-export class ForbiddenError extends KissError {
+export class ForbiddenError extends LessError {
   constructor(message = 'Insufficient permissions') {
     super(message, 'FORBIDDEN', 403);
   }
 }
 
 /** Input validation failed (HTTP 422) */
-export class ValidationError extends KissError {
+export class ValidationError extends LessError {
   constructor(
     message: string,
     public readonly details: Array<{ field: string; message: string }>,
@@ -57,21 +57,21 @@ export class ValidationError extends KissError {
 }
 
 /** Resource conflict (HTTP 409) */
-export class ConflictError extends KissError {
+export class ConflictError extends LessError {
   constructor(message: string) {
     super(message, 'CONFLICT', 409);
   }
 }
 
 /** Rate limit exceeded (HTTP 429) */
-export class RateLimitError extends KissError {
+export class RateLimitError extends LessError {
   constructor(public readonly retryAfter: number) {
     super('Too many requests', 'RATE_LIMITED', 429);
   }
 }
 
 /** SSR rendering failed (HTTP 500, non-operational) */
-export class SsrRenderError extends KissError {
+export class SsrRenderError extends LessError {
   constructor(
     public readonly componentPath: string,
     public override readonly cause: Error,
@@ -81,7 +81,7 @@ export class SsrRenderError extends KissError {
 }
 
 /** Island upgrade failed (HTTP 500, non-operational) */
-export class IslandUpgradeError extends KissError {
+export class IslandUpgradeError extends LessError {
   constructor(
     public readonly tagName: string,
     public override readonly cause: Error,

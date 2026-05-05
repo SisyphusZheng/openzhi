@@ -214,16 +214,16 @@ Deno.test('route-scanner - scanPackageIslands', async (t) => {
     assertEquals(result, []);
   });
 
-  await t.step('throws KissError for non-existent package', async () => {
+  await t.step('throws LessError for non-existent package', async () => {
     const { scanPackageIslands } = await import('../src/route-scanner.ts');
-    const { KissError } = await import('../src/errors.ts');
+    const { LessError } = await import('../src/errors.ts');
     // Non-existent package should throw — misconfigured packages must break the build
     try {
       await scanPackageIslands(['@nonexistent/package']);
       // Should not reach here
-      assertEquals(true, false, 'Expected KissError to be thrown');
+      assertEquals(true, false, 'Expected LessError to be thrown');
     } catch (e) {
-      assertEquals(e instanceof KissError, true);
+      assertEquals(e instanceof LessError, true);
       assertEquals((e as Error).message.includes('@nonexistent/package'), true);
     }
   });
@@ -240,16 +240,16 @@ Deno.test('route-scanner - scanPackageIslands', async (t) => {
     }
   }); */
 
-  await t.step('throws KissError for package with import errors', async () => {
+  await t.step('throws LessError for package with import errors', async () => {
     const { scanPackageIslands } = await import('../src/route-scanner.ts');
-    const { KissError } = await import('../src/errors.ts');
+    const { LessError } = await import('../src/errors.ts');
     // A package that exists but fails to import should throw
     try {
       await scanPackageIslands(['vite']);
       // If vite imports successfully but has no islands, that's OK
       // But on this system it fails due to native binary deps
     } catch (e) {
-      assertEquals(e instanceof KissError, true);
+      assertEquals(e instanceof LessError, true);
       assertEquals((e as Error).message.includes('vite'), true);
     }
   });

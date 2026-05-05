@@ -4,9 +4,9 @@
  * Homepage renderer kept as the route-local customization hook.
  * The island upgrades independently when its chunk loads.
  */
-import type { KissRenderer } from '@lessjs/core';
+import type { LessRenderer } from '@lessjs/core';
 
-const renderer: KissRenderer = {
+const renderer: LessRenderer = {
   wrap(html, _ctx) {
     return html;
   },

@@ -39,7 +39,7 @@ export class HelloDemoPage extends LitElement {
         gap: 1rem;
       }
       less-card {
-        --kiss-bg-card: var(--kiss-bg-elevated);
+        --less-bg-card: var(--less-bg-elevated);
       }
       .actions {
         display: flex;

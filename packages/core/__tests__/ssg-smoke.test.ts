@@ -22,7 +22,7 @@ function hasSsrBundle(): boolean {
   const assetsDir = join(DOCS_DIST, 'assets');
   if (!existsSync(assetsDir)) return false;
   return readdirSync(assetsDir).some((file) =>
-    file.startsWith('_virtual_kiss-hono-entry-') && file.endsWith('.js')
+    file.startsWith('_virtual_less-hono-entry-') && file.endsWith('.js')
   );
 }
 
@@ -67,7 +67,7 @@ Deno.test('SSG smoke: one-command build produces trusted docs output', async (t)
   await t.step('phase 1 output exists with current metadata shape', () => {
     assert(hasSsrBundle(), 'SSR bundle should exist');
 
-    const metadataPath = join(DOCS_DIR, '.kiss', 'build-metadata.json');
+    const metadataPath = join(DOCS_DIR, '.less', 'build-metadata.json');
     assert(existsSync(metadataPath), 'Build metadata should exist');
 
     const meta = JSON.parse(readFileSync(metadataPath, 'utf-8'));

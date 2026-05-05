@@ -74,7 +74,7 @@ export interface HeaderNavLink {
   label: string;
 }
 
-export class KissLayout extends LitElement {
+export class LessLayout extends LitElement {
   static override styles: CSSResult[] = [
     lessDesignTokens,
     css`
@@ -395,16 +395,6 @@ export class KissLayout extends LitElement {
             box-shadow: none;
           }
 
-          .app-layout:has(.mobile-menu[open]) .docs-sidebar {
-            transform: translateX(0);
-            box-shadow: 4px 0 24px rgba(0, 0, 0, 0.3);
-          }
-
-          .app-layout:has(.mobile-menu[open]) .mobile-backdrop {
-            opacity: 1;
-            pointer-events: auto;
-          }
-
           :host([menu-open]) .docs-sidebar {
             transform: translateX(0);
             box-shadow: var(--less-shadow-sidebar, 4px 0 24px rgba(0, 0, 0, 0.3));
@@ -511,7 +501,7 @@ export class KissLayout extends LitElement {
     declare home: boolean;
     /** Current URL path, used to highlight the active navigation link */
     declare currentPath: string;
-    /** Sidebar navigation sections (data-driven; falls back to default KISS docs nav) */
+    /** Sidebar navigation sections (data-driven; falls back to default LessJS docs nav) */
     declare navItems: NavSection[] | undefined;
     /** Header navigation links (data-driven; falls back to default) */
     declare headerNav: HeaderNavLink[] | undefined;
@@ -533,31 +523,18 @@ export class KissLayout extends LitElement {
       this.githubUrl = 'https://github.com/lessjs-run/LessJS';
     }
 
-    override connectedCallback() {
-      super.connectedCallback();
-      // Sync `menu-open` host attribute with <details> toggle state.
-      // This is the primary mechanism for sidebar visibility — more reliable
-      // than CSS :has() which has known issues in Safari Shadow DOM.
-      // NOTE: Must use connectedCallback(), NOT firstUpdated(). In DSD (SSR)
-      // scenarios the shadow root already exists before the custom element
-      // upgrades, so Lit skips the first update cycle and firstUpdated()
-      // never fires. connectedCallback() always fires on element upgrade.
-      const details = this.shadowRoot?.querySelector(
-        'details.mobile-menu',
-      ) as HTMLDetailsElement | null;
-      if (details && !details.dataset.toggleListener) {
-        details.dataset.toggleListener = 'true';
+    override firstUpdated() {
+      const details = this.shadowRoot?.querySelector('details.mobile-menu');
+      if (details) {
         details.addEventListener('toggle', () => {
-          if (details.open) {
-            this.setAttribute('menu-open', '');
-          } else {
-            this.removeAttribute('menu-open');
-          }
+          this.toggleAttribute('menu-open', (details as HTMLDetailsElement).open);
         });
+        // Sync initial state
+        this.toggleAttribute('menu-open', (details as HTMLDetailsElement).open);
       }
     }
 
-    /** Default KISS docs navigation — sync with docs/app/nav-data.ts */
+    /** Default LessJS docs navigation — sync with docs/app/nav-data.ts */
     private static readonly DEFAULT_NAV: NavSection[] = [
       {
         section: 'Start Here',
@@ -592,7 +569,7 @@ export class KissLayout extends LitElement {
         section: 'Packages',
         items: [
           { path: '/ui', label: 'Design System' },
-          { path: '/styling/kiss-ui', label: '@lessjs/ui' },
+          { path: '/styling/less-ui', label: '@lessjs/ui' },
           { path: '/styling/web-awesome', label: 'Web Awesome' },
           { path: '/examples', label: 'Examples' },
         ],
@@ -601,7 +578,7 @@ export class KissLayout extends LitElement {
         section: 'Strategy',
         items: [
           { path: '/roadmap', label: 'Roadmap' },
-          { path: '/guide/kiss-compiler', label: '.kiss Compiler' },
+          { path: '/guide/less-compiler', label: '.less Compiler' },
           { path: '/guide/pwa', label: 'PWA Support' },
           { path: '/guide/blog-system', label: 'Blog System' },
           { path: '/decisions', label: 'Architecture Decisions' },
@@ -623,7 +600,7 @@ export class KissLayout extends LitElement {
           { path: '/blog/v0-5-alpha1', label: 'v0.5 Alpha 1' },
           { path: '/blog/v0-5-0', label: 'v0.5.0' },
           { path: '/blog/v0-4-0', label: 'v0.4.0' },
-          { path: '/blog/kiss-compiler', label: '.kiss Compiler Note' },
+          { path: '/blog/less-compiler', label: '.less Compiler Note' },
           { path: '/changelog', label: 'Changelog' },
           { path: '/contributing', label: 'Contributing' },
         ],
@@ -655,7 +632,7 @@ export class KissLayout extends LitElement {
     }
 
     private _renderSidebarNav(): TemplateResult | typeof nothing {
-      const nav = this.navItems || KissLayout.DEFAULT_NAV;
+      const nav = this.navItems || LessLayout.DEFAULT_NAV;
       return html`
         <nav class="docs-sidebar" aria-label="Documentation navigation">
           ${nav.map(
@@ -674,7 +651,7 @@ export class KissLayout extends LitElement {
     }
 
     private _renderHeaderNav(): TemplateResult | typeof nothing {
-      const links = this.headerNav || KissLayout.DEFAULT_HEADER_NAV;
+      const links = this.headerNav || LessLayout.DEFAULT_HEADER_NAV;
       return html`
         <nav class="header-nav">
           ${links.map(
@@ -751,5 +728,5 @@ export class KissLayout extends LitElement {
 
   // Guard: idempotent across SSR paths
   try {
-    customElements.define(tagName, KissLayout);
+    customElements.define(tagName, LessLayout);
   } catch { /* already defined */ }

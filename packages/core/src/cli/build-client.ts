@@ -4,8 +4,8 @@
  * Standalone client build for Island components.
  * Produces dist/client/islands/*.js + manifest for SSG post-processing.
  *
- * This is Phase 2 of the KISS build pipeline:
- *   Phase 1 (vite build): SSR bundle + .kiss/build-metadata.json
+ * This is Phase 2 of the LessJS build pipeline:
+ *   Phase 1 (vite build): SSR bundle + .less/build-metadata.json
  *   Phase 2 (this script): Client island chunks
  *   Phase 3 (build-ssg.ts): SSG rendering + post-processing
  *
@@ -38,14 +38,14 @@ async function buildClient(): Promise<void> {
   const root = process.cwd();
 
   // Read island metadata from Phase 1 output
-  const metadataPath = join(root, '.kiss', 'build-metadata.json');
+  const metadataPath = join(root, '.less', 'build-metadata.json');
   let metadata: BuildMetadata;
 
   try {
     const raw = readFileSync(metadataPath, 'utf-8');
     metadata = JSON.parse(raw);
   } catch {
-    console.log('[LessJS] No .kiss/build-metadata.json found — skipping client build');
+    console.log('[LessJS] No .less/build-metadata.json found — skipping client build');
     console.log('[LessJS] Run `vite build` first (Phase 1) to generate island metadata');
     return;
   }
@@ -72,9 +72,9 @@ async function buildClient(): Promise<void> {
   console.log(`[LessJS] Building client bundle for ${totalIslands} island(s)...`);
 
   // Auto-generate client entry from island list
-  const kissTmpDir = join(root, '.kiss');
-  mkdirSync(kissTmpDir, { recursive: true });
-  const clientEntryPath = join(kissTmpDir, '.kiss-client-entry.ts');
+  const lessTmpDir = join(root, '.less');
+  mkdirSync(lessTmpDir, { recursive: true });
+  const clientEntryPath = join(lessTmpDir, '.less-client-entry.ts');
 
   const islandEntries: ClientIslandEntry[] = [
     ...localIslands.map((tagName: string, i: number) => ({
