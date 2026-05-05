@@ -37,7 +37,7 @@ jobs:
           git init
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          echo "kiss.js.org" > CNAME
+          echo "lessjs.com" > CNAME
           git add -A
-          git commit -m "Deploy KISS docs site — $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          git commit -m "Deploy LessJS docs site — $(date -u +%Y-%m-%dT%H:%M:%SZ)"
           git push -f https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:gh-pages

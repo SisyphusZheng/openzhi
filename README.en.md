@@ -170,8 +170,8 @@ KISS 当前处于 `v0.5.0` Trust Release 版本线。
 
 ## 文档
 
-- 文档站：[kiss.js.org](https://kiss.js.org/)
-- Roadmap：[docs/app/routes/roadmap.ts](./docs/app/routes/roadmap.ts)
+- Docs site: [lessjs.com](https://lessjs.com/)
+- Roadmap: [docs/app/routes/roadmap.ts](./docs/app/routes/roadmap.ts)
 - 架构决策：[docs/decisions](./docs/decisions)
 
 ## License
