@@ -1,5 +1,5 @@
 /**
- * Fullstack Demo — KISS Architecture
+ * Fullstack Demo — LessJS Architecture
  *
  * K + I + S + S 四约束完整演示：
  * - SSG + DSD 静态前端
@@ -88,7 +88,7 @@ export class FullstackDemoPage extends LitElement {
 
           <h2>在线演示</h2>
           <div class="demo-container">
-            <h1>KISS 全栈示例</h1>
+            <h1>LessJS 全栈示例</h1>
             <p style="color: var(--kiss-text-tertiary); margin-bottom: 1.5rem;">
               SSG + API Routes + Islands —— 完整的全栈示例。
             </p>
@@ -101,7 +101,7 @@ export class FullstackDemoPage extends LitElement {
             <div class="api-demo">
               <h3>API Routes 演示</h3>
               <div class="api-response">
-                GET /api/hello → { "message": "Hello from KISS API!" } GET /api/time → { "time":
+                GET /api/hello → { "message": "Hello from LessJS API!" } GET /api/time → { "time":
                 "2026-04-26T...", "timestamp": 1745678... } GET /api/echo/:text → { "echo": "your-text" }
               </div>
             </div>
@@ -160,7 +160,7 @@ export class FullstackDemoPage extends LitElement {
 
               const app = new Hono()
 
-              app.get('/hello', (c) => c.json({ message: 'Hello from KISS API!' }))
+              app.get('/hello', (c) => c.json({ message: 'Hello from LessJS API!' }))
               app.get('/time', (c) => c.json({ time: new Date().toISOString() }))
               app.get('/echo/:text', (c) => c.json({ echo: c.req.param('text') }))
 

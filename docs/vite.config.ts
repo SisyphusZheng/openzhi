@@ -39,7 +39,7 @@ export default defineConfig({
         noExternal: ['@lessjs/ui'],
       },
       pwa: {
-        name: 'LessJS Framework',
+        name: 'LessJS Framework — Less is More',
         shortName: 'LessJS',
         themeColor: '#000000',
         backgroundColor: '#ffffff',
@@ -48,8 +48,8 @@ export default defineConfig({
         stylesheets: [],
         scripts: [],
         headFragments: [
-          // Meta
-          '<meta name="description" content="LessJS — Web Standards-first Jamstack SSG with Island architecture. Zero-runtime core, DSD rendering, Lit Web Components, Hono API routes.">',
+          // Meta: Less is More
+          '<meta name="description" content="LessJS — Less is More. Web Standards-first Jamstack SSG with Island architecture. Zero-runtime core, DSD rendering, Lit Web Components, Hono API routes.">',
           // Non-blocking OpenProps: media="print" prevents render-block, onload switches to all
           '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/open-props@1.7.20/open-props.min.css" media="print" onload="this.media=\'all\'">',
           // Anti-flash: CLS prevention — removed by theme-init.js

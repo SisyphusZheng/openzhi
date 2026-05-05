@@ -1,5 +1,5 @@
 /**
- * Contributing Page — KISS Framework Contribution Guide
+ * Contributing Page — LessJS Framework Contribution Guide
  */
 import { css, html, LitElement } from 'lit';
 import { pageStyles } from '../components/page-styles.js';
@@ -49,8 +49,8 @@ export class ContributingPage extends LitElement {
     return html`
       <kiss-layout currentPath="/contributing">
         <div class="container">
-          <h1>Contributing to KISS</h1>
-          <p class="subtitle">感谢你对 KISS 框架的兴趣！</p>
+          <h1>Contributing to LessJS</h1>
+          <p class="subtitle">感谢你对 LessJS 框架的兴趣！</p>
 
           <h2>开发环境设置</h2>
           <code-block
@@ -70,7 +70,7 @@ export class ContributingPage extends LitElement {
 
             <h2>Deno-first 工具链</h2>
             <p>
-              KISS 的 core CLI、SSG、Serverless API、测试、发布和文档站任务都以 Deno 2.7+
+              LessJS 的 core CLI、SSG、Serverless API、测试、发布和文档站任务都以 Deno 2.7+
               为默认运行环境。Vite 8 通过 <code>deno run -A npm:vite</code> 执行，不需要
               <code>npm</code> / <code>npx</code> 作为仓库主流程。
             </p>
@@ -96,7 +96,7 @@ export class ContributingPage extends LitElement {
               <ul>
                 <li>使用 Deno 内置格式化：<code>deno fmt</code></li>
                 <li>使用 Deno 内置 lint：<code>deno lint</code></li>
-                <li>遵循 KISS Architecture 四约束（K·I·S·S）</li>
+                <li>遵循 LessJS Architecture 四约束（K·I·S·S）</li>
               </ul>
 
               <h3>提交规范</h3>
@@ -115,7 +115,7 @@ export class ContributingPage extends LitElement {
               <div class="layer-diagram">
                 L0 HTML5 语义 — 结构、内容、导航 L1 CSS 表现 — 视觉、布局、动画 L2 浏览器平台 API — Clipboard,
                 IntersectionObserver L3 Hono/Vite/Lit — 路由、构建、组件封装 L4 自研代码 — Island
-                Island upgrade、RPC、插件逻辑 跳过任何一层 = 违反 KISS 架构约束
+                Island upgrade、RPC、插件逻辑 跳过任何一层 = 违反 LessJS 架构约束
               </div>
 
               <h3>测试</h3>

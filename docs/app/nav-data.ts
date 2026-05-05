@@ -1,8 +1,8 @@
 /**
- * KISS Docs navigation data.
+ * LessJS Docs navigation data.
  *
  * Keep the first screen of the docs opinionated: readers should understand
- * what KISS is, when to use it, and which mental model to carry forward.
+ * what LessJS is, when to use it, and which mental model to carry forward.
  */
 
 export interface NavItem {

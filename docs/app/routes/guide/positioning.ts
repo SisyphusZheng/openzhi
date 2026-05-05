@@ -11,14 +11,14 @@ export class PositioningPage extends LitElement {
         <div class="container">
           <h1>框架定位</h1>
           <p class="subtitle">
-            KISS 是一个 Deno-first、Web Standards-first、static-first 的 Web
+            LessJS 是一个 Deno-first、Web Standards-first、static-first 的 Web
             框架。它的目标不是成为所有场景的最大框架，而是把内容优先、渐进增强和 Serverless API
             组织成一条可信的工程路径。
           </p>
 
           <h2>一句话定位</h2>
           <p>
-            KISS 用 <strong>DSD-rendered Web Components</strong> 输出首屏 HTML， 用 <strong>Island
+            LessJS 用 <strong>DSD-rendered Web Components</strong> 输出首屏 HTML， 用 <strong>Island
               Upgrade</strong> 接管少量交互，用
             <strong>Hono + Fetch API</strong> 提供服务端能力，用
             <strong>SSG</strong> 作为默认交付形态。
@@ -26,7 +26,7 @@ export class PositioningPage extends LitElement {
 
           <div class="callout">
             <p>
-              这不是“另一个 hydration 框架”。更准确地说，KISS 是一个把 Web Components、 Declarative Shadow
+              这不是“另一个 hydration 框架”。更准确地说，LessJS 是一个把 Web Components、 Declarative Shadow
               DOM、ESM、Fetch API 和静态部署打通的应用骨架。
             </p>
           </div>
@@ -61,7 +61,7 @@ export class PositioningPage extends LitElement {
 
           <h2>暂时不主打的场景</h2>
           <p>
-            KISS 可以演进到更复杂的全栈应用，但当前文档不应把下列能力描述成成熟卖点：
+            LessJS 可以演进到更复杂的全栈应用，但当前文档不应把下列能力描述成成熟卖点：
           </p>
           <ul>
             <li>高频数据后台、CRM、复杂权限系统。</li>
@@ -75,8 +75,8 @@ export class PositioningPage extends LitElement {
             <thead>
               <tr>
                 <th>框架</th>
-                <th>KISS 不追随的部分</th>
-                <th>KISS 借鉴的部分</th>
+                <th>LessJS 不追随的部分</th>
+                <th>LessJS 借鉴的部分</th>
               </tr>
             </thead>
             <tbody>
@@ -100,7 +100,7 @@ export class PositioningPage extends LitElement {
 
           <h2>文档承诺</h2>
           <p>
-            KISS 文档应该只承诺当前能验证的能力，把未来功能明确标为 roadmap。
+            LessJS 文档应该只承诺当前能验证的能力，把未来功能明确标为 roadmap。
             如果某个功能依赖尚未完成的安全边界、构建 metadata、平台 adapter 或运行时约定，
             文档必须直接说明它还不是稳定路径。
           </p>

@@ -12,7 +12,7 @@ export class RoutingGuidePage extends LitElement {
         <div class="container">
           <h1>路由</h1>
           <p class="subtitle">
-            KISS 使用文件系统路由。一个页面文件对应一个 URL；特殊文件用于 layout wrapping、
+            LessJS 使用文件系统路由。一个页面文件对应一个 URL；特殊文件用于 layout wrapping、
             middleware 和 API handlers。
           </p>
 

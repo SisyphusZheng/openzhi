@@ -66,7 +66,7 @@ export class BlogSystemPage extends LitElement {
           <p>
             The docs site currently has two hardcoded blog pages — not a reusable system. Users need a
             one-line solution: drop in <code>.md</code> files, get automatic listing, pagination, RSS, and
-            tags. Like VitePress, but as a KISS plugin.
+            tags. Like VitePress, but as a LessJS plugin.
           </p>
 
           <h2>User experience</h2>
@@ -106,7 +106,7 @@ export class BlogSystemPage extends LitElement {
             <li>v0.8.0 stabilizes route/action/serverless conventions</li>
             <li><code>@lessjs/blog</code> ships as a plain SSG plugin first</li>
             <li><code>.kiss</code> compiler support is added after v0.10.0 alpha</li>
-            <li>KISS docs site dogfoods it and replaces current hardcoded blog routes</li>
+            <li>LessJS docs site dogfoods it and replaces current hardcoded blog routes</li>
           </ol>
 
           <p>详见 <code>docs/decisions/0004-blog-system.md</code></p>

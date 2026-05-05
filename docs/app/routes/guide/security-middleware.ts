@@ -28,13 +28,13 @@ export class SecurityMiddlewarePage extends LitElement {
         <div class="container">
           <h1>安全与中间件</h1>
           <p class="subtitle">
-            Middleware is where KISS connects route-tree structure with production safety:
+            Middleware is where LessJS connects route-tree structure with production safety:
             request headers, CSP, auth guards, CORS and API-specific protections.
           </p>
 
           <h2>Mental Model</h2>
           <p>
-            KISS middleware is Hono middleware mounted from file-system route scopes.
+            LessJS middleware is Hono middleware mounted from file-system route scopes.
             A middleware file affects its route subtree; nested middleware composes from outer to inner scope.
           </p>
           <div class="chain">request
@@ -78,7 +78,7 @@ export default async function adminOnly(c: Context, next: Next) {
 
           <h2>CSP</h2>
           <p>
-            CSP is a framework-level trust boundary because KISS emits HTML, DSD templates and island scripts.
+            CSP is a framework-level trust boundary because LessJS emits HTML, DSD templates and island scripts.
             If CSP is enabled for SSR responses, SSG output must receive the equivalent meta policy during static
             post-processing.
           </p>

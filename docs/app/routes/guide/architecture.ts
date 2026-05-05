@@ -12,13 +12,13 @@ export class ArchitecturePage extends LitElement {
         <div class="container">
           <h1>架构</h1>
           <p class="subtitle">
-            KISS 的架构核心是把路由、渲染、island、API 和静态产物连接成一条可观察的构建链。
+            LessJS 的架构核心是把路由、渲染、island、API 和静态产物连接成一条可观察的构建链。
             这页描述当前模型，也明确哪些边界还在硬化中。
           </p>
 
           <h2>System Shape</h2>
           <p>
-            一个 KISS 应用由 <span class="inline-code">app/routes</span>、
+            一个 LessJS 应用由 <span class="inline-code">app/routes</span>、
             <span class="inline-code">app/islands</span>、可选 API routes、可选 middleware
             和构建 metadata 组成。构建器扫描这些约定，生成 Hono entry、client island entry
             和最终静态 HTML。
@@ -57,7 +57,7 @@ Phase 3: SSG
 
           <h2>Rendering Model</h2>
           <p>
-            KISS 不是把浏览器里的组件树完整搬到客户端再 hydrate。SSR 阶段会实例化页面组件，
+            LessJS 不是把浏览器里的组件树完整搬到客户端再 hydrate。SSR 阶段会实例化页面组件，
             获取它的模板和样式，并把结果写入 Declarative Shadow DOM。
           </p>
 
@@ -88,7 +88,7 @@ Phase 3: SSG
 
           <h2>Server Runtime</h2>
           <p>
-            SSR 和 API 入口都由 Hono 组织。KISS 选择 Hono 不是为了制造一个专有服务端模型，
+            SSR 和 API 入口都由 Hono 组织。LessJS 选择 Hono 不是为了制造一个专有服务端模型，
             而是为了贴近 Fetch API、Web Request/Response 和多运行时部署。
           </p>
 

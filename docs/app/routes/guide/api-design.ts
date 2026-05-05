@@ -85,7 +85,7 @@ export class ApiDesignPage extends LitElement {
 
             <h2>Validation</h2>
             <p>
-              KISS does not force a validation library. Zod with
+              LessJS does not force a validation library. Zod with
               <span class="inline-code">@hono/zod-validator</span> is a practical default when you want
               typed input.
             </p>
@@ -113,7 +113,7 @@ export class ApiDesignPage extends LitElement {
               <h2>Actions</h2>
               <p>
                 Future FormData actions should start from native forms, redirects and structured validation
-                errors. They should enhance static pages without turning KISS into a SPA runtime.
+                errors. They should enhance static pages without turning LessJS into a SPA runtime.
               </p>
 
               <div class="nav-row">

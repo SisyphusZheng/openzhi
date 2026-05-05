@@ -1,4 +1,4 @@
-name: Publish to JSR (manual)
+name: Publish to JSR + npm (manual)
 
 on:
   workflow_dispatch:
@@ -29,7 +29,7 @@ jobs:
         working-directory: packages/ui
         run: deno task build
 
-      - name: Publish requested missing package versions
+      - name: Publish to JSR
         shell: bash
         run: |
           set -euo pipefail
@@ -67,3 +67,56 @@ jobs:
           publish_if_requested_and_missing "adapter-lit" "@lessjs/adapter-lit" "packages/adapter-lit"
           publish_if_requested_and_missing "core" "@lessjs/core" "packages/core"
           publish_if_requested_and_missing "create" "@lessjs/create" "packages/create"
+
+      - name: Publish to npm (dnt transform)
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [ -z "${NPM_TOKEN:-}" ]; then
+            echo "NPM_TOKEN not set; skipping npm publish."
+            exit 0
+          fi
+
+          requested=",${{ github.event.inputs.packages }},"
+
+          wants() {
+            [[ "$requested" == *",$1,"* ]]
+          }
+
+          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+
+          publish_npm() {
+            local key="$1"
+            local dir="$2"
+            local pkg="$3"
+
+            if ! wants "$key"; then
+              echo "[npm] ${pkg} not requested; skipping."
+              return 0
+            fi
+
+            local version
+            version="$(sed -n 's/.*"version": "\([^"]*\)".*/\1/p' "$dir/deno.json" | head -n 1)"
+
+            if npm view "${pkg}@${version}" version >/dev/null 2>&1; then
+              echo "[npm] ${pkg}@${version} already exists; skipping."
+              return 0
+            fi
+
+            echo "[npm] Building ${pkg}@${version}"
+            deno run -A "$dir/_build_npm.ts"
+
+            echo "[npm] Publishing ${pkg}@${version}"
+            cd "$dir/npm"
+            npm publish --access public
+            cd "$OLDPWD"
+          }
+
+          publish_npm "rpc" "packages/rpc" "@lessjs/rpc"
+          publish_npm "ui" "packages/ui" "@lessjs/ui"
+          publish_npm "adapter-lit" "packages/adapter-lit" "@lessjs/adapter-lit"
+          publish_npm "core" "packages/core" "@lessjs/core"
+          publish_npm "create" "packages/create" "@lessjs/create"

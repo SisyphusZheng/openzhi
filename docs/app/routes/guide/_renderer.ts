@@ -1,7 +1,7 @@
 /**
  * _renderer.ts — Layout renderer for the guide section.
  *
- * KISS Architecture: Renderers wrap page SSR output, like Next.js layout.tsx.
+ * LessJS Architecture: Renderers wrap page SSR output, like Next.js layout.tsx.
  * This renderer is a pass-through — the sidebar navigation in <kiss-layout>
  * already provides section context, so no additional wrapping is needed.
  *

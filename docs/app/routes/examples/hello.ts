@@ -1,5 +1,5 @@
 /**
- * Hello World Demo — KISS Architecture
+ * Hello World Demo — LessJS Architecture
  *
  * K + S 约束演示：
  * - SSG + DSD 输出
@@ -60,7 +60,7 @@ export class HelloDemoPage extends LitElement {
 
           <h2>Live Demo</h2>
           <div class="demo-container">
-            <h1>Hello, KISS!</h1>
+            <h1>Hello, LessJS!</h1>
             <p class="subtitle">完全基于 Web 标准构建的极简全栈框架。</p>
             <div class="actions">
               <kiss-button variant="primary" href="https://jsr.io/@lessjs/core">快速上手</kiss-button>

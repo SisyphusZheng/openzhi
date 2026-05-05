@@ -1,7 +1,7 @@
 /**
  * API Consumer Island — JAM Pattern Interactive Demo
  *
- * A lightweight island component that calls the KISS serverless API.
+ * A lightweight island component that calls the LessJS serverless API.
  * Rendered initially as DSD, then upgraded on the client.
  * Defers the initial fetch until after the first Lit update to avoid
  * upgrade-time re-render races inside a parent DSD shadow root.

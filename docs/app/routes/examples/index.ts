@@ -1,7 +1,7 @@
 /**
- * Examples Gallery — KISS Architecture in Action
+ * Examples Gallery — LessJS Architecture in Action
  *
- * 展示 KISS 框架的三个范式继承：
+ * 展示 LessJS 框架的三个范式继承：
  * - Jamstack：静态前端 + Serverless API
  * - Islands Architecture：按需升级的交互岛屿
  * - Progressive Enhancement：语义基线，无 JS 可用
@@ -149,12 +149,12 @@ export class ExamplesPage extends LitElement {
         <div class="container">
           <h1>Examples</h1>
           <p class="subtitle">
-            KISS Architecture 实战 — 三范式继承 + 四约束验证
+            LessJS Architecture 实战 — 三范式继承 + 四约束验证
           </p>
 
-          <h2>KISS Architecture = Jamstack</h2>
+          <h2>LessJS Architecture = Jamstack</h2>
           <p>
-            KISS 架构是唯一全链路 Web Standards 的 Jamstack 实现：
+            LessJS 架构是唯一全链路 Web Standards 的 Jamstack 实现：
           </p>
 
           <div class="architecture-diagram">
@@ -199,7 +199,7 @@ export class ExamplesPage extends LitElement {
                 <span class="constraint-badge">零框架运行时</span>
               </div>
               <p>
-                最小化 KISS 应用。展示 SSG + DSD 输出，内容在 JS 加载前可见。 使用 @lessjs/ui 组件。
+                最小化 LessJS 应用。展示 SSG + DSD 输出，内容在 JS 加载前可见。 使用 @lessjs/ui 组件。
               </p>
               <code-block
               ><pre><code>deno run -A npm:vite build
@@ -255,7 +255,7 @@ export class ExamplesPage extends LitElement {
                 <span class="constraint-badge">Serverless</span>
               </div>
               <p>
-                全栈示例。静态前端 + Serverless API Routes。 展示 KISS 架构的完整四约束：静态文件部署到
+                全栈示例。静态前端 + Serverless API Routes。 展示 LessJS 架构的完整四约束：静态文件部署到
                 CDN，API 部署到 Serverless。
               </p>
               <code-block

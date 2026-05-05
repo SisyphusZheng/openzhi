@@ -37,7 +37,7 @@ export class DeploymentPage extends LitElement {
         <div class="container">
           <h1>部署</h1>
           <p class="subtitle">
-            KISS deploys static files first. Runtime API routes are deployed separately through serverless
+            LessJS deploys static files first. Runtime API routes are deployed separately through serverless
             or edge adapters when your application needs dynamic behavior.
           </p>
 
@@ -127,7 +127,7 @@ export class DeploymentPage extends LitElement {
 
             <h2>No Production SSR Server by Default</h2>
             <p>
-              KISS does not require a long-running production SSR server for its main path. Static pages
+              LessJS does not require a long-running production SSR server for its main path. Static pages
               should stay static; dynamic behavior should be explicit API or future ISR behavior. This keeps
               hosting cheap, cacheable and operationally small.
             </p>

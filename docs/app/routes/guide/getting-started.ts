@@ -40,7 +40,7 @@ export class GettingStartedPage extends LitElement {
 
           <div class="callout">
             <p>
-              推荐使用 Deno 2.7+。KISS 是 Deno-first 项目，依赖通过
+              推荐使用 Deno 2.7+。LessJS 是 Deno-first 项目，依赖通过
               <span class="inline-code">deno.json</span> 管理，开发和构建命令都从 Deno task 进入。
             </p>
           </div>
@@ -92,7 +92,7 @@ cd my-app</code></pre></code-block>
 |   |   └-- counter.ts        # client-upgraded Custom Element
 |   └-- _renderer.ts          # optional layout wrapper
 |-- deno.json                 # tasks and imports
-└-- vite.config.ts            # KISS plugin config</code></pre></code-block>
+└-- vite.config.ts            # LessJS plugin config</code></pre></code-block>
 
           <h2>Write a Page</h2>
           <p>
@@ -103,7 +103,7 @@ cd my-app</code></pre></code-block>
 
 export class HomePage extends LitElement {
   override render() {
-    return html&#96;&lt;main&gt;Hello KISS&lt;/main&gt;&#96;;
+    return html&#96;&lt;main&gt;Hello LessJS&lt;/main&gt;&#96;;
   }
 }
 

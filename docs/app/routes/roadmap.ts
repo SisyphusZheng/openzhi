@@ -35,7 +35,7 @@ export class RoadmapPage extends LitElement {
         <div class="container">
           <h1>Roadmap</h1>
           <p class="subtitle">
-            KISS 的路线图围绕一个判断展开：先把 SSG + DSD + Island Upgrade + Hono API 做可信，再扩展
+            LessJS 的路线图围绕一个判断展开：先把 SSG + DSD + Island Upgrade + Hono API 做可信，再扩展
             serverless fullstack、ISR、PWA 和 compiler。
           </p>
 

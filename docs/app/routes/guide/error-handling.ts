@@ -27,7 +27,7 @@ export class ErrorHandlingPage extends LitElement {
         <div class="container">
           <h1>错误处理</h1>
           <p class="subtitle">
-            KISS separates framework errors, build-time rendering errors, API errors and browser island failures.
+            LessJS separates framework errors, build-time rendering errors, API errors and browser island failures.
             The goal is clear diagnosis without leaking internals in production.
           </p>
 
@@ -86,7 +86,7 @@ app.post('/api/posts', async (c) => {
 
           <h2>SSR / SSG Errors</h2>
           <p>
-            KISS rendering errors happen during dev SSR or static generation. In development,
+            LessJS rendering errors happen during dev SSR or static generation. In development,
             <span class="inline-code">renderSsrError()</span> can show message and stack.
             In production output, errors should be safe and generic.
           </p>

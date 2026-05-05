@@ -1,10 +1,10 @@
 /**
- * code-block Island — KISS Architecture compliant Shadow DOM Island.
+ * code-block Island — LessJS Architecture compliant Shadow DOM Island.
  *
  * Without JS: <pre><code> content is visible via DSD projection.
  * With JS: Copy button becomes functional.
  *
- * KISS Architecture (K·I·S·S):
+ * LessJS Architecture (K·I·S·S):
  * - K (Knowledge): SSG output includes <template shadowrootmode="open">
  * - I (Isolated): Copy logic is encapsulated in Shadow DOM
  * - S (Semantic): DSD makes content visible without JS

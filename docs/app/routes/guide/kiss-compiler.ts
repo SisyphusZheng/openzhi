@@ -1,5 +1,5 @@
 /**
- * KISS Compiler — .kiss file compiler architecture decision
+ * LessJS Compiler — .kiss file compiler architecture decision
  */
 import { css, html, LitElement } from 'lit';
 import { pageStyles } from '../../components/page-styles.js';
@@ -72,9 +72,9 @@ export class KissCompilerPage extends LitElement {
 
           <h2>Context</h2>
           <p>
-            KISS 的 docs 站和 UI 包现在仍使用 <code>lit</code> 编写组件，但 core 的长期合同应该是
+            LessJS 的 docs 站和 UI 包现在仍使用 <code>lit</code> 编写组件，但 core 的长期合同应该是
             DSD-first renderer + framework adapters，而不是把 Lit 写进框架本体。Lit 是成熟、可靠的
-            Web Components 工具库；问题不在于它“不好”，而在于 KISS 不应该把它变成唯一道路。
+            Web Components 工具库；问题不在于它“不好”，而在于 LessJS 不应该把它变成唯一道路。
           </p>
           <p>
             当前需要面对的是：Lit-authored islands 的运行时代价、adapter 的 SSR/style extraction 复杂度、
@@ -113,7 +113,7 @@ export class KissCompilerPage extends LitElement {
             <tr>
               <td>SSR</td>
               <td>adapter-mediated rendering</td>
-              <td>KISS DSD renderer / template strings</td>
+              <td>LessJS DSD renderer / template strings</td>
             </tr>
             <tr>
               <td>Upgrade</td>

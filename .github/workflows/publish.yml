@@ -6,6 +6,7 @@ on:
     paths:
       - 'packages/*/deno.json'
       - '.github/workflows/publish.yml'
+  workflow_dispatch:
 
 jobs:
   publish:

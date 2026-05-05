@@ -50,7 +50,7 @@ export class BlogKissCompilerPage extends LitElement {
           <h1>.kiss Compiler — 可选零框架运行时组件</h1>
 
           <p>
-            KISS 框架从第一天起就选择了 Lit 作为组件基础。这个选择是对的——Lit 是 Web Components 生态中
+            LessJS 框架从第一天起就选择了 Lit 作为组件基础。这个选择是对的——Lit 是 Web Components 生态中
             最成熟的库，让我们快速验证了 K·I·S·S 架构的可行性。但经过后续架构审查，我们也更清楚地看到：
             core 的长期合同不能绑定到某个组件库。Lit 应该保留为 adapter，而不是成为用户必须接受的唯一组件模型。
           </p>
@@ -60,7 +60,7 @@ export class BlogKissCompilerPage extends LitElement {
             依赖 Lit 编写的 island 会携带 Lit 运行时；SSR/style extraction 需要 adapter 维护；旧 Lit SSR
             路线留下的 hydration 术语又容易和现在的 DSD + Custom Element upgrade 模型混淆。Deno fmt
             在处理复杂 Lit 模板字面量时也曾触发上游 panic。结论不是“消灭 Lit”，而是把 Lit 放回正确的位置：
-            一个好 adapter，而不是 KISS 的定义本身。
+            一个好 adapter，而不是 LessJS 的定义本身。
           </p>
 
           <h2>.kiss 文件格式</h2>
@@ -86,7 +86,7 @@ export class BlogKissCompilerPage extends LitElement {
           <h2>消除清单</h2>
           <p>
             — Lit-authored islands 的框架运行时代价 → 编译产物 0 KB framework runtime<br>
-            — adapter-mediated SSR → KISS DSD renderer / template strings<br>
+            — adapter-mediated SSR → LessJS DSD renderer / template strings<br>
             — hydration 术语漂移 → 明确的 Custom Element upgrade<br>
             — decorator / tagged template 生态复杂度 → 标准 JS 输出<br>
             — 复杂的类型层次 → 简单的 getter/setter

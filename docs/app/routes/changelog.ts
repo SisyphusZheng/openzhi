@@ -1,5 +1,5 @@
 /**
- * Changelog Page — KISS Framework Version History
+ * Changelog Page — LessJS Framework Version History
  */
 import { css, html, LitElement } from 'lit';
 import { pageStyles } from '../components/page-styles.js';
@@ -105,7 +105,7 @@ export class ChangelogPage extends LitElement {
         <div class="container">
           <h1>更新日志</h1>
           <p class="subtitle">
-            KISS 的所有重要变更都记录在这里。
+            LessJS 的所有重要变更都记录在这里。
           </p>
 
           <p>
@@ -113,7 +113,7 @@ export class ChangelogPage extends LitElement {
             <a href="https://keepachangelog.com/zh-CN/1.0.0/" target="_blank"
             >Keep a Changelog</a>，本项目遵循
             <a href="https://semver.org/lang/zh-CN/" target="_blank">语义化版本 2.0.0</a>。
-            历史条目保留当时术语；当前文档统一把 KISS 的客户端模型称为 Island Upgrade，而不是传统
+            历史条目保留当时术语；当前文档统一把 LessJS 的客户端模型称为 Island Upgrade，而不是传统
             hydration。
           </p>
 
@@ -204,7 +204,7 @@ export class ChangelogPage extends LitElement {
                     传递断言）、ssg-postprocess.test.ts（无双前缀断言）。测试从 296 涨至 309。
                   </li>
                   <li>
-                    <strong>/guide/positioning 页面</strong>：Framework Positioning，解释 KISS
+                    <strong>/guide/positioning 页面</strong>：Framework Positioning，解释 LessJS
                     解决什么问题以及它暂时不解决什么问题。
                   </li>
                   <li>
@@ -323,7 +323,7 @@ export class ChangelogPage extends LitElement {
                     直接显示在文档站 sidebar 中。
                   </li>
                   <li>
-                    <strong>README 重写</strong>：重新定义 KISS 为 Deno-first、Web Standards-first、DSD +
+                    <strong>README 重写</strong>：重新定义 LessJS 为 Deno-first、Web Standards-first、DSD +
                     Web Components + Islands 的 fullstack 框架。
                   </li>
                 </ul>
@@ -774,13 +774,13 @@ export class ChangelogPage extends LitElement {
               <div class="change-category added">
                 <h4>新增</h4>
                 <ul class="change-list">
-                  <li>Logger 模块支持 <code>KISS_LOG_LEVEL</code> 环境变量</li>
+                  <li>Logger 模块支持 <code>LessJS_LOG_LEVEL</code> 环境变量</li>
                   <li>
                     @lessjs/ui 组件库：kiss-button, kiss-card, kiss-input, kiss-code-block, kiss-layout
                   </li>
                   <li>design-tokens CSS 自定义属性（瑞士国际主义风格）</li>
-                  <li>examples/hello 最小示例：演示 KISS 基础</li>
-                  <li>文档站 dogfooding：/ui 页面使用真实 KISS UI 组件</li>
+                  <li>examples/hello 最小示例：演示 LessJS 基础</li>
+                  <li>文档站 dogfooding：/ui 页面使用真实 LessJS UI 组件</li>
                   <li>SSR 兼容性文档（/guide/ssg）</li>
                 </ul>
               </div>
@@ -839,7 +839,7 @@ export class ChangelogPage extends LitElement {
               <div class="change-category added">
                 <h4>新增</h4>
                 <ul class="change-list">
-                  <li>KISS 架构文档（K·I·S·S 四约束）</li>
+                  <li>LessJS 架构文档（K·I·S·S 四约束）</li>
                   <li>DSD（声明式 Shadow DOM）输出支持</li>
                   <li>Jamstack 对齐文档</li>
                 </ul>
@@ -848,7 +848,7 @@ export class ChangelogPage extends LitElement {
               <div class="change-category changed">
                 <h4>变更</h4>
                 <ul class="change-list">
-                  <li>从 DIA 重新品牌为 KISS Architecture</li>
+                  <li>从 DIA 重新品牌为 LessJS Architecture</li>
                   <li>更新 README 包含双重含义（理念 + 架构）</li>
                 </ul>
               </div>
@@ -984,7 +984,7 @@ export class ChangelogPage extends LitElement {
                 <tr>
                   <td>0.1.5</td>
                   <td>2026-04-20</td>
-                  <td>KISS Architecture branding</td>
+                  <td>LessJS Architecture branding</td>
                 </tr>
                 <tr>
                   <td>0.1.4</td>

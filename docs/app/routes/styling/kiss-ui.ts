@@ -45,7 +45,7 @@ export class KissUIPage extends LitElement {
         <div class="container">
           <h1>@lessjs/ui</h1>
           <p class="subtitle">
-            KISS Architecture 的 UI 层：暗黑瑞士国际主义风格的 Web Components 组件库。
+            LessJS Architecture 的 UI 层：暗黑瑞士国际主义风格的 Web Components 组件库。
           </p>
 
           <h2>安装</h2>
@@ -119,13 +119,13 @@ export class KissUIPage extends LitElement {
               // --kiss-radius-sm, --kiss-radius-md</code></pre></code-block>
 
               <h2>设计原则</h2>
-              <p>@lessjs/ui 遵循 KISS Architecture 四约束：</p>
+              <p>@lessjs/ui 遵循 LessJS Architecture 四约束：</p>
               <ul>
                 <li>
                   <strong>Web Standards First</strong>：组件是标准 Web Components（Lit），非框架私有抽象。
                 </li>
                 <li>
-                  <strong>Minimal Augmentation</strong>：UI 层是可选的，不用 @lessjs/ui 也能写 KISS 应用。
+                  <strong>Minimal Augmentation</strong>：UI 层是可选的，不用 @lessjs/ui 也能写 LessJS 应用。
                 </li>
                 <li><strong>No Framework Binding</strong>：组件可在任何 Web Components 环境使用。</li>
                 <li><strong>No Runtime Binding</strong>：纯 ESM 输出，无平台依赖。</li>

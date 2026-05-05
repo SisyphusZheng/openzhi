@@ -12,7 +12,7 @@ export class ApiRoutesPage extends LitElement {
         <div class="container">
           <h1>API 路由</h1>
           <p class="subtitle">
-            KISS 的服务端层是 Hono。API routes 使用标准 Request/Response 语义，
+            LessJS 的服务端层是 Hono。API routes 使用标准 Request/Response 语义，
             适合部署到 serverless 或 edge runtime。
           </p>
 
@@ -28,7 +28,7 @@ const app = new Hono();
 
 app.get('/', (c) => {
   return c.json([
-    { id: 1, title: 'Hello KISS' },
+    { id: 1, title: 'Hello LessJS' },
   ]);
 });
 
@@ -107,7 +107,7 @@ export default app;</code></pre></code-block>
 
           <div class="callout">
             <p>
-              Near-term KISS fullstack work should focus on explicit adapters, FormData actions,
+              Near-term LessJS fullstack work should focus on explicit adapters, FormData actions,
               typed RPC and env/secrets. Until those are stable, API routes are powerful but intentionally simple.
             </p>
           </div>

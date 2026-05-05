@@ -1,5 +1,5 @@
 /**
- * Blog: KISS v0.4.0 — Serverless Milestone
+ * Blog: LessJS v0.4.0 — Serverless Milestone
  */
 import { css, html, LitElement } from 'lit';
 import { pageStyles } from '../../components/page-styles.js';
@@ -66,14 +66,14 @@ export default class BlogV040 extends LitElement {
     return html`
       <kiss-layout currentPath="/blog">
         <div class="container">
-          <h1>KISS v0.4.0 — Serverless Integration Milestone</h1>
+          <h1>LessJS v0.4.0 — Serverless Integration Milestone</h1>
           <p class="meta" style="color:var(--kiss-text-muted);font-size:0.8125rem;margin-bottom:2rem">
             2026-04-30 · 版本发布
           </p>
 
-          <p>KISS v0.4.0 只有一个核心主题：<strong>Serverless 集成跑通了</strong>。</p>
+          <p>LessJS v0.4.0 只有一个核心主题：<strong>Serverless 集成跑通了</strong>。</p>
           <p>
-            从 v0.3.2 开始，KISS 的架构文档里就写着 "API Routes 可以部署为
+            从 v0.3.2 开始，LessJS 的架构文档里就写着 "API Routes 可以部署为
             Serverless"，但直到这个版本，它才真正 CI 自动化、真正跑在生产环境上。
           </p>
 
@@ -121,7 +121,7 @@ export default class BlogV040 extends LitElement {
 
           <p>
             最终成果：<code>kiss-demo-api.sisyphuszheng.deno.net</code> 生产在线，CI 自动部署，前端 <code
-            >kiss-hero-ping</code> 一键 verify。 这是 KISS Jamstack 承诺的 "J"（Markup）+ "A"（API）+
+            >kiss-hero-ping</code> 一键 verify。 这是 LessJS Jamstack 承诺的 "J"（Markup）+ "A"（API）+
             "M"（Markup） 全链路闭环。
           </p>
 
@@ -345,7 +345,7 @@ export default class BlogV040 extends LitElement {
           <table class="cmp">
             <tr>
               <th>维度</th>
-              <th>KISS</th>
+              <th>LessJS</th>
               <th>Fresh</th>
               <th>Nuxt</th>
               <th>Next.js</th>
@@ -418,7 +418,7 @@ export default class BlogV040 extends LitElement {
           <h2>关于"零 JS"的实话</h2>
 
           <div class="truth">
-            <strong>KISS 不是零 JS，而是零框架 JS。</strong>
+            <strong>LessJS 不是零 JS，而是零框架 JS。</strong>
             <p>
               每个页面有约 400 字节的内联基础设施脚本（主题初始化 + Service Worker 注册）。
               这是不可消除的——它们是 L2 层（平台 API），在 I 约束（Isolated）的豁免范围内。
@@ -438,7 +438,7 @@ export default class BlogV040 extends LitElement {
           <p>
             Vite 6 → 8 的升级路径已经调研过。核心依赖（Vite SSR、Rollup 插件 API）在 Vite 7/8 中保持兼容。
             主要工作是更新 Wrangler 适配层和 Deno Deploy 的 shim。预计在 v0.5.0 时完成迁移。 Vite 8 的 RSC
-            支持和更快的 HMR 将直接受益于 KISS 的构建管线。
+            支持和更快的 HMR 将直接受益于 LessJS 的构建管线。
           </p>
 
           <h3>.kiss 编译器</h3>
@@ -451,8 +451,8 @@ export default class BlogV040 extends LitElement {
 
           <h3>React 19 / Vue Interop</h3>
           <p>
-            通过 Custom Elements 的天然互操作性，KISS Island 可以在任何框架中使用。 React 19 已经修复了对
-            Custom Elements 的属性传递支持。Vue 3 原生支持 CE。 这意味着 KISS
+            通过 Custom Elements 的天然互操作性，LessJS Island 可以在任何框架中使用。 React 19 已经修复了对
+            Custom Elements 的属性传递支持。Vue 3 原生支持 CE。 这意味着 LessJS
             组件可以作为"框架无关"的交互单元被其他应用引用。
           </p>
 

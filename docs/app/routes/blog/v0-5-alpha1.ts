@@ -1,5 +1,5 @@
 /**
- * Blog: KISS v0.5-alpha1 — 全量架构审计与精准修复
+ * Blog: LessJS v0.5-alpha1 — 全量架构审计与精准修复
  */
 import { css, html, LitElement } from 'lit';
 import { pageStyles } from '../../components/page-styles.js';
@@ -147,7 +147,7 @@ export default class BlogV05Alpha1 extends LitElement {
           <p class="date">2026-05-02</p>
 
           <p>
-            今天对 KISS Framework
+            今天对 LessJS Framework
             进行了一次端到端的全栈架构审查。结果符合预期——也超出预期。符合预期的是，写出好软件的唯一办法就是反复审查；超出预期的是，找到的不是表面
             Bug，而是设计层面的系统性缺口。
           </p>

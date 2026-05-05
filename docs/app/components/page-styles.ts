@@ -1,7 +1,7 @@
 import { css } from 'lit';
 
 /**
- * KISS Docs — Shared Page Styles (Minimal)
+ * LessJS Docs — Shared Page Styles (Minimal)
  *
  * Clean, restrained, typography-driven.
  * Aligned with the new minimal design system.

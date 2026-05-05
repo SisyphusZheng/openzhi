@@ -11,7 +11,7 @@ export class DesignPhilosophyPage extends LitElement {
         <div class="container">
           <h1>设计理念</h1>
           <p class="subtitle">
-            KISS 的哲学不是“少写代码”这么单薄，而是把复杂度放在正确的位置：
+            LessJS 的哲学不是“少写代码”这么单薄，而是把复杂度放在正确的位置：
             平台已经解决的问题交给平台，框架必须解决的问题才由框架承担。
           </p>
 
@@ -20,7 +20,7 @@ export class DesignPhilosophyPage extends LitElement {
             <h3>Web Standards First</h3>
             <p>
               HTTP 使用 Fetch API，UI 使用 Custom Elements 和 Shadow DOM，模块使用 ESM， 服务端使用 Hono
-              对齐 Web 标准。用户学到的知识应该能离开 KISS 继续使用。
+              对齐 Web 标准。用户学到的知识应该能离开 LessJS 继续使用。
             </p>
           </div>
 
@@ -90,7 +90,7 @@ export class DesignPhilosophyPage extends LitElement {
 
           <h2>不追求的东西</h2>
           <p>
-            KISS 不追求把所有前端范式压进一个框架，也不追求用抽象遮住平台。
+            LessJS 不追求把所有前端范式压进一个框架，也不追求用抽象遮住平台。
             如果一个功能必须引入大量专有协议，它需要证明自己能显著降低实际复杂度。
           </p>
 

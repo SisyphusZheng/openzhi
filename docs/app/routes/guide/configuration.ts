@@ -12,7 +12,7 @@ export class ConfigurationPage extends LitElement {
         <div class="container">
           <h1>配置</h1>
           <p class="subtitle">
-            KISS is configured through the Vite plugin. Keep configuration explicit:
+            LessJS is configured through the Vite plugin. Keep configuration explicit:
             routes, islands, static output, head injection, PWA and middleware are separate concerns.
           </p>
 
@@ -67,7 +67,7 @@ export default defineConfig({
           <code-block><pre><code>kiss({
   html: {
     lang: 'en',
-    title: 'My KISS App',
+    title: 'My LessJS App',
   },
 });</code></pre></code-block>
 
@@ -133,8 +133,8 @@ export default defineConfig({
           </p>
           <code-block><pre><code>kiss({
   pwa: {
-    name: 'My KISS App',
-    shortName: 'KISS',
+    name: 'My LessJS App',
+    shortName: 'LessJS',
     themeColor: '#050505',
     backgroundColor: '#ffffff',
   },
@@ -151,7 +151,7 @@ export default defineConfig({
       packageIslands: ['@lessjs/ui'],
       html: {
         lang: 'en',
-        title: 'My KISS App',
+        title: 'My LessJS App',
       },
       build: {
         outDir: 'dist',

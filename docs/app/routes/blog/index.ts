@@ -1,5 +1,5 @@
 /**
- * Blog Index Page — KISS Framework Blog
+ * Blog Index Page — LessJS Framework Blog
  */
 import { css, html, LitElement } from 'lit';
 import { pageStyles } from '../../components/page-styles.js';
@@ -52,7 +52,7 @@ export class BlogIndexPage extends LitElement {
       <kiss-layout currentPath="/blog">
         <div class="container">
           <h1>博客</h1>
-          <p class="subtitle">KISS 框架的设计思考、架构决策和发展路线。</p>
+          <p class="subtitle">LessJS 框架的设计思考、架构决策和发展路线。</p>
 
           <div class="blog-list">
             <a href="/blog/v0-5-alpha1" class="blog-item">
@@ -62,13 +62,13 @@ export class BlogIndexPage extends LitElement {
             </a>
 
             <a href="/blog/v0-5-0" class="blog-item">
-              <h2>KISS v0.5-alpha-0 — 架构精简</h2>
+              <h2>LessJS v0.5-alpha-0 — 架构精简</h2>
               <p class="blog-desc">零框架运行时 Core · 原生 RPC · OpenProps + Lit · 单 deno.json</p>
               <span class="blog-date">2026-05-02</span>
             </a>
 
             <a href="/blog/v0-4-0" class="blog-item">
-              <h2>KISS v0.4.0 — Serverless Integration Milestone</h2>
+              <h2>LessJS v0.4.0 — Serverless Integration Milestone</h2>
               <p class="meta">2026-04-30 · 版本发布</p>
               <p>
                 Serverless API 部署成功、全站统一 0.5px 视觉风格、零 lint 零 type

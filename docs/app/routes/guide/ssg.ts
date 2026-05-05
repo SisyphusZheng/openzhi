@@ -12,7 +12,7 @@ export class SSGGuidePage extends LitElement {
         <div class="container">
           <h1>渲染与 SSG</h1>
           <p class="subtitle">
-            KISS 的默认生产产物是静态 HTML。构建阶段会把页面渲染成带 Declarative Shadow DOM
+            LessJS 的默认生产产物是静态 HTML。构建阶段会把页面渲染成带 Declarative Shadow DOM
             的文档，并注入必要的 client island entry。
           </p>
 
@@ -108,7 +108,7 @@ export class SSGGuidePage extends LitElement {
 
           <h2>Not ISR Yet</h2>
           <p>
-            KISS 当前稳定交付是 SSG。ISR 需要 route-level revalidate、cache lock、adapter contracts、
+            LessJS 当前稳定交付是 SSG。ISR 需要 route-level revalidate、cache lock、adapter contracts、
             failure fallback 和 CDN semantics。它属于 roadmap，而不是当前可依赖的生产能力。
           </p>
 

@@ -38,7 +38,7 @@ export class IslandsGuidePage extends LitElement {
         <div class="container">
           <h1>Island Upgrade</h1>
           <p class="subtitle">
-            KISS 的 island 是 DSD HTML 之后的 Custom Element upgrade。它不是整页 hydration，
+            LessJS 的 island 是 DSD HTML 之后的 Custom Element upgrade。它不是整页 hydration，
             也不是把应用状态完整恢复到客户端。
           </p>
 
@@ -53,7 +53,7 @@ export class IslandsGuidePage extends LitElement {
               </ul>
             </div>
             <div class="comparison-item kiss">
-              <h3>KISS Island Model</h3>
+              <h3>LessJS Island Model</h3>
               <ul>
                 <li>内容先由 SSG + DSD 输出。</li>
                 <li>只有真正需要交互的组件加载客户端模块。</li>
@@ -136,7 +136,7 @@ export class IslandsGuidePage extends LitElement {
 
             <h2>Package Islands</h2>
             <p>
-              可复用包可以导出 island metadata，KISS 在构建时读取这些信息，用于 SSR 注册和客户端入口生成。
+              可复用包可以导出 island metadata，LessJS 在构建时读取这些信息，用于 SSR 注册和客户端入口生成。
             </p>
             <code-block
             ><pre><code>import type { PackageIslandMeta } from '@lessjs/core';

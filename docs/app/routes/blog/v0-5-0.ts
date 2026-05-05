@@ -1,5 +1,5 @@
 /**
- * Blog: KISS v0.5-alpha-0 — Architecture Simplification
+ * Blog: LessJS v0.5-alpha-0 — Architecture Simplification
  */
 import { css, html, LitElement } from 'lit';
 import { pageStyles } from '../../components/page-styles.js';
@@ -39,7 +39,7 @@ export default class BlogV050 extends LitElement {
       <kiss-layout currentPath="/blog/v0-5-0">
         <div class="container">
           <p class="breadcrumb"><a href="/blog">← Blog</a></p>
-          <h1>KISS v0.5-alpha-0 — 架构精简：砍掉不必要的，留住核心</h1>
+          <h1>LessJS v0.5-alpha-0 — 架构精简：砍掉不必要的，留住核心</h1>
           <p class="subtitle">零框架运行时 Core · 原生 RPC · OpenProps + Lit · 单 deno.json</p>
           <p class="date">2026-05-02</p>
 

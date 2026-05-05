@@ -8,7 +8,7 @@ import { css, html, LitElement } from 'lit';
 import { pageStyles } from '../components/page-styles.js';
 import '@lessjs/ui/kiss-layout';
 
-// 导入 KISS UI 组件用于 dogfooding
+// 导入 LessJS UI 组件用于 dogfooding
 import '@lessjs/ui/kiss-button';
 import '@lessjs/ui/kiss-card';
 import '@lessjs/ui/kiss-input';
@@ -383,7 +383,7 @@ export class UIShowcase extends LitElement {
               <div class="type-row">
                 <span class="type-label">展示</span>
                 <span class="type-sample" style="font-size:2.5rem;font-weight:900;letter-spacing:-0.04em"
-                >KISS UI</span>
+                >LessJS UI</span>
               </div>
               <div class="type-row">
                 <span class="type-label">H1</span>

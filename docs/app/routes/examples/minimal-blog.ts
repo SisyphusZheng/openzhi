@@ -1,5 +1,5 @@
 /**
- * Minimal Blog Demo — KISS Architecture
+ * Minimal Blog Demo — LessJS Architecture
  *
  * K + I + S 约束演示：
  * - SSG + DSD 输出
@@ -91,7 +91,7 @@ export class MinimalBlogDemoPage extends LitElement {
             </div>
             <div class="post-list">
               <div class="post-item">
-                <h3>理解 KISS 架构</h3>
+                <h3>理解 LessJS 架构</h3>
                 <p>K·I·S·S 约束如何强制执行 Jamstack 原则...</p>
               </div>
               <div class="post-item">

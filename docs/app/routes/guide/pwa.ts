@@ -1,5 +1,5 @@
 /**
- * PWA Support — architecture decision for KISS SSG
+ * PWA Support — architecture decision for LessJS SSG
  */
 import { css, html, LitElement } from 'lit';
 import { pageStyles } from '../../components/page-styles.js';
@@ -53,11 +53,11 @@ export class PwaPage extends LitElement {
       <kiss-layout currentPath="/guide/pwa">
         <div class="container">
           <p class="adr-meta">ADR 0003 · 2026-04-30 · Partially implemented</p>
-          <h1>PWA Support for KISS SSG</h1>
+          <h1>PWA Support for LessJS SSG</h1>
 
           <h2>Context</h2>
           <p>
-            KISS generates pure static HTML with Declarative Shadow DOM. This is the ideal substrate for a
+            LessJS generates pure static HTML with Declarative Shadow DOM. This is the ideal substrate for a
             PWA: pages are pre-rendered, assets are versioned hashes, and API routes can stay outside the
             static artifact on a serverless platform. The important rule is freshness: HTML should prefer
             network, while hashed assets can prefer cache.
@@ -79,8 +79,8 @@ export class PwaPage extends LitElement {
 
           <h3>API</h3>
           <div class="code-block">
-            // vite.config.ts export default defineConfig({ plugins: [kiss({ pwa: { name: 'My KISS App',
-            shortName: 'KISS', themeColor: '#000000', backgroundColor: '#ffffff', }, })], })
+            // vite.config.ts export default defineConfig({ plugins: [kiss({ pwa: { name: 'My LessJS App',
+            shortName: 'LessJS', themeColor: '#000000', backgroundColor: '#ffffff', }, })], })
           </div>
 
           <h3>Service Worker strategy</h3>
@@ -105,7 +105,7 @@ export class PwaPage extends LitElement {
           </p>
 
           <div class="nav-row" style="margin-top:2rem">
-            <a href="/guide/kiss-compiler" class="nav-link">&larr; KISS Compiler</a>
+            <a href="/guide/kiss-compiler" class="nav-link">&larr; LessJS Compiler</a>
             <a href="/roadmap" class="nav-link">Roadmap &rarr;</a>
           </div>
         </div>

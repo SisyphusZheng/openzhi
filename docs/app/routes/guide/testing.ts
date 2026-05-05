@@ -12,7 +12,7 @@ export class TestingPage extends LitElement {
         <div class="container">
           <h1>测试</h1>
           <p class="subtitle">
-            KISS tests should protect the framework contract: route scanning, DSD output, island metadata,
+            LessJS tests should protect the framework contract: route scanning, DSD output, island metadata,
             middleware scope, SSG post-processing and package boundaries.
           </p>
 
