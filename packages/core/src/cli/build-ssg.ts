@@ -382,7 +382,7 @@ async function buildSSG(options: BuildSSGOptions = {}): Promise<void> {
           display: 'standalone' as const,
           theme_color: pwa.themeColor || '#000000',
           background_color: pwa.backgroundColor || '#ffffff',
-          icons: [{ src: '/favicon.svg', sizes: 'any', type: 'image/svg+xml' }],
+          icons: [{ src: '/assets/less-logo.svg', sizes: 'any', type: 'image/svg+xml' }],
         };
         writeFileSync(join(outputDir, 'manifest.json'), JSON.stringify(manifest, null, 2));
         console.log('[LessJS SSG] PWA manifest.json generated');

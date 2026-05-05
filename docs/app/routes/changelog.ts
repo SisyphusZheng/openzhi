@@ -119,29 +119,27 @@ export class ChangelogPage extends LitElement {
 
           <div class="version-section">
             <div class="version-header">
-              <span class="version-number">0.5.4</span>
-              <span class="version-date">2026-05-05</span>
+              <span class="version-number">0.5.5</span>
+              <span class="version-date">2026-05-06</span>
             </div>
             <div class="change-category changed">
               <h4>变更</h4>
               <ul class="change-list">
                 <li>
-                  <strong>全面品牌重塑 KISS → LessJS</strong>：组件标签 <span class="inline-code">kiss-*</span>
-                  → <span class="inline-code">less-*</span>（8 个组件），CSS 变量 <span class="inline-code">--less-*</span>
-                  → <span class="inline-code">--less-*</span>（60+ 变量），事件名 <span class="inline-code">kiss:ready</span>
-                  → <span class="inline-code">less:ready</span>，Vite 插件名统一为 <span class="inline-code">less:*</span>。
+                  <strong>全面品牌重塑 KISS → LessJS 完成</strong>：包名 <span class="inline-code">@kissjs/*</span>
+                  → <span class="inline-code">@lessjs/*</span>，主函数 <span class="inline-code">kiss()</span>
+                  → <span class="inline-code">less()</span>，全部类名、变量名、注释完成迁移。
+                  涉及 105 个文件，1171 行新增，905 行删除。
                 </li>
                 <li>
-                  <strong>包作用域迁移</strong>：<span class="inline-code">@kissjs/*</span> → <span class="inline-code">@lessjs/*</span>，
-                  包目录从 <span class="inline-code">packages/kiss-core</span> 等重命名为 <span class="inline-code">packages/core</span> 等。
+                  <strong>文档站全站品牌更新</strong>：CSS 变量 <span class="inline-code">--kiss-*</span>
+                  → <span class="inline-code">--less-*</span>（69 处），域名 <span class="inline-code">kiss.js.org</span>
+                  → <span class="inline-code">lessjs.com</span>，路由 <span class="inline-code">/kiss-compiler</span>
+                  → <span class="inline-code">/less-compiler</span>，README.en.md 全文重写。
                 </li>
                 <li>
-                  <strong>Logo 视觉资产</strong>：基于 <span class="inline-code">&lt;</span>（小于号）符号的 4 种
-                  Logo 变体（透明/反色/横排/favicon），首页 Hero 区内嵌 Logo。
-                </li>
-                <li>
-                  <strong>npm 发布管线</strong>：4 个包新增 <span class="inline-code">_build_npm.ts</span> dnt
-                  构建脚本，CI 支持 JSR + npm 双发，手动触发 <span class="inline-code">workflow_dispatch</span>。
+                  <strong>版本号提升</strong>：core 0.5.4→0.5.5，ui 0.5.4→0.5.5，
+                  rpc 0.3.0→0.3.1，adapter-lit 0.2.0→0.2.1，create 0.4.5→0.4.6。
                 </li>
               </ul>
             </div>
@@ -149,31 +147,31 @@ export class ChangelogPage extends LitElement {
               <h4>修复</h4>
               <ul class="change-list">
                 <li>
-                  <strong>dnt 工作区路径解析</strong>：从仓库根运行 dnt 将 <span class="inline-code">./src/index.ts</span>
-                  解析到仓库根。修复为在包目录内运行 <span class="inline-code">(cd pkg && deno run -A --config deno.json _build_npm.ts)</span>。
+                  <strong>移动端 sidebar 无法打开（全浏览器）</strong>：首页 <span class="inline-code">&lt;less-layout home&gt;</span>
+                  因 <span class="inline-code">home=true</span> 使用了 <span class="inline-code">display:none</span> 隐藏 sidebar，
+                  导致 <span class="inline-code">transform</span> 无法作用于无盒模型的元素。
+                  修复为 <span class="inline-code">width:0 + overflow:hidden</span>，保留盒模型使 transform 生效。
                 </li>
                 <li>
-                  <strong>dnt 类型检查失败</strong>：测试文件中 <span class="inline-code">Deno.test</span> 和
-                  <span class="inline-code">@std/assert</span> 在 Node TS 不合法。所有 dnt 配置加
-                  <span class="inline-code">typeCheck: false</span>。
+                  <strong>移动端首页 hamburger 只显示遮罩无 sidebar</strong>：改为始终渲染 sidebar，
+                  桌面端折叠（width:0），移动端恢复尺寸，配合 <span class="inline-code">:host([menu-open])</span> CSS 控制显隐。
                 </li>
                 <li>
-                  <strong>Vite alias 路径格式</strong>：Rolldown 将 <span class="inline-code">file://</span>
-                  URL 误解为相对路径。Vite alias 改用绝对路径，仅 <span class="inline-code">packageIslands</span>
-                  保留 <span class="inline-code">file://</span> 协议。
+                  <strong>PWA manifest.json favicon 路径错误</strong>：<span class="inline-code">/favicon.svg</span>
+                  → <span class="inline-code">/assets/less-logo.svg</span>，修复浏览器默认 favicon 请求 404。
                 </li>
                 <li>
-                  <strong>kiss-runtime.ts 重命名</strong>：文件未随品牌迁移重命名，已改为 <span class="inline-code">less-runtime.ts</span>。
+                  <strong>dnt npm 构建失败</strong>：<span class="inline-code">packages/rpc/_build_npm.ts</span>
+                  的 LICENSE 路径错误（<span class="inline-code">../LICENSE</span> → <span class="inline-code">../../LICENSE</span>）。
                 </li>
                 <li>
-                  <strong>ui exports 映射</strong>：npm exports 仍列 <span class="inline-code">kiss-*</span>
-                  文件名，已修复匹配 <span class="inline-code">less-*</span> 实际输出。
+                  <strong>CI 格式检查修复</strong>：deno fmt 格式化 5 个文件，deno lint 清理未使用 imports，
+                  publish exclusion 配置修复（<span class="inline-code">!dist</span> 取消 gitignore 排除）。
                 </li>
                 <li>
-                  <strong>部署目标</strong>：<span class="inline-code">kiss.js.org</span> → <span class="inline-code">lessjs.com</span>。
-                </li>
-                <li>
-                  文档站全站品牌升级、遗留路径引用修复。
+                  <strong>遗留 KISS 引用清理</strong>：<span class="inline-code">__kissLit*</span> 全局变量
+                  → <span class="inline-code">__lessLit*</span>，<span class="inline-code">.kiss-row</span> CSS 类
+                  → <span class="inline-code">.less-row</span>，文档中构建路径引用更新。
                 </li>
               </ul>
             </div>
