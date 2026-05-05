@@ -1,9 +1,9 @@
 /**
- * Blog System — @kissjs/blog package design
+ * Blog System — @lessjs/blog package design
  */
 import { css, html, LitElement } from 'lit';
 import { pageStyles } from '../../components/page-styles.js';
-import '@kissjs/ui/kiss-layout';
+import '@lessjs/ui/kiss-layout';
 
 export class BlogSystemPage extends LitElement {
   static override styles = [
@@ -60,7 +60,7 @@ export class BlogSystemPage extends LitElement {
       <kiss-layout currentPath="/guide/blog-system">
         <div class="container">
           <p class="adr-meta">ADR 0004 · 2026-04-30 · Draft · after v0.8.0 target</p>
-          <h1>@kissjs/blog — Standalone SSG Blog Package</h1>
+          <h1>@lessjs/blog — Standalone SSG Blog Package</h1>
 
           <h2>Motivation</h2>
           <p>
@@ -71,7 +71,7 @@ export class BlogSystemPage extends LitElement {
 
           <h2>User experience</h2>
           <div class="code-block">
-            // vite.config.ts import { kiss } from '@kissjs/core' import { kissBlog } from '@kissjs/blog'
+            // vite.config.ts import { kiss } from '@lessjs/core' import { kissBlog } from '@lessjs/blog'
             export default defineConfig({ plugins: [ kiss(), kissBlog({ dir: 'content/blog', // .md files
             go here title: 'My Blog', postsPerPage: 10, }), ], })
           </div>
@@ -104,7 +104,7 @@ export class BlogSystemPage extends LitElement {
           <h2>Implementation order</h2>
           <ol style="font-size:0.8125rem;line-height:1.8;color:var(--kiss-text-secondary)">
             <li>v0.8.0 stabilizes route/action/serverless conventions</li>
-            <li><code>@kissjs/blog</code> ships as a plain SSG plugin first</li>
+            <li><code>@lessjs/blog</code> ships as a plain SSG plugin first</li>
             <li><code>.kiss</code> compiler support is added after v0.10.0 alpha</li>
             <li>KISS docs site dogfoods it and replaces current hardcoded blog routes</li>
           </ol>

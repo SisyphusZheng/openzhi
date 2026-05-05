@@ -1,6 +1,6 @@
 import { html, LitElement } from 'lit';
 import { pageStyles } from '../../components/page-styles.js';
-import '@kissjs/ui/kiss-layout';
+import '@lessjs/ui/kiss-layout';
 import '../../islands/code-block.js';
 
 export class TestingPage extends LitElement {
@@ -10,7 +10,7 @@ export class TestingPage extends LitElement {
     return html`
       <kiss-layout currentPath="/guide/testing">
         <div class="container">
-          <h1>Testing</h1>
+          <h1>测试</h1>
           <p class="subtitle">
             KISS tests should protect the framework contract: route scanning, DSD output, island metadata,
             middleware scope, SSG post-processing and package boundaries.
@@ -27,7 +27,7 @@ export class TestingPage extends LitElement {
           <h2>Route Utilities</h2>
           <code-block
           ><pre><code>import { assertEquals } from 'jsr:@std/assert';
-            import { extractParams, parseQuery } from '@kissjs/core';
+            import { extractParams, parseQuery } from '@lessjs/core';
 
             Deno.test('extractParams parses dynamic segments', () => {
               const params = extractParams('/users/:id', '/users/42');

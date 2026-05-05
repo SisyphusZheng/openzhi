@@ -3,7 +3,7 @@
  */
 import { css, html, LitElement } from 'lit';
 import { pageStyles } from '../components/page-styles.js';
-import '@kissjs/ui/kiss-layout';
+import '@lessjs/ui/kiss-layout';
 
 export class ChangelogPage extends LitElement {
   static override styles = [
@@ -135,7 +135,7 @@ export class ChangelogPage extends LitElement {
                     完全同步。
                   </li>
                   <li>
-                    <strong>declare + constructor 模式</strong>：所有 @kissjs/ui 组件和 docs island 改为
+                    <strong>declare + constructor 模式</strong>：所有 @lessjs/ui 组件和 docs island 改为
                     <span class="inline-code">declare</span> reactive fields + constructor 初始化，避免
                     class field 覆盖 Lit 生成的属性 accessor。
                   </li>
@@ -150,7 +150,7 @@ export class ChangelogPage extends LitElement {
                     从任务表格改为分阶段叙述，首页去掉对比表改为 "Read Next" grid。
                   </li>
                   <li>
-                    <strong>版本号</strong>：@kissjs/core 升至 0.5.3，@kissjs/ui 升至 0.5.2。
+                    <strong>版本号</strong>：@lessjs/core 升至 0.5.3，@lessjs/ui 升至 0.5.2。
                   </li>
                 </ul>
               </div>
@@ -209,7 +209,7 @@ export class ChangelogPage extends LitElement {
                   </li>
                   <li>
                     <strong>escapeHtml 交叉引用</strong>：adapter-lit/ssr.ts 中的 escapeHtml 加注释指向
-                    @kissjs/core/render-dsd.ts 的 canonical 实现。
+                    @lessjs/core/render-dsd.ts 的 canonical 实现。
                   </li>
                 </ul>
               </div>
@@ -224,7 +224,7 @@ export class ChangelogPage extends LitElement {
                 <h4>修复</h4>
                 <ul class="change-list">
                   <li>
-                    <strong>Lit Island 响应式修复</strong>：docs demo、@kissjs/ui 交互组件和 create-kiss
+                    <strong>Lit Island 响应式修复</strong>：docs demo、@lessjs/ui 交互组件和 create-kiss
                     模板改为 <span class="inline-code">declare</span> reactive fields，并在 constructor
                     中初始化，避免 class field 覆盖 Lit 生成的属性 accessor。
                   </li>
@@ -238,7 +238,7 @@ export class ChangelogPage extends LitElement {
                     accessor 盖掉。
                   </li>
                   <li>
-                    <strong>版本号</strong>：@kissjs/ui 升至 0.5.1，@kissjs/create 升至 0.4.5。
+                    <strong>版本号</strong>：@lessjs/ui 升至 0.5.1，@lessjs/create 升至 0.4.5。
                   </li>
                 </ul>
               </div>
@@ -261,7 +261,7 @@ export class ChangelogPage extends LitElement {
                     <strong>Core/Lit 边界收紧</strong>：docs route components 直接从
                     <span class="inline-code">lit</span> 导入 <span class="inline-code">css</span> /
                     <span class="inline-code">html</span> / <span class="inline-code">LitElement</span>，
-                    <span class="inline-code">@kissjs/core</span> 不再通过 docs runtime shim 暴露 Lit。
+                    <span class="inline-code">@lessjs/core</span> 不再通过 docs runtime shim 暴露 Lit。
                   </li>
                   <li>
                     <strong>0.x 公共面收口</strong>：移除未实现的
@@ -273,8 +273,8 @@ export class ChangelogPage extends LitElement {
                     2，博客/文档/内容站是近期产品化样板，CRM/admin 放到中期。
                   </li>
                   <li>
-                    <strong>版本号</strong>：@kissjs/core 升至 0.5.2，@kissjs/ui 升至 0.5.0，@kissjs/rpc
-                    升至 0.3.0，@kissjs/adapter-lit 升至 0.2.0，@kissjs/create 升至 0.4.4。
+                    <strong>版本号</strong>：@lessjs/core 升至 0.5.2，@lessjs/ui 升至 0.5.0，@lessjs/rpc
+                    升至 0.3.0，@lessjs/adapter-lit 升至 0.2.0，@lessjs/create 升至 0.4.4。
                   </li>
                 </ul>
               </div>
@@ -287,8 +287,8 @@ export class ChangelogPage extends LitElement {
                   </li>
                   <li>
                     <strong>create-kiss 模板</strong>：新项目显式映射
-                    <span class="inline-code">lit</span> / <span class="inline-code">@kissjs/core</span> /
-                    <span class="inline-code">@kissjs/ui</span>，路由和 island 模板直接导入 Lit。
+                    <span class="inline-code">lit</span> / <span class="inline-code">@lessjs/core</span> /
+                    <span class="inline-code">@lessjs/ui</span>，路由和 island 模板直接导入 Lit。
                   </li>
                   <li>
                     <strong>发布信任测试</strong>：SSG smoke 不再默认全部 ignore；adapter-lit 和 create-kiss
@@ -298,8 +298,8 @@ export class ChangelogPage extends LitElement {
                     <strong>CI 发布补丁</strong>：GitHub Actions 测试任务显式授予
                     <span class="inline-code">--allow-run</span>，create-kiss 模板显式安装 Vite 和 Lit 在
                     SSR 分支需要的 <span class="inline-code">@lit-labs/ssr-dom-shim</span>，并修复 JSR
-                    远程运行时的 <span class="inline-code">@kissjs/core/kiss-runtime</span>、
-                    <span class="inline-code">@kissjs/ui</span> package island、Lit adapter 解析路径。
+                    远程运行时的 <span class="inline-code">@lessjs/core/kiss-runtime</span>、
+                    <span class="inline-code">@lessjs/ui</span> package island、Lit adapter 解析路径。
                   </li>
                   <li>
                     <strong>Island 自注册</strong>：脚手架生成的 counter island 现在调用
@@ -340,8 +340,8 @@ export class ChangelogPage extends LitElement {
                     Upgrade、Serverless、SSG/ISR、.kiss compiler 路线重新分层。
                   </li>
                   <li>
-                    <strong>版本号</strong>：@kissjs/core 升至 0.5.0-alpha.4，@kissjs/ui 升至
-                    0.4.6，@kissjs/adapter-lit 升至 0.1.4。
+                    <strong>版本号</strong>：@lessjs/core 升至 0.5.0-alpha.4，@lessjs/ui 升至
+                    0.4.6，@lessjs/adapter-lit 升至 0.1.4。
                   </li>
                 </ul>
               </div>
@@ -350,10 +350,10 @@ export class ChangelogPage extends LitElement {
                 <ul class="change-list">
                   <li>
                     <strong>Package island default export warning</strong>：SSR entry 不再假设 package
-                    island 暴露 default export，@kissjs/ui 副作用注册模式不再触发 Vite/Rolldown warning。
+                    island 暴露 default export，@lessjs/ui 副作用注册模式不再触发 Vite/Rolldown warning。
                   </li>
                   <li>
-                    <strong>CI package island 解析</strong>：docs Vite config 显式解析 @kissjs/ui 子路径，CI
+                    <strong>CI package island 解析</strong>：docs Vite config 显式解析 @lessjs/ui 子路径，CI
                     不再依赖本地 node_modules junction。
                   </li>
                   <li>
@@ -424,11 +424,11 @@ export class ChangelogPage extends LitElement {
                 <h4>架构精简</h4>
                 <ul class="change-list">
                   <li>
-                    <strong>@kissjs/core 零框架运行时</strong>：KissElement 废弃，Lit re-export 移除，core
+                    <strong>@lessjs/core 零框架运行时</strong>：KissElement 废弃，Lit re-export 移除，core
                     成为纯构建/SSR 基础设施
                   </li>
                   <li>
-                    <strong>@kissjs/rpc 原生化</strong>：移除 Lit peer dep，纯 fetch + AbortController
+                    <strong>@lessjs/rpc 原生化</strong>：移除 Lit peer dep，纯 fetch + AbortController
                   </li>
                   <li><strong>OpenProps 设计系统</strong>：替换硬编码 hex，CSS 变量穿透 Shadow DOM</li>
                   <li><strong>Vite 8</strong>：从 Vite 6 升级到 Vite 8.0.10</li>
@@ -452,7 +452,7 @@ export class ChangelogPage extends LitElement {
                   </li>
                   <li>
                     <strong>kiss-hero-ping 组件</strong>：可配置 API 的 ping Island，🟢/🔴 状态点。提取到
-                    @kissjs/ui v0.4.0
+                    @lessjs/ui v0.4.0
                   </li>
                   <li>
                     <strong>首页全中文</strong>：8 段布局、响应式 clamp()/%/rem、四框架比较表、三阶段 Quick
@@ -505,8 +505,8 @@ export class ChangelogPage extends LitElement {
                   </li>
                   <li><strong>kiss-hero-ping 类型错误</strong>：static override 顺序、catch e:unknow</li>
                   <li>
-                    <strong>Quick start 命令错误</strong>：npm create@kissjs/app → deno run -A
-                    jsr:@kissjs/create
+                    <strong>Quick start 命令错误</strong>：npm create@lessjs/app → deno run -A
+                    jsr:@lessjs/create
                   </li>
                   <li><strong>API 版本 0.3.6 → 0.4.0</strong></li>
                 </ul>
@@ -527,7 +527,7 @@ export class ChangelogPage extends LitElement {
                   </li>
                   <li><strong>CI 并行化</strong>：test.yml 拆分为 typecheck + 4 个并行 test job</li>
                   <li><strong>CI 缓存</strong>：所有 job 添加 actions/cache，减少依赖安装时间</li>
-                  <li>移动端侧边栏 nav link 点击自动关闭（@kissjs/ui 文档站）</li>
+                  <li>移动端侧边栏 nav link 点击自动关闭（@lessjs/ui 文档站）</li>
                 </ul>
               </div>
 
@@ -543,7 +543,7 @@ export class ChangelogPage extends LitElement {
                     意外破坏构建
                   </li>
                   <li>
-                    <strong>kissDesignTokens 导出 tokens 子路径</strong>：@kissjs/ui/tokens/colors, effects,
+                    <strong>kissDesignTokens 导出 tokens 子路径</strong>：@lessjs/ui/tokens/colors, effects,
                     spacing, typography 独立导出
                   </li>
                   <li>
@@ -555,7 +555,7 @@ export class ChangelogPage extends LitElement {
                   </li>
                   <li>README 包版本号更新至 0.3.2 / 0.2.3</li>
                   <li>README coverage badge 替换为 CI badge</li>
-                  <li>@kissjs/ui-plugin 的 cdn:false 配置项 JSDoc 修正：不再误导性地说"使用 npm 替代"</li>
+                  <li>@lessjs/ui-plugin 的 cdn:false 配置项 JSDoc 修正：不再误导性地说"使用 npm 替代"</li>
                 </ul>
               </div>
 
@@ -586,7 +586,7 @@ export class ChangelogPage extends LitElement {
                     ''}"，避免未设置值时显示文本 "undefined"
                   </li>
                   <li>
-                    <strong>P0 — @kissjs/core 缺少 CLI exports</strong>：deno.json 和 jsr.json 未导出
+                    <strong>P0 — @lessjs/core 缺少 CLI exports</strong>：deno.json 和 jsr.json 未导出
                     cli/build-client 和 cli/build-ssg，导致 create-kiss 脚手架创建的项目无法运行 deno task
                     build:client/build:ssg
                   </li>
@@ -631,8 +631,8 @@ export class ChangelogPage extends LitElement {
                     depth 参数 + 最大 10 层
                   </li>
                   <li>
-                    <strong>P2 — vite-plugin-dts 隐式依赖</strong>：@kissjs/rpc 的 devDependencies 中包含
-                    vite-plugin-dts，但 @kissjs/core 也使用但未声明
+                    <strong>P2 — vite-plugin-dts 隐式依赖</strong>：@lessjs/rpc 的 devDependencies 中包含
+                    vite-plugin-dts，但 @lessjs/core 也使用但未声明
                   </li>
                   <li>
                     <strong>P2 — build-ssg.ts 全局污染未清理</strong>：CJS
@@ -647,7 +647,7 @@ export class ChangelogPage extends LitElement {
                   </li>
                   <li>
                     <strong>types.ts JSDoc 错误</strong>：packageIslands 注释说
-                    '@kissjs/ui/islands'，实际实现是 import(pkg).islands
+                    '@lessjs/ui/islands'，实际实现是 import(pkg).islands
                   </li>
                   <li>
                     <strong>context.ts decodeURIComponent 无保护</strong>：遇畸形编码抛 URIError，添加
@@ -776,7 +776,7 @@ export class ChangelogPage extends LitElement {
                 <ul class="change-list">
                   <li>Logger 模块支持 <code>KISS_LOG_LEVEL</code> 环境变量</li>
                   <li>
-                    @kissjs/ui 组件库：kiss-button, kiss-card, kiss-input, kiss-code-block, kiss-layout
+                    @lessjs/ui 组件库：kiss-button, kiss-card, kiss-input, kiss-code-block, kiss-layout
                   </li>
                   <li>design-tokens CSS 自定义属性（瑞士国际主义风格）</li>
                   <li>examples/hello 最小示例：演示 KISS 基础</li>
@@ -788,8 +788,8 @@ export class ChangelogPage extends LitElement {
               <div class="change-category changed">
                 <h4>变更</h4>
                 <ul class="change-list">
-                  <li>@kissjs/ui 版本升级至 0.1.4</li>
-                  <li>文档站现在导入 @kissjs/ui 组件</li>
+                  <li>@lessjs/ui 版本升级至 0.1.4</li>
+                  <li>文档站现在导入 @lessjs/ui 组件</li>
                   <li>迁移所有示例到 static properties + customElements.define() 模式</li>
                   <li>移除 packages/kiss-ui/deno.json 中的 experimentalDecorators 配置</li>
                 </ul>
@@ -922,11 +922,11 @@ export class ChangelogPage extends LitElement {
                   <td>动态 import() 确保旧客户端补丁先于任何组件注册执行</td>
                 </tr>
                 <tr>
-                  <td>@kissjs/core → lit resolve alias</td>
+                  <td>@lessjs/core → lit resolve alias</td>
                   <td>
-                    Vite lib mode 构建中将 @kissjs/core 映射为 lit，使编译产物直接依赖 lit 而非 @kissjs/core
+                    Vite lib mode 构建中将 @lessjs/core 映射为 lit，使编译产物直接依赖 lit 而非 @lessjs/core
                   </td>
-                  <td>@kissjs/ui 的 dist 消费者无需安装 @kissjs/core</td>
+                  <td>@lessjs/ui 的 dist 消费者无需安装 @lessjs/core</td>
                   <td>resolve.alias + build.ts serializeAlias 传递到 CLI 构建</td>
                 </tr>
                 <tr>
@@ -994,7 +994,7 @@ export class ChangelogPage extends LitElement {
                 <tr>
                   <td>0.1.3</td>
                   <td>2026-04-10</td>
-                  <td>@kissjs/rpc + @kissjs/ui</td>
+                  <td>@lessjs/rpc + @lessjs/ui</td>
                 </tr>
                 <tr>
                   <td>0.1.2</td>

@@ -2,7 +2,7 @@ import { css, html, LitElement } from 'lit';
 import { pageStyles } from './page-styles.js';
 import { renderMarkdown } from '../lib/markdown.js';
 import type { DecisionDoc } from '../decision-data.js';
-import '@kissjs/ui/kiss-layout';
+import '@lessjs/ui/kiss-layout';
 
 export abstract class DecisionDocumentPage extends LitElement {
   protected abstract decision: DecisionDoc;

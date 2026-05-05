@@ -1,18 +1,18 @@
-import { kiss } from '../packages/kiss-core/src/index.js';
-import { kissRootColorCSS } from '../packages/kiss-ui/src/tokens/colors.js';
+import { kiss } from '../packages/core/src/index.js';
+import { kissRootColorCSS } from '../packages/ui/src/tokens/colors.js';
 import { defineConfig } from 'vite';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 // Vite needs resolve.alias because JSR packages aren't in node_modules.
-// Generated SSR entries import runtime helpers from '@kissjs/core/kiss-runtime',
+// Generated SSR entries import runtime helpers from '@lessjs/core/kiss-runtime',
 // but at build time Vite resolves that specifier to a docs-only shim.
 // The shim only re-exports runtime APIs (renderDSD, wrapInDocument, Hono),
 // avoiding pull-in of build-time code (node:fs, Vite plugin internals).
 // NOTE: __dirname is unavailable in Deno ESM — use import.meta instead.
 const __dir = dirname(fileURLToPath(import.meta.url));
 const runtimeShim = resolve(__dir, 'app/.kiss-runtime.ts');
-const uiSrcDir = resolve(__dir, '../packages/kiss-ui/src');
+const uiSrcDir = resolve(__dir, '../packages/ui/src');
 
 // DRY: All color token values come from a single source of truth.
 // kissRootColorCSS is generated from kissDarkColors/kissLightColors in tokens/colors.ts.
@@ -28,19 +28,19 @@ export default defineConfig({
       islandsDir: 'app/islands',
       componentsDir: 'app/components',
       html: {
-        title: 'KISS',
+        title: 'LessJS',
       },
-      // Use packageIslands to consume @kissjs/ui components
+      // Use packageIslands to consume @lessjs/ui components
       // (kiss-theme-toggle is no longer a local copy — it comes from the package)
-      packageIslands: ['@kissjs/ui'],
-      // SSR configuration: bundle @kissjs/ui instead of externalizing
+      packageIslands: ['@lessjs/ui'],
+      // SSR configuration: bundle @lessjs/ui instead of externalizing
       // This fixes "Unsupported decorator location: field" error in SSR
       ssr: {
-        noExternal: ['@kissjs/ui'],
+        noExternal: ['@lessjs/ui'],
       },
       pwa: {
-        name: 'KISS Framework',
-        shortName: 'KISS',
+        name: 'LessJS Framework',
+        shortName: 'LessJS',
         themeColor: '#000000',
         backgroundColor: '#ffffff',
       },
@@ -49,7 +49,7 @@ export default defineConfig({
         scripts: [],
         headFragments: [
           // Meta
-          '<meta name="description" content="KISS Framework — Web Standards-first Jamstack SSG with Island architecture. Zero-runtime core, DSD rendering, Lit Web Components, Hono API routes.">',
+          '<meta name="description" content="LessJS — Web Standards-first Jamstack SSG with Island architecture. Zero-runtime core, DSD rendering, Lit Web Components, Hono API routes.">',
           // Non-blocking OpenProps: media="print" prevents render-block, onload switches to all
           '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/open-props@1.7.20/open-props.min.css" media="print" onload="this.media=\'all\'">',
           // Anti-flash: CLS prevention — removed by theme-init.js
@@ -63,7 +63,7 @@ export default defineConfig({
           //   2. "Cannot use import statement outside a module" SyntaxError
           //   3. document.write() is hostile to modern browsers and CSP
           // Theme system: Pure B&W — Dark / Light
-          // DRY: CSS values come from @kissjs/ui/tokens/colors.ts (single source of truth)
+          // DRY: CSS values come from @lessjs/ui/tokens/colors.ts (single source of truth)
           colorTokensStyle,
           // Init theme from localStorage or prefers-color-scheme
           '<script src="/theme-init.js"></script>',
@@ -78,32 +78,32 @@ export default defineConfig({
   resolve: {
     alias: [
       {
-        find: '@kissjs/core/render-dsd',
-        replacement: resolve(__dir, '../packages/kiss-core/src/render-dsd.ts'),
+        find: '@lessjs/core/render-dsd',
+        replacement: resolve(__dir, '../packages/core/src/render-dsd.ts'),
       },
-      { find: '@kissjs/core/kiss-runtime', replacement: runtimeShim },
+      { find: '@lessjs/core/kiss-runtime', replacement: runtimeShim },
       {
-        find: '@kissjs/adapter-lit/ssr',
-        replacement: resolve(__dir, '../packages/kiss-adapter-lit/src/ssr.ts'),
+        find: '@lessjs/adapter-lit/ssr',
+        replacement: resolve(__dir, '../packages/adapter-lit/src/ssr.ts'),
       },
       {
-        find: '@kissjs/adapter-lit',
-        replacement: resolve(__dir, '../packages/kiss-adapter-lit/src/index.ts'),
+        find: '@lessjs/adapter-lit',
+        replacement: resolve(__dir, '../packages/adapter-lit/src/index.ts'),
       },
-      { find: '@kissjs/ui/kiss-button', replacement: resolve(uiSrcDir, 'kiss-button.ts') },
-      { find: '@kissjs/ui/kiss-card', replacement: resolve(uiSrcDir, 'kiss-card.ts') },
-      { find: '@kissjs/ui/kiss-input', replacement: resolve(uiSrcDir, 'kiss-input.ts') },
-      { find: '@kissjs/ui/kiss-code-block', replacement: resolve(uiSrcDir, 'kiss-code-block.ts') },
-      { find: '@kissjs/ui/kiss-layout', replacement: resolve(uiSrcDir, 'kiss-layout.ts') },
+      { find: '@lessjs/ui/kiss-button', replacement: resolve(uiSrcDir, 'kiss-button.ts') },
+      { find: '@lessjs/ui/kiss-card', replacement: resolve(uiSrcDir, 'kiss-card.ts') },
+      { find: '@lessjs/ui/kiss-input', replacement: resolve(uiSrcDir, 'kiss-input.ts') },
+      { find: '@lessjs/ui/kiss-code-block', replacement: resolve(uiSrcDir, 'kiss-code-block.ts') },
+      { find: '@lessjs/ui/kiss-layout', replacement: resolve(uiSrcDir, 'kiss-layout.ts') },
       {
-        find: '@kissjs/ui/kiss-theme-toggle',
+        find: '@lessjs/ui/kiss-theme-toggle',
         replacement: resolve(uiSrcDir, 'kiss-theme-toggle.ts'),
       },
-      { find: '@kissjs/ui/kiss-hero-ping', replacement: resolve(uiSrcDir, 'kiss-hero-ping.ts') },
-      { find: '@kissjs/ui/kiss-ui-plugin', replacement: resolve(uiSrcDir, 'kiss-ui-plugin.ts') },
-      { find: '@kissjs/ui/design-tokens', replacement: resolve(uiSrcDir, 'design-tokens.ts') },
-      { find: '@kissjs/ui/tokens/colors', replacement: resolve(uiSrcDir, 'tokens/colors.ts') },
-      { find: '@kissjs/ui', replacement: resolve(uiSrcDir, 'index.ts') },
+      { find: '@lessjs/ui/kiss-hero-ping', replacement: resolve(uiSrcDir, 'kiss-hero-ping.ts') },
+      { find: '@lessjs/ui/kiss-ui-plugin', replacement: resolve(uiSrcDir, 'kiss-ui-plugin.ts') },
+      { find: '@lessjs/ui/design-tokens', replacement: resolve(uiSrcDir, 'design-tokens.ts') },
+      { find: '@lessjs/ui/tokens/colors', replacement: resolve(uiSrcDir, 'tokens/colors.ts') },
+      { find: '@lessjs/ui', replacement: resolve(uiSrcDir, 'index.ts') },
     ],
   },
 });

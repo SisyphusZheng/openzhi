@@ -14,7 +14,7 @@
  * @see {@link ../packages/kiss-core/src/types.ts} for KissRenderer interface
  */
 
-import type { KissRenderer } from '@kissjs/core';
+import type { KissRenderer } from '@lessjs/core';
 
 const renderer: KissRenderer = {
   wrap(html, _ctx) {

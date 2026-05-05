@@ -1,6 +1,6 @@
 import { html, LitElement } from 'lit';
 import { pageStyles } from '../../components/page-styles.js';
-import '@kissjs/ui/kiss-layout';
+import '@lessjs/ui/kiss-layout';
 import '../../islands/code-block.js';
 
 export class RoutingGuidePage extends LitElement {
@@ -10,7 +10,7 @@ export class RoutingGuidePage extends LitElement {
     return html`
       <kiss-layout currentPath="/guide/routing">
         <div class="container">
-          <h1>Routing</h1>
+          <h1>路由</h1>
           <p class="subtitle">
             KISS 使用文件系统路由。一个页面文件对应一个 URL；特殊文件用于 layout wrapping、
             middleware 和 API handlers。

@@ -8,10 +8,10 @@
  */
 import { css, html, LitElement } from 'lit';
 import { pageStyles } from '../../components/page-styles.js';
-import '@kissjs/ui/kiss-layout';
+import '@lessjs/ui/kiss-layout';
 import '../../islands/code-block.js';
-import '@kissjs/ui/kiss-card';
-import '@kissjs/ui/kiss-button';
+import '@lessjs/ui/kiss-card';
+import '@lessjs/ui/kiss-button';
 
 export class ExamplesPage extends LitElement {
   static override styles = [
@@ -199,7 +199,7 @@ export class ExamplesPage extends LitElement {
                 <span class="constraint-badge">零框架运行时</span>
               </div>
               <p>
-                最小化 KISS 应用。展示 SSG + DSD 输出，内容在 JS 加载前可见。 使用 @kissjs/ui 组件。
+                最小化 KISS 应用。展示 SSG + DSD 输出，内容在 JS 加载前可见。 使用 @lessjs/ui 组件。
               </p>
               <code-block
               ><pre><code>deno run -A npm:vite build
@@ -209,7 +209,7 @@ export class ExamplesPage extends LitElement {
                 <kiss-button
                   size="sm"
                   variant="ghost"
-                  href="https://github.com/SisyphusZheng/kiss/tree/main/docs/app/routes/examples/hello"
+                  href="https://github.com/lessjs-run/LessJS/tree/main/docs/app/routes/examples/hello"
                 >源码</kiss-button>
               </div>
             </div>
@@ -235,7 +235,7 @@ export class ExamplesPage extends LitElement {
                 <kiss-button
                   size="sm"
                   variant="ghost"
-                  href="https://github.com/SisyphusZheng/kiss/tree/main/docs/app/routes/examples/minimal-blog"
+                  href="https://github.com/lessjs-run/LessJS/tree/main/docs/app/routes/examples/minimal-blog"
                 >源码</kiss-button>
               </div>
             </div>
@@ -267,7 +267,7 @@ export class ExamplesPage extends LitElement {
                 <kiss-button
                   size="sm"
                   variant="ghost"
-                  href="https://github.com/SisyphusZheng/kiss/tree/main/docs/app/routes/examples/fullstack"
+                  href="https://github.com/lessjs-run/LessJS/tree/main/docs/app/routes/examples/fullstack"
                 >源码</kiss-button>
               </div>
             </div>
@@ -282,7 +282,7 @@ export class ExamplesPage extends LitElement {
             S — 引入了服务端进程？     → 只允许静态文件 + Serverless API</code></pre></code-block>
 
             <div class="nav-row">
-              <a href="/styling/kiss-ui" class="nav-link">&larr; @kissjs/ui</a>
+              <a href="/styling/kiss-ui" class="nav-link">&larr; @lessjs/ui</a>
               <a href="/guide/deployment" class="nav-link">Deployment &rarr;</a>
             </div>
           </div>

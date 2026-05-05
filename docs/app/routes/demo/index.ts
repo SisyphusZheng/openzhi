@@ -7,7 +7,7 @@
  * for the initial API fetch.
  */
 import { css, html, LitElement } from 'lit';
-import '@kissjs/ui/kiss-layout';
+import '@lessjs/ui/kiss-layout';
 
 export const tagName = 'page-demo';
 

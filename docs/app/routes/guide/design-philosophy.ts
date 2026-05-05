@@ -1,6 +1,6 @@
 import { html, LitElement } from 'lit';
 import { pageStyles } from '../../components/page-styles.js';
-import '@kissjs/ui/kiss-layout';
+import '@lessjs/ui/kiss-layout';
 
 export class DesignPhilosophyPage extends LitElement {
   static override styles = [pageStyles];
@@ -9,7 +9,7 @@ export class DesignPhilosophyPage extends LitElement {
     return html`
       <kiss-layout currentPath="/guide/design-philosophy">
         <div class="container">
-          <h1>Design Philosophy</h1>
+          <h1>设计理念</h1>
           <p class="subtitle">
             KISS 的哲学不是“少写代码”这么单薄，而是把复杂度放在正确的位置：
             平台已经解决的问题交给平台，框架必须解决的问题才由框架承担。

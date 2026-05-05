@@ -4,13 +4,13 @@
  * K + S 约束演示：
  * - SSG + DSD 输出
  * - 内容在 JS 加载前可见
- * - @kissjs/ui 组件
+ * - @lessjs/ui 组件
  */
 import { css, html, LitElement } from 'lit';
 import { pageStyles } from '../../components/page-styles.js';
-import '@kissjs/ui/kiss-layout';
-import '@kissjs/ui/kiss-card';
-import '@kissjs/ui/kiss-button';
+import '@lessjs/ui/kiss-layout';
+import '@lessjs/ui/kiss-card';
+import '@lessjs/ui/kiss-button';
 
 export class HelloDemoPage extends LitElement {
   static override styles = [
@@ -63,8 +63,8 @@ export class HelloDemoPage extends LitElement {
             <h1>Hello, KISS!</h1>
             <p class="subtitle">完全基于 Web 标准构建的极简全栈框架。</p>
             <div class="actions">
-              <kiss-button variant="primary" href="https://jsr.io/@kissjs/core">快速上手</kiss-button>
-              <kiss-button href="https://github.com/SisyphusZheng/kiss">GitHub</kiss-button>
+              <kiss-button variant="primary" href="https://jsr.io/@lessjs/core">快速上手</kiss-button>
+              <kiss-button href="https://github.com/lessjs-run/LessJS">GitHub</kiss-button>
             </div>
             <div class="cards">
               <kiss-card>

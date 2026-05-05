@@ -69,6 +69,7 @@ export default class CounterIsland extends LitElement {
   }
 }
 
-if (!customElements.get(tagName)) {
+// Guard: idempotent across SSR paths
+try {
   customElements.define(tagName, CounterIsland);
-}
+} catch { /* already defined */ }

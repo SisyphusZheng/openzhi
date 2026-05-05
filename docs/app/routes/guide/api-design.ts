@@ -1,6 +1,6 @@
 import { css, html, LitElement } from 'lit';
 import { pageStyles } from '../../components/page-styles.js';
-import '@kissjs/ui/kiss-layout';
+import '@lessjs/ui/kiss-layout';
 import '../../islands/code-block.js';
 
 export class ApiDesignPage extends LitElement {
@@ -21,7 +21,7 @@ export class ApiDesignPage extends LitElement {
     return html`
       <kiss-layout currentPath="/guide/api-design">
         <div class="container">
-          <h1>API Design</h1>
+          <h1>API 设计</h1>
           <p class="subtitle">
             API routes should feel like the Web: Request in, Response out, validation close to the
             boundary, typed clients where they reduce mistakes, and no hidden monolithic server.
@@ -105,7 +105,7 @@ export class ApiDesignPage extends LitElement {
 
               <h2>Typed RPC</h2>
               <p>
-                <span class="inline-code">@kissjs/rpc</span> is where type-safe client/server calling
+                <span class="inline-code">@lessjs/rpc</span> is where type-safe client/server calling
                 conventions can mature. Treat it as an opt-in layer over Hono rather than a replacement for
                 plain API routes.
               </p>

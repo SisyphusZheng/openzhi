@@ -1,18 +1,18 @@
 /**
- * @kissjs/ui —— 设计系统
+ * @lessjs/ui —— 设计系统
  * 双色板。零噪音。
  *
  * Dogfooding: 使用实际的 kiss-button、kiss-card、kiss-input 组件。
  */
 import { css, html, LitElement } from 'lit';
 import { pageStyles } from '../components/page-styles.js';
-import '@kissjs/ui/kiss-layout';
+import '@lessjs/ui/kiss-layout';
 
 // 导入 KISS UI 组件用于 dogfooding
-import '@kissjs/ui/kiss-button';
-import '@kissjs/ui/kiss-card';
-import '@kissjs/ui/kiss-input';
-import '@kissjs/ui/kiss-code-block';
+import '@lessjs/ui/kiss-button';
+import '@lessjs/ui/kiss-card';
+import '@lessjs/ui/kiss-input';
+import '@lessjs/ui/kiss-code-block';
 
 export class UIShowcase extends LitElement {
   static override styles = [
@@ -411,7 +411,7 @@ export class UIShowcase extends LitElement {
                 <span
                   class="type-sample"
                   style="font-size:0.8125rem;font-family:'SF Mono','Fira Code','Consolas',monospace;color:var(--kiss-text-primary)"
-                >deno add jsr:@kissjs/ui</span>
+                >deno add jsr:@lessjs/ui</span>
               </div>
             </div>
           </div>
@@ -496,7 +496,7 @@ export class UIShowcase extends LitElement {
               <div class="preview-body">
                 <kiss-code-block>
                   <pre>
-                    <code>import '@kissjs/ui';
+                    <code>import '@lessjs/ui';
 
                     // 使用组件
                     &lt;kiss-button variant="primary"&gt;点我&lt;/kiss-button&gt;
@@ -511,9 +511,9 @@ export class UIShowcase extends LitElement {
 
             <!-- Install -->
             <div class="install-section">
-              <h3>安装 @kissjs/ui</h3>
+              <h3>安装 @lessjs/ui</h3>
               <div class="install-cmd">
-                <span class="prompt">$</span> deno add jsr:@kissjs/ui
+                <span class="prompt">$</span> deno add jsr:@lessjs/ui
               </div>
               <p>Deno、Node、Bun。零配置。</p>
             </div>

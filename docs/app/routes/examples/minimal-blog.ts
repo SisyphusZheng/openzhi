@@ -8,7 +8,7 @@
  */
 import { css, html, LitElement } from 'lit';
 import { pageStyles } from '../../components/page-styles.js';
-import '@kissjs/ui/kiss-layout';
+import '@lessjs/ui/kiss-layout';
 import '../../islands/code-block.js';
 // kiss-theme-toggle is registered via packageIslands (no local import needed)
 

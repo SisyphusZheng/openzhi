@@ -1,0 +1,30 @@
+{
+  "name": "@lessjs/core",
+  "version": "0.5.3",
+  "exports": {
+    ".": "./src/index.ts",
+    "./render-dsd": "./src/render-dsd.ts",
+    "./kiss-runtime": "./src/kiss-runtime.ts",
+    "./cli/build": "./src/cli/build.ts",
+    "./cli/build-client": "./src/cli/build-client.ts",
+    "./cli/build-ssg": "./src/cli/build-ssg.ts"
+  },
+  "imports": {
+    "hono": "npm:hono@^4",
+    "@hono/vite-dev-server": "npm:@hono/vite-dev-server@^0.25.3",
+    "vite": "npm:vite@8.0.10"
+  },
+  "tasks": {
+    "build": "deno run -A npm:vite build --config vite.config.build.ts",
+    "dev": "deno run -A npm:vite build --config vite.config.build.ts --watch",
+    "test": "deno test --allow-read --allow-write --allow-env --allow-net __tests__/"
+  },
+  "publish": {
+    "include": ["src/**", "deno.json", "package.json", "LICENSE"]
+  },
+  "compilerOptions": {
+    "skipLibCheck": true
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
+}

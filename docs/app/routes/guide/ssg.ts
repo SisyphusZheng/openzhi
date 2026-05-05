@@ -1,6 +1,6 @@
 import { html, LitElement } from 'lit';
 import { pageStyles } from '../../components/page-styles.js';
-import '@kissjs/ui/kiss-layout';
+import '@lessjs/ui/kiss-layout';
 import '../../islands/code-block.js';
 
 export class SSGGuidePage extends LitElement {
@@ -10,7 +10,7 @@ export class SSGGuidePage extends LitElement {
     return html`
       <kiss-layout currentPath="/guide/ssg">
         <div class="container">
-          <h1>Rendering & SSG</h1>
+          <h1>渲染与 SSG</h1>
           <p class="subtitle">
             KISS 的默认生产产物是静态 HTML。构建阶段会把页面渲染成带 Declarative Shadow DOM
             的文档，并注入必要的 client island entry。

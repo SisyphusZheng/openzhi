@@ -1,6 +1,6 @@
 import { css, html, LitElement } from 'lit';
 import { pageStyles } from '../../components/page-styles.js';
-import '@kissjs/ui/kiss-layout';
+import '@lessjs/ui/kiss-layout';
 import '../../islands/code-block.js';
 
 export class WebAwesomePage extends LitElement {
@@ -83,7 +83,7 @@ export class WebAwesomePage extends LitElement {
           <p>通过 <span class="inline-code">inject</span> 选项启用 Web Awesome（推荐）：</p>
           <code-block>
             <pre><code>// vite.config.ts
-import { kiss } from '@kissjs/core'
+import { kiss } from '@lessjs/core'
 import { defineConfig } from 'vite'
 
 export default defineConfig({
@@ -119,7 +119,7 @@ kiss({
           </p>
 
           <div class="nav-row">
-            <a href="/ui" class="nav-link">&larr; @kissjs/ui</a>
+            <a href="/ui" class="nav-link">&larr; @lessjs/ui</a>
             <a href="https://webawesome.com/docs" class="nav-link">Web Awesome 文档 &rarr;</a>
           </div>
         </div>

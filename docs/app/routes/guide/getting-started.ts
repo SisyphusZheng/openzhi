@@ -1,6 +1,6 @@
 import { css, html, LitElement } from 'lit';
 import { pageStyles } from '../../components/page-styles.js';
-import '@kissjs/ui/kiss-layout';
+import '@lessjs/ui/kiss-layout';
 import '../../islands/code-block.js';
 
 export class GettingStartedPage extends LitElement {
@@ -33,7 +33,7 @@ export class GettingStartedPage extends LitElement {
     return html`
       <kiss-layout currentPath="/guide/getting-started">
         <div class="container">
-          <h1>Getting Started</h1>
+          <h1>快速开始</h1>
           <p class="subtitle">
             从一个最小项目开始：创建应用、启动开发服务器、构建静态产物，再理解每个目录负责什么。
           </p>
@@ -47,7 +47,7 @@ export class GettingStartedPage extends LitElement {
 
           <section class="step">
             <h2>1. Create a Project</h2>
-            <code-block><pre><code>deno run -A jsr:@kissjs/create my-app
+            <code-block><pre><code>deno run -A jsr:@lessjs/create my-app
 cd my-app</code></pre></code-block>
             <p>
               生成的项目会包含页面路由、示例 island、Vite 配置和常用 Deno tasks。

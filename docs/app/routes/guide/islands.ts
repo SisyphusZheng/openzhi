@@ -1,6 +1,6 @@
 import { css, html, LitElement } from 'lit';
 import { pageStyles } from '../../components/page-styles.js';
-import '@kissjs/ui/kiss-layout';
+import '@lessjs/ui/kiss-layout';
 import '../../islands/code-block.js';
 
 export class IslandsGuidePage extends LitElement {
@@ -139,12 +139,12 @@ export class IslandsGuidePage extends LitElement {
               可复用包可以导出 island metadata，KISS 在构建时读取这些信息，用于 SSR 注册和客户端入口生成。
             </p>
             <code-block
-            ><pre><code>import type { PackageIslandMeta } from '@kissjs/core';
+            ><pre><code>import type { PackageIslandMeta } from '@lessjs/core';
 
             export const islands: PackageIslandMeta[] = [
               {
                 tagName: 'kiss-theme-toggle',
-                modulePath: '@kissjs/ui/kiss-theme-toggle',
+                modulePath: '@lessjs/ui/kiss-theme-toggle',
                 strategy: 'eager',
               },
             ];</code></pre></code-block>

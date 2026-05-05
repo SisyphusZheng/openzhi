@@ -118,6 +118,7 @@ export default class CodeBlock extends LitElement {
   }
 }
 
-if (!customElements.get(tagName)) {
+// Guard: idempotent across SSR paths
+try {
   customElements.define(tagName, CodeBlock);
-}
+} catch { /* already defined */ }

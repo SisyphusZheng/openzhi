@@ -1,7 +1,7 @@
 import { css, html, LitElement } from 'lit';
 import { pageStyles } from '../../components/page-styles.js';
 import { DECISIONS } from '../../decision-data.js';
-import '@kissjs/ui/kiss-layout';
+import '@lessjs/ui/kiss-layout';
 
 export class DecisionsIndexPage extends LitElement {
   static override styles = [

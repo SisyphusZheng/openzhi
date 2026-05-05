@@ -353,6 +353,7 @@ export default class ApiConsumer extends LitElement {
   }
 }
 
-if (!customElements.get(tagName)) {
+// Guard: idempotent across SSR paths
+try {
   customElements.define(tagName, ApiConsumer);
-}
+} catch { /* already defined */ }

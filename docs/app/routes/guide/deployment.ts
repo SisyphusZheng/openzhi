@@ -1,6 +1,6 @@
 import { css, html, LitElement } from 'lit';
 import { pageStyles } from '../../components/page-styles.js';
-import '@kissjs/ui/kiss-layout';
+import '@lessjs/ui/kiss-layout';
 import '../../islands/code-block.js';
 
 export class DeploymentPage extends LitElement {
@@ -35,7 +35,7 @@ export class DeploymentPage extends LitElement {
     return html`
       <kiss-layout currentPath="/guide/deployment">
         <div class="container">
-          <h1>Deployment</h1>
+          <h1>部署</h1>
           <p class="subtitle">
             KISS deploys static files first. Runtime API routes are deployed separately through serverless
             or edge adapters when your application needs dynamic behavior.
@@ -86,7 +86,7 @@ export class DeploymentPage extends LitElement {
           <code-block
           ><pre><code>// vite.config.ts
             import { defineConfig } from 'vite';
-            import { kiss } from '@kissjs/core';
+            import { kiss } from '@lessjs/core';
 
             export default defineConfig({
               base: '/repo/',

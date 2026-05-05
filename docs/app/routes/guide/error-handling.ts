@@ -1,6 +1,6 @@
 import { css, html, LitElement } from 'lit';
 import { pageStyles } from '../../components/page-styles.js';
-import '@kissjs/ui/kiss-layout';
+import '@lessjs/ui/kiss-layout';
 import '../../islands/code-block.js';
 
 export class ErrorHandlingPage extends LitElement {
@@ -25,7 +25,7 @@ export class ErrorHandlingPage extends LitElement {
     return html`
       <kiss-layout currentPath="/guide/error-handling">
         <div class="container">
-          <h1>Error Handling</h1>
+          <h1>错误处理</h1>
           <p class="subtitle">
             KISS separates framework errors, build-time rendering errors, API errors and browser island failures.
             The goal is clear diagnosis without leaking internals in production.
@@ -66,7 +66,7 @@ export class ErrorHandlingPage extends LitElement {
           </table>
 
           <h2>Use Framework Errors</h2>
-          <code-block><pre><code>import { NotFoundError, ValidationError } from '@kissjs/core';
+          <code-block><pre><code>import { NotFoundError, ValidationError } from '@lessjs/core';
 
 app.get('/api/posts/:id', async (c) => {
   const post = await findPost(c.req.param('id'));

@@ -54,7 +54,7 @@ export const SIDEBAR_NAV: NavSection[] = [
     section: 'Packages',
     items: [
       { path: '/ui', label: 'Design System' },
-      { path: '/styling/kiss-ui', label: '@kissjs/ui' },
+      { path: '/styling/kiss-ui', label: '@lessjs/ui' },
       { path: '/styling/web-awesome', label: 'Web Awesome' },
       { path: '/examples', label: 'Examples' },
     ],
@@ -98,5 +98,5 @@ export const HEADER_NAV: HeaderNavItem[] = [
   { href: '/examples', label: 'Examples' },
   { href: '/ui', label: 'UI' },
   { href: '/roadmap', label: 'Roadmap' },
-  { href: 'https://jsr.io/@kissjs/core', label: 'JSR' },
+  { href: 'https://jsr.io/@lessjs/core', label: 'JSR' },
 ];

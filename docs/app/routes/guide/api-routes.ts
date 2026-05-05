@@ -1,6 +1,6 @@
 import { html, LitElement } from 'lit';
 import { pageStyles } from '../../components/page-styles.js';
-import '@kissjs/ui/kiss-layout';
+import '@lessjs/ui/kiss-layout';
 import '../../islands/code-block.js';
 
 export class ApiRoutesPage extends LitElement {
@@ -10,7 +10,7 @@ export class ApiRoutesPage extends LitElement {
     return html`
       <kiss-layout currentPath="/guide/api-routes">
         <div class="container">
-          <h1>API Routes</h1>
+          <h1>API 路由</h1>
           <p class="subtitle">
             KISS 的服务端层是 Hono。API routes 使用标准 Request/Response 语义，
             适合部署到 serverless 或 edge runtime。

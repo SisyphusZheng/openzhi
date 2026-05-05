@@ -1,6 +1,6 @@
 import { html, LitElement } from 'lit';
 import { pageStyles } from '../../components/page-styles.js';
-import '@kissjs/ui/kiss-layout';
+import '@lessjs/ui/kiss-layout';
 
 export class PositioningPage extends LitElement {
   static override styles = [pageStyles];
@@ -9,7 +9,7 @@ export class PositioningPage extends LitElement {
     return html`
       <kiss-layout currentPath="/guide/positioning">
         <div class="container">
-          <h1>Framework Positioning</h1>
+          <h1>框架定位</h1>
           <p class="subtitle">
             KISS 是一个 Deno-first、Web Standards-first、static-first 的 Web
             框架。它的目标不是成为所有场景的最大框架，而是把内容优先、渐进增强和 Serverless API

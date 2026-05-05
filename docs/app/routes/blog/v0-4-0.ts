@@ -3,7 +3,7 @@
  */
 import { css, html, LitElement } from 'lit';
 import { pageStyles } from '../../components/page-styles.js';
-import '@kissjs/ui/kiss-layout';
+import '@lessjs/ui/kiss-layout';
 
 export const tagName = 'blog-v040';
 
@@ -127,7 +127,7 @@ export default class BlogV040 extends LitElement {
 
           <h2>从 v0.3.2 到 v0.4.0 完整变更</h2>
 
-          <h3>@kissjs/ui</h3>
+          <h3>@lessjs/ui</h3>
           <table class="cmp">
             <tr>
               <th>变更</th>
@@ -186,7 +186,7 @@ export default class BlogV040 extends LitElement {
             </tr>
           </table>
 
-          <h3>@kissjs/core</h3>
+          <h3>@lessjs/core</h3>
           <table class="cmp">
             <tr>
               <th>变更</th>
@@ -226,7 +226,7 @@ export default class BlogV040 extends LitElement {
             </tr>
           </table>
 
-          <h3>@kissjs/rpc</h3>
+          <h3>@lessjs/rpc</h3>
           <table class="cmp">
             <tr>
               <th>变更</th>

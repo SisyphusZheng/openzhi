@@ -1,6 +1,6 @@
 import { html, LitElement } from 'lit';
 import { pageStyles } from '../../components/page-styles.js';
-import '@kissjs/ui/kiss-layout';
+import '@lessjs/ui/kiss-layout';
 import '../../islands/code-block.js';
 
 export class ArchitecturePage extends LitElement {
@@ -10,7 +10,7 @@ export class ArchitecturePage extends LitElement {
     return html`
       <kiss-layout currentPath="/guide/architecture">
         <div class="container">
-          <h1>Architecture</h1>
+          <h1>架构</h1>
           <p class="subtitle">
             KISS 的架构核心是把路由、渲染、island、API 和静态产物连接成一条可观察的构建链。
             这页描述当前模型，也明确哪些边界还在硬化中。
@@ -134,19 +134,19 @@ Phase 3: SSG
             </thead>
             <tbody>
               <tr>
-                <td><span class="inline-code">@kissjs/core</span></td>
+                <td><span class="inline-code">@lessjs/core</span></td>
                 <td>路由扫描、entry 生成、DSD SSR、SSG、CLI。</td>
               </tr>
               <tr>
-                <td><span class="inline-code">@kissjs/ui</span></td>
+                <td><span class="inline-code">@lessjs/ui</span></td>
                 <td>文档站和示例可复用的 Web Components。</td>
               </tr>
               <tr>
-                <td><span class="inline-code">@kissjs/rpc</span></td>
+                <td><span class="inline-code">@lessjs/rpc</span></td>
                 <td>类型安全 API/RPC 能力的实验和沉淀。</td>
               </tr>
               <tr>
-                <td><span class="inline-code">@kissjs/adapter-lit</span></td>
+                <td><span class="inline-code">@lessjs/adapter-lit</span></td>
                 <td>Lit 适配边界，未来为 compiler/多 adapter 留出空间。</td>
               </tr>
             </tbody>

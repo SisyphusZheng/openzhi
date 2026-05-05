@@ -24,9 +24,9 @@ jobs:
       - name: Install dependencies
         run: deno install --node-modules-dir
 
-      - name: Build @kissjs/ui (if publishing ui)
+      - name: Build @lessjs/ui (if publishing ui)
         if: contains(github.event.inputs.packages, 'ui')
-        working-directory: packages/kiss-ui
+        working-directory: packages/ui
         run: deno task build
 
       - name: Publish requested missing package versions
@@ -62,8 +62,8 @@ jobs:
             (cd "$dir" && deno publish --allow-dirty)
           }
 
-          publish_if_requested_and_missing "rpc" "@kissjs/rpc" "packages/kiss-rpc"
-          publish_if_requested_and_missing "ui" "@kissjs/ui" "packages/kiss-ui"
-          publish_if_requested_and_missing "adapter-lit" "@kissjs/adapter-lit" "packages/kiss-adapter-lit"
-          publish_if_requested_and_missing "core" "@kissjs/core" "packages/kiss-core"
-          publish_if_requested_and_missing "create" "@kissjs/create" "packages/create-kiss"
+          publish_if_requested_and_missing "rpc" "@lessjs/rpc" "packages/rpc"
+          publish_if_requested_and_missing "ui" "@lessjs/ui" "packages/ui"
+          publish_if_requested_and_missing "adapter-lit" "@lessjs/adapter-lit" "packages/adapter-lit"
+          publish_if_requested_and_missing "core" "@lessjs/core" "packages/core"
+          publish_if_requested_and_missing "create" "@lessjs/create" "packages/create"

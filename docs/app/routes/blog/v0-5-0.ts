@@ -3,7 +3,7 @@
  */
 import { css, html, LitElement } from 'lit';
 import { pageStyles } from '../../components/page-styles.js';
-import '@kissjs/ui/kiss-layout';
+import '@lessjs/ui/kiss-layout';
 
 export const tagName = 'blog-v050-a0';
 
@@ -62,19 +62,19 @@ export default class BlogV050 extends LitElement {
           </div>
 
           <div class="truth">
-            <div class="truth-title">二、@kissjs/core 的运行时导出 — 归零</div>
+            <div class="truth-title">二、@lessjs/core 的运行时导出 — 归零</div>
             <p>之前 core 做了太多事：Vite 插件 + KissElement + LitElement re-export + 路由扫描 + DSD 渲染。</p>
             <p>现在 core 只做一件事：构建/SSR 基础设施。不再导出：</p>
             <ul>
               <li>✗ KissElement</li>
               <li>✗ signal / effect（@preact/signals-core）</li>
-              <li>✗ LitElement / html / css（交给 @kissjs/ui）</li>
+              <li>✗ LitElement / html / css（交给 @lessjs/ui）</li>
             </ul>
-            <p>结果：<code>@kissjs/core</code> 的运行时依赖从两个（lit + signals）变成零。</p>
+            <p>结果：<code>@lessjs/core</code> 的运行时依赖从两个（lit + signals）变成零。</p>
           </div>
 
           <div class="truth">
-            <div class="truth-title">三、@kissjs/rpc 的 Lit 耦合 — 解除</div>
+            <div class="truth-title">三、@lessjs/rpc 的 Lit 耦合 — 解除</div>
             <p>RPC 控制器本质上是 fetch + AbortController 的包装。它曾经因为用了 Lit 的 ReactiveController 接口而声明了 peer dep。</p>
             <p>v0.5-alpha-0 改为 structural typing——RPC 自己声明兼容的接口，任何有 <code>addController</code>/<code>requestUpdate</code> 的对象都可以用。Lit、原生 HTMLElement、或其他框架都行。</p>
           </div>
@@ -88,14 +88,14 @@ export default class BlogV050 extends LitElement {
           <h2>留了什么</h2>
 
           <div class="truth">
-            <div class="truth-title">Lit 保留在 @kissjs/ui</div>
+            <div class="truth-title">Lit 保留在 @lessjs/ui</div>
             <p>Lit 是 Web Component 最成熟的工具库。kiss-ui 的九个组件已经用 Lit 写好、无 bug、正在跑。15KB gzip 不可见成本（被所有组件共享）。</p>
-            <p>Lit 现在是 <code>@kissjs/ui</code> 的实现细节。用户写 <code>&lt;kiss-button variant="primary"&gt;</code> 不需要知道里面有 Lit。需要自定义组件的用户可以自己写 <code>class extends HTMLElement</code>，和 kiss-ui 组件同页面共存。</p>
+            <p>Lit 现在是 <code>@lessjs/ui</code> 的实现细节。用户写 <code>&lt;kiss-button variant="primary"&gt;</code> 不需要知道里面有 Lit。需要自定义组件的用户可以自己写 <code>class extends HTMLElement</code>，和 kiss-ui 组件同页面共存。</p>
           </div>
 
           <div class="truth">
             <div class="truth-title">DSD 渲染器 — core / adapter 分层不变</div>
-            <p>core 负责 DSD-first 渲染与 SSG 管线；Lit 组件通过 <code>@kissjs/adapter-lit</code> 接入。后续 Trust Release 必须补齐 adapter 测试与插值转义，不能把 adapter 风险伪装成 core 的能力。</p>
+            <p>core 负责 DSD-first 渲染与 SSG 管线；Lit 组件通过 <code>@lessjs/adapter-lit</code> 接入。后续 Trust Release 必须补齐 adapter 测试与插值转义，不能把 adapter 风险伪装成 core 的能力。</p>
           </div>
 
           <div class="truth">
@@ -105,9 +105,9 @@ export default class BlogV050 extends LitElement {
 
           <h2>新架构一览</h2>
 
-          <pre><code>@kissjs/core    — 纯构建/SSR 工具           [零框架运行时]
-@kissjs/rpc     — fetch + AbortController   [零框架运行时]
-@kissjs/ui      — OpenProps + Lit 组件库     [仅 UI 层]
+          <pre><code>@lessjs/core    — 纯构建/SSR 工具           [零框架运行时]
+@lessjs/rpc     — fetch + AbortController   [零框架运行时]
+@lessjs/ui      — OpenProps + Lit 组件库     [仅 UI 层]
 create-kiss     — 脚手架                    [CLI 工具]</code></pre>
 
           <p>Vite 8.0.10，Deno 2.6，单根 deno.json。CI 全绿。</p>

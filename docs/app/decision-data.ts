@@ -41,7 +41,7 @@ export const DECISIONS: DecisionDoc[] = [
   },
   {
     id: '0004',
-    title: '@kissjs/blog',
+    title: '@lessjs/blog',
     status: 'Draft',
     path: '/decisions/0004-blog-system',
     summary: 'Plan a standalone Markdown blog package after the serverless fullstack milestone.',

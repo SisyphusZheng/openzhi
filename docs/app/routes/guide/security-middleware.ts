@@ -1,6 +1,6 @@
 import { css, html, LitElement } from 'lit';
 import { pageStyles } from '../../components/page-styles.js';
-import '@kissjs/ui/kiss-layout';
+import '@lessjs/ui/kiss-layout';
 import '../../islands/code-block.js';
 
 export class SecurityMiddlewarePage extends LitElement {
@@ -26,7 +26,7 @@ export class SecurityMiddlewarePage extends LitElement {
     return html`
       <kiss-layout currentPath="/guide/security-middleware">
         <div class="container">
-          <h1>Security & Middleware</h1>
+          <h1>安全与中间件</h1>
           <p class="subtitle">
             Middleware is where KISS connects route-tree structure with production safety:
             request headers, CSP, auth guards, CORS and API-specific protections.

@@ -22,7 +22,7 @@ jobs:
       - name: Install dependencies
         run: deno install --node-modules-dir
       - name: Run type check
-        run: deno check packages/kiss-core/src/index.ts packages/kiss-rpc/src/index.ts packages/kiss-ui/src/index.ts
+        run: deno check packages/core/src/index.ts packages/rpc/src/index.ts packages/ui/src/index.ts
 
   test-core:
     runs-on: ubuntu-latest
@@ -38,11 +38,11 @@ jobs:
           key: ${{ runner.os }}-deno-${{ hashFiles('deno.lock') }}
       - name: Install dependencies
         run: deno install --node-modules-dir
-      - name: Build kiss-ui (needed for scanPackageIslands test)
-        working-directory: packages/kiss-ui
+      - name: Build ui (needed for scanPackageIslands test)
+        working-directory: packages/ui
         run: deno task build
-      - name: Run kiss-core tests
-        run: deno test packages/kiss-core/__tests__/ --allow-read --allow-write --allow-env --allow-run
+      - name: Run core tests
+        run: deno test packages/core/__tests__/ --allow-read --allow-write --allow-env --allow-run
 
   test-rpc:
     runs-on: ubuntu-latest
@@ -58,8 +58,8 @@ jobs:
           key: ${{ runner.os }}-deno-${{ hashFiles('deno.lock') }}
       - name: Install dependencies
         run: deno install --node-modules-dir
-      - name: Run kiss-rpc tests
-        run: deno test packages/kiss-rpc/__tests__/ --allow-read --allow-write
+      - name: Run rpc tests
+        run: deno test packages/rpc/__tests__/ --allow-read --allow-write
 
   test-ui:
     runs-on: ubuntu-latest
@@ -75,8 +75,8 @@ jobs:
           key: ${{ runner.os }}-deno-${{ hashFiles('deno.lock') }}
       - name: Install dependencies
         run: deno install --node-modules-dir
-      - name: Run kiss-ui tests
-        run: deno test packages/kiss-ui/__tests__/ --allow-read --allow-write --allow-env
+      - name: Run ui tests
+        run: deno test packages/ui/__tests__/ --allow-read --allow-write --allow-env
 
   test-create:
     runs-on: ubuntu-latest
@@ -92,5 +92,5 @@ jobs:
           key: ${{ runner.os }}-deno-${{ hashFiles('deno.lock') }}
       - name: Install dependencies
         run: deno install --node-modules-dir
-      - name: Run create-kiss tests
-        run: deno test packages/create-kiss/__tests__/ --allow-read --allow-write --allow-env --allow-run
+      - name: Run create tests
+        run: deno test packages/create/__tests__/ --allow-read --allow-write --allow-env --allow-run

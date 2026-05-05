@@ -1,6 +1,6 @@
 import { html, LitElement } from 'lit';
 import { pageStyles } from '../../components/page-styles.js';
-import '@kissjs/ui/kiss-layout';
+import '@lessjs/ui/kiss-layout';
 import '../../islands/code-block.js';
 
 export class ConfigurationPage extends LitElement {
@@ -10,7 +10,7 @@ export class ConfigurationPage extends LitElement {
     return html`
       <kiss-layout currentPath="/guide/configuration">
         <div class="container">
-          <h1>Configuration</h1>
+          <h1>配置</h1>
           <p class="subtitle">
             KISS is configured through the Vite plugin. Keep configuration explicit:
             routes, islands, static output, head injection, PWA and middleware are separate concerns.
@@ -19,7 +19,7 @@ export class ConfigurationPage extends LitElement {
           <h2>Minimal Config</h2>
           <code-block><pre><code>// vite.config.ts
 import { defineConfig } from 'vite';
-import { kiss } from '@kissjs/core';
+import { kiss } from '@lessjs/core';
 
 export default defineConfig({
   plugins: [kiss()],
@@ -93,10 +93,10 @@ export default defineConfig({
           <h2>Package Islands</h2>
           <p>
             Package islands are reusable Web Components discovered at build time.
-            This is how <span class="inline-code">@kissjs/ui</span> contributes interactive components to the docs site.
+            This is how <span class="inline-code">@lessjs/ui</span> contributes interactive components to the docs site.
           </p>
           <code-block><pre><code>kiss({
-  packageIslands: ['@kissjs/ui'],
+  packageIslands: ['@lessjs/ui'],
 });</code></pre></code-block>
 
           <h2>Island Strategy</h2>
@@ -148,7 +148,7 @@ export default defineConfig({
       routesDir: 'app/routes',
       islandsDir: 'app/islands',
       componentsDir: 'app/components',
-      packageIslands: ['@kissjs/ui'],
+      packageIslands: ['@lessjs/ui'],
       html: {
         lang: 'en',
         title: 'My KISS App',

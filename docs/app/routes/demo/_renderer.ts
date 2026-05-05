@@ -8,7 +8,7 @@
  *   - It upgrades independently when its chunk defines the custom element
  *   - No simultaneous upgrade conflict with the parent shadow DOM
  */
-import type { KissRenderer } from '@kissjs/core';
+import type { KissRenderer } from '@lessjs/core';
 
 const renderer: KissRenderer = {
   wrap(html, _ctx) {

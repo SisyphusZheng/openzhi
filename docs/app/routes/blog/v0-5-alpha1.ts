@@ -3,7 +3,7 @@
  */
 import { css, html, LitElement } from 'lit';
 import { pageStyles } from '../../components/page-styles.js';
-import '@kissjs/ui/kiss-layout';
+import '@lessjs/ui/kiss-layout';
 
 export const tagName = 'blog-v0-5-alpha1';
 
@@ -210,14 +210,14 @@ export default class BlogV05Alpha1 extends LitElement {
             </thead>
             <tbody>
               <tr>
-                <td><code>@kissjs/adapter-lit</code></td>
+                <td><code>@lessjs/adapter-lit</code></td>
                 <td>—</td>
                 <td>0</td>
                 <td><span class="bad">0%</span></td>
                 <td>最危险的缺口（两个 Bug 均出此处）</td>
               </tr>
               <tr>
-                <td><code>@kissjs/rpc</code></td>
+                <td><code>@lessjs/rpc</code></td>
                 <td>—</td>
                 <td>—</td>
                 <td><span class="good">184%</span></td>
@@ -237,7 +237,7 @@ export default class BlogV05Alpha1 extends LitElement {
             <div class="truth-title">审查发现的关键事实</div>
             <ul>
               <li>
-                <strong>@kissjs/adapter-lit: 0 tests。</strong>项目中最危险的覆盖缺口。今天修复的两个
+                <strong>@lessjs/adapter-lit: 0 tests。</strong>项目中最危险的覆盖缺口。今天修复的两个
                 Bug（CSS 注入、Island upgrade 竞态）都在这个包。如果你不测适配器，适配器就会出
                 Bug——这是软件工程的必然。
               </li>

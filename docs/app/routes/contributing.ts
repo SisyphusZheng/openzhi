@@ -3,7 +3,7 @@
  */
 import { css, html, LitElement } from 'lit';
 import { pageStyles } from '../components/page-styles.js';
-import '@kissjs/ui/kiss-layout';
+import '@lessjs/ui/kiss-layout';
 import '../islands/code-block.js';
 
 export class ContributingPage extends LitElement {
@@ -56,7 +56,7 @@ export class ContributingPage extends LitElement {
           <code-block
           ><pre>
             <code># 克隆仓库
-            git clone https://github.com/SisyphusZheng/kiss.git
+            git clone https://github.com/lessjs-run/LessJS.git
             cd kiss
 
             # 安装依赖
@@ -161,8 +161,8 @@ export class ContributingPage extends LitElement {
                   <ul>
                     <li>
                       GitHub Issues:
-                      <a href="https://github.com/SisyphusZheng/kiss/issues" target="_blank"
-                      >https://github.com/SisyphusZheng/kiss/issues</a>
+                      <a href="https://github.com/lessjs-run/LessJS/issues" target="_blank"
+                      >https://github.com/lessjs-run/LessJS/issues</a>
                     </li>
                     <li>提交前请搜索已有 issue</li>
                   </ul>
