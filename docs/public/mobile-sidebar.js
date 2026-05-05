@@ -1,10 +1,10 @@
-// KISS Mobile Sidebar — L2 (browser API)
+// LessJS Mobile Sidebar — L2 (browser API)
 // Closes sidebar on backdrop click or nav link click (mobile).
 // Uses composedPath() to penetrate Shadow DOM.
 // deno-lint-ignore no-var no-inner-declarations
 if (typeof document !== 'undefined') {
   document.addEventListener('click', function (e) {
-    const target = e.target;
+    var target = e.target;
     if (!target || !(target instanceof Element)) return;
 
     var path = e.composedPath();
@@ -15,7 +15,6 @@ if (typeof document !== 'undefined') {
       var el = path[i];
       if (!el.classList) continue;
       if (el.classList.contains('mobile-backdrop')) isBackdrop = true;
-      // KISS S-constraint: nav links are <a> elements in the sidebar
       if (
         el.tagName === 'A' && (
           el.closest('.sidebar-nav') || el.closest('.nav-section')
