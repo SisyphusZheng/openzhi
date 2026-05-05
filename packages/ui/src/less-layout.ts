@@ -524,12 +524,26 @@ export class LessLayout extends LitElement {
     }
 
     override firstUpdated() {
+      this._syncMenuState();
+    }
+
+    /** Explicit toggle: directly sets open + menu-open (no native <details> reliance) */
+    private _toggleMenu(e: Event) {
+      e.preventDefault();
+      const details = this.shadowRoot?.querySelector('details.mobile-menu');
+      if (!details) return;
+      const willOpen = !details.hasAttribute('open');
+      details.toggleAttribute('open', willOpen);
+      this.toggleAttribute('menu-open', willOpen);
+    }
+
+    /** Sync menu-open attribute with details.open initial state */
+    private _syncMenuState() {
       const details = this.shadowRoot?.querySelector('details.mobile-menu');
       if (details) {
         details.addEventListener('toggle', () => {
           this.toggleAttribute('menu-open', (details as HTMLDetailsElement).open);
         });
-        // Sync initial state
         this.toggleAttribute('menu-open', (details as HTMLDetailsElement).open);
       }
     }
@@ -674,7 +688,7 @@ export class LessLayout extends LitElement {
               ${this._renderHeaderNav()}
               <div class="header-right">
                 <details class="mobile-menu">
-                  <summary class="mobile-menu-btn" aria-label="Toggle navigation">
+                  <summary class="mobile-menu-btn" aria-label="Toggle navigation" @click="${this._toggleMenu}">
                     <svg
                       width="18"
                       height="18"

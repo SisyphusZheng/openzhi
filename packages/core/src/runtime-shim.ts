@@ -45,15 +45,15 @@ function serializeAttributes(props = {}) {
 }
 
 function getAdapterTemplateCheck() {
-  return globalThis.__kissLitTemplateCheck;
+  return globalThis.__lessLitTemplateCheck;
 }
 
 function getAdapterSsrRenderer() {
-  return globalThis.__kissLitSsrRenderer;
+  return globalThis.__lessLitSsrRenderer;
 }
 
 function getAdapterStylesExtractor() {
-  return globalThis.__kissLitStylesExtractor;
+  return globalThis.__lessLitStylesExtractor;
 }
 
 function isLitTemplateResultHeuristic(value) {

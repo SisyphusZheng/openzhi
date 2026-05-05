@@ -108,12 +108,12 @@ Deno.test('installLitAdapter registers idempotent global hooks and uninstall rem
   installLitAdapter();
 
   const globals = globalThis as Record<string, unknown>;
-  const check = globals.__kissLitTemplateCheck as (value: unknown) => boolean;
-  const renderer = globals.__kissLitSsrRenderer as (
+  const check = globals.__lessLitTemplateCheck as (value: unknown) => boolean;
+  const renderer = globals.__lessLitSsrRenderer as (
     value: unknown,
     tagName: string,
   ) => Promise<string>;
-  const styles = globals.__kissLitStylesExtractor as (
+  const styles = globals.__lessLitStylesExtractor as (
     componentClass: CustomElementConstructor,
   ) => string | undefined;
 
@@ -137,10 +137,10 @@ Deno.test('installLitAdapter registers idempotent global hooks and uninstall rem
   assertEquals(typeof styles, 'function');
 
   uninstallLitAdapter();
-  assertEquals(globals.__kissLitTemplateCheck, undefined);
-  assertEquals(globals.__kissLitSsrRenderer, undefined);
-  assertEquals(globals.__kissLitStylesExtractor, undefined);
-  assertEquals(globals.__kissLitAdapterInstalled, undefined);
+  assertEquals(globals.__lessLitTemplateCheck, undefined);
+  assertEquals(globals.__lessLitSsrRenderer, undefined);
+  assertEquals(globals.__lessLitStylesExtractor, undefined);
+  assertEquals(globals.__lessLitAdapterInstalled, undefined);
 });
 
 // ─── Additional Coverage Tests ────────────────────────────────────

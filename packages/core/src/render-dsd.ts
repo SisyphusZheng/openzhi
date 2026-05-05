@@ -66,7 +66,7 @@ type StylesExtractorFn = (componentClass: CustomElementConstructor) => string | 
  * Returns the checker function if available, undefined otherwise.
  */
 function getAdapterTemplateCheck(): TemplateCheckFn | undefined {
-  return (globalThis as Record<string, unknown>).__kissLitTemplateCheck as
+  return (globalThis as Record<string, unknown>).__lessLitTemplateCheck as
     | TemplateCheckFn
     | undefined;
 }
@@ -76,7 +76,7 @@ function getAdapterTemplateCheck(): TemplateCheckFn | undefined {
  * Returns the renderer function if available, undefined otherwise.
  */
 function getAdapterSsrRenderer(): SsrRendererFn | undefined {
-  return (globalThis as Record<string, unknown>).__kissLitSsrRenderer as
+  return (globalThis as Record<string, unknown>).__lessLitSsrRenderer as
     | SsrRendererFn
     | undefined;
 }
@@ -86,7 +86,7 @@ function getAdapterSsrRenderer(): SsrRendererFn | undefined {
  * Returns the extractor function if available, undefined otherwise.
  */
 function getAdapterStylesExtractor(): StylesExtractorFn | undefined {
-  return (globalThis as Record<string, unknown>).__kissLitStylesExtractor as
+  return (globalThis as Record<string, unknown>).__lessLitStylesExtractor as
     | StylesExtractorFn
     | undefined;
 }

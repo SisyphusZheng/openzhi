@@ -110,13 +110,13 @@ export class ExamplesPage extends LitElement {
         border-top: 0.5px solid var(--less-border);
         margin: 1rem 0;
       }
-      .kiss-row {
+      .less-row {
         display: flex;
         gap: 0.5rem;
         flex-wrap: wrap;
         margin: 0.75rem 0;
       }
-      .kiss-letter {
+      .less-letter {
         display: inline-flex;
         align-items: center;
         justify-content: center;
@@ -129,7 +129,7 @@ export class ExamplesPage extends LitElement {
         color: var(--less-text-primary);
         background: var(--less-bg-base);
       }
-      .kiss-desc {
+      .less-desc {
         font-size: 0.8125rem;
         color: var(--less-text-secondary);
         margin-left: 0.25rem;
@@ -171,18 +171,18 @@ export class ExamplesPage extends LitElement {
               <span class="arch-value">Content first, enhancement second — no JS baseline</span>
             </div>
             <hr class="arch-divider" />
-            <div class="kiss-row">
-              <span class="kiss-letter">K</span><span class="kiss-desc">Knowledge — SSG + DSD</span>
+            <div class="less-row">
+              <span class="less-letter">K</span><span class="less-desc">Knowledge — SSG + DSD</span>
             </div>
-            <div class="kiss-row">
-              <span class="kiss-letter">I</span><span class="kiss-desc"
+            <div class="less-row">
+              <span class="less-letter">I</span><span class="less-desc"
               >Isolated — Islands + Shadow DOM</span>
             </div>
-            <div class="kiss-row">
-              <span class="kiss-letter">S</span><span class="kiss-desc">Semantic — No-JS baseline</span>
+            <div class="less-row">
+              <span class="less-letter">S</span><span class="less-desc">Semantic — No-JS baseline</span>
             </div>
-            <div class="kiss-row">
-              <span class="kiss-letter">S</span><span class="kiss-desc">Static — CDN + Serverless</span>
+            <div class="less-row">
+              <span class="less-letter">S</span><span class="less-desc">Static — CDN + Serverless</span>
             </div>
           </div>
 

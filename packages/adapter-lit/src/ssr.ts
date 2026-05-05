@@ -317,30 +317,30 @@ export function renderLitToString(
  * The adapter stays installed for the lifetime of the process.
  */
 export function installLitAdapter(): void {
-  if ((globalThis as Record<string, unknown>).__kissLitAdapterInstalled) {
+  if ((globalThis as Record<string, unknown>).__lessLitAdapterInstalled) {
     return; // Already installed — idempotent
   }
 
-  (globalThis as Record<string, unknown>).__kissLitSsrRenderer = (
+  (globalThis as Record<string, unknown>).__lessLitSsrRenderer = (
     result: unknown,
     tagName: string,
   ): Promise<string> => {
     return Promise.resolve(renderLitToString(result, tagName));
   };
 
-  (globalThis as Record<string, unknown>).__kissLitTemplateCheck = (
+  (globalThis as Record<string, unknown>).__lessLitTemplateCheck = (
     value: unknown,
   ): boolean => {
     return isLitTemplateResult(value);
   };
 
-  (globalThis as Record<string, unknown>).__kissLitStylesExtractor = (
+  (globalThis as Record<string, unknown>).__lessLitStylesExtractor = (
     componentClass: CustomElementConstructor,
   ): string | undefined => {
     return extractLitStyles(componentClass);
   };
 
-  (globalThis as Record<string, unknown>).__kissLitAdapterInstalled = true;
+  (globalThis as Record<string, unknown>).__lessLitAdapterInstalled = true;
   console.log('[LessJS] Lit SSR adapter installed - TemplateResult to string');
 }
 
@@ -351,8 +351,8 @@ export function installLitAdapter(): void {
  * default behavior (only accepting string from render()).
  */
 export function uninstallLitAdapter(): void {
-  delete (globalThis as Record<string, unknown>).__kissLitSsrRenderer;
-  delete (globalThis as Record<string, unknown>).__kissLitTemplateCheck;
-  delete (globalThis as Record<string, unknown>).__kissLitStylesExtractor;
-  delete (globalThis as Record<string, unknown>).__kissLitAdapterInstalled;
+  delete (globalThis as Record<string, unknown>).__lessLitSsrRenderer;
+  delete (globalThis as Record<string, unknown>).__lessLitTemplateCheck;
+  delete (globalThis as Record<string, unknown>).__lessLitStylesExtractor;
+  delete (globalThis as Record<string, unknown>).__lessLitAdapterInstalled;
 }
