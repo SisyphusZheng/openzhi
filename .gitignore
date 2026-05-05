@@ -55,3 +55,7 @@ coverage-output.txt
 docs/vite-build-*.txt
 /node_modules
 node_modules
+
+# Root-level logo source files (design originals, keep local)
+/less-logo*.svg
+/less-favicon.svg
