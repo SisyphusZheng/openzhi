@@ -238,11 +238,6 @@ Deno.test('create-kiss: generated project builds through the one-command pipelin
         find: '@lessjs/ui/less-hero-ping',
         replacement: vitePath(join(uiSrc, 'less-hero-ping.ts')),
       },
-      { find: '@lessjs/ui', replacement: vitePath(join(uiSrc, 'index.ts')) },
-      {
-        find: '@lessjs/core',
-        replacement: vitePath(join(repoRoot, 'packages', 'core', 'src', 'index.ts')),
-      },
     ];
     const viteConfigPath = join(appDir, 'vite.config.ts');
     let viteConfig = readFileSync(viteConfigPath, 'utf-8');
