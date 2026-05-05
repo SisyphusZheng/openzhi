@@ -1,5 +1,6 @@
-// KISS :has() Fallback — L2 (browser API)
+// LessJS :has() Fallback — L2 (browser API)
 // For older browsers (Safari < 15.4, Firefox < 121) that don't support :has().
+// Uses setAttribute('menu-open') to match :host([menu-open]) CSS rules.
 // deno-lint-ignore no-var no-inner-declarations
 (function () {
   if (typeof document === 'undefined') return;
@@ -22,8 +23,8 @@
             var details = sr.querySelector('details.mobile-menu');
             if (details) {
               details.addEventListener('toggle', function () {
-                if (this.open) el.classList.add('sidebar-open');
-                else el.classList.remove('sidebar-open');
+                if (this.open) el.setAttribute('menu-open', '');
+                else el.removeAttribute('menu-open');
               });
             }
           }

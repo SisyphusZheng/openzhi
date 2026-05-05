@@ -533,14 +533,20 @@ export class KissLayout extends LitElement {
       this.githubUrl = 'https://github.com/lessjs-run/LessJS';
     }
 
-    override firstUpdated() {
+    override connectedCallback() {
+      super.connectedCallback();
       // Sync `menu-open` host attribute with <details> toggle state.
       // This is the primary mechanism for sidebar visibility — more reliable
       // than CSS :has() which has known issues in Safari Shadow DOM.
+      // NOTE: Must use connectedCallback(), NOT firstUpdated(). In DSD (SSR)
+      // scenarios the shadow root already exists before the custom element
+      // upgrades, so Lit skips the first update cycle and firstUpdated()
+      // never fires. connectedCallback() always fires on element upgrade.
       const details = this.shadowRoot?.querySelector(
         'details.mobile-menu',
       ) as HTMLDetailsElement | null;
-      if (details) {
+      if (details && !details.dataset.toggleListener) {
+        details.dataset.toggleListener = 'true';
         details.addEventListener('toggle', () => {
           if (details.open) {
             this.setAttribute('menu-open', '');
