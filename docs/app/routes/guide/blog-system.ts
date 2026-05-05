@@ -86,7 +86,7 @@ export class BlogSystemPage extends LitElement {
             <li><code>/blog/</code> — Post listing (paginated, newest first)</li>
             <li><code>/blog/hello-world</code> — Individual post</li>
             <li><code>/blog/page/2</code> — Page 2</li>
-            <li><code>/blog/tags/kiss</code> — Filter by tag</li>
+            <li><code>/blog/tags/lessjs</code> — Filter by tag</li>
             <li><code>/blog/feed.xml</code> — RSS / Atom feed</li>
           </ul>
 

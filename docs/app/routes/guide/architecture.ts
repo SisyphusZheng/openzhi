@@ -43,11 +43,11 @@ export class ArchitecturePage extends LitElement {
           <code-block><pre><code>Phase 1: SSR bundle
   - scan routes, API routes, middleware and islands
   - generate virtual Hono entry
-  - emit .kiss/build-metadata.json
+  - emit .less/build-metadata.json
 
 Phase 2: client islands
   - read metadata
-  - generate .kiss-client-entry.ts
+  - generate .less-client-entry.ts
   - build island chunks into dist/client
 
 Phase 3: SSG
