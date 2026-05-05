@@ -30,9 +30,9 @@ export class ChangelogPage extends LitElement {
       }
       .version-date {
         font-size: 0.75rem;
-        color: var(--kiss-text-muted);
+        color: var(--less-text-muted);
         padding: 0.25rem 0.5rem;
-        background: var(--kiss-bg-elevated);
+        background: var(--less-bg-elevated);
         border-radius: 3px;
       }
       .change-category {
@@ -43,14 +43,14 @@ export class ChangelogPage extends LitElement {
         font-weight: 600;
         text-transform: uppercase;
         letter-spacing: 0.08em;
-        color: var(--kiss-text-muted);
+        color: var(--less-text-muted);
         margin-bottom: 0.5rem;
       }
       .change-category.added h4 {
-        color: var(--kiss-accent);
+        color: var(--less-accent);
       }
       .change-category.changed h4 {
-        color: var(--kiss-accent-dim);
+        color: var(--less-accent-dim);
       }
       .change-category.fixed h4 {
         color: var(--less-text-secondary);
@@ -71,7 +71,7 @@ export class ChangelogPage extends LitElement {
         content: "•";
         position: absolute;
         left: 0;
-        color: var(--kiss-text-muted);
+        color: var(--less-text-muted);
       }
       .version-table {
         width: 100%;
@@ -90,7 +90,7 @@ export class ChangelogPage extends LitElement {
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 0.08em;
-        color: var(--kiss-text-muted);
+        color: var(--less-text-muted);
       }
       .version-table td:first-child {
         font-weight: 600;
@@ -116,6 +116,68 @@ export class ChangelogPage extends LitElement {
             历史条目保留当时术语；当前文档统一把 LessJS 的客户端模型称为 Island Upgrade，而不是传统
             hydration。
           </p>
+
+          <div class="version-section">
+            <div class="version-header">
+              <span class="version-number">0.5.4</span>
+              <span class="version-date">2026-05-05</span>
+            </div>
+            <div class="change-category changed">
+              <h4>变更</h4>
+              <ul class="change-list">
+                <li>
+                  <strong>全面品牌重塑 KISS → LessJS</strong>：组件标签 <span class="inline-code">kiss-*</span>
+                  → <span class="inline-code">less-*</span>（8 个组件），CSS 变量 <span class="inline-code">--kiss-*</span>
+                  → <span class="inline-code">--less-*</span>（60+ 变量），事件名 <span class="inline-code">kiss:ready</span>
+                  → <span class="inline-code">less:ready</span>，Vite 插件名统一为 <span class="inline-code">less:*</span>。
+                </li>
+                <li>
+                  <strong>包作用域迁移</strong>：<span class="inline-code">@kissjs/*</span> → <span class="inline-code">@lessjs/*</span>，
+                  包目录从 <span class="inline-code">packages/kiss-core</span> 等重命名为 <span class="inline-code">packages/core</span> 等。
+                </li>
+                <li>
+                  <strong>Logo 视觉资产</strong>：基于 <span class="inline-code">&lt;</span>（小于号）符号的 4 种
+                  Logo 变体（透明/反色/横排/favicon），首页 Hero 区内嵌 Logo。
+                </li>
+                <li>
+                  <strong>npm 发布管线</strong>：4 个包新增 <span class="inline-code">_build_npm.ts</span> dnt
+                  构建脚本，CI 支持 JSR + npm 双发，手动触发 <span class="inline-code">workflow_dispatch</span>。
+                </li>
+              </ul>
+            </div>
+            <div class="change-category fixed">
+              <h4>修复</h4>
+              <ul class="change-list">
+                <li>
+                  <strong>dnt 工作区路径解析</strong>：从仓库根运行 dnt 将 <span class="inline-code">./src/index.ts</span>
+                  解析到仓库根。修复为在包目录内运行 <span class="inline-code">(cd pkg && deno run -A --config deno.json _build_npm.ts)</span>。
+                </li>
+                <li>
+                  <strong>dnt 类型检查失败</strong>：测试文件中 <span class="inline-code">Deno.test</span> 和
+                  <span class="inline-code">@std/assert</span> 在 Node TS 不合法。所有 dnt 配置加
+                  <span class="inline-code">typeCheck: false</span>。
+                </li>
+                <li>
+                  <strong>Vite alias 路径格式</strong>：Rolldown 将 <span class="inline-code">file://</span>
+                  URL 误解为相对路径。Vite alias 改用绝对路径，仅 <span class="inline-code">packageIslands</span>
+                  保留 <span class="inline-code">file://</span> 协议。
+                </li>
+                <li>
+                  <strong>kiss-runtime.ts 重命名</strong>：文件未随品牌迁移重命名，已改为 <span class="inline-code">less-runtime.ts</span>。
+                </li>
+                <li>
+                  <strong>ui exports 映射</strong>：npm exports 仍列 <span class="inline-code">kiss-*</span>
+                  文件名，已修复匹配 <span class="inline-code">less-*</span> 实际输出。
+                </li>
+                <li>
+                  <strong>部署目标</strong>：<span class="inline-code">kiss.js.org</span> → <span class="inline-code">lessjs.com</span>。
+                </li>
+                <li>
+                  文档站全站品牌升级、遗留路径引用修复。
+                </li>
+              </ul>
+            </div>
+          </div>
 
           <div class="version-section">
             <div class="version-header">
@@ -370,7 +432,7 @@ export class ChangelogPage extends LitElement {
 
             <h2>
               v0.5.0-alpha.1 — 架构审计与精准修复 <span
-                style="font-size:0.75rem;color:var(--kiss-text-muted);font-weight:400"
+                style="font-size:0.75rem;color:var(--less-text-muted);font-weight:400"
               >2026-05-02</span>
             </h2>
 
