@@ -1,6 +1,6 @@
 import { css, html, LitElement } from 'lit';
 import { pageStyles } from '../components/page-styles.js';
-import '@kissjs/ui/kiss-layout';
+import '@lessjs/ui/kiss-layout';
 
 export class RoadmapPage extends LitElement {
   static override styles = [

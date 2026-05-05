@@ -7,21 +7,11 @@
  * Node built-in modules (node:fs, node:path). These need npm
  * dependency mappings and Node shims.
  */
-import { build, emptyDir } from 'jsr:@deno/dnt';
+import { build, emptyDir } from 'jsr:@deno/dnt@^0.42';
 
 const version = JSON.parse(Deno.readTextFileSync('./deno.json')).version;
 
 await emptyDir('./npm');
-
-// Map npm: prefixed imports to actual npm package names
-const dependencyMap: Record<string, string> = {
-  'hono': '^4',
-  '@hono/vite-dev-server': '^0.25.3',
-  'vite': '^8.0.10',
-  'parse5': '^7.0.0',
-  'entities': '^6.0.0',
-  '@lit-labs/ssr-dom-shim': '^1.5.0',
-};
 
 await build({
   entryPoints: [

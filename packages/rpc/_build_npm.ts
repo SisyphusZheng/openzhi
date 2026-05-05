@@ -6,7 +6,7 @@
  * @lessjs/rpc has zero external dependencies (pure Web APIs),
  * so this is the simplest build script in the monorepo.
  */
-import { build, emptyDir } from 'jsr:@deno/dnt';
+import { build, emptyDir } from 'jsr:@deno/dnt@^0.42';
 
 const version = JSON.parse(Deno.readTextFileSync('./deno.json')).version;
 

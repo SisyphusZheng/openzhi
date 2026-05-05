@@ -224,7 +224,7 @@ async function buildSSG(options: BuildSSGOptions = {}): Promise<void> {
     // components that each import the same UI modules. With nested DSD + relative
     // imports, multiple routes trigger the same define() call.
     const origDefine = globalThis.customElements?.define?.bind(globalThis.customElements);
-    if (origDefine && !globalThis.__kissSsrDefinePatched) {
+    if (origDefine && !(globalThis as Record<string, unknown>).__kissSsrDefinePatched) {
       globalThis.customElements.define = (
         name: string,
         ctor: CustomElementConstructor,
@@ -235,7 +235,7 @@ async function buildSSG(options: BuildSSGOptions = {}): Promise<void> {
           origDefine(name, ctor, options);
         } catch { /* already defined */ }
       };
-      globalThis.__kissSsrDefinePatched = true;
+      (globalThis as Record<string, unknown>).__kissSsrDefinePatched = true;
     }
 
     try {

@@ -4,7 +4,7 @@
  * Zero-dependency — detects Lit TemplateResult by duck-typing at runtime.
  * Usage: deno run -A _build_npm.ts
  */
-import { build, emptyDir } from 'jsr:@deno/dnt';
+import { build, emptyDir } from 'jsr:@deno/dnt@^0.42';
 
 const version = JSON.parse(Deno.readTextFileSync('./deno.json')).version;
 
