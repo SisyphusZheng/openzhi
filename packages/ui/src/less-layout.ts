@@ -533,6 +533,24 @@ export class KissLayout extends LitElement {
       this.githubUrl = 'https://github.com/lessjs-run/LessJS';
     }
 
+    override firstUpdated() {
+      // Sync `menu-open` host attribute with <details> toggle state.
+      // This is the primary mechanism for sidebar visibility — more reliable
+      // than CSS :has() which has known issues in Safari Shadow DOM.
+      const details = this.shadowRoot?.querySelector(
+        'details.mobile-menu',
+      ) as HTMLDetailsElement | null;
+      if (details) {
+        details.addEventListener('toggle', () => {
+          if (details.open) {
+            this.setAttribute('menu-open', '');
+          } else {
+            this.removeAttribute('menu-open');
+          }
+        });
+      }
+    }
+
     /** Default KISS docs navigation — sync with docs/app/nav-data.ts */
     private static readonly DEFAULT_NAV: NavSection[] = [
       {
