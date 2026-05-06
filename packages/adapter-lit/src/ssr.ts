@@ -126,18 +126,86 @@ function escapeAttr(value: string): string {
     .replace(/>/g, '&gt;');
 }
 
+/** Detect if a string starts with a custom element tag after trimming leading whitespace.
+ *  Custom element names MUST contain a hyphen: [a-z][a-z0-9]*-[a-z0-9-]+
+ */
+function startsWithCustomElement(html: string): boolean {
+  return /^<[a-z][a-z0-9]*-[a-z0-9-]+[\s>]/.test(html.trimStart());
+}
+
+/** Extract the custom element tag name from DSD HTML.
+ *  Input: `<custom-element[attrs]><template shadowrootmode="open">CONTENT</template></custom-element>`
+ *  Returns: `custom-element[attrs]` (the tag + attributes)
+ */
+function extractCeTag(dsdHtml: string): string | null {
+  const trimmed = dsdHtml.trimStart();
+  const match = trimmed.match(/^<([a-z][a-z0-9]*-[a-z0-9-]+)[^>]*>/);
+  return match ? match[0] : null;
+}
+
+/** Unwrap DSD for nested custom elements.
+ *
+ * v0.6 FIX: When a Lit component renders another custom element, the SSR adapter
+ * outputs the nested CE's DSD as TEXT CONTENT in the parent's shadow DOM. This
+ * causes the nested CE to appear as raw HTML instead of a real DOM element.
+ *
+ * Case 1: Result starts with a CE tag → extract just the CE tag.
+ *   Input:  `<less-layout><template shadowrootmode="open">CONTENT</template></less-layout>`
+ *   Output: `<less-layout>`
+ *
+ * Case 2: Result starts with static content followed by a CE DSD → replace the
+ *   CE's DSD wrapper with just the CE tag (to become a real DOM node).
+ *   Input:  `<style>...</style>\n<counter-island><template shadowrootmode="open">...</template></counter-island>`
+ *   Output: `<style>...</style>\n<counter-island>`
+ *
+ * This ensures nested CEs become real DOM elements in the parent's shadow DOM,
+ * which `renderDSD.renderNestedCustomElements()` can then process for proper DSD wrapping.
+ */
+function unwrapDsdForNestedCe(html: string): string {
+  const trimmed = html.trimStart();
+  // Case 1: starts with a CE tag → extract just the CE tag
+  if (startsWithCustomElement(trimmed)) {
+    // Find the first CE tag in the HTML
+    const ceTagMatch = trimmed.match(/^<([a-z][a-z0-9]*-[a-z0-9-]+)[^>]*>/);
+    if (ceTagMatch) {
+      // Return just the CE tag (strip the DSD wrapper)
+      // The CE's shadow DOM content will be processed by renderNestedCustomElements
+      return ceTagMatch[0];
+    }
+    // If no CE tag found, fall through to case 2
+  }
+  // Case 2: static content + CE DSD → replace CE's DSD with just CE tag
+  // Pattern: anything before <template shadowrootmode>, then the DSD template, then anything after
+  // This handles: `<style>...</style>\n<counter-island><template shadowrootmode="open">...</template></counter-island>`
+  return html.replace(
+    /(<template\s+shadowrootmode="open">)[\s\S]*?(<\/template>)(\s*<\/[a-z][a-z0-9]*-[a-z0-9-]+>)/,
+    '$3',
+  );
+}
+
 /** Convert a template value for safe text-content insertion.
  *
- * v0.6: Preserves Lit's escaping semantics:
- *   - TemplateResult static parts → trusted (not escaped)
- *   - Dynamic interpolations → escaped by default
- *   - unsafeHTML directive → bypasses escaping
- *   - null/undefined/Lit nothing → empty string
+ * v0.6 FIX: Nested custom elements in Lit templates must NOT be rendered
+ * as DSD text content inside the parent's shadow DOM. Instead, we extract
+ * the shadow DOM content so nested CEs become real DOM nodes that can be
+ * processed by renderDSD's renderNestedCustomElements().
+ *
+ * This fixes the "island appearing as raw HTML/text in shadow DOM" bug
+ * where <counter-island> DSD was rendered as text inside <less-layout>'s
+ * <style> tag instead of being a real DOM element.
  */
 function stringifyContentValue(value: unknown): string {
   if (value == null || isNothing(value)) return '';
-  if (isLitTemplateResult(value)) return interpolate(value);
-  if (Array.isArray(value)) return value.map(stringifyContentValue).join('');
+  if (Array.isArray(value)) {
+    // Lit SSR wraps all values in arrays - process each element
+    return value.map(v => stringifyContentValue(v)).join('');
+  }
+  if (isLitTemplateResult(value)) {
+    const result = interpolate(value);
+    // FIX: If the rendered HTML is DSD for a custom element, unwrap it
+    // so nested CEs become real DOM nodes instead of text content.
+    return unwrapDsdForNestedCe(result);
+  }
 
   // v0.6: Check if this value has a directive marker that indicates
   // it should bypass escaping (e.g., unsafeHTML directive).
@@ -149,7 +217,12 @@ function stringifyContentValue(value: unknown): string {
     if (obj._$litDirective$ === UNSAFE_HTML_DIRECTIVE && typeof obj._$resolve === 'function') {
       try {
         const resolved = obj._$resolve();
-        return resolved != null ? String(resolved) : '';
+        if (resolved != null) {
+          const str = String(resolved);
+          // FIX: Also unwrap DSD from unsafeHTML results containing custom elements
+          return unwrapDsdForNestedCe(str);
+        }
+        return '';
       } catch {
         // If resolution fails, fall through to escaped string
       }
@@ -358,7 +431,6 @@ export function installLitAdapter(): void {
   if ((globalThis as Record<string, unknown>).__lessLitAdapterInstalled) {
     return; // Already installed — idempotent
   }
-
   (globalThis as Record<string, unknown>).__lessLitSsrRenderer = (
     result: unknown,
     tagName: string,
