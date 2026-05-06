@@ -68,7 +68,7 @@ function isLitTemplateResultHeuristic(value) {
   return typeof value === 'object' && value !== null && '_$litType$' in value;
 }
 
-// ─── Nested DSD helpers (v0.6) ────────────────────────────────
+// ─── Nested DSD helpers (v0.6 rev 2) ──────────────────────────
 
 function kebabToCamel(str) {
   return str.replace(/-([a-z])/g, (_, c) => c.toUpperCase());
@@ -92,97 +92,141 @@ function parseElementAttrs(attrsStr) {
   return props;
 }
 
+function findMatchingCloseTag(html, tagName, searchFrom) {
+  let depth = 1;
+  const openRegex = new RegExp(\`<\${tagName}[\\\\s/>]\`, 'g');
+  const closeRegex = new RegExp(\`</\${tagName}>\`, 'g');
+  openRegex.lastIndex = searchFrom;
+  closeRegex.lastIndex = searchFrom;
+  let nextOpen = openRegex.exec(html);
+  let nextClose = closeRegex.exec(html);
+  while (depth > 0) {
+    if (nextClose === null) return -1;
+    if (nextOpen === null || nextOpen.index >= nextClose.index) {
+      depth--;
+      if (depth === 0) return nextClose.index;
+      nextClose = closeRegex.exec(html);
+    } else {
+      depth++;
+      nextOpen = openRegex.exec(html);
+    }
+  }
+  return -1;
+}
+
+function findTemplateShadowRanges(html) {
+  const ranges = [];
+  const templateOpenRegex = /<template\\s+shadowrootmode\\s*=\\s*"open"\\s*>/g;
+  let match;
+  while ((match = templateOpenRegex.exec(html)) !== null) {
+    const contentStart = match.index + match[0].length;
+    let depth = 1;
+    let searchPos = contentStart;
+    while (depth > 0 && searchPos < html.length) {
+      const nextClose = html.indexOf('</template>', searchPos);
+      const nextOpen = html.indexOf('<template', searchPos);
+      if (nextClose === -1) break;
+      if (nextOpen !== -1 && nextOpen < nextClose) {
+        depth++;
+        searchPos = nextOpen + 9;
+      } else {
+        depth--;
+        if (depth === 0) {
+          ranges.push([match.index, nextClose + '</template>'.length]);
+        }
+        searchPos = nextClose + '</template>'.length;
+      }
+    }
+  }
+  return ranges;
+}
+
+function isInRange(pos, ranges) {
+  for (const [start, end] of ranges) {
+    if (pos >= start && pos < end) return true;
+  }
+  return false;
+}
+
+function alreadyHasDSD(html, openEnd, _closeIdx) {
+  const content = html.slice(openEnd);
+  const match = content.match(/^\\s*<template\\s+shadowrootmode\\s*=\\s*"open"\\s*>/);
+  return match !== null;
+}
+
 async function renderNestedCustomElements(html) {
   if (!globalThis.customElements?.get) return html;
 
-  const ceOpenRegex = /<([a-z][a-z0-9]*-[a-z0-9-]+)([\\s\\S]*?)>/g;
-  const replacements = [];
-  const cePositions = [];
+  let result = html;
+  let maxIterations = 50;
 
-  let match;
-  while ((match = ceOpenRegex.exec(html)) !== null) {
-    const tagName = match[1];
-    const attrsStr = match[2];
-    const openStart = match.index;
-    const openEnd = openStart + match[0].length;
+  while (maxIterations-- > 0) {
+    const shadowRanges = findTemplateShadowRanges(result);
+    const ceOpenRegex = /<([a-z][a-z0-9]*-[a-z0-9-]+)([\\s\\S]*?)>/g;
+    let deepestPos = null;
 
-    if (replacements.some((r) => r.start <= openStart && r.end >= openEnd)) continue;
+    let match;
+    while ((match = ceOpenRegex.exec(result)) !== null) {
+      const tagName = match[1];
+      const attrsStr = match[2];
+      const openStart = match.index;
+      const openEnd = openStart + match[0].length;
 
-    const Cls = globalThis.customElements.get(tagName);
-    if (!Cls) continue;
+      if (!globalThis.customElements.get(tagName)) continue;
+      if (isInRange(openStart, shadowRanges)) continue;
 
-    const selfClosing = attrsStr.trimEnd().endsWith('/');
-    if (selfClosing) {
-      cePositions.push({
-        tagName,
-        attrsStr: attrsStr.replace(/\\/\\s*\$/, ''),
-        start: openStart,
-        openEnd,
-        selfClosing: true,
-      });
-      continue;
+      const selfClosing = attrsStr.trimEnd().endsWith('/');
+      if (selfClosing) {
+        if (!deepestPos || openStart > deepestPos.start) {
+          deepestPos = { tagName, attrsStr: attrsStr.replace(/\\/\\s*\$/, ''), start: openStart, openEnd, selfClosing: true };
+        }
+        continue;
+      }
+
+      const closeIdx = findMatchingCloseTag(result, tagName, openEnd);
+      if (closeIdx === -1) continue;
+      if (alreadyHasDSD(result, openEnd, closeIdx)) continue;
+      if (isInRange(closeIdx, shadowRanges)) continue;
+
+      if (!deepestPos || openStart > deepestPos.start) {
+        deepestPos = { tagName, attrsStr, start: openStart, openEnd, selfClosing: false };
+      }
     }
 
-    const closeTag = \`</\${tagName}>\`;
-    const closeIdx = html.indexOf(closeTag, openEnd);
-    if (closeIdx === -1) continue;
-    const closeEnd = closeIdx + closeTag.length;
+    if (!deepestPos) break;
 
-    cePositions.push({
-      tagName,
-      attrsStr,
-      start: openStart,
-      openEnd,
-      closeEnd,
-      selfClosing: false,
-    });
-  }
+    const pos = deepestPos;
+    const Cls = globalThis.customElements.get(pos.tagName);
+    const props = parseElementAttrs(pos.attrsStr);
 
-  cePositions.sort((a, b) => b.start - a.start);
-
-  for (const pos of cePositions) {
     if (pos.selfClosing) {
-      const props = parseElementAttrs(pos.attrsStr);
-      const Cls = globalThis.customElements.get(pos.tagName);
       const dsdHtml = await renderDSD(pos.tagName, Cls, props);
-      replacements.push({ start: pos.start, end: pos.openEnd, newHtml: dsdHtml });
+      result = result.slice(0, pos.start) + dsdHtml + result.slice(pos.openEnd);
     } else {
-      const closeTag = \`</\${pos.tagName}>\`;
-      const closeIdx = html.indexOf(closeTag, pos.openEnd);
-      if (closeIdx === -1) continue;
-      const closeEnd = closeIdx + closeTag.length;
-      const fullContent = html.slice(pos.openEnd, closeIdx);
-      const renderedChildren = await renderNestedCustomElements(fullContent);
-
-      const Cls = globalThis.customElements.get(pos.tagName);
-      const props = parseElementAttrs(pos.attrsStr);
+      const closeIdx = findMatchingCloseTag(result, pos.tagName, pos.openEnd);
+      if (closeIdx === -1) break;
+      const closeEnd = closeIdx + \`</\${pos.tagName}>\`.length;
+      const lightDom = result.slice(pos.openEnd, closeIdx);
       const dsdHtml = await renderDSD(pos.tagName, Cls, props);
 
       const templateClose = '</template>';
       const templateIdx = dsdHtml.lastIndexOf(templateClose);
-      if (templateIdx === -1) continue;
+      if (templateIdx === -1) break;
 
-      const childrenTrimmed = renderedChildren.trim();
-      if (!childrenTrimmed) {
-        replacements.push({ start: pos.start, end: closeEnd, newHtml: dsdHtml });
+      const lightDomTrimmed = lightDom.trim();
+      let finalHtml;
+      if (!lightDomTrimmed) {
+        finalHtml = dsdHtml;
       } else {
         const before = dsdHtml.slice(0, templateIdx + templateClose.length);
         const after = dsdHtml.slice(templateIdx + templateClose.length);
-        replacements.push({
-          start: pos.start,
-          end: closeEnd,
-          newHtml: before + '\\n  ' + renderedChildren + after,
-        });
+        finalHtml = before + '\\n  ' + lightDom + after;
       }
+
+      result = result.slice(0, pos.start) + finalHtml + result.slice(closeEnd);
     }
   }
 
-  if (replacements.length === 0) return html;
-  let result = html;
-  for (let i = replacements.length - 1; i >= 0; i--) {
-    const { start, end, newHtml } = replacements[i];
-    result = result.slice(0, start) + newHtml + result.slice(end);
-  }
   return result;
 }
 

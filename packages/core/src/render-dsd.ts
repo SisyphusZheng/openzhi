@@ -389,15 +389,156 @@ function parseElementAttrs(attrsStr: string): Record<string, unknown> {
 }
 
 /**
+ * Find the matching close tag for an opening tag using balanced counting.
+ *
+ * Handles nested same-name elements correctly:
+ *   <x-foo>...<x-foo>...</x-foo>...</x-foo>
+ *                 ^-- not this one     ^-- this one
+ *
+ * @returns Index of the close tag start, or -1 if not found
+ */
+function findMatchingCloseTag(
+  html: string,
+  tagName: string,
+  searchFrom: number,
+): number {
+  let depth = 1;
+  const openRegex = new RegExp(`<${tagName}[\\s/>]`, 'g');
+  const closeRegex = new RegExp(`</${tagName}>`, 'g');
+
+  // Start searching from the position after the opening tag
+  openRegex.lastIndex = searchFrom;
+  closeRegex.lastIndex = searchFrom;
+
+  // Walk through both open and close tags in document order
+  let nextOpen: RegExpExecArray | null;
+  let nextClose: RegExpExecArray | null;
+
+  // Get first candidates
+  nextOpen = openRegex.exec(html);
+  nextClose = closeRegex.exec(html);
+
+  while (depth > 0) {
+    // No more close tags → unmatched
+    if (nextClose === null) return -1;
+
+    // If the next tag is a close tag (or there's no more open tags before it)
+    if (nextOpen === null || nextOpen.index >= nextClose.index) {
+      depth--;
+      if (depth === 0) return nextClose.index;
+      nextClose = closeRegex.exec(html);
+    } else {
+      // Another open tag of the same type → increase depth
+      depth++;
+      nextOpen = openRegex.exec(html);
+    }
+  }
+
+  return -1;
+}
+
+/**
+ * Identify ranges in the HTML that are inside <template shadowrootmode="open">
+ * and should be excluded from custom element processing.
+ *
+ * Shadow DOM content is rendering output, not light DOM that needs DSD wrapping.
+ * Processing it would cause CSS/HTML leakage and double-rendering bugs.
+ *
+ * @returns Array of [start, end] ranges to skip
+ */
+function findTemplateShadowRanges(html: string): Array<[number, number]> {
+  const ranges: Array<[number, number]> = [];
+  const templateOpenRegex = /<template\s+shadowrootmode\s*=\s*"open"\s*>/g;
+  let match: RegExpExecArray | null;
+
+  while ((match = templateOpenRegex.exec(html)) !== null) {
+    const contentStart = match.index + match[0].length;
+    // Find the matching </template> using balanced counting
+    let depth = 1;
+    let searchPos = contentStart;
+    while (depth > 0 && searchPos < html.length) {
+      const nextClose = html.indexOf('</template>', searchPos);
+      const nextOpen = html.indexOf('<template', searchPos);
+
+      if (nextClose === -1) break;
+
+      if (nextOpen !== -1 && nextOpen < nextClose) {
+        // Nested <template> — skip past it
+        depth++;
+        searchPos = nextOpen + 9; // past "<template"
+      } else {
+        depth--;
+        if (depth === 0) {
+          ranges.push([match.index, nextClose + '</template>'.length]);
+        }
+        searchPos = nextClose + '</template>'.length;
+      }
+    }
+  }
+
+  return ranges;
+}
+
+/**
+ * Check if a position is inside any of the skip ranges.
+ */
+function isInRange(pos: number, ranges: Array<[number, number]>): boolean {
+  for (const [start, end] of ranges) {
+    if (pos >= start && pos < end) return true;
+  }
+  return false;
+}
+
+/**
+ * Check if an element already has its own DSD template child (already rendered).
+ *
+ * This prevents double-rendering: if a CE tag's FIRST child is
+ * <template shadowrootmode="open">, it was rendered in a previous pass.
+ *
+ * IMPORTANT: We check only the FIRST child, not the entire content.
+ * Light DOM children (slot content) may contain other CE DSDs, which
+ * must NOT cause a false positive. E.g.:
+ *   <less-layout>                           ← not yet rendered
+ *     <code-block><template shadowroot...>  ← this is light DOM
+ *   </less-layout>
+ *
+ * The correct check is whether the tag's immediate content starts with
+ * <template shadowrootmode="open">, which indicates the tag itself
+ * already has a shadow root.
+ */
+function alreadyHasDSD(html: string, openEnd: number, _closeIdx: number): boolean {
+  // Check if the first non-whitespace content after the open tag
+  // is <template shadowrootmode="open">
+  const content = html.slice(openEnd);
+  const match = content.match(/^\s*<template\s+shadowrootmode\s*=\s*"open"\s*>/);
+  return match !== null;
+}
+
+/**
  * Recursively render nested Custom Elements with DSD.
  *
- * v0.6: Enhanced slot/projection support:
- *   - Self-closing CE tags (<my-comp />) are handled correctly
- *   - Void elements are skipped (they can't be Custom Elements)
- *   - Light DOM children are preserved after </template> for <slot> projection
- *   - Depth-first recursion ensures innermost elements are wrapped first
- *   - Handles nested template contents correctly
- *   - Supports data-ssr-props for client-side property binding
+ * v0.6 (rev 3): Fixed critical rendering bugs:
+ *
+ *   ROOT CAUSE: The old two-pass approach (collect positions, then apply
+ *   replacements) broke when parent/child replacements overlapped. When
+ *   less-layout's replacement range included code-block positions, applying
+ *   code-block replacements first shifted string indices, causing less-layout's
+ *   replacement to corrupt the output (CSS truncated, code-block DSD leaking
+ *   into style tags).
+ *
+ *   FIX: Process one element at a time from innermost out. After each
+ *   replacement, re-scan the updated string for the next element. This is
+ *   O(n²) in the worst case but n is small (typically <10 nested CEs per page)
+ *   and correctness is more important than asymptotic speed.
+ *
+ *   Additional protections:
+ *   - Skips content inside <template shadowrootmode="open"> (shadow DOM)
+ *     to prevent double-rendering and CSS leakage
+ *   - Uses balanced counting for close tag matching (handles nested same-name
+ *     elements correctly)
+ *   - Detects already-rendered elements to avoid double DSD wrapping
+ *   - Preserves light DOM children for slot projection
+ *   - Self-closing CE tags handled correctly
  *
  * Only processes tags with hyphens (valid Custom Element names)
  * that are registered in the global customElements registry.
@@ -405,138 +546,103 @@ function parseElementAttrs(attrsStr: string): Record<string, unknown> {
 async function renderNestedCustomElements(html: string): Promise<string> {
   if (!globalThis.customElements?.get) return html;
 
-  // Strategy: process the HTML iteratively from inside out.
-  // First, find all registered custom element tags, then render
-  // each one's DSD, preserving light DOM children for slot projection.
+  // Iterative approach: find the deepest nested CE, render it, repeat.
+  // This avoids the overlapping-replacement bug of the old two-pass approach.
+  let result = html;
+  let maxIterations = 50; // Safety limit
 
-  // Match opening tags with hyphens (valid CE names):
-  //   <my-comp> ... </my-comp>  — regular element with children
-  //   <my-comp />               — self-closing (void-like)
-  const ceOpenRegex = /<([a-z][a-z0-9]*-[a-z0-9-]+)([\s\S]*?)>/g;
+  while (maxIterations-- > 0) {
+    // Identify shadow DOM ranges that must not be processed
+    const shadowRanges = findTemplateShadowRanges(result);
 
-  interface Replacement {
-    start: number;
-    end: number;
-    newHtml: string;
-  }
+    // Find the deepest (rightmost) unprocessed custom element
+    const ceOpenRegex = /<([a-z][a-z0-9]*-[a-z0-9-]+)([\s\S]*?)>/g;
+    let deepestPos: {
+      tagName: string;
+      attrsStr: string;
+      start: number;
+      openEnd: number;
+      selfClosing: boolean;
+    } | null = null;
 
-  const replacements: Replacement[] = [];
+    let match: RegExpExecArray | null;
+    while ((match = ceOpenRegex.exec(result)) !== null) {
+      const tagName = match[1];
+      const attrsStr = match[2];
+      const openStart = match.index;
+      const openEnd = openStart + match[0].length;
 
-  // First pass: collect all custom element positions
-  const cePositions: Array<{
-    tagName: string;
-    attrsStr: string;
-    start: number;
-    openEnd: number;
-    selfClosing: boolean;
-    fullMatch: string;
-  }> = [];
+      // Only process registered Custom Elements
+      if (!globalThis.customElements!.get(tagName)) continue;
 
-  let match: RegExpExecArray | null;
-  while ((match = ceOpenRegex.exec(html)) !== null) {
-    const tagName = match[1];
-    const attrsStr = match[2];
-    const openStart = match.index;
-    const openEnd = openStart + match[0].length;
+      // Skip if inside a shadow DOM range
+      if (isInRange(openStart, shadowRanges)) continue;
 
-    // Only process registered Custom Elements
-    const Cls = globalThis.customElements.get(tagName);
-    if (!Cls) continue;
+      const selfClosing = attrsStr.trimEnd().endsWith('/');
 
-    // Skip if this range is already covered by a previous replacement
-    if (replacements.some((r) => r.start <= openStart && r.end >= openEnd)) continue;
+      if (selfClosing) {
+        // Track self-closing elements (they're leaf nodes)
+        if (!deepestPos || openStart > deepestPos.start) {
+          deepestPos = { tagName, attrsStr: attrsStr.replace(/\/\s*$/, ''), start: openStart, openEnd, selfClosing: true };
+        }
+        continue;
+      }
 
-    // Check for self-closing: ends with /> or is a void element
-    const selfClosing = attrsStr.trimEnd().endsWith('/');
+      // Find matching close tag using balanced counting
+      const closeIdx = findMatchingCloseTag(result, tagName, openEnd);
+      if (closeIdx === -1) continue;
 
-    if (selfClosing) {
-      // Self-closing CE: render full DSD, no children
-      cePositions.push({
-        tagName,
-        attrsStr: attrsStr.replace(/\/\s*$/, ''), // Remove trailing /
-        start: openStart,
-        openEnd,
-        selfClosing: true,
-        fullMatch: match[0],
-      });
-      continue;
+      // Skip if already has DSD (previously rendered)
+      if (alreadyHasDSD(result, openEnd, closeIdx)) continue;
+
+      // Skip if close tag is inside a shadow range
+      if (isInRange(closeIdx, shadowRanges)) continue;
+
+      // This is a candidate — keep the deepest one
+      if (!deepestPos || openStart > deepestPos.start) {
+        deepestPos = { tagName, attrsStr, start: openStart, openEnd, selfClosing: false };
+      }
     }
 
-    // Find matching close tag: </tagName>
-    const closeTag = `</${tagName}>`;
-    const closeIdx = html.indexOf(closeTag, openEnd);
-    if (closeIdx === -1) continue; // Malformed HTML — skip
+    if (!deepestPos) break; // No more CEs to process
 
-    const closeEnd = closeIdx + closeTag.length;
+    // Render this single CE
+    const pos = deepestPos;
+    const Cls = globalThis.customElements!.get(pos.tagName) as CustomElementConstructor;
+    const props = parseElementAttrs(pos.attrsStr);
 
-    cePositions.push({
-      tagName,
-      attrsStr,
-      start: openStart,
-      openEnd,
-      selfClosing: false,
-      fullMatch: html.slice(openStart, closeEnd),
-    });
-  }
-
-  // Second pass: process from inside out (deepest first, by position)
-  // Sort by nested depth: later opening tags are deeper
-  cePositions.sort((a, b) => b.start - a.start);
-
-  for (const pos of cePositions) {
     if (pos.selfClosing) {
-      // Self-closing element: render DSd without children
-      const props = parseElementAttrs(pos.attrsStr);
-      const dsdHtml = await renderDSD(pos.tagName, globalThis.customElements.get(pos.tagName) as CustomElementConstructor, props);
-      replacements.push({
-        start: pos.start,
-        end: pos.openEnd,
-        newHtml: dsdHtml,
-      });
+      const dsdHtml = await renderDSD(pos.tagName, Cls, props);
+      result = result.slice(0, pos.start) + dsdHtml + result.slice(pos.openEnd);
     } else {
-      // Regular element with children: find the full match again
       const closeTag = `</${pos.tagName}>`;
-      const closeIdx = html.indexOf(closeTag, pos.openEnd);
-      if (closeIdx === -1) continue;
+      const closeIdx = findMatchingCloseTag(result, pos.tagName, pos.openEnd);
+      if (closeIdx === -1) break;
       const closeEnd = closeIdx + closeTag.length;
-      const fullContent = html.slice(pos.openEnd, closeIdx);
 
-      // Depth-first: recursively process children first
-      const renderedChildren = await renderNestedCustomElements(fullContent);
+      // Get light DOM children (between open and close tags)
+      const lightDom = result.slice(pos.openEnd, closeIdx);
 
-      // Render this component's DSD
-      const props = parseElementAttrs(pos.attrsStr);
-      const dsdHtml = await renderDSD(pos.tagName, globalThis.customElements.get(pos.tagName) as CustomElementConstructor, props);
+      // Render the component's DSD
+      const dsdHtml = await renderDSD(pos.tagName, Cls, props);
 
       // Slot projection: inject light DOM children after </template>
-      // DSD spec: light DOM children are placed after </template> and before
-      // </tag>, and are projected through <slot> elements inside the shadow root.
       const templateClose = '</template>';
       const templateIdx = dsdHtml.lastIndexOf(templateClose);
-      if (templateIdx === -1) continue;
+      if (templateIdx === -1) break;
 
-      const childrenTrimmed = renderedChildren.trim();
-      if (!childrenTrimmed) {
-        replacements.push({ start: pos.start, end: closeEnd, newHtml: dsdHtml });
+      const lightDomTrimmed = lightDom.trim();
+      let finalHtml: string;
+      if (!lightDomTrimmed) {
+        finalHtml = dsdHtml;
       } else {
         const before = dsdHtml.slice(0, templateIdx + templateClose.length);
         const after = dsdHtml.slice(templateIdx + templateClose.length);
-        replacements.push({
-          start: pos.start,
-          end: closeEnd,
-          newHtml: before + '\n  ' + renderedChildren + after,
-        });
+        finalHtml = before + '\n  ' + lightDom + after;
       }
+
+      result = result.slice(0, pos.start) + finalHtml + result.slice(closeEnd);
     }
-  }
-
-  if (replacements.length === 0) return html;
-
-  // Apply replacements from end to start to preserve string indices
-  let result = html;
-  for (let i = replacements.length - 1; i >= 0; i--) {
-    const { start, end, newHtml } = replacements[i];
-    result = result.slice(0, start) + newHtml + result.slice(end);
   }
 
   return result;
