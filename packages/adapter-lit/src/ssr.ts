@@ -108,23 +108,13 @@ function isNothing(value: unknown): boolean {
  *   - TemplateResult static parts (strings[]) are trusted HTML
  *   - Dynamic interpolations are escaped (except unsafeHTML directive)
  */
-function escapeHtml(value: string): string {
-  return value
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
-}
 
-function escapeAttr(value: string): string {
-  return value
-    .replace(/&/g, '&amp;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
-}
+// Re-export escape utilities from render-dsd (single source of truth)
+export { escapeAttr, escapeHtml } from '../../core/src/render-dsd.js';
+import { escapeAttr, escapeHtml } from '../../core/src/render-dsd.js';
+// Import registerAdapter from @lessjs/core/less-runtime so it shares the same
+// module scope as renderDSD when loaded through Vite SSR — no globalThis bridge needed.
+import { registerAdapter } from '@lessjs/core/less-runtime';
 
 /** Detect if a string starts with a custom element tag after trimming leading whitespace.
  *  Custom element names MUST contain a hyphen: [a-z][a-z0-9]*-[a-z0-9-]+
@@ -198,7 +188,7 @@ function stringifyContentValue(value: unknown): string {
   if (value == null || isNothing(value)) return '';
   if (Array.isArray(value)) {
     // Lit SSR wraps all values in arrays - process each element
-    return value.map(v => stringifyContentValue(v)).join('');
+    return value.map((v) => stringifyContentValue(v)).join('');
   }
   if (isLitTemplateResult(value)) {
     const result = interpolate(value);
@@ -426,43 +416,43 @@ export function renderLitToString(
  *   installLitAdapter();
  *
  * The adapter stays installed for the lifetime of the process.
+ * Idempotent — safe to call multiple times.
  */
+
+// Module-level idempotency guard — no globalThis pollution.
+// Works because registerAdapter and renderDSD share the same module
+// scope when both are loaded through Vite SSR or Deno.
+let _litAdapterInstalled = false;
+
 export function installLitAdapter(): void {
-  if ((globalThis as Record<string, unknown>).__lessLitAdapterInstalled) {
+  if (_litAdapterInstalled) {
     return; // Already installed — idempotent
   }
-  (globalThis as Record<string, unknown>).__lessLitSsrRenderer = (
-    result: unknown,
-    tagName: string,
-  ): Promise<string> => {
-    return Promise.resolve(renderLitToString(result, tagName));
-  };
 
-  (globalThis as Record<string, unknown>).__lessLitTemplateCheck = (
-    value: unknown,
-  ): boolean => {
-    return isLitTemplateResult(value);
-  };
+  // Use registerAdapter() — the explicit API, no globalThis pollution
+  registerAdapter({
+    render: (result: unknown, tagName: string): Promise<string> => {
+      return Promise.resolve(renderLitToString(result, tagName));
+    },
+    isTemplate: (value: unknown): boolean => {
+      return isLitTemplateResult(value);
+    },
+    extractStyles: (componentClass: CustomElementConstructor): string | undefined => {
+      return extractLitStyles(componentClass);
+    },
+  });
 
-  (globalThis as Record<string, unknown>).__lessLitStylesExtractor = (
-    componentClass: CustomElementConstructor,
-  ): string | undefined => {
-    return extractLitStyles(componentClass);
-  };
-
-  (globalThis as Record<string, unknown>).__lessLitAdapterInstalled = true;
+  _litAdapterInstalled = true;
   console.log('[LessJS] Lit SSR adapter installed - TemplateResult to string');
 }
 
 /**
  * Uninstall the Lit SSR adapter.
  *
- * Removes the global hooks so core's renderDSD reverts to its
+ * Resets the adapter so core's renderDSD reverts to its
  * default behavior (only accepting string from render()).
  */
 export function uninstallLitAdapter(): void {
-  delete (globalThis as Record<string, unknown>).__lessLitSsrRenderer;
-  delete (globalThis as Record<string, unknown>).__lessLitTemplateCheck;
-  delete (globalThis as Record<string, unknown>).__lessLitStylesExtractor;
-  delete (globalThis as Record<string, unknown>).__lessLitAdapterInstalled;
+  registerAdapter(undefined as any); // Clear adapter
+  _litAdapterInstalled = false;
 }

@@ -126,6 +126,4 @@ export default class HeroPing extends LitElement {
 }
 
 // Guard: idempotent across SSR paths
-try {
-  customElements.define(tagName, HeroPing);
-} catch { /* already defined */ }
+if (!customElements.get(tagName)) customElements.define(tagName, HeroPing);

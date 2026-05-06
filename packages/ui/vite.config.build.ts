@@ -50,6 +50,7 @@ export default defineConfig({
         'less-ui-plugin': 'src/less-ui-plugin.ts',
         'less-hero-ping': 'src/less-hero-ping.ts',
         'tokens/colors': 'src/tokens/colors.ts',
+        'tokens/color-values': 'src/tokens/color-values.ts',
       },
       formats: ['es'],
     },

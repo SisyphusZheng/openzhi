@@ -124,9 +124,8 @@ export const tagName = 'page-about';</code></pre></code-block>
           <h2>Current Boundary</h2>
           <p>
             路由扫描已经可以稳定处理页面、动态片段、renderer、middleware 和 API routes。
-            近期需要修复的核心边界是根级
-            <span class="inline-code">_middleware.ts</span> 的挂载范围：它必须覆盖整个路由树，
-            不能只覆盖 <span class="inline-code">/</span>。
+            v0.5.3 已修复根级 <span class="inline-code">_middleware.ts</span> 的挂载范围——
+            现在会正确生成 <span class="inline-code">app.use('/*', ...)</span> 覆盖整个路由树。
           </p>
 
           <div class="nav-row">

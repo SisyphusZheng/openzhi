@@ -45,56 +45,95 @@ export class RoadmapPage extends LitElement {
             </p>
           </div>
 
-          <h2>Now: DSD + Island Communication</h2>
+          <h2>Now: v0.6 Stabilization</h2>
           <p>
-            v0.5.3 Trust Release 已完成，文档承诺与构建产物对齐。下一阶段聚焦渲染内核硬化。
+            v0.6.0-alpha.1 已完成 DSD + Island + CSS 变量主题 + Signals 二开 + Form-Associated CE +
+            Navigation API + dialog/popover + Speculative Loading 架构审查全部 8 Phase 38 项任务。
+            当前聚焦稳定化：回归测试、文档更新、alpha 反馈收集。
           </p>
           <table>
             <thead>
               <tr>
                 <th>Area</th>
-                <th>Work</th>
-                <th>Why it matters</th>
+                <th>Status</th>
+                <th>Notes</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td>Safe/unsafe HTML</td>
+                <td>TC39 Signals 二开</td>
+                <td>✅ Done</td>
                 <td>
-                  Define <span class="inline-code">render(): string</span> safety contract; add safe
-                  template helper with explicit <span class="inline-code">unsafeHTML</span> boundary.
-                </td>
-                <td>
-                  Current string render is unsafe HTML by default; need opt-in unsafe with
-                  safe-by-default.
-                </td>
-              </tr>
-              <tr>
-                <td>Nested DSD</td>
-                <td>
-                  Parent components must be able to recursively render child custom elements as nested
-                  DSD.
-                </td>
-                <td>
-                  Layout → page → island nesting currently outputs child elements without DSD.
+                  <span class="inline-code">@lessjs/signals</span>：
+                  <span class="inline-code">signal()</span>、
+                  <span class="inline-code">computed()</span>、
+                  <span class="inline-code">effect()</span>、
+                  <span class="inline-code">islandEffect()</span>。
+                  浏览器原生 <span class="inline-code">Signal</span> 条件回退。
                 </td>
               </tr>
               <tr>
-                <td>Slot/projection</td>
+                <td>DSD 规范对齐</td>
+                <td>✅ Done</td>
                 <td>
-                  Layout, page and island slot projection must have coverage tests.
-                </td>
-                <td>
-                  Slot content disappearing in DSD is a hard-to-debug class of failure.
+                  <span class="inline-code">shadowrootdelegatesfocus</span>、
+                  <span class="inline-code">shadowrootserializable</span>、
+                  <span class="inline-code">shadowrootslotassignment</span>、
+                  <span class="inline-code">shadowrootcustomelementregistry</span>。
+                  <span class="inline-code">inferDsdOptions()</span> 自动推断。
                 </td>
               </tr>
               <tr>
-                <td>Error visibility</td>
+                <td>Form-Associated CE</td>
+                <td>✅ Done</td>
                 <td>
-                  Render failures must report route, tag name, module path and original cause.
+                  <span class="inline-code">less-button</span>、
+                  <span class="inline-code">less-input</span> 使用
+                  <span class="inline-code">ElementInternals</span>，支持
+                  <span class="inline-code">:state()</span> 伪类。
                 </td>
+              </tr>
+              <tr>
+                <td>Navigation API</td>
+                <td>✅ Done</td>
                 <td>
-                  Current failures produce empty shells with no diagnostic information.
+                  <span class="inline-code">navigate()</span>、
+                  <span class="inline-code">onNavigate()</span>、
+                  <span class="inline-code">matchRoute()</span>。
+                  URLPattern + regex fallback。
+                </td>
+              </tr>
+              <tr>
+                <td>Speculative Loading</td>
+                <td>✅ Done</td>
+                <td>
+                  <span class="inline-code">&lt;link rel="modulepreload"&gt;</span> for eager；
+                  <span class="inline-code">&lt;link rel="prefetch"&gt;</span> for lazy。
+                </td>
+              </tr>
+              <tr>
+                <td>dialog/popover + inert</td>
+                <td>✅ Done</td>
+                <td>
+                  原生 <span class="inline-code">&lt;dialog&gt;</span> +
+                  <span class="inline-code">::backdrop</span> +
+                  <span class="inline-code">inert</span> 无障碍。
+                </td>
+              </tr>
+              <tr>
+                <td>Island 系统改进</td>
+                <td>✅ Done</td>
+                <td>
+                  Mixin 替代猴子补丁，适配器显式注入，
+                  <span class="inline-code">idle</span> 降级改进。
+                </td>
+              </tr>
+              <tr>
+                <td>Quick Wins</td>
+                <td>✅ Done</td>
+                <td>
+                  <span class="inline-code">prefers-color-scheme</span>、escapeHtml 统一、
+                  语义化 HTML、CSS 去重。
                 </td>
               </tr>
             </tbody>
@@ -111,20 +150,35 @@ export class RoadmapPage extends LitElement {
           </div>
 
           <div class="phase">
-            <span class="status">v0.6</span>
-            <h3>DSD + Island Communication</h3>
+            <span class="status">v0.6.0-alpha.1 done</span>
+            <h3>DSD + Island Architecture + Signals + Web Standards</h3>
             <p>
-              Define safe/unsafe HTML contracts, preserve Lit escaping semantics, support nested DSD,
-              improve slot/projection behavior, and make render failures point to route/tag/source.
+              Declarative Shadow DOM SSR、Safe/Unsafe HTML 品牌类型、L2 嵌套 DSD 递归渲染、
+              CSS Custom Properties 主题系统（替代 _propagateTheme DOM 遍历）、Island 懒加载策略、
+              TC39 signal-polyfill 二开（signal/computed/effect/islandEffect）、
+              DSD 规范对齐（delegatesFocus/serializable/slotAssignment/scopedRegistry）、
+              Form-Associated CE + ElementInternals + :state()、Navigation API + URLPattern、
+              Speculative Loading、dialog/popover + inert、Island Mixin。
+              322 测试通过，deno lint 零警告。
+            </p>
+          </div>
+
+          <div class="phase">
+            <span class="status">v0.6.x — in progress</span>
+            <h3>v0.6 Stabilization</h3>
+            <p>
+              alpha 反馈收集、回归测试增强、文档补全。v0.6.0 正式版发布前需要验证所有新增 Web
+              Standards 功能在真实应用中的表现。
             </p>
           </div>
 
           <div class="phase">
             <span class="status">v0.7</span>
-            <h3>Island Upgrade Manifest</h3>
+            <h3>Island Upgrade Manifest + Speculative Loading</h3>
             <p>
               Move from global island entry toward page-level island manifests. Make eager, idle and
-              visible strategies observable in browser tests, then document them as stable behavior.
+              visible strategies observable in browser tests, then document them as stable behavior. Add
+              Speculation Rules for predictive prefetch.
             </p>
           </div>
 
@@ -170,6 +224,9 @@ export class RoadmapPage extends LitElement {
             <li>DSD first: readable HTML exists before JavaScript runs.</li>
             <li>
               Island upgrade: client JavaScript upgrades interactive components, not the whole page.
+            </li>
+            <li>
+              TC39 Signals first: 二开 signal-polyfill 跟标准走，框架造自己的 effect/islandEffect API。
             </li>
             <li>
               Docs are falsifiable: current guides describe current behavior; future work stays here.

@@ -216,8 +216,13 @@ export default class DocsHome extends LitElement {
             <div>
               <p class="eyebrow">Deno-first / Web Standards-first / Static-first</p>
               <div style="display:flex;align-items:center;gap:0.5rem;">
-                <img src="/assets/less-logo-inverted.svg" alt="LessJS" style="width:120px;height:auto;display:block;flex-shrink:0;">
-                <span style="font-size:clamp(3rem,9vw,6rem);font-weight:520;line-height:0.95;color:#fff;">Less</span>
+                <img
+                  src="/assets/less-logo-inverted.svg"
+                  alt="LessJS"
+                  style="width:120px;height:auto;display:block;flex-shrink:0;"
+                >
+                <span style="font-size:clamp(3rem,9vw,6rem);font-weight:520;line-height:0.95;color:#fff;"
+                >Less</span>
               </div>
               <p class="hero-copy">
                 一个以 DSD-rendered Web Components 为首屏模型、以 Island Upgrade 为交互模型、以 Hono API
@@ -255,7 +260,8 @@ export default class DocsHome extends LitElement {
             <h2>What LessJS Is</h2>
             <div>
               <p>
-                LessJS 的核心不是重新发明组件框架，而是把浏览器已经拥有的能力组织成一条小而清晰的生产路径：
+                LessJS
+                的核心不是重新发明组件框架，而是把浏览器已经拥有的能力组织成一条小而清晰的生产路径：
                 路由映射页面组件，SSR 生成 DSD HTML，构建阶段抽取 island client entry， SSG
                 产出可以直接部署的静态站点。
               </p>

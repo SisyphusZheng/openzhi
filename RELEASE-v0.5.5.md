@@ -10,26 +10,26 @@ v0.5.5 完成了品牌从 KISS 到 LessJS 的全面更名，覆盖 105 个文件
 
 ### 🏷️ 品牌更名完成（KISS → LessJS）
 
-| 范围 | 变更内容 |
-|------|---------|
-| 包名 | `@kissjs/*` → `@lessjs/*` |
-| 主函数 | `kiss()` → `less()` |
-| 类名 | `KissButton` → `LessButton`, `KissLayout` → `LessLayout` 等 |
-| 临时目录 | `.kiss/` → `.less/` |
-| 域名 | `kiss.js.org` → `lessjs.com` |
-| 文档站 | README.en.md 全文重写，CSS 变量 `--kiss-*` → `--less-*`（69 处），路由 `/kiss-compiler` → `/less-compiler` |
-| 全局变量 | `__kissLit*` → `__lessLit*`, `__kissSsrDefinePatched` → `__lessSsrDefinePatched` |
-| CSS 类 | `.kiss-row` → `.less-row`（示例页面 K.I.S.S. 首字母缩写） |
+| 范围     | 变更内容                                                                                                   |
+| -------- | ---------------------------------------------------------------------------------------------------------- |
+| 包名     | `@kissjs/*` → `@lessjs/*`                                                                                  |
+| 主函数   | `kiss()` → `less()`                                                                                        |
+| 类名     | `KissButton` → `LessButton`, `KissLayout` → `LessLayout` 等                                                |
+| 临时目录 | `.kiss/` → `.less/`                                                                                        |
+| 域名     | `kiss.js.org` → `lessjs.com`                                                                               |
+| 文档站   | README.en.md 全文重写，CSS 变量 `--kiss-*` → `--less-*`（69 处），路由 `/kiss-compiler` → `/less-compiler` |
+| 全局变量 | `__kissLit*` → `__lessLit*`, `__kissSsrDefinePatched` → `__lessSsrDefinePatched`                           |
+| CSS 类   | `.kiss-row` → `.less-row`（示例页面 K.I.S.S. 首字母缩写）                                                  |
 
 ### 🐛 Bug 修复
 
-| # | 问题 | 修复 |
-|---|------|------|
-| A6 | 移动端 sidebar 打不开（首页 + 其他页面） | CSS `display:none` 阻止 transform 生效；改用 `width:0 + overflow:hidden` 保留盒模型 |
-| | 首页 hamburger 只显示遮罩无 sidebar | 始终渲染 sidebar DOM，桌面端折叠，移动端通过 `:host([menu-open])` 控制显隐 |
-| | PWA manifest.json favicon 404 | `src: /favicon.svg` → `/assets/less-logo.svg`；添加 `docs/public/favicon.svg` |
-| | dnt npm 构建失败 | `packages/rpc/_build_npm.ts` LICENSE 路径 `../LICENSE` → `../../LICENSE` |
-| | CI 格式/lint 失败 | deno fmt 格式化 5 文件，lint 清理未使用 imports，publish exclusion 添加 `!dist` 取消 gitignore 排除 |
+| #  | 问题                                     | 修复                                                                                                |
+| -- | ---------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| A6 | 移动端 sidebar 打不开（首页 + 其他页面） | CSS `display:none` 阻止 transform 生效；改用 `width:0 + overflow:hidden` 保留盒模型                 |
+|    | 首页 hamburger 只显示遮罩无 sidebar      | 始终渲染 sidebar DOM，桌面端折叠，移动端通过 `:host([menu-open])` 控制显隐                          |
+|    | PWA manifest.json favicon 404            | `src: /favicon.svg` → `/assets/less-logo.svg`；添加 `docs/public/favicon.svg`                       |
+|    | dnt npm 构建失败                         | `packages/rpc/_build_npm.ts` LICENSE 路径 `../LICENSE` → `../../LICENSE`                            |
+|    | CI 格式/lint 失败                        | deno fmt 格式化 5 文件，lint 清理未使用 imports，publish exclusion 添加 `!dist` 取消 gitignore 排除 |
 
 ### ✅ 测试
 
@@ -41,13 +41,13 @@ v0.5.5 完成了品牌从 KISS 到 LessJS 的全面更名，覆盖 105 个文件
 
 ## 版本号
 
-| 包 | 旧版本 | 新版本 |
-|-----|--------|--------|
-| `@lessjs/core` | 0.5.4 | **0.5.5** |
-| `@lessjs/ui` | 0.5.4 | **0.5.5** |
-| `@lessjs/rpc` | 0.3.0 | **0.3.1** |
-| `@lessjs/adapter-lit` | 0.2.0 | **0.2.1** |
-| `@lessjs/create` | 0.4.5 | **0.4.6** |
+| 包                    | 旧版本 | 新版本    |
+| --------------------- | ------ | --------- |
+| `@lessjs/core`        | 0.5.4  | **0.5.5** |
+| `@lessjs/ui`          | 0.5.4  | **0.5.5** |
+| `@lessjs/rpc`         | 0.3.0  | **0.3.1** |
+| `@lessjs/adapter-lit` | 0.2.0  | **0.2.1** |
+| `@lessjs/create`      | 0.4.5  | **0.4.6** |
 
 ---
 

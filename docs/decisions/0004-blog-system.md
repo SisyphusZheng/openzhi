@@ -76,7 +76,7 @@ This is my first post.
 | `/blog/`            | Post listing (paginated, newest first) |
 | `/blog/hello-world` | Individual post (rendered from .md)    |
 | `/blog/page/2`      | Page 2 of listing                      |
-| `/blog/tags/lessjs`   | Filter by tag                          |
+| `/blog/tags/lessjs` | Filter by tag                          |
 | `/blog/feed.xml`    | RSS 2.0 / Atom feed                    |
 
 ### Plugin architecture

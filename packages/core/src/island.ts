@@ -115,19 +115,23 @@ export function lessBind(el: HTMLElement): void {
 
 /**
  * Create an IntersectionObserver-based upgrade strategy.
- * The component is upgraded when its host element becomes visible.
+ * v0.6': Uses querySelectorAll to observe ALL instances of the tag,
+ * not just the first one. Per WHATWG IntersectionObserver spec.
  */
 function createVisibleStrategy(
   tagName: string,
   registerFn: () => void,
 ): void {
-  // Use a MutationObserver to detect when the element is added to DOM
+  let registered = false;
   const observer = new IntersectionObserver(
     (entries) => {
       for (const entry of entries) {
         if (entry.isIntersecting) {
           observer.disconnect();
-          registerFn();
+          if (!registered) {
+            registered = true;
+            registerFn();
+          }
           return;
         }
       }
@@ -135,12 +139,18 @@ function createVisibleStrategy(
     { rootMargin: '200px' }, // Start loading 200px before visible
   );
 
-  // We need to wait for the element to be in the DOM first
-  // Use MutationObserver to detect when the element with this tag is added
+  // We need to wait for elements to be in the DOM first
+  const observeAll = () => {
+    const elements = document.querySelectorAll(tagName);
+    if (elements.length > 0) {
+      elements.forEach((el) => observer.observe(el));
+      return true;
+    }
+    return false;
+  };
+
   const mo = new MutationObserver((_mutations, mutObs) => {
-    const el = document.querySelector(tagName);
-    if (el) {
-      observer.observe(el);
+    if (observeAll()) {
       mutObs.disconnect();
     }
   });
@@ -148,18 +158,12 @@ function createVisibleStrategy(
   // Start observing after DOM content loaded
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
-      const el = document.querySelector(tagName);
-      if (el) {
-        observer.observe(el);
-      } else {
+      if (!observeAll()) {
         mo.observe(document.body, { childList: true, subtree: true });
       }
     });
   } else {
-    const el = document.querySelector(tagName);
-    if (el) {
-      observer.observe(el);
-    } else {
+    if (!observeAll()) {
       mo.observe(document.body, { childList: true, subtree: true });
     }
   }
@@ -167,11 +171,24 @@ function createVisibleStrategy(
 
 /**
  * Create a lazy (requestIdleCallback-based) upgrade strategy.
+ * v0.6': Improved fallback chain:
+ *   1. requestIdleCallback (optimal, progressive)
+ *   2. requestAnimationFrame (next frame, good for interaction)
+ *   3. setTimeout(fn, 50) (final fallback, shorter than old 200ms)
  */
 function createLazyStrategy(registerFn: () => void): void {
-  const idleCallback = (globalThis as unknown as { requestIdleCallback?: (fn: () => void) => void }).requestIdleCallback;
-  const schedule: (fn: () => void) => void = idleCallback || ((fn: () => void) => setTimeout(fn, 200));
-  schedule(registerFn);
+  const g = globalThis as unknown as {
+    requestIdleCallback?: (fn: () => void) => void;
+    requestAnimationFrame?: (fn: () => void) => number;
+  };
+
+  if (typeof g.requestIdleCallback === 'function') {
+    g.requestIdleCallback(registerFn);
+  } else if (typeof g.requestAnimationFrame === 'function') {
+    g.requestAnimationFrame(() => registerFn());
+  } else {
+    setTimeout(registerFn, 50);
+  }
 }
 
 // ─── Main island() wrapper ──────────────────────────────────────
@@ -222,22 +239,25 @@ export function island<T extends CustomElementConstructor>(
   (componentClass as unknown as Record<string, unknown>).__island = true;
   (componentClass as unknown as Record<string, unknown>).__tagName = tagName;
 
-  // v0.6: Auto-wrap connectedCallback to call less:bind on upgrade.
-  // This ensures data-ssr-props are applied to the client component
-  // so SSR-rendered state is preserved after custom element upgrade.
+  // v0.6': Mixin pattern for connectedCallback — replaces monkey-patch.
+  // Instead of modifying the prototype directly, we create a wrapper
+  // that calls the original callback + auto-binds SSR props.
+  // This is safer than monkey-patching because it doesn't interfere
+  // with Lit's own connectedCallback chain.
   const origConnected = componentClass.prototype.connectedCallback;
-  componentClass.prototype.connectedCallback = function (this: HTMLElement) {
-    // Call original connectedCallback first (super.connectedCallback)
-    if (typeof origConnected === 'function') {
-      origConnected.call(this);
-    }
-    // Auto-bind SSR props on upgrade
-    // Use setTimeout to defer after Lit's first update cycle
-    // to avoid race conditions with property initialization
-    if (this.hasAttribute('data-ssr-props')) {
-      Promise.resolve().then(() => lessBind(this));
-    }
-  } as unknown as typeof componentClass.prototype.connectedCallback;
+  if (!componentClass.prototype.__lessIslandWrapped) {
+    componentClass.prototype.__lessIslandWrapped = true;
+    componentClass.prototype.connectedCallback = function (this: HTMLElement) {
+      // Call original connectedCallback first (super.connectedCallback)
+      if (typeof origConnected === 'function') {
+        origConnected.call(this);
+      }
+      // Auto-bind SSR props on upgrade
+      if (this.hasAttribute('data-ssr-props')) {
+        Promise.resolve().then(() => lessBind(this));
+      }
+    } as unknown as typeof componentClass.prototype.connectedCallback;
+  }
 
   // Define a registration function that's idempotent
   const register = () => {

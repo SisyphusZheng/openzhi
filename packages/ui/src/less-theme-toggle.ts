@@ -34,6 +34,9 @@ import { lessDesignTokens } from './design-tokens.js';
 export const tagName = 'less-theme-toggle';
 
 export class LessThemeToggle extends LitElement {
+  /** DSD: delegates focus for keyboard accessibility */
+  static delegatesFocus = true;
+
   static override styles: CSSResult[] = [
     lessDesignTokens,
     css`
@@ -111,7 +114,7 @@ export class LessThemeToggle extends LitElement {
     override connectedCallback() {
       super.connectedCallback();
 
-      // Priority: `theme` attribute > document.documentElement > localStorage > default
+      // Priority: `theme` attribute > document.documentElement > localStorage > prefers-color-scheme > default
       // The `theme` attribute is set by SSR/head inline script, which runs
       // BEFORE this connectedCallback. This eliminates the race condition.
       if (this.theme === 'light') {
@@ -119,55 +122,53 @@ export class LessThemeToggle extends LitElement {
       } else if (this.theme === 'dark') {
         this._isLight = false;
       } else if (document.documentElement.dataset.theme === 'light') {
-        // Check the <html data-theme="..."> attribute set by the head inline script.
-        // This is the standard path: the head script reads localStorage and sets
-        // data-theme BEFORE any LitElement connects.
-        //
-        // L2 EXEMPTION: reading document.documentElement.dataset is a platform API
-        // (browser infrastructure), not a cross-Island dependency. Allowed under
-        // the LessJS L2 infrastructure exemption rule.
         this._isLight = true;
       } else {
-        // Fallback: read from localStorage directly (edge case where neither
-        // attribute nor data-theme is set)
-        //
-        // L2 EXEMPTION: localStorage is a browser platform API (infrastructure).
-        // Not a cross-Island dependency — allowed under LessJS L2 exemption.
-        // try-catch: localStorage may throw in private browsing mode or when
-        // storage is disabled by browser policy.
+        // Fallback chain: localStorage → prefers-color-scheme → dark
+        let resolved = false;
         try {
           const saved = localStorage.getItem('less-theme');
           if (saved === 'light') {
             this._isLight = true;
+            resolved = true;
+          } else if (saved === 'dark') {
+            this._isLight = false;
+            resolved = true;
           }
         } catch {
-          // Silently ignore — default to dark theme
+          // Silently ignore — localStorage may throw
+        }
+        if (!resolved) {
+          // v0.6': Respect user's OS-level preference via prefers-color-scheme
+          // Per CSS Media Queries Level 5 §4.2
+          if (typeof window !== 'undefined' && window.matchMedia) {
+            const prefersLight = window.matchMedia('(prefers-color-scheme: light)');
+            this._isLight = prefersLight.matches;
+          }
+          // else: default to dark (already set in constructor)
         }
       }
 
-      // Sync data-theme attribute on this host element so that
-      // :host([data-theme="light"]) CSS selectors work correctly.
+      // Sync data-theme attribute on this host element
       this.setAttribute('data-theme', this._isLight ? 'light' : 'dark');
     }
 
     private _handleToggle() {
       this._isLight = !this._isLight;
       const theme = this._isLight ? 'light' : 'dark';
-      // L2 EXEMPTION: document.documentElement.setAttribute and localStorage.setItem
-      // are browser platform APIs (infrastructure). Not cross-Island dependencies.
-      //
-      // v0.6: CSS custom properties inherit through Shadow DOM automatically.
-      // Setting data-theme on :root is sufficient — no need to walk shadow roots
-      // calling _propagateTheme(). The CSS cascade handles theme propagation
-      // into all shadow roots via var() references.
+
+      // v0.6': Set both data-theme AND color-scheme CSS property
+      // color-scheme tells the browser to use native light/dark form controls,
+      // scrollbars, and other UA styles per CSS Color Adjustment Level 1 §2
       document.documentElement.setAttribute('data-theme', theme);
+      if (document.documentElement.style) {
+        document.documentElement.style.colorScheme = theme;
+      }
       try {
         localStorage.setItem('less-theme', theme);
       } catch {
         // Silently ignore — localStorage may be unavailable in private browsing
       }
-      // Also set data-theme on this host for matching :host([data-theme]) selectors
-      // in the component's own shadow boundary (for any remaining direct host selectors).
       this.setAttribute('data-theme', theme);
     }
 
@@ -221,7 +222,5 @@ export class LessThemeToggle extends LitElement {
     }
   }
 
-  // Guard: idempotent across SSR paths (SSR dom shim may not support get())
-  try {
-    customElements.define(tagName, LessThemeToggle);
-  } catch { /* already defined */ }
+  // Guard: idempotent across SSR paths
+  if (!customElements.get(tagName)) customElements.define(tagName, LessThemeToggle);

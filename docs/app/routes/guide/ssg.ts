@@ -52,7 +52,7 @@ export class SSGGuidePage extends LitElement {
               <tr>
                 <td>SSR bundle</td>
                 <td>routes, renderers, middleware, API handlers, islands</td>
-                <td>generated Hono entry and <span class="inline-code">.kiss/build-metadata.json</span></td>
+                <td>generated Hono entry and <span class="inline-code">.less/build-metadata.json</span></td>
               </tr>
               <tr>
                 <td>Client islands</td>
@@ -90,11 +90,11 @@ export class SSGGuidePage extends LitElement {
               </tr>
               <tr>
                 <td>Nested DSD</td>
-                <td>Still an implementation-hardening item for Renderer 2.</td>
+                <td>v0.6.0: Fully implemented with recursive rendering and slot projection.</td>
               </tr>
               <tr>
                 <td>Safe HTML</td>
-                <td>Outer attributes are escaped; component render output still needs clearer safe/unsafe contracts.</td>
+                <td>v0.6.0: SafeHtml/UnsafeHtml branded types with proper escaping semantics.</td>
               </tr>
             </tbody>
           </table>

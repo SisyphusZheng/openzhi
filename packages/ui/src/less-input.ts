@@ -34,6 +34,9 @@ export class LessInput extends LitElement {
   /** Enable form association for native <form> participation */
   static formAssociated = true;
 
+  /** DSD: delegates focus to the input element inside shadow DOM */
+  static delegatesFocus = true;
+
   /** Element internals for form participation */
   private _internals?: ElementInternals;
 
@@ -95,6 +98,17 @@ export class LessInput extends LitElement {
         border-color: var(--less-error, #e55);
       }
 
+      /* :state() pseudo-class support — CSS custom states via ElementInternals */
+      :host(:state(disabled)) .input {
+        opacity: 0.5;
+        cursor: not-allowed;
+        background: var(--less-bg-surface);
+      }
+
+      :host(:state(invalid)) .input {
+        border-color: var(--less-error, #e55);
+      }
+
       .error-message {
         font-size: var(--less-font-size-xs);
         color: var(--less-error, #e55);
@@ -147,6 +161,26 @@ export class LessInput extends LitElement {
     // Initialize ElementInternals for form participation
     this._internals = this.attachInternals();
     this._internals.setFormValue(this.value ?? '');
+    this._updateStates();
+  }
+
+  /** Update :state() pseudo-classes via ElementInternals */
+  private _updateStates(): void {
+    if (!this._internals?.states) return;
+    if (this.disabled) {
+      this._internals.states.add('disabled');
+      this._internals.states.delete('enabled');
+    } else {
+      this._internals.states.delete('disabled');
+      this._internals.states.add('enabled');
+    }
+  }
+
+  override updated(changed: Map<string, unknown>): void {
+    super.updated(changed);
+    if (changed.has('disabled') || changed.has('error')) {
+      this._updateStates();
+    }
   }
 
   /** Called by the browser when the form is reset */
@@ -214,6 +248,4 @@ export class LessInput extends LitElement {
 }
 
 // Guard: idempotent across SSR paths
-try {
-  customElements.define(tagName, LessInput);
-} catch { /* already defined */ }
+if (!customElements.get(tagName)) customElements.define(tagName, LessInput);

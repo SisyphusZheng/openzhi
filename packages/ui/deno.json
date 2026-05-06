@@ -1,6 +1,6 @@
 {
   "name": "@lessjs/ui",
-  "version": "0.5.5",
+  "version": "0.6.0",
   "exports": {
     ".": "./dist/index.js",
     "./less-button": "./dist/less-button.js",
@@ -12,7 +12,8 @@
     "./less-hero-ping": "./dist/less-hero-ping.js",
     "./less-ui-plugin": "./dist/less-ui-plugin.js",
     "./design-tokens": "./dist/design-tokens.js",
-    "./tokens/colors": "./dist/tokens/colors.js"
+    "./tokens/colors": "./dist/tokens/colors.js",
+    "./tokens/color-values": "./dist/tokens/color-values.js"
   },
   "tasks": {
     "build": "deno run -A npm:vite build --config vite.config.build.ts",

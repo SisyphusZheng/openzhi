@@ -445,14 +445,15 @@ export default class BlogV040 extends LitElement {
           <p>
             消灭 Lit 运行时依赖是终极目标。自定义编译器将 .less 文件编译为原生 <code>HTMLElement</code>，
             消除 58KB 的 Lit 运行时。这不仅是大小优化——它意味着 <strong>真正的零依赖</strong>。
-            目前编译器已经完成了设计文档（<a href="/blog/less-compiler">详见博文</a>），新的路线图把它后移为
-            v0.10.0 alpha：先把 DSD、Island、Serverless 与 SSG/ISR 做稳，再讨论默认组件语法。
+            目前编译器已经完成了设计文档（<a href="/blog/less-compiler"
+            >详见博文</a>），新的路线图把它后移为 v0.10.0 alpha：先把 DSD、Island、Serverless 与 SSG/ISR
+            做稳，再讨论默认组件语法。
           </p>
 
           <h3>React 19 / Vue Interop</h3>
           <p>
-            通过 Custom Elements 的天然互操作性，LessJS Island 可以在任何框架中使用。 React 19 已经修复了对
-            Custom Elements 的属性传递支持。Vue 3 原生支持 CE。 这意味着 LessJS
+            通过 Custom Elements 的天然互操作性，LessJS Island 可以在任何框架中使用。 React 19
+            已经修复了对 Custom Elements 的属性传递支持。Vue 3 原生支持 CE。 这意味着 LessJS
             组件可以作为"框架无关"的交互单元被其他应用引用。
           </p>
 

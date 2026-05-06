@@ -259,16 +259,16 @@ export class LessLayout extends LitElement {
         }
 
         /* === Sidebar: unified desktop/mobile (v0.6) ===
-         *
-         * v0.6: SINGLE .docs-sidebar for both desktop and mobile.
-         * - Desktop: position:sticky, border-right, always visible
-         * - Mobile: position:fixed, slides in from left via transform
-         * - Home page: hidden via width:0 (not display:none — preserves transform)
-         *
-         * This replaces the old dual-sidebar approach (.docs-sidebar for desktop
-         * + .mobile-sidebar-overlay for mobile) which caused duplicate content
-         * and inconsistent styling between breakpoints.
-         */
+        *
+        * v0.6: SINGLE .docs-sidebar for both desktop and mobile.
+        * - Desktop: position:sticky, border-right, always visible
+        * - Mobile: position:fixed, slides in from left via transform
+        * - Home page: hidden via width:0 (not display:none — preserves transform)
+        *
+        * This replaces the old dual-sidebar approach (.docs-sidebar for desktop
+        * + .mobile-sidebar-overlay for mobile) which caused duplicate content
+        * and inconsistent styling between breakpoints.
+        */
         .docs-sidebar {
           width: clamp(200px, 20vw, 280px);
           flex-shrink: 0;
@@ -282,7 +282,7 @@ export class LessLayout extends LitElement {
         }
 
         /* Home page: hide sidebar while keeping box model alive for transitions.
-         * NOT display:none — that kills the box model and makes transform unusable. */
+        * NOT display:none — that kills the box model and makes transform unusable. */
         :host([home]) .docs-sidebar {
           width: 0;
           min-width: 0;
@@ -379,11 +379,11 @@ export class LessLayout extends LitElement {
         }
 
         /* === Mobile Responsive ===
-         *
-         * v0.6: Unified sidebar. On mobile, .docs-sidebar becomes a fixed overlay
-         * that slides in from the left via transform. No separate mobile sidebar
-         * overlay element — eliminates content duplication and style inconsistency.
-         */
+        *
+        * v0.6: Unified sidebar. On mobile, .docs-sidebar becomes a fixed overlay
+        * that slides in from the left via transform. No separate mobile sidebar
+        * overlay element — eliminates content duplication and style inconsistency.
+        */
         @media (max-width: 900px) {
           .mobile-menu {
             display: block;
@@ -423,7 +423,7 @@ export class LessLayout extends LitElement {
             transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
             will-change: transform;
             box-shadow: none;
-            /* Desktop sticky properties are overridden by fixed */;
+            /* Desktop sticky properties are overridden by fixed */
           }
 
           /* Home page on mobile: always hidden via transform + invisible */
@@ -447,7 +447,7 @@ export class LessLayout extends LitElement {
           }
 
           /* Home page on mobile: hide hamburger menu (no sidebar to show)
-             and prevent backdrop from appearing */
+            and prevent backdrop from appearing */
           :host([home]) .mobile-menu {
             display: none;
           }
@@ -591,6 +591,8 @@ export class LessLayout extends LitElement {
       const willOpen = !details.hasAttribute('open');
       details.toggleAttribute('open', willOpen);
       this.toggleAttribute('menu-open', willOpen);
+      // Accessibility: set inert on main content when menu is open
+      this._syncInert(willOpen);
     }
 
     /** Sync menu-open attribute with details.open initial state */
@@ -598,9 +600,23 @@ export class LessLayout extends LitElement {
       const details = this.shadowRoot?.querySelector('details.mobile-menu');
       if (details) {
         details.addEventListener('toggle', () => {
-          this.toggleAttribute('menu-open', (details as HTMLDetailsElement).open);
+          const isOpen = (details as HTMLDetailsElement).open;
+          this.toggleAttribute('menu-open', isOpen);
+          this._syncInert(isOpen);
         });
         this.toggleAttribute('menu-open', (details as HTMLDetailsElement).open);
+      }
+    }
+
+    /** Accessibility: mark main content as inert when mobile menu is open */
+    private _syncInert(menuOpen: boolean) {
+      const main = this.shadowRoot?.querySelector('.layout-main');
+      if (main) {
+        if (menuOpen) {
+          main.setAttribute('inert', '');
+        } else {
+          main.removeAttribute('inert');
+        }
       }
     }
 
@@ -745,7 +761,7 @@ export class LessLayout extends LitElement {
       return html`
         <div class="app-layout" ?home="${this.home}">
           <header class="app-header">
-            <div class="header-inner">
+            <nav class="header-inner" aria-label="Primary navigation">
               <a class="logo" href="/">${this.logoText}<span class="logo-sub">${this
                 .logoSub}</span></a>
               ${this._renderHeaderNav()}
@@ -778,7 +794,7 @@ export class LessLayout extends LitElement {
                   <span class="github-text">GitHub</span>
                 </a>
               </div>
-            </div>
+            </nav>
           </header>
           <div class="mobile-backdrop"></div>
           <div class="layout-body">
@@ -787,24 +803,20 @@ export class LessLayout extends LitElement {
               <slot></slot>
             </main>
           </div>
-          <div class="app-footer">
-            <footer>
-              <p>
-                Built with <a href="${this.githubUrl}" target="_blank" rel="noopener noreferrer"
-                >LessJS Framework</a>
-                <span class="divider"></span>
-                Self-bootstrapped from JSR
-                <span class="divider"></span>
-                LESS IS MORE
-              </p>
-            </footer>
-          </div>
+          <footer class="app-footer">
+            <p>
+              Built with <a href="${this.githubUrl}" target="_blank" rel="noopener noreferrer"
+              >LessJS Framework</a>
+              <span class="divider"></span>
+              Self-bootstrapped from JSR
+              <span class="divider"></span>
+              LESS IS MORE
+            </p>
+          </footer>
         </div>
       `;
     }
   }
 
   // Guard: idempotent across SSR paths
-  try {
-    customElements.define(tagName, LessLayout);
-  } catch { /* already defined */ }
+  if (!customElements.get(tagName)) customElements.define(tagName, LessLayout);

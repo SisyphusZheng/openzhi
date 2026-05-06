@@ -6,8 +6,8 @@
  * aliases `@lessjs/core/less-runtime` to it so generated SSR entries stay
  * package-manager agnostic.
  *
- * v0.6: Mirrors updated render-dsd.ts with error visibility, data-ssr-props,
- * nested DSD, and slot/projection support.
+ * v0.6: Mirrors render-dsd.ts with error visibility, data-ssr-props,
+ * nested DSD, slot/projection support, and WHATWG DSD options.
  */
 
 export function createRuntimeShimCode(): string {
@@ -52,23 +52,22 @@ function serializeAttributes(props = {}) {
   return parts.length > 0 ? ' ' + parts.join(' ') : '';
 }
 
-function getAdapterTemplateCheck() {
-  return globalThis.__lessLitTemplateCheck;
+// ─── Adapter Protocol ──────────────────────────────────────────
+var _adapter = undefined;
+
+export function registerAdapter(adapter) {
+  _adapter = adapter;
 }
 
-function getAdapterSsrRenderer() {
-  return globalThis.__lessLitSsrRenderer;
-}
-
-function getAdapterStylesExtractor() {
-  return globalThis.__lessLitStylesExtractor;
+function getAdapter() {
+  return _adapter;
 }
 
 function isLitTemplateResultHeuristic(value) {
   return typeof value === 'object' && value !== null && '_$litType$' in value;
 }
 
-// ─── Nested DSD helpers (v0.6 rev 2) ──────────────────────────
+// ─── Nested DSD helpers ──────────────────────────────────────
 
 function kebabToCamel(str) {
   return str.replace(/-([a-z])/g, (_, c) => c.toUpperCase());
@@ -154,6 +153,29 @@ function alreadyHasDSD(html, openEnd, _closeIdx) {
   return match !== null;
 }
 
+// ─── DSD Options (WHATWG) ─────────────────────────────────────
+
+function buildDsdTemplateAttrs(options) {
+  if (!options) return '';
+  var parts = [];
+  if (options.delegatesFocus) parts.push(' shadowrootdelegatesfocus');
+  if (options.serializable) parts.push(' shadowrootserializable');
+  if (options.slotAssignment === 'manual') parts.push(' shadowrootslotassignment="manual"');
+  if (options.customElementRegistry) {
+    parts.push(' shadowrootcustomelementregistry="' + escapeAttr(options.customElementRegistry) + '"');
+  }
+  return parts.join('');
+}
+
+function inferDsdOptions(tagName, cls) {
+  var opts = {};
+  if (cls.delegatesFocus === true) opts.delegatesFocus = true;
+  if (cls.serializable === true) opts.serializable = true;
+  if (cls.slotAssignment === 'manual') opts.slotAssignment = 'manual';
+  if (typeof cls.customElementRegistry === 'string') opts.customElementRegistry = cls.customElementRegistry;
+  return opts;
+}
+
 async function renderNestedCustomElements(html) {
   if (!globalThis.customElements?.get) return html;
 
@@ -198,16 +220,17 @@ async function renderNestedCustomElements(html) {
     const pos = deepestPos;
     const Cls = globalThis.customElements.get(pos.tagName);
     const props = parseElementAttrs(pos.attrsStr);
+    const dsdOpts = inferDsdOptions(pos.tagName, Cls);
 
     if (pos.selfClosing) {
-      const dsdHtml = await renderDSD(pos.tagName, Cls, props);
+      const dsdHtml = await renderDSD(pos.tagName, Cls, props, undefined, dsdOpts);
       result = result.slice(0, pos.start) + dsdHtml + result.slice(pos.openEnd);
     } else {
       const closeIdx = findMatchingCloseTag(result, pos.tagName, pos.openEnd);
       if (closeIdx === -1) break;
       const closeEnd = closeIdx + \`</\${pos.tagName}>\`.length;
       const lightDom = result.slice(pos.openEnd, closeIdx);
-      const dsdHtml = await renderDSD(pos.tagName, Cls, props);
+      const dsdHtml = await renderDSD(pos.tagName, Cls, props, undefined, dsdOpts);
 
       const templateClose = '</template>';
       const templateIdx = dsdHtml.lastIndexOf(templateClose);
@@ -230,9 +253,9 @@ async function renderNestedCustomElements(html) {
   return result;
 }
 
-// ─── Main renderDSD (v0.6) ────────────────────────────────────
+// ─── Main renderDSD ────────────────────────────────────────────
 
-export async function renderDSD(tagName, componentClass, props = {}, sourceInfo) {
+export async function renderDSD(tagName, componentClass, props = {}, sourceInfo, dsdOptions) {
   const sourceStr = sourceInfo
     ? (sourceInfo.route ? \` route="\${sourceInfo.route}"\` : '') + (sourceInfo.source ? \` source="\${sourceInfo.source}"\` : '')
     : '';
@@ -264,10 +287,9 @@ export async function renderDSD(tagName, componentClass, props = {}, sourceInfo)
     } else if (typeof result === 'string') {
       content = result;
     } else {
-      const templateCheck = getAdapterTemplateCheck();
-      const ssrRenderer = getAdapterSsrRenderer();
-      if (templateCheck && ssrRenderer && templateCheck(result)) {
-        content = await ssrRenderer(result, tagName);
+      const adapter = getAdapter();
+      if (adapter?.isTemplate && adapter?.render && adapter.isTemplate(result)) {
+        content = await adapter.render(result, tagName);
       } else {
         const errDetail = isLitTemplateResultHeuristic(result)
           ? 'This looks like a Lit TemplateResult; install @lessjs/adapter-lit to handle it.'
@@ -285,37 +307,38 @@ export async function renderDSD(tagName, componentClass, props = {}, sourceInfo)
       + '<!-- Check console for full error details -->';
   }
 
-  // Nested DSD (v0.6)
+  // Nested DSD
   content = await renderNestedCustomElements(content);
 
   // Styles extraction
   let styleCss = '';
-  const stylesExtractor = getAdapterStylesExtractor();
-  if (stylesExtractor) {
-    try { styleCss = stylesExtractor(componentClass) || ''; } catch { /* ignore */ }
+  const adapter = getAdapter();
+  if (adapter?.extractStyles) {
+    try { styleCss = adapter.extractStyles(componentClass) || ''; } catch { /* ignore */ }
   }
 
-  // data-ssr-props (v0.6)
+  // data-ssr-props
   const attrs = serializeAttributes(props);
   const ssrPropsAttr = Object.keys(props).length > 0
     ? \` data-ssr-props="\${escapeAttrValue(JSON.stringify(props))}"\`
     : '';
   const styleTag = styleCss ? \`\\\\n    <style>\${styleCss}</style>\` : '';
+  const dsdAttrs = buildDsdTemplateAttrs(dsdOptions);
   return \`<\${tagName}\${attrs}\${ssrPropsAttr}\${sourceStr}>
-  <template shadowrootmode="open">\${styleTag}
+  <template shadowrootmode="open"\${dsdAttrs}>\${styleTag}
     \${content}
   </template>
 </\${tagName}>\`;
 }
 
-export async function renderDSDByName(tagName, props = {}, sourceInfo) {
+export async function renderDSDByName(tagName, props = {}, sourceInfo, dsdOptions) {
   const cls = globalThis.customElements?.get(tagName);
   if (!cls) {
     console.warn(\`[LessJS] <\${tagName}> is not registered; rendering as void element\`);
     const attrs = serializeAttributes(props);
     return \`<\${tagName}\${attrs}></\${tagName}>\`;
   }
-  return await renderDSD(tagName, cls, props, sourceInfo);
+  return await renderDSD(tagName, cls, props, sourceInfo, dsdOptions);
 }
 
 export function wrapInDocument(html, options = {}) {

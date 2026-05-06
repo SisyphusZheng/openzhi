@@ -193,7 +193,9 @@ function renderPageRoute(
   // __ssr() uses renderDSD() which outputs standard DSD HTML.
   // Components receive route params as props for SSR-time data access.
   // v0.6: Pass route/source context for error visibility.
-  b.push(`    const raw = await __ssr(tag, c.req.param(), { route: '${route.path}', source: '${route.filePath}' })`);
+  b.push(
+    `    const raw = await __ssr(tag, c.req.param(), { route: '${route.path}', source: '${route.filePath}' })`,
+  );
   b.push(`    const html = raw`);
   b.blank();
 

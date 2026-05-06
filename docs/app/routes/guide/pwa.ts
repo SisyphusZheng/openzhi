@@ -57,10 +57,10 @@ export class PwaPage extends LitElement {
 
           <h2>Context</h2>
           <p>
-            LessJS generates pure static HTML with Declarative Shadow DOM. This is the ideal substrate for a
-            PWA: pages are pre-rendered, assets are versioned hashes, and API routes can stay outside the
-            static artifact on a serverless platform. The important rule is freshness: HTML should prefer
-            network, while hashed assets can prefer cache.
+            LessJS generates pure static HTML with Declarative Shadow DOM. This is the ideal substrate for
+            a PWA: pages are pre-rendered, assets are versioned hashes, and API routes can stay outside
+            the static artifact on a serverless platform. The important rule is freshness: HTML should
+            prefer network, while hashed assets can prefer cache.
           </p>
 
           <h2>Implementation</h2>
@@ -85,9 +85,9 @@ export class PwaPage extends LitElement {
 
           <h3>Service Worker strategy</h3>
           <div class="code-block">
-            self.addEventListener('install', () => self.skipWaiting()) self.addEventListener('fetch',
-            (e) => { const url = new URL(e.request.url) const isAsset = /\\.[a-z0-9]+$/i.test(url.pathname)
-            && !url.pathname.includes('/api/') e.respondWith(isAsset ? cacheFirst(e.request) :
+            self.addEventListener('install', () => self.skipWaiting()) self.addEventListener('fetch', (e)
+            => { const url = new URL(e.request.url) const isAsset = /\\.[a-z0-9]+$/i.test(url.pathname) &&
+            !url.pathname.includes('/api/') e.respondWith(isAsset ? cacheFirst(e.request) :
             networkFirst(e.request)) })
           </div>
 

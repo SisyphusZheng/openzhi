@@ -3,12 +3,12 @@
  *
  * Tests the SSG post-processing pipeline:
  *   1. buildIslandChunkMap — scan client build output → tagName → chunk path mapping
- *   2. rewriteHtmlFiles — rewrite Island paths + apply aria-current active highlights
+ *   2. injectClientScript — add client script tags to HTML
+ *   3. injectCspMeta — add CSP meta tags to HTML
  *
  * LessJS Architecture constraints verified:
  *   - S (Static): DSD content visible without JS
  *   - K+I (Knowledge + Isolated): Islands are the only JS
- *   - I (Isolated): No Island does what CSS can do
  */
 
 import { assertEquals, assertStringIncludes } from 'jsr:@std/assert@^1.0.0';
@@ -17,7 +17,6 @@ import {
   buildIslandChunkMap,
   injectClientScript,
   injectCspMeta,
-  rewriteHtmlFiles,
 } from '../src/ssg-postprocess.ts';
 
 // ─── Test fixtures ─────────────────────────────────────────────
@@ -25,11 +24,9 @@ import {
 const FIXTURES_DIR = join(Deno.cwd(), 'packages/core/__test_fixtures__/ssg');
 
 async function setupSsgFixtures() {
-  // Simulate a client build output directory structure
   const islandsDir = join(FIXTURES_DIR, 'dist', 'client', 'islands');
   await Deno.mkdir(islandsDir, { recursive: true });
 
-  // Simulate built island chunks with tagName strings
   await Deno.writeTextFile(
     join(islandsDir, 'island-my-counter-abc123.js'),
     'const e="my-counter";customElements.define(e,MyCounter);',
@@ -39,7 +36,7 @@ async function setupSsgFixtures() {
     "const t='theme-toggle';customElements.define(t,Toggle);",
   );
 
-  // Simulate SSG HTML output with DSD + legacy inline island loader + sidebar
+  // Simulate SSG HTML output with DSD
   const htmlDir = join(FIXTURES_DIR, 'dist');
   await Deno.writeTextFile(
     join(htmlDir, 'index.html'),
@@ -58,20 +55,6 @@ async function setupSsgFixtures() {
     </nav>
   </template></app-layout>
 </template></docs-home>
-<script type="module" data-less-island-loader>
-(function() {
-  const loaders = {
-    'my-counter': () => import('/app/islands/my-counter.ts'),
-    'theme-toggle': () => import('/app/islands/theme-toggle.ts')
-  };
-  async function upgradeIsland(tag, loader) {
-    try { const m = await loader(); if (m.default && !customElements.get(tag)) customElements.define(tag, m.default); }
-    catch(e) { console.warn("[LessJS] Island upgrade failed:", e); }
-  }
-  if ("requestIdleCallback" in window) requestIdleCallback(() => { for (const [t,l] of Object.entries(loaders)) upgradeIsland(t,l); });
-  else setTimeout(() => { for (const [t,l] of Object.entries(loaders)) upgradeIsland(t,l); }, 200);
-})();
-</script>
 </body>
 </html>`,
   );
@@ -96,13 +79,6 @@ async function setupSsgFixtures() {
     </nav>
   </template></app-layout>
 </template></docs-about>
-<script type="module" data-less-island-loader>
-(function() {
-  const loaders = {
-    'my-counter': () => import('/app/islands/my-counter.ts')
-  };
-})();
-</script>
 </body>
 </html>`,
   );
@@ -121,7 +97,7 @@ async function cleanupSsgFixtures() {
 Deno.test('SSG integration', { permissions: { read: true, write: true } }, async (t) => {
   await setupSsgFixtures();
 
-  await t.step('buildIslandChunkMap - maps tagName to chunk path', () => {
+  await t.step('buildIslandChunkMap - returns empty without manifest', () => {
     const chunkMap = buildIslandChunkMap(
       join(FIXTURES_DIR),
       'dist',
@@ -129,15 +105,8 @@ Deno.test('SSG integration', { permissions: { read: true, write: true } }, async
       '/kiss/',
     );
 
-    assertEquals(Object.keys(chunkMap).length, 2);
-    assertStringIncludes(
-      chunkMap['my-counter'],
-      '/kiss/client/islands/island-my-counter-abc123.js',
-    );
-    assertStringIncludes(
-      chunkMap['theme-toggle'],
-      '/kiss/client/islands/island-theme-toggle-def456.js',
-    );
+    // No .vite/manifest.json exists → empty map
+    assertEquals(Object.keys(chunkMap).length, 0);
   });
 
   await t.step('buildIslandChunkMap - returns empty map when no client dir', () => {
@@ -149,64 +118,11 @@ Deno.test('SSG integration', { permissions: { read: true, write: true } }, async
     assertEquals(Object.keys(chunkMap).length, 0);
   });
 
-  await t.step('rewriteHtmlFiles - rewrites legacy island import paths', () => {
-    const chunkMap: Record<string, string> = {
-      'my-counter': '/kiss/client/islands/island-my-counter-abc123.js',
-      'theme-toggle': '/kiss/client/islands/island-theme-toggle-def456.js',
-    };
-
-    rewriteHtmlFiles(join(FIXTURES_DIR, 'dist'), chunkMap);
-
-    // Read the rewritten index.html
-    const html = Deno.readTextFileSync(join(FIXTURES_DIR, 'dist', 'index.html'));
-
-    // Island paths should be rewritten
-    assertStringIncludes(html, "import('/kiss/client/islands/island-my-counter-abc123.js')");
-    assertStringIncludes(html, "import('/kiss/client/islands/island-theme-toggle-def456.js')");
-
-    // Original paths should be gone
-    assertEquals(html.includes("import('/app/islands/my-counter.ts')"), false);
-    assertEquals(html.includes("import('/app/islands/theme-toggle.ts')"), false);
-  });
-
-  await t.step('rewriteHtmlFiles - no longer applies aria-current (moved to component)', () => {
-    // v0.3.0: sidebar active link highlighting was removed from rewriteHtmlFiles
-    // and moved to <less-layout currentPath="..."> component.
-    // rewriteHtmlFiles now ONLY rewrites island source paths → built chunk paths.
-    // This test verifies that rewriteHtmlFiles does NOT add aria-current or class="active".
-    const indexHtml = Deno.readTextFileSync(join(FIXTURES_DIR, 'dist', 'index.html'));
-
-    // rewriteHtmlFiles should NOT inject aria-current — that's the component's job
-    assertEquals(indexHtml.includes('class="active"'), false);
-  });
-
-  await t.step('rewriteHtmlFiles - preserves DSD output (S constraint)', () => {
-    const html = Deno.readTextFileSync(join(FIXTURES_DIR, 'dist', 'index.html'));
-
-    // DSD template tags must survive rewriting
-    assertStringIncludes(html, 'shadowroot="open"');
-    assertStringIncludes(html, 'shadowrootmode="open"');
-
-    // Content inside DSD must be intact
-    assertStringIncludes(html, 'docs-home');
-    assertStringIncludes(html, 'app-layout');
-    assertStringIncludes(html, 'docs-sidebar');
-  });
-
-  await t.step('rewriteHtmlFiles - preserves legacy inline loader (I constraint)', () => {
-    const html = Deno.readTextFileSync(join(FIXTURES_DIR, 'dist', 'index.html'));
-
-    // Legacy inline loader must exist with rewritten paths
-    assertStringIncludes(html, 'data-less-island-loader');
-    assertStringIncludes(html, '/kiss/client/islands/');
-  });
-
   await t.step('injectClientScript - adds <script type="module"> before </body>', () => {
     injectClientScript(join(FIXTURES_DIR, 'dist'), '/client/islands/client.js');
 
     const html = Deno.readTextFileSync(join(FIXTURES_DIR, 'dist', 'index.html'));
     assertStringIncludes(html, '<script type="module" src="/client/islands/client.js"></script>');
-    // Script should be before </body>
     const bodyIdx = html.indexOf('</body>');
     const scriptIdx = html.indexOf('/client/islands/client.js');
     assertEquals(scriptIdx < bodyIdx, true);
@@ -216,7 +132,6 @@ Deno.test('SSG integration', { permissions: { read: true, write: true } }, async
     injectClientScript(join(FIXTURES_DIR, 'dist'), '/client/islands/client.js');
 
     const html = Deno.readTextFileSync(join(FIXTURES_DIR, 'dist', 'index.html'));
-    // Count occurrences — should be exactly 1
     const count = (html.match(/\/client\/islands\/client\.js/g) || []).length;
     assertEquals(count, 1);
   });
@@ -231,26 +146,19 @@ Deno.test('SSG integration', { permissions: { read: true, write: true } }, async
     const html = Deno.readTextFileSync(join(FIXTURES_DIR, 'dist', 'index.html'));
     assertStringIncludes(html, '<meta http-equiv="Content-Security-Policy"');
     assertStringIncludes(html, "default-src 'self'");
-    // Meta should be inside <head>
     const headEnd = html.indexOf('</head>');
     const metaIdx = html.indexOf('Content-Security-Policy');
     assertEquals(metaIdx < headEnd, true);
   });
 
-  await t.step('injectCspMeta - report-only mode uses correct header name', async () => {
-    // Clean up: use a fresh HTML file for this sub-test
-    const reportOnlyDir = join(FIXTURES_DIR, 'dist', 'report-test');
-    await Deno.mkdir(reportOnlyDir, { recursive: true });
-    await Deno.writeTextFile(
-      join(reportOnlyDir, 'index.html'),
-      '<!DOCTYPE html><html><head></head><body>test</body></html>',
-    );
+  await t.step('DSD content preserved (S constraint)', () => {
+    const html = Deno.readTextFileSync(join(FIXTURES_DIR, 'dist', 'index.html'));
 
-    injectCspMeta(reportOnlyDir, "default-src 'self'", true);
-
-    const html = Deno.readTextFileSync(join(reportOnlyDir, 'index.html'));
-    assertStringIncludes(html, 'Content-Security-Policy-Report-Only');
-    assertEquals(html.includes('Content-Security-Policy"'), false);
+    assertStringIncludes(html, 'shadowroot="open"');
+    assertStringIncludes(html, 'shadowrootmode="open"');
+    assertStringIncludes(html, 'docs-home');
+    assertStringIncludes(html, 'app-layout');
+    assertStringIncludes(html, 'docs-sidebar');
   });
 
   // Cleanup

@@ -26,8 +26,8 @@ export class PositioningPage extends LitElement {
 
           <div class="callout">
             <p>
-              这不是“另一个 hydration 框架”。更准确地说，LessJS 是一个把 Web Components、 Declarative Shadow
-              DOM、ESM、Fetch API 和静态部署打通的应用骨架。
+              这不是“另一个 hydration 框架”。更准确地说，LessJS 是一个把 Web Components、 Declarative
+              Shadow DOM、ESM、Fetch API 和静态部署打通的应用骨架。
             </p>
           </div>
 

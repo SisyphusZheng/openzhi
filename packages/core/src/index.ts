@@ -1,7 +1,7 @@
 /**
  * @lessjs/core - Main entry.
  *
- * LessJS 0.5 is a static-first framework package:
+ * LessJS 0.6 is a static-first framework package:
  * - routes are scanned at build time
  * - pages are rendered to DSD HTML
  * - islands upgrade through Custom Elements
@@ -22,6 +22,7 @@ import { LessError } from './errors.js';
 import honoDevServer from '@hono/vite-dev-server';
 import { LessBuildContext } from './build-context.js';
 import { buildPlugin } from './build.js';
+import { escapeAttr as escapeHtmlAttr } from './render-dsd.js';
 import { generateHonoEntryCode } from './hono-entry.js';
 import { islandTransformPlugin } from './island-transform.js';
 import { fileToTagName, scanIslands, scanPackageIslands, scanRoutes } from './route-scanner.js';
@@ -53,27 +54,25 @@ export {
   buildIslandChunkMap,
   injectClientScript,
   injectCspMeta,
-  rewriteHtmlFiles,
+  injectLayoutStyles,
 } from './ssg-postprocess.js';
 export { printBuildManifest, scanClientBuild, scanSSGOutput } from './build-manifest.js';
 export type { ArtifactInfo, BuildManifest } from './build-manifest.js';
 export {
-  type SafeHtml,
-  type UnsafeHtml,
-  escapeHtml,
+  type DsdOptions,
   escapeAttr,
   escapeAttrValue,
-  isSafeHtml,
-  isUnsafeHtml,
-  safeHtml,
-  unsafeHtml,
+  escapeHtml,
+  registerAdapter,
+  type RenderAdapter,
   renderDSD,
   renderDSDByName,
-  serializeAttributes,
-  wrapDsdDocument,
+  type SafeHtml,
+  type UnsafeHtml,
 } from './render-dsd.js';
-export { island, getSSRProps, lessBind, type IslandOptions } from './island.js';
-export { Hono } from 'hono';
+export { getSSRProps, island, type IslandOptions, lessBind } from './island.js';
+export { hasNavigationApi, matchRoute, navigate, onNavigate } from './navigation.js';
+export type { NavigationCallback } from './navigation.js';
 
 /**
  * LessJS Framework Vite plugin.
@@ -83,10 +82,6 @@ export { Hono } from 'hono';
  */
 export function less(options: FrameworkOptions = {}): Plugin[] {
   let headExtras = options.headExtras;
-
-  const escapeHtmlAttr = (str: string): string =>
-    str.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;');
 
   const validateSafeUrl = (url: string, context: string): string => {
     const trimmed = url.trim().toLowerCase();

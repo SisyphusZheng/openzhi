@@ -10,7 +10,7 @@ Deno.test('less-ui — index exports islands array', async () => {
   const mod = await import('../src/index.ts');
   assertExists(mod.islands, 'islands export should exist');
   assertEquals(Array.isArray(mod.islands), true);
-  assertEquals(mod.islands.length, 6);
+  assertEquals(mod.islands.length, 7);
   assertEquals(mod.islands[0].tagName, 'less-theme-toggle');
   assertEquals(mod.islands[0].strategy, 'eager');
   assertEquals(mod.islands[1].tagName, 'less-button');
@@ -18,6 +18,7 @@ Deno.test('less-ui — index exports islands array', async () => {
   assertEquals(mod.islands[3].tagName, 'less-code-block');
   assertEquals(mod.islands[4].tagName, 'less-layout');
   assertEquals(mod.islands[5].tagName, 'less-hero-ping');
+  assertEquals(mod.islands[6].tagName, 'less-dialog');
 });
 
 Deno.test('less-ui — less-theme-toggle exports tagName', async () => {
@@ -39,6 +40,7 @@ Deno.test('less-ui — all components export tagName', async () => {
     'less-code-block',
     'less-layout',
     'less-hero-ping',
+    'less-dialog',
   ];
   for (const name of components) {
     const mod = await import(`../src/${name}.ts`);

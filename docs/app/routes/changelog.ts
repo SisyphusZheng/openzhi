@@ -119,23 +119,65 @@ export class ChangelogPage extends LitElement {
 
           <div class="version-section">
             <div class="version-header">
-              <span class="version-number">0.6.0</span>
+              <span class="version-number">0.6.0-alpha.1</span>
               <span class="version-date">2026-05-06</span>
             </div>
             <div class="change-category added">
               <h4>新增</h4>
               <ul class="change-list">
                 <li>
+                  <strong>TC39 Signals 二开</strong>：<span class="inline-code">@lessjs/signals</span>
+                  基于 signal-polyfill 实现
+                  <span class="inline-code">signal()</span>、
+                  <span class="inline-code">computed()</span>（自动依赖追踪）、
+                  <span class="inline-code">effect()</span>（依赖变化自动重跑）、
+                  <span class="inline-code">islandEffect()</span>（Island 生命周期绑定）。
+                  浏览器原生 <span class="inline-code">Signal</span> 条件回退。
+                  旧 API <span class="inline-code">derived()</span> + fire-once
+                  <span class="inline-code">effect()</span> 完全删除。
+                </li>
+                <li>
+                  <strong>DSD 规范对齐</strong>：
+                  <span class="inline-code">shadowrootdelegatesfocus</span>（less-button, less-input, less-theme-toggle）、
+                  <span class="inline-code">shadowrootserializable</span>、
+                  <span class="inline-code">shadowrootslotassignment</span>、
+                  <span class="inline-code">shadowrootcustomelementregistry</span>。
+                  <span class="inline-code">DsdOptions</span> 接口 +
+                  <span class="inline-code">inferDsdOptions()</span> 自动推断。
+                </li>
+                <li>
+                  <strong>Form-Associated CE + :state()</strong>：
+                  <span class="inline-code">less-button formAssociated</span> +
+                  <span class="inline-code">ElementInternals</span>（type="submit" 在 form 中可用）、
+                  <span class="inline-code">less-input :state(invalid)</span>、
+                  <span class="inline-code">less-button :state(disabled)</span>。
+                </li>
+                <li>
+                  <strong>Navigation API</strong>：
+                  <span class="inline-code">navigate()</span>、
+                  <span class="inline-code">onNavigate()</span>、
+                  <span class="inline-code">matchRoute()</span>。
+                  URLPattern + regex fallback 路由匹配。
+                </li>
+                <li>
+                  <strong>Speculative Loading</strong>：
+                  <span class="inline-code">&lt;link rel="modulepreload"&gt;</span> for eager islands；
+                  <span class="inline-code">&lt;link rel="prefetch"&gt;</span> for lazy/visible/idle islands。
+                </li>
+                <li>
+                  <strong>less-dialog 组件</strong>：原生
+                  <span class="inline-code">&lt;dialog&gt;</span> +
+                  <span class="inline-code">::backdrop</span> + popover，
+                  <span class="inline-code">:state(open/closed)</span>，
+                  <span class="inline-code">inert</span> 属性。
+                </li>
+                <li>
                   <strong>L2 Nested DSD</strong>：<span class="inline-code">renderDSD()</span>
-                  现在递归渲染嵌套 Custom Element。页面组件模版中的
-                  <span class="inline-code">&lt;less-layout&gt;</span>、
-                  <span class="inline-code">&lt;less-theme-toggle&gt;</span> 等子组件
-                  都会生成 <span class="inline-code">&lt;template shadowrootmode="open"&gt;</span>，
-                  不需要等 JS 升级就能渲染 Shadow DOM。
+                  递归渲染嵌套 Custom Element，页面组件模版中的子组件都生成 DSD。
                 </li>
                 <li>
                   <strong>Sidebar SSR 首次渲染</strong>：less-layout 的 sidebar/header/footer
-                  在 HTML 中静态存在，全部 CSS 在 DSD 模版内，不依赖 client JS 加载。
+                  在 HTML 中静态存在，全部 CSS 在 DSD 模版内。
                 </li>
               </ul>
             </div>
@@ -143,8 +185,42 @@ export class ChangelogPage extends LitElement {
               <h4>变更</h4>
               <ul class="change-list">
                 <li>
-                  <strong>@lessjs/core 升至 0.6.0</strong>：包含 L2 Nested DSD 实现。
-                  其他包版本根据自身情况独立管理。
+                  <strong>@lessjs/core 升至 0.6.0-alpha.1</strong>：包含 L2 Nested DSD、Navigation API、
+                  DsdOptions、renderNestedCustomElements 等。
+                  @lessjs/signals 升至 0.6.0-alpha.1。@lessjs/ui 升至 0.6.0。
+                  @lessjs/adapter-lit 升至 0.3.0。@lessjs/create 升至 0.4.7。
+                  @lessjs/rpc 无变更（0.3.1）。
+                </li>
+                <li>
+                  <strong>Adapter 协议去全局化</strong>：移除 <span class="inline-code">globalThis.__lessRenderAdapter</span>、
+                  <span class="inline-code">globalThis.__lessLitAdapterInstalled</span> 等 globalThis 污染。
+                  适配器通过 <span class="inline-code">registerAdapter()</span> 显式注册。
+                </li>
+                <li>
+                  <strong>Island Mixin 替代猴子补丁</strong>：
+                  <span class="inline-code">__lessIslandWrapped</span> 防重入。
+                  <span class="inline-code">idle</span> 降级改进：rIC → rAF → setTimeout(50)。
+                </li>
+                <li>
+                  <strong>prefers-color-scheme 检测</strong>：
+                  <span class="inline-code">matchMedia('(prefers-color-scheme: light)')</span>
+                  + <span class="inline-code">document.documentElement.style.colorScheme</span>。
+                </li>
+                <li>
+                  <strong>customElements.define 幂等守卫</strong>：8 个 UI 组件从
+                  <span class="inline-code">try/catch</span> 改为
+                  <span class="inline-code">customElements.get()</span> 守卫。
+                </li>
+                <li>
+                  <strong>escapeHtml/escapeAttr 统一</strong>：
+                  <span class="inline-code">adapter-lit/ssr.ts</span> 从
+                  <span class="inline-code">@lessjs/core/render-dsd</span> 导入，消除 3 处重复。
+                </li>
+                <li>
+                  <strong>废弃代码清理</strong>：删除 <span class="inline-code">html-template.ts</span>、
+                  <span class="inline-code">less-bind.ts</span>、<span class="inline-code">vite-ext.d.ts</span>。
+                  合并重复类型（<span class="inline-code">PackageIslandMeta</span>），
+                  移除 <span class="inline-code">lessScaffoldColorCSS</span> 别名。
                 </li>
               </ul>
             </div>
@@ -152,43 +228,29 @@ export class ChangelogPage extends LitElement {
               <h4>修复</h4>
               <ul class="change-list">
                 <li>
-                  <strong>首页 content 被 sidebar BFC 裁剪</strong>：<span class="inline-code">:host([home]) .docs-sidebar { width:0; overflow:hidden }</span>
-                  创建的 BFC 会裁剪相邻 flex 子项。改为条件渲染：home 时不渲染 desktop sidebar，
-                  移动端用独立 <span class="inline-code">mobile-sidebar-overlay</span> overlay。
+                  <strong>Navigation API navigationType bug</strong>：
+                  <span class="inline-code">navigationType</span> 未按 WHATWG §7.4 规范返回正确类型。
                 </li>
                 <li>
-                  <strong>sidebar 样式不依赖 JS</strong>：less-layout 无 DSD 时 sidebar CSS 只在 JS 中，
-                  Cloudflare Rocket Loader / SW 缓存导致 sidebar 完全无样式。
-                  DSD 将全部 CSS 静态写入 HTML。
+                  <strong>首页 content 被 sidebar BFC 裁剪</strong>：改为条件渲染，
+                  home 时不渲染 desktop sidebar。
+                </li>
+                <li>
+                  <strong>renderNestedCustomElements 三个关联 bug</strong>：
+                  两阶段替换重叠、Shadow DOM 内容被当 Light DOM、alreadyHasDSD 误判。
+                </li>
+                <li>
+                  <strong>SSG Lit TemplateResult 渲染失败</strong>：改用
+                  <span class="inline-code">server.ssrLoadModule()</span> 安装 adapter，
+                  与 renderDSD 共享同一模块作用域。
+                </li>
+                <li>
+                  <strong>CSS token 数据漂移</strong>：新建
+                  <span class="inline-code">color-values.ts</span> 作为零依赖单一数据源。
                 </li>
                 <li>
                   <strong>仓库迁移</strong>：<span class="inline-code">SisyphusZheng/kiss</span>
-                  → <span class="inline-code">lessjs-run/lessjs</span>，remote 已更新。
-                </li>
-                <li>
-                  <strong>renderNestedCustomElements 三个关联 bug</strong>（<span class="inline-code">render-dsd.ts</span> +
-                  <span class="inline-code">runtime-shim.ts</span>）：
-                  <ol style="margin:0.5rem 0;padding-left:1.5rem;color:var(--less-text-secondary);font-size:0.875rem">
-                    <li style="padding:0.25rem 0">
-                      <strong>两阶段替换重叠</strong>：旧代码先收集所有 CE 位置再批量替换，当父 CE（less-layout）范围
-                      包含子 CE（code-block）时，子替换导致字符串索引偏移，父替换在错误位置截断 CSS。
-                      修复为迭代式逐个处理：找最深 CE → 渲染 → 更新字符串 → 重复。
-                    </li>
-                    <li style="padding:0.25rem 0">
-                      <strong>Shadow DOM 内容被当作 Light DOM 处理</strong>：旧代码扫描
-                      <span class="inline-code">&lt;template shadowrootmode="open"&gt;</span>
-                      内部的标签名，导致 <span class="inline-code">&lt;style&gt;</span> 中的文本被误解析，
-                      CSS 被截断（如 <span class="inline-code">border-radius</span> 后面跟
-                      <span class="inline-code">&lt;code-block&gt;</span>）。
-                      修复为 <span class="inline-code">findTemplateShadowRanges()</span> 跳过 shadow DOM 范围。
-                    </li>
-                    <li style="padding:0.25rem 0">
-                      <strong>alreadyHasDSD 误判</strong>：用 <span class="inline-code">.includes()</span>
-                      检查整个元素内容是否含 DSD template，Light DOM 子元素（code-block）已有 DSD 就导致
-                      父元素（less-layout）被跳过，不生成 DSD。
-                      修复为只检查 open tag 后的第一个子节点是否为 DSD template。
-                    </li>
-                  </ol>
+                  → <span class="inline-code">lessjs-run/lessjs</span>。
                 </li>
               </ul>
             </div>

@@ -63,7 +63,9 @@ function __load(tag) {
 [${eagerTags || ''}].filter(Boolean).forEach(__load);
 
 // Visible islands — load when their element enters viewport
-${visibleTags ? `var __visibleTags = [${visibleTags || ''}];
+${
+    visibleTags
+      ? `var __visibleTags = [${visibleTags || ''}];
 var __observedTags = [];
 function __observeVisible() {
   __visibleTags.forEach(function(tag) {
@@ -86,17 +88,23 @@ if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', __observeVisible);
 } else {
   __observeVisible();
-}` : '// No visible-strategy islands'}
+}`
+      : '// No visible-strategy islands'
+  }
 
 // Defer remaining lazy islands to browser idle
-${lazyTags ? `var __lazyTags = [${lazyTags || ''}];
+${
+    lazyTags
+      ? `var __lazyTags = [${lazyTags || ''}];
 var __deferred = function() {
   __lazyTags.forEach(__load);
   document.dispatchEvent(new CustomEvent('less:ready', {
     detail: { islands: __lazyTags }
   }));
 };
-var __schedule = window.requestIdleCallback || function(fn) { setTimeout(fn, 200); };
-__schedule(__deferred);` : '// No lazy islands'}
+var __schedule = window.requestIdleCallback || window.requestAnimationFrame || function(fn) { setTimeout(fn, 50); };
+__schedule(__deferred);`
+      : '// No lazy islands'
+  }
 `;
 }

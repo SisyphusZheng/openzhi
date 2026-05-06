@@ -75,13 +75,13 @@ customElements.define('my-counter', MyCounter);
 
 ### What the compiler eliminates
 
-| Layer     | Before (Lit adapter)           | After (.less compiler)                 |
-| --------- | ------------------------------ | -------------------------------------- |
-| Runtime   | Lit runtime for Lit components | 0kb framework runtime for compiled CEs |
-| SSR       | adapter-mediated rendering     | LessJS DSD renderer / template strings   |
-| Upgrade   | Custom Element upgrade         | Custom Element upgrade                 |
-| Build     | esbuild + Lit semantics        | standard TS/JS output                  |
-| Tests     | adapter tests required         | compiler fixture tests required        |
+| Layer   | Before (Lit adapter)           | After (.less compiler)                 |
+| ------- | ------------------------------ | -------------------------------------- |
+| Runtime | Lit runtime for Lit components | 0kb framework runtime for compiled CEs |
+| SSR     | adapter-mediated rendering     | LessJS DSD renderer / template strings |
+| Upgrade | Custom Element upgrade         | Custom Element upgrade                 |
+| Build   | esbuild + Lit semantics        | standard TS/JS output                  |
+| Tests   | adapter tests required         | compiler fixture tests required        |
 
 ### SSG integration
 

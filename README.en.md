@@ -11,7 +11,7 @@ the platform itself more usable.
 LessJS evolved from the KISS framework (Keep It Simple, Stupid), continuing the same philosophy.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![CI](https://github.com/lessjs-run/LessJS/actions/workflows/test.yml/badge.svg)](https://github.com/lessjs-run/LessJS/actions/workflows/test.yml)
+[![CI](https://github.com/lessjs-run/lessjs/actions/workflows/test.yml/badge.svg)](https://github.com/lessjs-run/lessjs/actions/workflows/test.yml)
 [![@lessjs/core](https://img.shields.io/jsr/v/@lessjs/core?logo=jsr&labelColor=0a0a0a)](https://jsr.io/@lessjs/core)
 [![@lessjs/ui](https://img.shields.io/jsr/v/@lessjs/ui?logo=jsr&labelColor=083344)](https://jsr.io/@lessjs/ui)
 [![@lessjs/rpc](https://img.shields.io/jsr/v/@lessjs/rpc?logo=jsr&labelColor=083344)](https://jsr.io/@lessjs/rpc)
@@ -50,11 +50,11 @@ Requirements:
 
 LessJS is not just about "less code." It is a set of architectural constraints:
 
-| Letter | Constraint | Meaning                                                      |
-| ------ | ---------- | ------------------------------------------------------------ |
-| K      | Knowledge  | Prefer build-time knowledge over runtime discovery.          |
-| I      | Isolated   | Client JavaScript should stay within island and component boundaries. |
-| S      | Semantic   | HTML remains the primary document format and the foundation of accessibility. |
+| Letter | Constraint | Meaning                                                                                      |
+| ------ | ---------- | -------------------------------------------------------------------------------------------- |
+| K      | Knowledge  | Prefer build-time knowledge over runtime discovery.                                          |
+| I      | Isolated   | Client JavaScript should stay within island and component boundaries.                        |
+| S      | Semantic   | HTML remains the primary document format and the foundation of accessibility.                |
 | S      | Static     | SSG output should be deployable as static files; serverless APIs are optional dynamic edges. |
 
 Current rendering model:
@@ -72,17 +72,18 @@ This differs intentionally from a full client hydration model. LessJS does not a
 to rebuild the application tree on the client — it upgrades Custom Elements at interaction
 points.
 
-Current version v0.5.3 is a Trust Release on the static-first DSD + Island Upgrade track.
+Current version v0.6.0-alpha.1 is the DSD + Island Architecture + Web Standards release.
 
 ## Packages
 
-| Package               | Responsibility                                     | Current Version |
-| --------------------- | -------------------------------------------------- | --------------- |
-| `@lessjs/core`        | Vite plugin, route scanning, DSD rendering, SSG pipeline | 0.5.3    |
-| `@lessjs/ui`          | Lit-based Web Component library and package islands | 0.5.2          |
-| `@lessjs/rpc`         | Lightweight fetch/RPC controller tools             | 0.3.0          |
-| `@lessjs/adapter-lit` | Optional Lit SSR adapter                           | 0.2.0          |
-| `@lessjs/create`      | Project scaffolding CLI                            | 0.4.5          |
+| Package               | Responsibility                                           | Current Version |
+| --------------------- | -------------------------------------------------------- | --------------- |
+| `@lessjs/core`        | Vite plugin, route scanning, DSD rendering, SSG pipeline | 0.6.0-alpha.1   |
+| `@lessjs/ui`          | Lit-based Web Component library and package islands      | 0.6.0           |
+| `@lessjs/rpc`         | Lightweight fetch/RPC controller tools                   | 0.3.1           |
+| `@lessjs/adapter-lit` | Optional Lit SSR adapter                                 | 0.3.0           |
+| `@lessjs/create`      | Project scaffolding CLI                                  | 0.4.7           |
+| `@lessjs/signals`     | Reactive signals system                                  | 0.6.0-alpha.1   |
 
 Legacy packages `@lessjs/vite` and `@lessjs/ssg` are deprecated.
 

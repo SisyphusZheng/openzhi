@@ -25,7 +25,7 @@ export const DECISIONS: DecisionDoc[] = [
     id: '0002',
     title: '.less Compiler',
     status: 'Draft',
-    path: '/decisions/0002-kiss-compiler-eliminate-lit',
+    path: '/decisions/0002-less-compiler-eliminate-lit',
     summary:
       'Explore an optional compiler that emits vanilla Custom Elements without framework runtime.',
     source: adr0002,

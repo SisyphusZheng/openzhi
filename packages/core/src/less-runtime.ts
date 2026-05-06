@@ -1,9 +1,10 @@
 /**
  * LessJS runtime shim — built-in, auto-injected by less() plugin.
  *
- * v0.5.0: Pure build/SSR runtime. No LessElement, no Lit.
- * Lit exports are handled by @lessjs/ui — users import components directly.
+ * v0.6.0: Pure build/SSR runtime. No LessElement, no Lit.
+ * Exports registerAdapter so adapters (e.g., @lessjs/adapter-lit) can
+ * register from the same module scope as renderDSD — no globalThis bridge.
  */
-export { renderDSD, renderDSDByName } from './render-dsd.js';
+export { renderDSD, renderDSDByName, registerAdapter } from './render-dsd.js';
 export { Hono } from 'hono';
 export { wrapInDocument } from './ssr-handler.js';

@@ -52,7 +52,8 @@ export class BlogLessCompilerPage extends LitElement {
           <p>
             LessJS 框架从第一天起就选择了 Lit 作为组件基础。这个选择是对的——Lit 是 Web Components 生态中
             最成熟的库，让我们快速验证了 K·I·S·S 架构的可行性。但经过后续架构审查，我们也更清楚地看到：
-            core 的长期合同不能绑定到某个组件库。Lit 应该保留为 adapter，而不是成为用户必须接受的唯一组件模型。
+            core 的长期合同不能绑定到某个组件库。Lit 应该保留为
+            adapter，而不是成为用户必须接受的唯一组件模型。
           </p>
 
           <h2>今天的代价</h2>
@@ -66,7 +67,7 @@ export class BlogLessCompilerPage extends LitElement {
           <h2>.less 文件格式</h2>
           <p>一个组件一个文件。没有 class 声明，没有 decorator，没有 import：</p>
           <div class="code-block">
-            &lt;!-- my-counter.kiss --&gt; &lt;template&gt; &lt;button
+            &lt;!-- my-counter.less --&gt; &lt;template&gt; &lt;button
             @click="decrement"&gt;−&lt;/button&gt; &lt;span&gt;{count}&lt;/span&gt; &lt;button
             @click="increment"&gt;+&lt;/button&gt; &lt;/template&gt; &lt;script&gt; count = 0 increment()
             { this.count++ } decrement() { this.count-- } &lt;/script&gt; &lt;style&gt; :host { display:
@@ -95,8 +96,8 @@ export class BlogLessCompilerPage extends LitElement {
           <h2>路线</h2>
           <p>
             这项工作不应该阻塞 v0.5-v0.9。当前路线是：先修可信度、安全、DSD renderer、Island Upgrade、
-            Serverless Fullstack 与 SSG/ISR，再在 v0.10.0 引入 <code>.less</code> compiler alpha。
-            Lit 兼容模式在 v0.x 生命周期中保留。
+            Serverless Fullstack 与 SSG/ISR，再在 v0.10.0 引入 <code>.less</code> compiler alpha。 Lit
+            兼容模式在 v0.x 生命周期中保留。
           </p>
           <p>
             详细技术设计见 <code>docs/decisions/0002-kiss-compiler-eliminate-lit.md</code>。

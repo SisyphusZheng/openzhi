@@ -115,8 +115,8 @@ export class ContributingPage extends LitElement {
               <p>在添加新功能前，检查是否可以用更低层级解决：</p>
               <div class="layer-diagram">
                 L0 HTML5 语义 — 结构、内容、导航 L1 CSS 表现 — 视觉、布局、动画 L2 浏览器平台 API — Clipboard,
-                IntersectionObserver L3 Hono/Vite/Lit — 路由、构建、组件封装 L4 自研代码 — Island
-                Island upgrade、RPC、插件逻辑 跳过任何一层 = 违反 LessJS 架构约束
+                IntersectionObserver L3 Hono/Vite/Lit — 路由、构建、组件封装 L4 自研代码 — Island Island
+                upgrade、RPC、插件逻辑 跳过任何一层 = 违反 LessJS 架构约束
               </div>
 
               <h3>测试</h3>

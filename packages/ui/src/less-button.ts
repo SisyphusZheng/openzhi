@@ -28,6 +28,15 @@ import { lessDesignTokens } from './design-tokens.js';
 export const tagName = 'less-button';
 
 export class LessButton extends LitElement {
+  /** DSD: delegates focus to the first focusable element in the shadow DOM */
+  static delegatesFocus = true;
+
+  /** Form-Associated Custom Element: enables type="submit" in <form> */
+  static formAssociated = true;
+
+  /** Element internals for form participation + :state() pseudo-classes */
+  private _internals?: ElementInternals;
+
   static override styles: CSSResult[] = [
     lessDesignTokens,
     css`
@@ -114,6 +123,13 @@ export class LessButton extends LitElement {
         outline: 2px solid var(--less-accent);
         outline-offset: 2px;
       }
+
+      /* :state() pseudo-class support — CSS custom states via ElementInternals */
+      :host(:state(disabled)) .btn {
+        opacity: 0.5;
+        cursor: not-allowed;
+        pointer-events: none;
+      }
     `,
   ];
 
@@ -147,6 +163,33 @@ export class LessButton extends LitElement {
     this.href = undefined;
     this.target = undefined;
     this.type = 'button';
+    // Form-Associated CE: attach internals for form participation
+    this._internals = this.attachInternals();
+  }
+
+  override connectedCallback(): void {
+    super.connectedCallback();
+    this._updateState();
+  }
+
+  /** Update :state() pseudo-classes via ElementInternals */
+  private _updateState(): void {
+    if (!this._internals?.states) return;
+    if (this.disabled) {
+      this._internals.states.delete('enabled');
+      this._internals.states.add('disabled');
+    } else {
+      this._internals.states.delete('disabled');
+      this._internals.states.add('enabled');
+    }
+  }
+
+  /** Watch disabled changes to update :state() */
+  override updated(changed: Map<string, unknown>): void {
+    super.updated(changed);
+    if (changed.has('disabled')) {
+      this._updateState();
+    }
   }
 
   /** Prevent default on disabled anchor clicks */
@@ -183,6 +226,4 @@ export class LessButton extends LitElement {
 }
 
 // Guard: idempotent across SSR paths
-try {
-  customElements.define(tagName, LessButton);
-} catch { /* already defined */ }
+if (!customElements.get(tagName)) customElements.define(tagName, LessButton);

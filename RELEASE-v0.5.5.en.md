@@ -10,26 +10,26 @@ v0.5.5 completes the full brand rename from KISS to LessJS across 105 files. Fix
 
 ### 🏷️ Brand Rename Completed (KISS → LessJS)
 
-| Scope | Change |
-|-------|--------|
-| Package names | `@kissjs/*` → `@lessjs/*` |
-| Main function | `kiss()` → `less()` |
-| Class names | `KissButton` → `LessButton`, `KissLayout` → `LessLayout`, etc. |
-| Temp directory | `.kiss/` → `.less/` |
-| Domain | `kiss.js.org` → `lessjs.com` |
-| Documentation | Full README.en.md rewrite, CSS vars `--kiss-*` → `--less-*` (69), routes `/kiss-compiler` → `/less-compiler` |
-| Global vars | `__kissLit*` → `__lessLit*`, `__kissSsrDefinePatched` → `__lessSsrDefinePatched` |
-| CSS classes | `.kiss-row` → `.less-row` (K.I.S.S. acronym in examples page) |
+| Scope          | Change                                                                                                       |
+| -------------- | ------------------------------------------------------------------------------------------------------------ |
+| Package names  | `@kissjs/*` → `@lessjs/*`                                                                                    |
+| Main function  | `kiss()` → `less()`                                                                                          |
+| Class names    | `KissButton` → `LessButton`, `KissLayout` → `LessLayout`, etc.                                               |
+| Temp directory | `.kiss/` → `.less/`                                                                                          |
+| Domain         | `kiss.js.org` → `lessjs.com`                                                                                 |
+| Documentation  | Full README.en.md rewrite, CSS vars `--kiss-*` → `--less-*` (69), routes `/kiss-compiler` → `/less-compiler` |
+| Global vars    | `__kissLit*` → `__lessLit*`, `__kissSsrDefinePatched` → `__lessSsrDefinePatched`                             |
+| CSS classes    | `.kiss-row` → `.less-row` (K.I.S.S. acronym in examples page)                                                |
 
 ### 🐛 Bug Fixes
 
-| # | Issue | Fix |
-|---|-------|-----|
+| #  | Issue                                              | Fix                                                                                                               |
+| -- | -------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
 | A6 | Mobile sidebar won't open (homepage + other pages) | `display:none` prevents transform from working; replaced with `width:0 + overflow:hidden` to keep box model alive |
-| | Homepage hamburger shows backdrop only, no sidebar | Always render sidebar DOM, collapse on desktop, restore on mobile via `:host([menu-open])` CSS |
-| | PWA manifest favicon 404 | `src: /favicon.svg` → `/assets/less-logo.svg`; added `docs/public/favicon.svg` |
-| | dnt npm build failure | `packages/rpc/_build_npm.ts` LICENSE path `../LICENSE` → `../../LICENSE` |
-| | CI format/lint failures | deno fmt fixed 5 files, lint cleaned unused imports, publish exclusion added `!dist` to un-exclude from gitignore |
+|    | Homepage hamburger shows backdrop only, no sidebar | Always render sidebar DOM, collapse on desktop, restore on mobile via `:host([menu-open])` CSS                    |
+|    | PWA manifest favicon 404                           | `src: /favicon.svg` → `/assets/less-logo.svg`; added `docs/public/favicon.svg`                                    |
+|    | dnt npm build failure                              | `packages/rpc/_build_npm.ts` LICENSE path `../LICENSE` → `../../LICENSE`                                          |
+|    | CI format/lint failures                            | deno fmt fixed 5 files, lint cleaned unused imports, publish exclusion added `!dist` to un-exclude from gitignore |
 
 ### ✅ Tests
 
@@ -41,13 +41,13 @@ v0.5.5 completes the full brand rename from KISS to LessJS across 105 files. Fix
 
 ## Version Bumps
 
-| Package | Old | New |
-|---------|-----|-----|
-| `@lessjs/core` | 0.5.4 | **0.5.5** |
-| `@lessjs/ui` | 0.5.4 | **0.5.5** |
-| `@lessjs/rpc` | 0.3.0 | **0.3.1** |
+| Package               | Old   | New       |
+| --------------------- | ----- | --------- |
+| `@lessjs/core`        | 0.5.4 | **0.5.5** |
+| `@lessjs/ui`          | 0.5.4 | **0.5.5** |
+| `@lessjs/rpc`         | 0.3.0 | **0.3.1** |
 | `@lessjs/adapter-lit` | 0.2.0 | **0.2.1** |
-| `@lessjs/create` | 0.4.5 | **0.4.6** |
+| `@lessjs/create`      | 0.4.5 | **0.4.6** |
 
 ---
 

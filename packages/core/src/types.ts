@@ -8,25 +8,15 @@
  * - Islands are the only client JS allowed
  */
 
-import type { Plugin } from 'vite';
-
 /** Package Island metadata exported from npm/JSR packages */
 export interface PackageIslandMeta {
   /** Custom element tag name (e.g. 'less-theme-toggle') */
   tagName: string;
   /** Module path for import (e.g. '@lessjs/ui/less-theme-toggle') */
   modulePath: string;
-  /** Island upgrade strategy metadata */
-  strategy?: 'eager' | 'lazy';
+  /** Island upgrade strategy */
+  strategy?: 'eager' | 'lazy' | 'idle' | 'visible';
 }
-
-/** @deprecated Planned for v0.6 — now partially implemented. @see FrameworkOptions.island.upgradeStrategy */
-/**
- * @deprecated Planned for v0.6 — now partially implemented.
- * 'idle' and 'visible' are available via island() wrapper and entry-generators.
- * @see FrameworkOptions.island.upgradeStrategy
- */
-export type PlannedIslandStrategy = 'idle' | 'visible';
 
 /** Framework configuration options */
 export interface FrameworkOptions {
@@ -222,16 +212,4 @@ export interface RouteEntry {
   special?: SpecialFileType;
 }
 
-/** Metadata extracted from a route module */
-export interface RouteMeta {
-  title?: string;
-  description?: string;
-  [key: string]: unknown;
-  /** Island chunk URLs for preload hints */
-  islandChunks?: string[];
-}
-
 export type { SsrContext } from './context.js';
-
-/** The main less() function signature */
-export type FrameworkPlugin = (options?: FrameworkOptions) => Plugin[];

@@ -92,6 +92,4 @@ export class LessCard extends LitElement {
 }
 
 // Guard: idempotent across SSR paths
-try {
-  customElements.define(tagName, LessCard);
-} catch { /* already defined */ }
+if (!customElements.get(tagName)) customElements.define(tagName, LessCard);

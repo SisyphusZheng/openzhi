@@ -37,8 +37,8 @@ export class DeploymentPage extends LitElement {
         <div class="container">
           <h1>部署</h1>
           <p class="subtitle">
-            LessJS deploys static files first. Runtime API routes are deployed separately through serverless
-            or edge adapters when your application needs dynamic behavior.
+            LessJS deploys static files first. Runtime API routes are deployed separately through
+            serverless or edge adapters when your application needs dynamic behavior.
           </p>
 
           <h2>Build Once</h2>

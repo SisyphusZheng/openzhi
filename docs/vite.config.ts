@@ -102,6 +102,7 @@ export default defineConfig({
       { find: '@lessjs/ui/less-ui-plugin', replacement: resolve(uiSrcDir, 'less-ui-plugin.ts') },
       { find: '@lessjs/ui/design-tokens', replacement: resolve(uiSrcDir, 'design-tokens.ts') },
       { find: '@lessjs/ui/tokens/colors', replacement: resolve(uiSrcDir, 'tokens/colors.ts') },
+      { find: '@lessjs/ui/tokens/color-values', replacement: resolve(uiSrcDir, 'tokens/color-values.ts') },
       { find: '@lessjs/ui', replacement: resolve(uiSrcDir, 'index.ts') },
     ],
   },

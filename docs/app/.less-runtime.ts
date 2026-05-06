@@ -1,12 +1,11 @@
 /**
- * Runtime shim for @lessjs/core/kiss-runtime — auto-injected by kiss() plugin.
+ * Runtime shim for @lessjs/core/less-runtime — auto-injected by less() plugin.
  *
- * v0.5.0: Core exports build/SSR APIs only.
- *   - Lit imports come directly from 'lit' in docs route components
- *   - KissElement has been removed (innerHTML route was not sustainable)
- *   - This shim keeps generated SSR entry imports away from build-time plugin code
+ * v0.6.0: Re-exports from core source files (single source of truth).
+ *   - registerAdapter: so adapters share the same module scope as renderDSD
+ *   - No self-contained copy — this is the monorepo-internal docs override
  */
-export { renderDSD, renderDSDByName } from '../../packages/core/src/render-dsd.js';
+export { renderDSD, renderDSDByName, registerAdapter } from '../../packages/core/src/render-dsd.js';
 export { Hono } from 'hono';
 
 // SSR runtime (used by generated Hono entry)

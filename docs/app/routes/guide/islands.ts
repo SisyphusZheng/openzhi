@@ -20,7 +20,7 @@ export class IslandsGuidePage extends LitElement {
         border-radius: 4px;
       }
 
-      .comparison-item.kiss {
+      .comparison-item.less {
         background: var(--less-bg-surface);
       }
 
@@ -52,7 +52,7 @@ export class IslandsGuidePage extends LitElement {
                 <li>组件模型通常绑定某个专有 runtime。</li>
               </ul>
             </div>
-            <div class="comparison-item kiss">
+            <div class="comparison-item less">
               <h3>LessJS Island Model</h3>
               <ul>
                 <li>内容先由 SSG + DSD 输出。</li>

@@ -24,11 +24,7 @@
  * @module @lessjs/ui
  */
 
-interface PackageIslandMeta {
-  tagName: string;
-  modulePath: string;
-  strategy?: 'eager' | 'lazy' | 'idle' | 'visible';
-}
+import type { PackageIslandMeta } from '@lessjs/core';
 
 // Design tokens (CSS custom properties)
 export { lessDesignTokens } from './design-tokens.js';
@@ -47,6 +43,7 @@ export { LessLayout, tagName as lessLayoutTagName } from './less-layout.js';
 export type { HeaderNavLink, NavItem, NavSection } from './less-layout.js';
 export { LessThemeToggle, tagName as lessThemeToggleTagName } from './less-theme-toggle.js';
 export { default as LessHeroPing, tagName as lessHeroPingTagName } from './less-hero-ping.js';
+export { LessDialog, tagName as lessDialogTagName } from './less-dialog.js';
 
 // Vite plugin for Web Awesome CDN injection (convenience only)
 export { lessUI } from './less-ui-plugin.js';
@@ -85,6 +82,11 @@ export const islands: PackageIslandMeta[] = [
   {
     tagName: 'less-hero-ping',
     modulePath: '@lessjs/ui/less-hero-ping',
+    strategy: 'lazy',
+  },
+  {
+    tagName: 'less-dialog',
+    modulePath: '@lessjs/ui/less-dialog',
     strategy: 'lazy',
   },
 ];

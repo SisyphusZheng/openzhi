@@ -56,8 +56,14 @@ export class BlogIndexPage extends LitElement {
 
           <div class="blog-list">
             <a href="/blog/v0-5-alpha1" class="blog-item">
-              <h2>v0.5-alpha1 — 全量架构审计与精准修复 <span style="font-size:0.7rem;color:var(--less-accent)">NEW</span></h2>
-              <p class="blog-desc">3 agent 扫描 13k 行源码 · CSS 注入修复 · Island 升级修复 · 6 条新设计原则 · 配置精简</p>
+              <h2>
+                v0.5-alpha1 — 全量架构审计与精准修复 <span
+                  style="font-size:0.7rem;color:var(--less-accent)"
+                >NEW</span>
+              </h2>
+              <p class="blog-desc">
+                3 agent 扫描 13k 行源码 · CSS 注入修复 · Island 升级修复 · 6 条新设计原则 · 配置精简
+              </p>
               <span class="blog-date">2026-05-03</span>
             </a>
 
@@ -79,7 +85,8 @@ export class BlogIndexPage extends LitElement {
               <h2>.less Compiler — 可选零框架运行时组件</h2>
               <p class="meta">2026-04-30 · 架构决策</p>
               <p>
-                一个可选编译器将声明式 .less 文件编译为原生 Custom Elements，让 Lit 从必选路线变成 adapter。
+                一个可选编译器将声明式 .less 文件编译为原生 Custom Elements，让 Lit 从必选路线变成
+                adapter。
               </p>
             </a>
           </div>

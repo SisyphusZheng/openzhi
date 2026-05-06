@@ -73,8 +73,8 @@ export class LessCompilerPage extends LitElement {
           <h2>Context</h2>
           <p>
             LessJS 的 docs 站和 UI 包现在仍使用 <code>lit</code> 编写组件，但 core 的长期合同应该是
-            DSD-first renderer + framework adapters，而不是把 Lit 写进框架本体。Lit 是成熟、可靠的
-            Web Components 工具库；问题不在于它“不好”，而在于 LessJS 不应该把它变成唯一道路。
+            DSD-first renderer + framework adapters，而不是把 Lit 写进框架本体。Lit 是成熟、可靠的 Web
+            Components 工具库；问题不在于它“不好”，而在于 LessJS 不应该把它变成唯一道路。
           </p>
           <p>
             当前需要面对的是：Lit-authored islands 的运行时代价、adapter 的 SSR/style extraction 复杂度、
@@ -91,7 +91,7 @@ export class LessCompilerPage extends LitElement {
 
           <h3>.less file format</h3>
           <div class="code-block">
-            &lt;!-- my-counter.kiss --&gt; &lt;template&gt; &lt;button
+            &lt;!-- my-counter.less --&gt; &lt;template&gt; &lt;button
             @click="decrement"&gt;−&lt;/button&gt; &lt;span&gt;{count}&lt;/span&gt; &lt;button
             @click="increment"&gt;+&lt;/button&gt; &lt;/template&gt; &lt;script&gt; count = 0 increment()
             { this.count++ } decrement() { this.count-- } &lt;/script&gt; &lt;style&gt; :host { display:

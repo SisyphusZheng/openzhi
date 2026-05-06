@@ -5,8 +5,6 @@ import { assertEquals } from 'jsr:@std/assert@^1.0.0';
 import { join } from 'jsr:@std/path@^1.0.0';
 import {
   fileToTagName,
-  generateIslandsModule,
-  generateRoutesModule,
   scanIslands,
   scanRoutes,
 } from '../src/route-scanner.ts';
@@ -102,31 +100,6 @@ Deno.test('route-scanner', { permissions: { read: true, write: true } }, async (
   await t.step('scanIslands - returns empty for non-existent directory', async () => {
     const islands = await scanIslands(join(FIXTURES_DIR, 'non-existent'));
     assertEquals(islands, []);
-  });
-
-  await t.step('generateRoutesModule - generates valid JS module code', async () => {
-    const routes = await scanRoutes(join(FIXTURES_DIR, 'routes-basic'));
-    const code = generateRoutesModule(routes, 'app/routes');
-    assertEquals(code.includes('export const routes'), true);
-    assertEquals(code.includes("path: '/'"), true);
-    assertEquals(code.includes("path: '/about'"), true);
-    assertEquals(code.includes('pageRoutes'), true);
-    assertEquals(code.includes('apiRoutes'), true);
-  });
-
-  await t.step('generateRoutesModule - includes renderers and middlewares exports', async () => {
-    const routes = await scanRoutes(join(FIXTURES_DIR, 'routes-special'));
-    const code = generateRoutesModule(routes, 'app/routes');
-    assertEquals(code.includes('export const renderers'), true);
-    assertEquals(code.includes('export const middlewares'), true);
-  });
-
-  await t.step('generateIslandsModule - generates island module code', () => {
-    const code = generateIslandsModule('app/islands', ['my-counter.ts', 'theme-toggle.ts']);
-    assertEquals(code.includes('export const islands'), true);
-    assertEquals(code.includes("tagName: 'my-counter'"), true);
-    assertEquals(code.includes("tagName: 'theme-toggle'"), true);
-    assertEquals(code.includes('islandTagNames'), true);
   });
 
   await t.step('fileToTagName - converts file name to tag name', () => {

@@ -132,6 +132,4 @@ export class LessCodeBlock extends LitElement {
 }
 
 // Guard: idempotent across SSR paths
-try {
-  customElements.define(tagName, LessCodeBlock);
-} catch { /* already defined */ }
+if (!customElements.get(tagName)) customElements.define(tagName, LessCodeBlock);

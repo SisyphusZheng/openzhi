@@ -206,10 +206,12 @@ async function buildSSG(options: BuildSSGOptions = {}): Promise<void> {
       },
     });
 
-    // Install Lit adapter through Deno resolution, so JSR projects do not need
-    // Vite to resolve @lessjs/adapter-lit from node_modules.
+    // Install Lit adapter through Vite SSR so registerAdapter() and renderDSD()
+    // share the same module scope. Using server.ssrLoadModule() instead of Deno's
+    // import() ensures the adapter is registered in Vite's module graph — no
+    // globalThis bridge needed.
     try {
-      const adapterModule = await import('@lessjs/adapter-lit');
+      const adapterModule = await server.ssrLoadModule('@lessjs/adapter-lit');
       if (typeof adapterModule.installLitAdapter === 'function') {
         adapterModule.installLitAdapter();
       }
@@ -223,8 +225,9 @@ async function buildSSG(options: BuildSSGOptions = {}): Promise<void> {
     // The SSR dom shim throws on duplicate registration, but SSG loads page
     // components that each import the same UI modules. With nested DSD + relative
     // imports, multiple routes trigger the same define() call.
+    let _ssrDefinePatched = false;
     const origDefine = globalThis.customElements?.define?.bind(globalThis.customElements);
-    if (origDefine && !(globalThis as Record<string, unknown>).__lessSsrDefinePatched) {
+    if (origDefine && !_ssrDefinePatched) {
       globalThis.customElements.define = (
         name: string,
         ctor: CustomElementConstructor,
@@ -235,7 +238,7 @@ async function buildSSG(options: BuildSSGOptions = {}): Promise<void> {
           origDefine(name, ctor, options);
         } catch { /* already defined */ }
       };
-      (globalThis as Record<string, unknown>).__lessSsrDefinePatched = true;
+      _ssrDefinePatched = true;
     }
 
     try {
@@ -337,14 +340,11 @@ async function buildSSG(options: BuildSSGOptions = {}): Promise<void> {
         console.warn('[LessJS SSG] No client manifest found - run the full build command first');
       }
 
-      // Post-process: rewrite island paths (fallback for any inline references)
-      const { buildIslandChunkMap, rewriteHtmlFiles, injectCspMeta, injectLayoutStyles } = await import(
+      // Post-process: build island chunk map for speculative links
+      const { buildIslandChunkMap, injectCspMeta, injectLayoutStyles } = await import(
         '../ssg-postprocess.js'
       );
       const islandChunkMap = buildIslandChunkMap(root, outDir, islandTagNames, basePath);
-      if (Object.keys(islandChunkMap).length > 0) {
-        rewriteHtmlFiles(outputDir, islandChunkMap);
-      }
 
       // Post-process: inject CSP <meta> tag into static HTML files.
       // SSG outputs static files — CSP nonces are not possible here,

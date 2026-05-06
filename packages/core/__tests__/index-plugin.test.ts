@@ -35,7 +35,6 @@ import {
   buildIslandChunkMap,
   injectClientScript,
   injectCspMeta,
-  rewriteHtmlFiles,
 } from '../src/ssg-postprocess.ts';
 
 import { printBuildManifest, scanClientBuild, scanSSGOutput } from '../src/build-manifest.ts';

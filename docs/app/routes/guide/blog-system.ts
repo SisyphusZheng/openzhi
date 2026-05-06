@@ -71,8 +71,8 @@ export class BlogSystemPage extends LitElement {
 
           <h2>User experience</h2>
           <div class="code-block">
-            // vite.config.ts import { less } from '@lessjs/core' import { kissBlog } from '@lessjs/blog'
-            export default defineConfig({ plugins: [ less(), kissBlog({ dir: 'content/blog', // .md files
+            // vite.config.ts import { less } from '@lessjs/core' import { lessBlog } from '@lessjs/blog'
+            export default defineConfig({ plugins: [ less(), lessBlog({ dir: 'content/blog', // .md files
             go here title: 'My Blog', postsPerPage: 10, }), ], })
           </div>
 
