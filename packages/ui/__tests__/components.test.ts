@@ -305,15 +305,14 @@ function setupDOMMocks(): () => void {
   const savedLocalStorage = (globalThis as any).localStorage;
   const _data: Record<string, string> = {};
 
-  // Mock document.documentElement
-  (globalThis as any).document = {
-    documentElement: {
-      dataset: {},
-      setAttribute: (...args: any[]) => {},
-    },
-    // Mock querySelectorAll for _propagateTheme in less-theme-toggle
-    querySelectorAll: (_selector: string) => [],
-  };
+    // Mock document.documentElement (querySelectorAll returns empty for CSS variable theme)
+    (globalThis as any).document = {
+      documentElement: {
+        dataset: {},
+        setAttribute: (...args: any[]) => {},
+      },
+      querySelectorAll: (_selector: string) => [],
+    };
 
   // Mock localStorage with proper method bindings
   (globalThis as any).localStorage = {
@@ -844,10 +843,6 @@ Deno.test('less-theme-toggle: _handleToggle switches dark→light', async () => 
     else localStorage.setItem('less-theme', orig);
   }
 });
-
-// ─── _propagateTheme tests removed in v0.6 ────
-// Theme propagation now uses CSS Custom Properties instead of DOM traversal
-// See: https://github.com/.../issues/xxx
 
 // ─── less-theme-toggle connectedCallback via direct call ────
 

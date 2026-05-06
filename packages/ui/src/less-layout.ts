@@ -694,17 +694,6 @@ export class LessLayout extends LitElement {
       `;
     }
 
-    /** Mobile overlay sidebar: position fixed, shown/hidden by menu-open toggle
-     * v0.6: Unified sidebar — the same .docs-sidebar is used for both desktop
-     * and mobile. On desktop it's position:sticky, on mobile it slides in
-     * via transform. No more separate mobile-sidebar-overlay (which caused
-     * duplication and inconsistent styling).
-     * @deprecated Use _renderSidebarNav() which now works for both.
-     */
-    private _renderMobileSidebar(): TemplateResult | typeof nothing {
-      return nothing;
-    }
-
     /** Shared nav items for both desktop and mobile sidebar */
     private _renderSidebarItems(): TemplateResult {
       const nav = this.navItems || LessLayout.DEFAULT_NAV;
@@ -779,8 +768,6 @@ export class LessLayout extends LitElement {
           <div class="mobile-backdrop"></div>
           <div class="layout-body">
             ${!this.home ? this._renderSidebarNav() : nothing}
-            <!-- Mobile overlay sidebar: always rendered, position:fixed, toggled by menu-open -->
-            ${this._renderMobileSidebar()}
             <main class="layout-main">
               <slot></slot>
             </main>
