@@ -216,6 +216,10 @@ export async function renderDSD(
     content = '<!-- render error -->';
   }
 
+  // v0.6: L2 Nested DSD — recursively render nested Custom Elements
+  // so that components like less-layout get shadow DOM in SSR output
+  content = await renderNestedCustomElements(content);
+
   // 5. Extract static styles from component class
   //    Adapters (e.g. @lessjs/adapter-lit) register a styles extractor
   //    that reads CSSResult / CSSResultArray from the class and returns
@@ -277,6 +281,116 @@ export async function renderDSDByName(
   }
 
   return await renderDSD(tagName, cls as CustomElementConstructor, props);
+}
+
+// ─── L2 Nested DSD (v0.6) ──────────────────────────────────────
+
+/**
+ * Convert kebab-case attribute name to camelCase property name.
+ * e.g. current-path → currentPath, aria-label → ariaLabel
+ */
+function kebabToCamel(str: string): string {
+  return str.replace(/-([a-z])/g, (_, c: string) => c.toUpperCase());
+}
+
+/**
+ * Parse an HTML element's attributes string into a props object.
+ *
+ * Handles:
+ *   key="value"  →  props.camelKey = "value"
+ *   key          →  props.key = true  (boolean attribute)
+ *   key='value'  →  props.camelKey = "value"
+ */
+function parseElementAttrs(attrsStr: string): Record<string, unknown> {
+  const props: Record<string, unknown> = {};
+  const attrRegex = /(\w[\w-]*)(?:="([^"]*)"|='([^']*)')?/g;
+  let match: RegExpExecArray | null;
+  while ((match = attrRegex.exec(attrsStr)) !== null) {
+    const key = match[1];
+    const value = match[2] ?? match[3];
+    if (value === undefined) {
+      // Boolean attribute (no value): e.g. home, disabled
+      props[key] = true;
+    } else {
+      props[kebabToCamel(key)] = value;
+    }
+  }
+  return props;
+}
+
+/**
+ * Recursively render nested Custom Elements with DSD.
+ *
+ * v0.6: After a component's render() output is produced as a string,
+ * scan it for known Custom Element tags and wrap each in
+ * `<template shadowrootmode="open">` so their shadow DOM exists
+ * in the static HTML without waiting for JS to upgrade them.
+ *
+ * Only processes tags with hyphens (valid Custom Element names)
+ * that are registered in the global customElements registry.
+ *
+ * Light DOM children of nested elements are preserved after the
+ * DSD template so they can be projected through `<slot>`.
+ *
+ * Depth-first recursion ensures innermost elements are wrapped first.
+ */
+async function renderNestedCustomElements(html: string): Promise<string> {
+  if (!globalThis.customElements?.get) return html;
+
+  // Match only tags with hyphens — native HTML tags are skipped
+  const ceRegex = /<([a-z][a-z0-9]*-[a-z0-9-]+)([\s\S]*?)>([\s\S]*?)<\/\1>/g;
+
+  const replacements: Array<{ start: number; end: number; newHtml: string }> = [];
+  let match: RegExpExecArray | null;
+
+  while ((match = ceRegex.exec(html)) !== null) {
+    const [full, tagName, attrsStr, childrenStr] = match;
+    const start = match.index;
+    const end = start + full.length;
+
+    // Skip if this range is already covered by a previous replacement
+    if (replacements.some((r) => r.start <= start && r.end >= end)) continue;
+
+    // Only process registered Custom Elements
+    const Cls = globalThis.customElements.get(tagName);
+    if (!Cls) continue;
+
+    // Depth-first: process children before parent
+    const renderedChildren = await renderNestedCustomElements(childrenStr);
+
+    // Parse attributes from HTML string → props for renderDSD
+    const props = parseElementAttrs(attrsStr);
+
+    // Render this component's DSD (may trigger further recursion)
+    const dsdHtml = await renderDSD(tagName, Cls as CustomElementConstructor, props);
+
+    // Insert light DOM children after the </template> and before </tag>
+    const templateClose = '</template>';
+    const templateIdx = dsdHtml.lastIndexOf(templateClose);
+    if (templateIdx === -1) continue;
+
+    const childrenTrimmed = renderedChildren.trim();
+    if (!childrenTrimmed) {
+      // No children — use DSD output as-is
+      replacements.push({ start, end, newHtml: dsdHtml });
+    } else {
+      // Inject children between </template> and </tag>
+      const before = dsdHtml.slice(0, templateIdx + templateClose.length);
+      const after = dsdHtml.slice(templateIdx + templateClose.length);
+      replacements.push({ start, end, newHtml: before + '\n  ' + renderedChildren + after });
+    }
+  }
+
+  if (replacements.length === 0) return html;
+
+  // Apply replacements from end to start to preserve string indices
+  let result = html;
+  for (let i = replacements.length - 1; i >= 0; i--) {
+    const { start, end, newHtml } = replacements[i];
+    result = result.slice(0, start) + newHtml + result.slice(end);
+  }
+
+  return result;
 }
 
 // ─── Document Wrapping ──────────────────────────────────────────
