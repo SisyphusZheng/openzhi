@@ -291,7 +291,7 @@ export function injectLayoutStyles(dir: string): void {
     'less-layout .app-layout{display:flex;flex-direction:column;min-height:100vh;background:var(--less-bg-base);color:var(--less-text-primary)}',
     'less-layout .layout-body{display:flex;flex:1}',
     'less-layout .layout-main{flex:1;min-width:0}',
-    'less-layout .app-layout[home] .layout-body{display:block}',
+    'less-layout .app-layout[home] .layout-body{display:flex;flex-direction:column}',
     'less-layout .app-header{position:sticky;top:0;z-index:200;background:var(--less-bg-base);border-bottom:0.5px solid var(--less-border)}',
     'less-layout .header-inner{max-width:1400px;margin:0 auto;padding:0 2rem;display:flex;align-items:center;height:56px;gap:1.25rem}',
     'less-layout .docs-sidebar{width:clamp(200px,20vw,280px);flex-shrink:0;border-right:0.5px solid var(--less-border);padding:1.25rem 0;overflow-y:auto;height:calc(100vh - 56px);position:sticky;top:56px}',

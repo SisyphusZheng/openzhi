@@ -105,7 +105,12 @@ export class LessLayout extends LitElement {
       }
 
       .app-layout[home] .layout-body {
-        display: block;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .app-layout[home] .layout-main {
+        flex: 1;
       }
 
       /* === Header === */
@@ -439,6 +444,16 @@ export class LessLayout extends LitElement {
 
           :host([home][menu-open]) .docs-sidebar {
             transform: translateX(-101%);
+          }
+
+          /* Home page on mobile: hide hamburger menu (no sidebar to show)
+             and prevent backdrop from appearing */
+          :host([home]) .mobile-menu {
+            display: none;
+          }
+
+          :host([home]) .mobile-backdrop {
+            display: none;
           }
 
           :host([menu-open]) .mobile-backdrop {
