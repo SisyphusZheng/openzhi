@@ -579,36 +579,16 @@ export class LessLayout extends LitElement {
       this.githubUrl = 'https://github.com/lessjs-run/LessJS';
     }
 
-    /** Set when DSD shadow root already exists — skip initial render */
-    private _dsdHydrated = false;
-
     /** Override createRenderRoot: if DSD already created the shadow root,
-     *  reuse it; otherwise create a new one (fallback for non-DSD environments). */
+     *  clear it and reuse it so Lit renders fresh content (no duplication). */
     override createRenderRoot(): HTMLElement | DocumentFragment {
-      if (this.shadowRoot && this.shadowRoot.childElementCount > 0) {
-        // DSD or DSD polyfill already created and populated the shadow root.
-        // Mark as hydrated so we skip the initial render.
-        this._dsdHydrated = true;
+      if (this.shadowRoot) {
+        // DSD or DSD polyfill already created the shadow root.
+        // Clear existing content so Lit renders fresh — prevents duplication.
+        this.shadowRoot.innerHTML = '';
         return this.shadowRoot;
       }
       return this.attachShadow({ mode: 'open' });
-    }
-
-    /** Skip the first render when DSD already provided the shadow DOM content.
-     *  This prevents Lit from re-rendering and duplicating header/footer. */
-    override shouldUpdate(changedProperties: Map<string, unknown>): boolean {
-      if (this._dsdHydrated && !this.hasUpdated) {
-        return false;
-      }
-      return super.shouldUpdate(changedProperties);
-    }
-
-    override connectedCallback() {
-      super.connectedCallback();
-      // After DSD hydration, wire up interactive behavior
-      if (this._dsdHydrated) {
-        this._syncMenuState();
-      }
     }
 
     override firstUpdated() {
