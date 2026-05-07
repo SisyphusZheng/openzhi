@@ -432,9 +432,9 @@ Deno.test('renderDSD — adapter protocol', async (t) => {
       isTemplate: (value: unknown) =>
         typeof value === 'object' && value !== null &&
         '_$litType$' in (value as Record<string, unknown>),
-      render: (_value: unknown, _tagName: string) => {
+      render: (_value: unknown, _tagName: string): Promise<string> => {
         renderCalled = true;
-        return '<p>adapted</p>';
+        return Promise.resolve('<p>adapted</p>');
       },
     };
 
