@@ -27,7 +27,7 @@
 
 import { css, type CSSResult, html, LitElement, nothing, type TemplateResult } from 'lit';
 import { lessDesignTokens } from './design-tokens.js';
-import { WithDsdHydration } from '@lessjs/adapter-lit/dsd-hydration.js';
+import { WithDsdHydration } from '@lessjs/adapter-lit';
 
 export const tagName = 'less-dialog';
 
