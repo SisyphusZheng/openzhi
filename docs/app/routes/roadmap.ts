@@ -269,8 +269,8 @@ export class RoadmapPage extends LitElement {
                 <tr><td>render-dsd.ts 拆分</td><td>770 行拆为 4 模块</td></tr>
                 <tr><td>UI 统一到 DsdLitElement</td><td>3 个组件未使用 Mixin</td></tr>
                 <tr><td>insertAfterHead 去重</td><td>ui → core</td></tr>
-                <tr><td>包版本统一</td><td>6 包版本不一致</td></tr>
-                <tr><td>定位重写</td><td>避免"全栈"过度承诺</td></tr>
+                <tr><td>✅ 包版本统一</td><td>已完成 — core 0.7.0, adapter-lit 0.6.3, 其余未变更</td></tr>
+                <tr><td>✅ 定位重写</td><td>已完成 — 静态站点框架 + 混合框架/编译器演进方向</td></tr>
                 <tr><td>Interactive Playground</td><td>StackBlitz 一键体验</td></tr>
                 <tr><td>Playwright E2E 测试</td><td>浏览器级集成测试</td></tr>
                 <tr><td>Island Upgrade Manifest</td><td>页面级 island 清单</td></tr>

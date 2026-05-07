@@ -2,10 +2,14 @@
 
 [简体中文](./README.md) | [English](./README.en.md)
 
-LessJS 是一个 Deno-first、Web Standards-first 的现代全栈框架，面向 static-first 应用。
+LessJS 是一个 Deno-first 的静态站点框架，用 Declarative Shadow DOM + Island Upgrade 让 HTML 先于 JavaScript 存在。
 
-它把 Declarative Shadow DOM、Web Components、Island Upgrade、SSG、Hono serverless APIs
-和 Vite 组合成一个很小的框架表面。LessJS 的目标不是隐藏 Web 平台，而是让平台本身变得更好用。
+它把 DSD 递归渲染、Web Components、SSG、Hono API 路由和 Vite 组合成最小框架表面。
+LessJS 不隐藏 Web 平台——它让平台本身更好用。
+
+LessJS 正在演化为一个**混合框架 + 编译器**：当前以 SSG + Island 为主，未来 .less Compiler 将用 AST
+替代手工 runtime-shim，并在 serverless fullstack 和 ISR 场景下提供更完整的解决方案。
+详见 [路线图](https://lessjs.com/roadmap)。
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Deno](https://img.shields.io/badge/Deno-2.7%2B-000000)](https://deno.com/)
@@ -29,7 +33,7 @@ LessJS 是一个 Deno-first、Web Standards-first 的现代全栈框架，面向
 - 只升级真正需要 JavaScript 的交互 **Island**
 - 优先使用原生 Web APIs（`<dialog>`、`:state()`、Navigation API），而不是先制造框架抽象
 - 用 **TC39 Signals** 管理响应式状态（浏览器原生 `Signal` 条件回退）
-- 让 serverless APIs 靠近路由树
+- 可选 Hono API 路由，靠近路由树定义 serverless 端点
 - 通过 Deno-first 工作流运行、构建和发布
 
 ## 快速开始
@@ -61,7 +65,7 @@ LessJS 不做客户端整树 hydration，而是在需要交互的位置按需升
 **DSD Hydration**：当浏览器原生附加 Declarative Shadow DOM 后，Lit 组件检测已有 shadow root 并跳过重渲染，
 避免重复内容（空白框、Footer 双写等）。
 
-## v0.6 新特性
+## v0.7 变更
 
 ### Declarative Shadow DOM — 嵌套递归
 
@@ -167,10 +171,10 @@ navigate('/about');
 
 | 包                    | 职责                                                               | 当前版本 |
 | --------------------- | ------------------------------------------------------------------ | -------- |
-| `@lessjs/core`        | Vite 插件、路由扫描、DSD 渲染（L2 嵌套）、Navigation API、SSG 管线 | 0.6.1    |
-| `@lessjs/ui`          | 基于 Lit 的 Web Component 组件库（含 DSD hydration）               | 0.6.1    |
+| `@lessjs/core`        | Vite 插件、路由扫描、DSD 渲染（L2 嵌套）、Navigation API、SSG 管线 | 0.7.0    |
+| `@lessjs/ui`          | 基于 Lit 的 Web Component 组件库（含 DSD hydration）               | 0.6.2    |
 | `@lessjs/signal`      | TC39 Signals 二开（signal/computed/effect/islandEffect）           | 0.6.1    |
-| `@lessjs/adapter-lit` | 可选 Lit SSR 适配器                                                | 0.6.1    |
+| `@lessjs/adapter-lit` | 可选 Lit SSR 适配器                                                | 0.6.3    |
 | `@lessjs/rpc`         | 轻量 fetch/RPC controller 工具                                     | 0.6.1    |
 | `@lessjs/create`      | 项目脚手架 CLI                                                     | 0.6.1    |
 
@@ -313,6 +317,8 @@ LessJS UI 组件遵循瑞士国际主义风格（Swiss International Style）：
 
 | Version           | Date       | Highlights                                                                                   |
 | ----------------- | ---------- | -------------------------------------------------------------------------------------------- |
+| **0.7.0**         | 2026-05-07 | P0 审计修复 — 73 新测试、runtime-shim 一致性、XSS 警告、静默 catch 消除、CI 补全、pre-commit hooks |
+| **0.6.2**         | 2026-05-07 | adapter-lit 静默 catch 修复                                                                   |
 | **0.6.1**         | 2026-05-07 | v0.6 正式版 — README 清理、全包版本对齐、CI 稳定性修复                                       |
 | **0.6.0-alpha.1** | 2026-05-06 | DSD + Islands + Signals + Form-Associated CE + Navigation API + Dialog + Speculative Loading |
 | **0.5.5**         | 2026-05-06 | 全面品牌重塑（105 个文件）                                                                   |

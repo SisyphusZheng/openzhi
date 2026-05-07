@@ -2,11 +2,14 @@
 
 [简体中文](./README.md) | [English](./README.en.md)
 
-LessJS is a Deno-first, Web Standards-first modern full-stack framework for static-first applications.
+LessJS is a Deno-first static site framework that makes HTML exist before JavaScript, using Declarative Shadow DOM + Island Upgrade.
 
-It combines Declarative Shadow DOM, Web Components, Island Upgrade, SSG, Hono serverless APIs,
-and Vite into a minimal framework surface. LessJS aims not to hide the Web platform, but to make
-the platform itself more usable.
+It combines DSD recursive rendering, Web Components, SSG, Hono API routes, and Vite into a minimal
+framework surface. LessJS doesn't hide the Web platform — it makes the platform itself more usable.
+
+LessJS is evolving into a **hybrid framework + compiler**: currently focused on SSG + Island, the future
+.less Compiler will replace hand-written runtime-shim with AST, and provide more complete solutions for
+serverless fullstack and ISR scenarios. See [Roadmap](https://lessjs.com/roadmap).
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Deno](https://img.shields.io/badge/Deno-2.7%2B-000000)](https://deno.com/)
@@ -30,7 +33,7 @@ starting from HTML and the Web platform itself:
 - Only upgrade interactive **Islands** that truly need JavaScript
 - Prefer native Web APIs (`<dialog>`, `:state()`, Navigation API) over framework abstractions
 - Manage reactive state with **TC39 Signals** (native `Signal` fallback)
-- Keep serverless APIs close to the route tree
+- Optional Hono API routes for serverless endpoints close to the route tree
 - Run, build, and publish through a Deno-first workflow
 
 ## Quick Start
@@ -63,7 +66,7 @@ LessJS does not do full client-side hydration tree reconciliation. Instead, it u
 detect the existing shadow root and skip re-rendering, avoiding duplicate content (blank boxes,
 double footers, etc.).
 
-## v0.6 New Features
+## v0.7 Changes
 
 ### Declarative Shadow DOM — Recursive Nesting
 
@@ -169,10 +172,10 @@ Resource hints injected based on island strategy:
 
 | Package               | Responsibility                                                              | Version |
 | --------------------- | --------------------------------------------------------------------------- | ------- |
-| `@lessjs/core`        | Vite plugin, route scanning, DSD rendering (L2 nested), Navigation API, SSG | 0.6.1   |
-| `@lessjs/ui`          | Lit-based Web Component library (with DSD hydration)                        | 0.6.1   |
+| `@lessjs/core`        | Vite plugin, route scanning, DSD rendering (L2 nested), Navigation API, SSG | 0.7.0   |
+| `@lessjs/ui`          | Lit-based Web Component library (with DSD hydration)                        | 0.6.2   |
 | `@lessjs/signal`      | TC39 Signals fork (signal/computed/effect/islandEffect)                     | 0.6.1   |
-| `@lessjs/adapter-lit` | Optional Lit SSR adapter                                                    | 0.6.1   |
+| `@lessjs/adapter-lit` | Optional Lit SSR adapter                                                    | 0.6.3   |
 | `@lessjs/rpc`         | Lightweight fetch/RPC controller tools                                      | 0.6.1   |
 | `@lessjs/create`      | Project scaffolding CLI                                                     | 0.6.1   |
 
@@ -302,6 +305,8 @@ Theme variable example:
 
 | Version           | Date       | Highlights                                                                                   |
 | ----------------- | ---------- | -------------------------------------------------------------------------------------------- |
+| **0.7.0**         | 2026-05-07 | P0 audit fixes — 73 new tests, runtime-shim consistency, XSS warnings, silent catch elimination, CI gaps, pre-commit hooks |
+| **0.6.2**         | 2026-05-07 | adapter-lit silent catch fix                                                                 |
 | **0.6.1**         | 2026-05-07 | v0.6 stable release — README cleanup, all packages version-aligned, CI stability fixes       |
 | **0.6.0-alpha.1** | 2026-05-06 | DSD + Islands + Signals + Form-Associated CE + Navigation API + Dialog + Speculative Loading |
 | **0.5.5**         | 2026-05-06 | Full brand rename (105 files)                                                                |
