@@ -1,0 +1,135 @@
+{
+  "../packages/ui/src/less-button.ts": {
+    "file": "islands/less-button-Dbr_kwn4.js",
+    "name": "less-button",
+    "src": "../packages/ui/src/less-button.ts",
+    "isDynamicEntry": true,
+    "imports": [
+      "_island-api-consumer-DZ1zs91I.js",
+      "_design-tokens-B_ByjwIP.js"
+    ]
+  },
+  "../packages/ui/src/less-code-block.ts": {
+    "file": "islands/less-code-block-CCwcxl3r.js",
+    "name": "less-code-block",
+    "src": "../packages/ui/src/less-code-block.ts",
+    "isDynamicEntry": true,
+    "imports": [
+      "_island-api-consumer-DZ1zs91I.js",
+      "_src-DX1dVt7k.js",
+      "_design-tokens-B_ByjwIP.js"
+    ]
+  },
+  "../packages/ui/src/less-dialog.ts": {
+    "file": "islands/less-dialog-Cii4X1UW.js",
+    "name": "less-dialog",
+    "src": "../packages/ui/src/less-dialog.ts",
+    "isDynamicEntry": true,
+    "imports": [
+      "_island-api-consumer-DZ1zs91I.js",
+      "_src-DX1dVt7k.js",
+      "_design-tokens-B_ByjwIP.js"
+    ]
+  },
+  "../packages/ui/src/less-hero-ping.ts": {
+    "file": "islands/less-hero-ping-Bmn29amy.js",
+    "name": "less-hero-ping",
+    "src": "../packages/ui/src/less-hero-ping.ts",
+    "isDynamicEntry": true,
+    "imports": [
+      "_island-api-consumer-DZ1zs91I.js"
+    ]
+  },
+  "../packages/ui/src/less-input.ts": {
+    "file": "islands/less-input-Cpx7wvvF.js",
+    "name": "less-input",
+    "src": "../packages/ui/src/less-input.ts",
+    "isDynamicEntry": true,
+    "imports": [
+      "_island-api-consumer-DZ1zs91I.js",
+      "_design-tokens-B_ByjwIP.js"
+    ]
+  },
+  "../packages/ui/src/less-layout.ts": {
+    "file": "islands/less-layout-U2WFdzLU.js",
+    "name": "less-layout",
+    "src": "../packages/ui/src/less-layout.ts",
+    "isDynamicEntry": true,
+    "imports": [
+      "_island-api-consumer-DZ1zs91I.js",
+      "_src-DX1dVt7k.js",
+      "_design-tokens-B_ByjwIP.js",
+      "../packages/ui/src/less-theme-toggle.ts"
+    ]
+  },
+  "../packages/ui/src/less-theme-toggle.ts": {
+    "file": "islands/less-theme-toggle-DXFiNDY8.js",
+    "name": "less-theme-toggle",
+    "src": "../packages/ui/src/less-theme-toggle.ts",
+    "isDynamicEntry": true,
+    "imports": [
+      "_island-api-consumer-DZ1zs91I.js",
+      "_src-DX1dVt7k.js",
+      "_design-tokens-B_ByjwIP.js"
+    ]
+  },
+  ".less/.less-client-entry.ts": {
+    "file": "islands/client.js",
+    "name": "client",
+    "src": ".less/.less-client-entry.ts",
+    "isEntry": true,
+    "dynamicImports": [
+      "_island-api-consumer-DZ1zs91I.js",
+      "_island-code-block-DDvN1YJG.js",
+      "_island-counter-island-B8cQR-1m.js",
+      "../packages/ui/src/less-theme-toggle.ts",
+      "../packages/ui/src/less-button.ts",
+      "../packages/ui/src/less-input.ts",
+      "../packages/ui/src/less-code-block.ts",
+      "../packages/ui/src/less-layout.ts",
+      "../packages/ui/src/less-hero-ping.ts",
+      "../packages/ui/src/less-dialog.ts"
+    ]
+  },
+  "_design-tokens-B_ByjwIP.js": {
+    "file": "islands/design-tokens-B_ByjwIP.js",
+    "name": "design-tokens",
+    "imports": [
+      "_island-api-consumer-DZ1zs91I.js"
+    ]
+  },
+  "_island-api-consumer-DZ1zs91I.js": {
+    "file": "islands/island-api-consumer-DZ1zs91I.js",
+    "name": "island-api-consumer",
+    "imports": [
+      "_rolldown-runtime-B_k5qpF0.js"
+    ]
+  },
+  "_island-code-block-DDvN1YJG.js": {
+    "file": "islands/island-code-block-DDvN1YJG.js",
+    "name": "island-code-block",
+    "imports": [
+      "_rolldown-runtime-B_k5qpF0.js",
+      "_island-api-consumer-DZ1zs91I.js"
+    ]
+  },
+  "_island-counter-island-B8cQR-1m.js": {
+    "file": "islands/island-counter-island-B8cQR-1m.js",
+    "name": "island-counter-island",
+    "imports": [
+      "_rolldown-runtime-B_k5qpF0.js",
+      "_island-api-consumer-DZ1zs91I.js"
+    ]
+  },
+  "_rolldown-runtime-B_k5qpF0.js": {
+    "file": "islands/rolldown-runtime-B_k5qpF0.js",
+    "name": "rolldown-runtime"
+  },
+  "_src-DX1dVt7k.js": {
+    "file": "islands/src-DX1dVt7k.js",
+    "name": "src",
+    "imports": [
+      "_island-api-consumer-DZ1zs91I.js"
+    ]
+  }
+}

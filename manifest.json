@@ -1,0 +1,15 @@
+{
+  "name": "LessJS Framework — Less is More",
+  "short_name": "LessJS",
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff",
+  "icons": [
+    {
+      "src": "/assets/less-logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

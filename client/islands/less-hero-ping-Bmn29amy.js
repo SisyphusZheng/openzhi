@@ -1,0 +1,81 @@
+import{a as e,i as t,n}from"./island-api-consumer-DZ1zs91I.js";var r=`less-hero-ping`,i=class extends n{static properties={apiUrl:{type:String,attribute:`api-url`}};static styles=e`
+    :host {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .ping {
+      padding: 5px 18px;
+      border-radius: 2px;
+      border: 0.5px solid #555;
+      background: transparent;
+      color: #ccc;
+      font-size: 10px;
+      cursor: pointer;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      transition: all 0.15s;
+      font-family: inherit;
+      white-space: nowrap;
+    }
+    .ping:hover {
+      background: #1a1a1a;
+      color: #fff;
+      border-color: #888;
+    }
+    .ping:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      display: inline-block;
+      flex-shrink: 0;
+    }
+    .dot.idle {
+      background: #444;
+    }
+    .dot.loading {
+      background: #888;
+      animation: pulse 0.8s ease-in-out infinite alternate;
+    }
+    .dot.ok {
+      background: #2ecc40;
+    }
+    .dot.err {
+      background: #e74c3c;
+    }
+
+    .info {
+      font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+      font-size: 9px;
+      color: #666;
+      white-space: nowrap;
+    }
+    .info .ok {
+      color: #2ecc40;
+    }
+    .info .err {
+      color: #e74c3c;
+    }
+
+    @keyframes pulse {
+      from {
+        opacity: 0.4;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+  `;_state=`idle`;_msg=``;connectedCallback(){super.connectedCallback(),this._fetch()}_fetch=async()=>{this._state=`loading`,this._msg=``,this.requestUpdate();try{let e=await fetch(`https://less-demo-api.sisyphuszheng.deno.net/api`);if(!e.ok)throw Error(`HTTP ${e.status}`);let t=await e.json();this._state=`ok`,this._msg=`${t.framework} v${t.version}  ${t.timestamp.slice(11,19)}`}catch(e){let t=e;this._state=`err`,this._msg=String(e).includes(`HTTP`)?t.message:`connection failed`}finally{this.requestUpdate()}};render(){return t`
+      <span class="${`dot ${this._state}`}"></span>
+      <button class="ping" @click="${this._fetch}" ?disabled="${this._state===`loading`}">
+        ${this._state===`loading`?`pinging...`:`ping server`}
+      </button>
+      ${this._msg?t`
+          <span class="info"><span class="${this._state}">${this._msg}</span></span>
+        `:``}
+    `}};customElements.get(`less-hero-ping`)||customElements.define(r,i);export{i as default,r as tagName};

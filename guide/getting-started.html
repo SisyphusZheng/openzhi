@@ -1,0 +1,2032 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+<script>
+// DSD Polyfill (Firefox, older browsers)
+(function() {
+  try {
+    const t = document.createElement('template');
+    t.setAttribute('shadowrootmode', 'open');
+    if ('shadowRootMode' in t) return; // Native support
+  } catch {}
+  
+  const attachDSD = (root) => {
+    root.querySelectorAll('template[shadowrootmode]').forEach(tpl => {
+      const parent = tpl.parentNode;
+      if (!parent || parent.shadowRoot) return;
+      try {
+        const mode = tpl.getAttribute('shadowrootmode');
+        const opts = { mode: mode === 'open' ? 'open' : 'closed' };
+        if (tpl.hasAttribute('shadowrootdelegatesfocus')) opts.delegatesFocus = true;
+        const sr = parent.attachShadow(opts);
+        sr.innerHTML = tpl.innerHTML;
+        tpl.remove();
+        attachDSD(sr); // Handle nested DSD
+      } catch {}
+    });
+  };
+  
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => attachDSD(document));
+  } else {
+    attachDSD(document);
+  }
+})();
+</script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LessJS</title>
+  <meta name="description" content="LessJS — Less is More. Web Standards-first Jamstack SSG with Island architecture. Zero-runtime core, DSD rendering, Lit Web Components, Hono API routes.">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/open-props@1.7.20/open-props.min.css" media="print" onload="this.media='all'">
+  <style id="less-anti-flash">html{visibility:hidden}</style>
+  <link rel="icon" type="image/svg+xml" href="/assets/less-logo.svg" />
+  <link rel="apple-touch-icon" href="/assets/less-logo.svg" />
+  <style>:root,[data-theme="light"]{--less-bg-base:var(--gray-0);--less-bg-surface:var(--gray-1);--less-bg-elevated:var(--gray-2);--less-bg-hover:var(--gray-2);--less-bg-card:var(--gray-0);--less-border:var(--gray-3);--less-border-hover:var(--gray-4);--less-text-primary:var(--gray-12);--less-text-secondary:var(--gray-8);--less-text-tertiary:var(--gray-7);--less-text-muted:var(--gray-6);--less-accent:var(--gray-12);--less-accent-dim:var(--gray-8);--less-accent-subtle:var(--gray-2);--less-code-bg:var(--gray-2);--less-code-border:var(--gray-3);--less-error:var(--red-7);--less-scrollbar-track:transparent;--less-scrollbar-thumb:var(--gray-4);color-scheme:light}[data-theme="dark"]{--less-bg-base:var(--gray-12);--less-bg-surface:var(--gray-11);--less-bg-elevated:var(--gray-10);--less-bg-hover:var(--gray-11);--less-bg-card:var(--gray-11);--less-border:var(--gray-9);--less-border-hover:var(--gray-8);--less-text-primary:var(--gray-0);--less-text-secondary:var(--gray-5);--less-text-tertiary:var(--gray-7);--less-text-muted:var(--gray-8);--less-accent:var(--gray-0);--less-accent-dim:var(--gray-4);--less-accent-subtle:var(--gray-11);--less-code-bg:var(--gray-10);--less-code-border:var(--gray-9);--less-error:var(--red-4);--less-scrollbar-track:transparent;--less-scrollbar-thumb:var(--gray-9);color-scheme:dark}body{margin:0;background:var(--less-bg-base);color:var(--less-text-primary);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}</style>
+  <script src="/theme-init.js"></script>
+  <script defer src="/mobile-menu.js"></script>
+<link rel="manifest" href="/manifest.json"></head>
+<body>
+  <page-getting-started route="/guide/getting-started" source="guide/getting-started.ts">
+  <template shadowrootmode="open">
+    <style>
+  :host {
+    display: block;
+  }
+
+  .container {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+  }
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    margin: 0 0 0.5rem;
+    color: var(--less-text-primary);
+    line-height: 1.2;
+  }
+
+  .subtitle {
+    color: var(--less-text-tertiary);
+    margin-bottom: 3rem;
+    font-size: 0.875rem;
+    line-height: 1.7;
+  }
+
+  h2 {
+    font-size: 1rem;
+    font-weight: 500;
+    margin: 2rem 0 0.75rem;
+    color: var(--less-text-primary);
+  }
+
+  h3 {
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin: 1.5rem 0 0.5rem;
+    color: var(--less-text-primary);
+  }
+
+  p {
+    line-height: 1.7;
+    margin: 0.5rem 0;
+    color: var(--less-text-secondary);
+    font-size: 0.875rem;
+  }
+
+  strong {
+    color: var(--less-text-primary);
+    font-weight: 500;
+  }
+  em {
+    font-style: italic;
+  }
+
+  a {
+    color: var(--less-text-primary);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: var(--less-border-hover);
+    text-decoration-thickness: 0.5px;
+    transition: text-decoration-color 0.15s;
+  }
+  a:hover {
+    text-decoration-color: var(--less-text-primary);
+  }
+
+  /* Code */
+  pre {
+    background: var(--less-code-bg);
+    color: var(--less-text-secondary);
+    padding: 1rem 1.25rem;
+    border-radius: 3px;
+    overflow-x: auto;
+    font-size: 0.8125rem;
+    line-height: 1.6;
+    margin: 0.75rem 0;
+    border: 0.5px solid var(--less-code-border);
+  }
+
+  code {
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+  }
+
+  p code, li code {
+    background: var(--less-code-bg);
+    padding: 0.125rem 0.375rem;
+    border-radius: 3px;
+    font-size: 0.75rem;
+    color: var(--less-text-secondary);
+    border: 0.5px solid var(--less-code-border);
+  }
+
+  .inline-code {
+    background: var(--less-code-bg);
+    padding: 0.125rem 0.375rem;
+    border-radius: 3px;
+    font-size: 0.875em;
+  }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0.75rem 0 1.5rem;
+    font-size: 0.8125rem;
+  }
+  th, td {
+    border: 0.5px solid var(--less-border);
+    padding: 0.5rem 0.75rem;
+    text-align: left;
+  }
+  th {
+    font-weight: 500;
+    color: var(--less-text-secondary);
+  }
+  td {
+    color: var(--less-text-tertiary);
+  }
+
+  /* Callouts */
+  .callout {
+    padding: 1rem 1.25rem;
+    margin: 1rem 0;
+    border-left: 2px solid var(--less-border-hover);
+    background: var(--less-bg-surface);
+    border-radius: 0 3px 3px 0;
+  }
+  .callout.warn {
+    border-left-color: var(--less-text-tertiary);
+  }
+
+  .pillar {
+    padding: 1.25rem 1.5rem;
+    margin: 1rem 0;
+    border-left: 2px solid var(--less-border-hover);
+    background: var(--less-bg-surface);
+    border-radius: 0 3px 3px 0;
+  }
+  .pillar .num {
+    font-size: 0.6875rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--less-text-muted);
+    margin-bottom: 0.25rem;
+  }
+  .pillar h3 {
+    margin: 0 0 0.5rem;
+  }
+
+  .hard-constraint {
+    display: inline-block;
+    background: var(--less-code-bg);
+    border: 0.5px solid var(--less-border-hover);
+    padding: 0.25rem 0.625rem;
+    border-radius: 3px;
+    font-size: 0.75rem;
+    margin: 0.125rem 0;
+  }
+
+  /* Lists */
+  ul, ol {
+    padding-left: 1.25rem;
+    color: var(--less-text-secondary);
+    line-height: 1.7;
+  }
+  li {
+    margin: 0.25rem 0;
+  }
+
+  /* Page nav */
+  .nav-row {
+    margin-top: 2.5rem;
+    display: flex;
+    justify-content: space-between;
+  }
+  .nav-link {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--less-text-secondary);
+    text-decoration: none;
+    border: 0.5px solid var(--less-border);
+    border-radius: 3px;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .nav-link:hover {
+    color: var(--less-text-primary);
+    border-color: var(--less-border-hover);
+  }
+
+  @media (max-width: 900px) {
+    .container {
+      padding: 2rem 1.25rem 3rem;
+    }
+    h1 {
+      font-size: 1.5rem;
+    }
+    .subtitle {
+      margin-bottom: 2rem;
+    }
+    pre {
+      padding: 0.875rem 1rem;
+      font-size: 0.75rem;
+    }
+    .nav-row {
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .container {
+      padding: 1.5rem 1rem 2.5rem;
+    }
+    h1 {
+      font-size: 1.25rem;
+    }
+    .subtitle {
+      font-size: 0.8125rem;
+      margin-bottom: 1.5rem;
+    }
+    h2 {
+      font-size: 0.9375rem;
+    }
+    p {
+      font-size: 0.8125rem;
+    }
+    pre {
+      padding: 0.75rem;
+      font-size: 0.6875rem;
+    }
+    ul, ol {
+      padding-left: 1rem;
+    }
+  }
+
+
+      .step {
+        margin: 1.5rem 0 2rem;
+      }
+
+      .step h2 {
+        margin-top: 0;
+      }
+
+      .note {
+        background: var(--less-bg-surface);
+        border: 0.5px solid var(--less-border);
+        border-radius: 4px;
+        padding: 0.75rem 1rem;
+        margin: 1rem 0;
+      }
+
+      .note p {
+        margin: 0;
+      }
+    </style>
+    
+      <less-layout currentPath="/guide/getting-started" data-ssr-props="{&quot;currentPath&quot;:&quot;/guide/getting-started&quot;}">
+  <template shadowrootmode="open">
+    <style>
+  
+  :host {
+    /* === Spacing Scale (4px base unit) === */
+    --less-size-1: 0.25rem; /* 4px */
+    --less-size-2: 0.375rem; /* 6px */
+    --less-size-3: 0.5rem; /* 8px */
+    --less-size-4: 0.75rem; /* 12px */
+    --less-size-5: 1rem; /* 16px */
+    --less-size-6: 1.25rem; /* 20px */
+    --less-size-7: 1.5rem; /* 24px */
+    --less-size-8: 2rem; /* 32px */
+    --less-size-9: 2.5rem; /* 40px */
+    --less-size-10: 3rem; /* 48px */
+
+    /* === Border Radius (Swiss: minimal) === */
+    --less-radius-sm: 2px;
+    --less-radius-md: 4px;
+    --less-radius-lg: 6px;
+
+    /* === Transitions === */
+    --less-transition-fast: 0.1s ease;
+    --less-transition-normal: 0.15s ease;
+    --less-transition-slow: 0.25s ease;
+
+    /* === Z-Index Scale === */
+    --less-z-dropdown: 100;
+    --less-z-sticky: 200;
+    --less-z-fixed: 300;
+    --less-z-modal-backdrop: 400;
+    --less-z-modal: 500;
+    --less-z-popover: 600;
+    --less-z-tooltip: 700;
+  }
+ 
+  :host {
+    /* === Font Families === */
+    --less-font-sans:
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      Roboto,
+      "Helvetica Neue",
+      Arial,
+      sans-serif;
+    --less-font-mono: "SF Mono", "Fira Code", "Fira Mono", Menlo, Consolas, monospace;
+
+    /* === Font Sizes (modular scale ~1.125) === */
+    --less-font-size-xs: 0.6875rem; /* 11px */
+    --less-font-size-sm: 0.75rem; /* 12px */
+    --less-font-size-md: 0.875rem; /* 14px */
+    --less-font-size-lg: 1rem; /* 16px */
+    --less-font-size-xl: 1.125rem; /* 18px */
+    --less-font-size-2xl: 1.25rem; /* 20px */
+    --less-font-size-3xl: 1.5rem; /* 24px */
+
+    /* === Font Weights === */
+    --less-font-weight-normal: 400;
+    --less-font-weight-medium: 500;
+    --less-font-weight-semibold: 600;
+    --less-font-weight-bold: 700;
+    --less-font-weight-extrabold: 800;
+
+    /* === Line Heights === */
+    --less-line-height-tight: 1.2;
+    --less-line-height-normal: 1.5;
+    --less-line-height-relaxed: 1.7;
+
+    /* === Letter Spacing === */
+    --less-letter-spacing-tight: -0.03em;
+    --less-letter-spacing-normal: 0;
+    --less-letter-spacing-wide: 0.02em;
+    --less-letter-spacing-wider: 0.05em;
+    --less-letter-spacing-widest: 0.15em;
+  }
+ 
+  :host {
+    /* v0.6: Color tokens inherit from :root via CSS custom property cascade.
+      DO NOT redeclare them on :host — that breaks inheritance!
+      Setting --less-bg-base: initial would make var(--less-bg-base) invalid
+      inside the shadow root, because 'initial' for custom properties means
+      "guaranteed-invalid value", NOT "inherit from parent".
+
+      For standalone usage (without LessJS head styles), the page must
+      inject lessRootColorCSS into <head> — this is the expected setup.
+      If tokens are missing, var() references without fallbacks will simply
+      not apply, which is acceptable for standalone mode. */
+    color-scheme: light dark;
+  }
+ 
+  :host {
+    --less-shadow-sm: var(--shadow-1);
+    --less-shadow-md: var(--shadow-3);
+    --less-shadow-lg: var(--shadow-5);
+  }
+
+  /* Dark mode: override with light-on-dark shadows */
+  :host([data-theme="dark"]) {
+    --less-shadow-sm: var(--inner-shadow-1);
+    --less-shadow-md: var(--inner-shadow-2);
+    --less-shadow-lg: var(--inner-shadow-3);
+  }
+;
+
+
+      :host {
+        display: block;
+      }
+
+      /* === Layout Shell === */
+      .app-layout {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        background: var(--less-bg-base);
+        color: var(--less-text-primary);
+        font-family: var(--less-font-sans);
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      .layout-body {
+        display: flex;
+        flex: 1;
+      }
+
+      .layout-main {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .app-layout[home] .layout-body {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .app-layout[home] .layout-main {
+        flex: 1;
+      }
+
+      /* === Header === */
+      .app-header {
+        position: sticky;
+        top: 0;
+        z-index: var(--less-z-sticky);
+        background: var(--less-bg-base);
+        border-bottom: 0.5px solid var(--less-border);
+      }
+
+      .header-inner {
+        max-width: var(--less-layout-max-width, 1400px);
+        margin: 0 auto;
+        padding: 0 var(--less-size-8);
+        display: flex;
+        align-items: center;
+        height: var(--less-layout-header-height, 56px);
+        gap: var(--less-size-6);
+      }
+
+      /* === Mobile Menu (L0: details/summary) === */
+      .mobile-menu {
+        display: none;
+      }
+
+      .mobile-menu-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        border: 0.5px solid var(--less-border);
+        border-radius: var(--less-radius-md);
+        background: transparent;
+        color: var(--less-text-tertiary);
+        cursor: pointer;
+        padding: 0;
+        list-style: none;
+        transition:
+          color var(--less-transition-normal),
+          border-color var(--less-transition-normal),
+          background var(--less-transition-normal);
+        }
+
+        .mobile-menu-btn::-webkit-details-marker {
+          display: none;
+        }
+
+        .mobile-menu-btn::marker {
+          content: "";
+        }
+
+        .mobile-menu-btn:hover,
+        .mobile-menu-btn:focus-visible {
+          color: var(--less-text-primary);
+          border-color: var(--less-border-hover);
+          background: var(--less-accent-subtle);
+        }
+
+        .mobile-menu[open] .mobile-menu-btn {
+          color: var(--less-text-primary);
+          background: var(--less-accent-subtle);
+          border-color: var(--less-border-hover);
+        }
+
+        /* === Logo === */
+        .logo {
+          font-size: var(--less-font-size-sm);
+          font-weight: var(--less-font-weight-extrabold);
+          color: var(--less-text-primary);
+          text-decoration: none;
+          letter-spacing: var(--less-letter-spacing-widest);
+          text-transform: uppercase;
+          transition: opacity var(--less-transition-normal);
+          white-space: nowrap;
+        }
+
+        .logo:hover {
+          opacity: 0.6;
+        }
+
+        .logo-sub {
+          font-size: var(--less-font-size-xs);
+          font-weight: var(--less-font-weight-normal);
+          color: var(--less-text-muted);
+          margin-left: var(--less-size-2);
+          letter-spacing: var(--less-letter-spacing-wide);
+          text-transform: none;
+        }
+
+        /* === Header Nav === */
+        .header-nav {
+          display: flex;
+          gap: 0.125rem;
+          flex: 1;
+        }
+
+        .header-nav a {
+          color: var(--less-text-tertiary);
+          text-decoration: none;
+          font-size: var(--less-font-size-sm);
+          font-weight: var(--less-font-weight-medium);
+          padding: var(--less-size-2) var(--less-size-3);
+          letter-spacing: var(--less-letter-spacing-wide);
+          transition: color var(--less-transition-normal);
+          border-radius: var(--less-radius-md);
+        }
+
+        .header-nav a:hover {
+          color: var(--less-text-primary);
+          text-decoration: underline;
+        }
+
+        /* === Header Right === */
+        .header-right {
+          display: flex;
+          align-items: center;
+          gap: var(--less-size-2);
+          margin-left: auto;
+        }
+
+        /* === GitHub Link === */
+        .github-link {
+          display: inline-flex;
+          align-items: center;
+          gap: var(--less-size-2);
+          color: var(--less-text-muted);
+          text-decoration: none;
+          font-size: var(--less-font-size-xs);
+          font-weight: var(--less-font-weight-medium);
+          letter-spacing: var(--less-letter-spacing-wide);
+          padding: var(--less-size-2) var(--less-size-3);
+          border: 0.5px solid var(--less-border);
+          border-radius: var(--less-radius-md);
+          transition: color var(--less-transition-normal), border-color var(--less-transition-normal);
+        }
+
+        .github-link:hover {
+          color: var(--less-text-secondary);
+          border-color: var(--less-border-hover);
+        }
+
+        .github-link svg {
+          flex-shrink: 0;
+        }
+
+        /* === Sidebar: unified desktop/mobile (v0.6) ===
+        *
+        * v0.6: SINGLE .docs-sidebar for both desktop and mobile.
+        * - Desktop: position:sticky, border-right, always visible
+        * - Mobile: position:fixed, slides in from left via transform
+        * - Home page: hidden via width:0 (not display:none — preserves transform)
+        *
+        * This replaces the old dual-sidebar approach (.docs-sidebar for desktop
+        * + .mobile-sidebar-overlay for mobile) which caused duplicate content
+        * and inconsistent styling between breakpoints.
+        */
+        .docs-sidebar {
+          width: clamp(200px, 20vw, 280px);
+          flex-shrink: 0;
+          border-right: 0.5px solid var(--less-border);
+          padding: var(--less-size-6) 0;
+          overflow-y: auto;
+          height: calc(100vh - var(--less-layout-header-height, 56px));
+          position: sticky;
+          top: var(--less-layout-header-height, 56px);
+          scrollbar-width: thin;
+        }
+
+        /* Home page: hide sidebar while keeping box model alive for transitions.
+        * NOT display:none — that kills the box model and makes transform unusable. */
+        :host([home]) .docs-sidebar {
+          width: 0;
+          min-width: 0;
+          padding: 0;
+          overflow: hidden;
+          border-right: none;
+        }
+
+        .nav-section {
+          margin-bottom: var(--less-size-5);
+        }
+
+        .nav-section summary {
+          font-size: var(--less-font-size-xs);
+          font-weight: var(--less-font-weight-bold);
+          text-transform: uppercase;
+          letter-spacing: 0.14em;
+          color: var(--less-text-muted);
+          padding: 0 var(--less-size-5);
+          margin-bottom: var(--less-size-2);
+          cursor: pointer;
+          list-style: none;
+          display: flex;
+          align-items: center;
+          gap: var(--less-size-2);
+          user-select: none;
+        }
+
+        .nav-section summary::-webkit-details-marker {
+          display: none;
+        }
+
+        .nav-section summary::marker {
+          content: "";
+        }
+
+        .nav-section summary::before {
+          content: "▾";
+          font-size: 0.5rem;
+          transition: transform var(--less-transition-normal);
+          display: inline-block;
+        }
+
+        .nav-section[open] summary::before {
+          transform: rotate(0deg);
+        }
+
+        .nav-section:not([open]) summary::before {
+          transform: rotate(-90deg);
+        }
+
+        .nav-section summary:hover {
+          color: var(--less-text-tertiary);
+        }
+
+        .docs-sidebar a {
+          display: block;
+          color: var(--less-text-tertiary);
+          text-decoration: none;
+          font-size: var(--less-font-size-sm);
+          padding: 0.3rem var(--less-size-5);
+          transition: color var(--less-transition-normal), background var(--less-transition-normal);
+          border-left: 1px solid transparent;
+        }
+
+        .docs-sidebar a:hover {
+          color: var(--less-text-primary);
+          background: var(--less-accent-subtle);
+        }
+
+        .docs-sidebar a.active,
+        .docs-sidebar a[aria-current="page"] {
+          color: var(--less-text-primary);
+          border-left-color: var(--less-text-primary);
+          background: var(--less-accent-subtle);
+          font-weight: var(--less-font-weight-medium);
+        }
+
+        /* === Mobile Backdrop === */
+        .mobile-backdrop {
+          position: fixed;
+          inset: 0;
+          top: var(--less-layout-header-height, 56px);
+          background: linear-gradient(
+            to right,
+            rgba(0, 0, 0, 0.5) 0%,
+            rgba(0, 0, 0, 0.35) 40%,
+            rgba(0, 0, 0, 0.25) 100%
+          );
+          z-index: 80;
+          opacity: 0;
+          pointer-events: none;
+          transition: opacity var(--less-transition-slow);
+        }
+
+        /* === Mobile Responsive ===
+        *
+        * v0.6: Unified sidebar. On mobile, .docs-sidebar becomes a fixed overlay
+        * that slides in from the left via transform. No separate mobile sidebar
+        * overlay element — eliminates content duplication and style inconsistency.
+        */
+        @media (max-width: 900px) {
+          .mobile-menu {
+            display: block;
+          }
+
+          .header-inner {
+            padding: 0 var(--less-size-4);
+            gap: var(--less-size-3);
+          }
+
+          .header-nav {
+            display: none;
+          }
+
+          .github-text {
+            display: none;
+          }
+
+          .header-right {
+            gap: var(--less-size-2);
+          }
+
+          .docs-sidebar {
+            position: fixed;
+            top: var(--less-layout-header-height, 56px);
+            left: 0;
+            width: min(300px, 80vw);
+            height: calc(100vh - var(--less-layout-header-height, 56px));
+            z-index: 90;
+            background: var(--less-bg-base);
+            border-right: 0.5px solid var(--less-border);
+            border-bottom: none;
+            padding: var(--less-size-4) 0;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            transform: translateX(-101%);
+            transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            will-change: transform;
+            box-shadow: none;
+            /* Desktop sticky properties are overridden by fixed */
+          }
+
+          /* Home page on mobile: always hidden via transform + invisible */
+          :host([home]) .docs-sidebar {
+            width: min(300px, 80vw);
+            min-width: auto;
+            padding: var(--less-size-4) 0;
+            border-right: 0.5px solid var(--less-border);
+            transform: translateX(-101%);
+            pointer-events: none;
+            visibility: hidden;
+          }
+
+          :host([menu-open]) .docs-sidebar {
+            transform: translateX(0);
+            box-shadow: var(--less-shadow-sidebar, 4px 0 24px rgba(0, 0, 0, 0.3));
+          }
+
+          :host([home][menu-open]) .docs-sidebar {
+            transform: translateX(-101%);
+          }
+
+          /* Home page on mobile: hide hamburger menu (no sidebar to show)
+            and prevent backdrop from appearing */
+          :host([home]) .mobile-menu {
+            display: none;
+          }
+
+          :host([home]) .mobile-backdrop {
+            display: none;
+          }
+
+          :host([menu-open]) .mobile-backdrop {
+            opacity: 1;
+            pointer-events: auto;
+          }
+
+          .nav-section {
+            margin-bottom: var(--less-size-2);
+          }
+
+          .nav-section summary {
+            padding: var(--less-size-2) var(--less-size-4);
+            font-size: var(--less-font-size-xs);
+          }
+
+          .docs-sidebar a {
+            padding: var(--less-size-2) var(--less-size-4) var(--less-size-2) var(--less-size-7);
+            font-size: var(--less-font-size-sm);
+          }
+
+          .layout-main {
+            width: 100%;
+          }
+
+          .app-footer {
+            padding: var(--less-size-6) var(--less-size-4);
+          }
+
+          .app-footer .divider {
+            display: none;
+          }
+
+          .app-footer p {
+            line-height: 1.8;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .logo-sub {
+            display: none;
+          }
+
+          .github-link {
+            padding: var(--less-size-2);
+            border: none;
+          }
+
+          .header-inner {
+            padding: 0 var(--less-size-3);
+          }
+        }
+
+        /* === Footer === */
+        .app-footer {
+          padding: var(--less-size-8);
+          border-top: 0.5px solid var(--less-border);
+          text-align: center;
+          color: var(--less-text-muted);
+          font-size: var(--less-font-size-xs);
+          letter-spacing: var(--less-letter-spacing-wide);
+          background: var(--less-bg-base);
+        }
+
+        .app-footer p {
+          margin: 0.25rem 0;
+        }
+
+        .app-footer a {
+          color: var(--less-text-tertiary);
+          transition: color var(--less-transition-normal);
+        }
+
+        .app-footer a:hover {
+          color: var(--less-text-primary);
+          text-decoration: underline;
+        }
+
+        .app-footer .divider {
+          display: inline-block;
+          width: 1px;
+          height: 8px;
+          background: var(--less-border-hover);
+          vertical-align: middle;
+          margin: 0 var(--less-size-3);
+        }
+      </style>
+    
+        <div class="app-layout">
+          <header class="app-header">
+            <nav class="header-inner" aria-label="Primary navigation">
+              <a class="logo" href="/">LessJS<span class="logo-sub"></span></a>
+              
+        <nav class="header-nav">
+          
+                <a href="/guide/positioning">Docs</a>
+              
+                <a href="/guide/architecture">Architecture</a>
+              
+                <a href="/examples">Examples</a>
+              
+                <a href="/ui">UI</a>
+              
+                <a href="/roadmap">Roadmap</a>
+              
+                <a href="https://jsr.io/@lessjs/core">JSR</a>
+              
+        </nav>
+      
+              <div class="header-right">
+                <details class="mobile-menu">
+                  <summary class="mobile-menu-btn" aria-label="Toggle navigation">
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 18 18"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                    >
+                      <line x1="3" y1="4.5" x2="15" y2="4.5" />
+                      <line x1="3" y1="9" x2="15" y2="9" />
+                      <line x1="3" y1="13.5" x2="15" y2="13.5" />
+                    </svg>
+                  </summary>
+                </details>
+                <less-theme-toggle>
+  <template shadowrootmode="open" shadowrootdelegatesfocus>
+    <style>
+  
+  :host {
+    /* === Spacing Scale (4px base unit) === */
+    --less-size-1: 0.25rem; /* 4px */
+    --less-size-2: 0.375rem; /* 6px */
+    --less-size-3: 0.5rem; /* 8px */
+    --less-size-4: 0.75rem; /* 12px */
+    --less-size-5: 1rem; /* 16px */
+    --less-size-6: 1.25rem; /* 20px */
+    --less-size-7: 1.5rem; /* 24px */
+    --less-size-8: 2rem; /* 32px */
+    --less-size-9: 2.5rem; /* 40px */
+    --less-size-10: 3rem; /* 48px */
+
+    /* === Border Radius (Swiss: minimal) === */
+    --less-radius-sm: 2px;
+    --less-radius-md: 4px;
+    --less-radius-lg: 6px;
+
+    /* === Transitions === */
+    --less-transition-fast: 0.1s ease;
+    --less-transition-normal: 0.15s ease;
+    --less-transition-slow: 0.25s ease;
+
+    /* === Z-Index Scale === */
+    --less-z-dropdown: 100;
+    --less-z-sticky: 200;
+    --less-z-fixed: 300;
+    --less-z-modal-backdrop: 400;
+    --less-z-modal: 500;
+    --less-z-popover: 600;
+    --less-z-tooltip: 700;
+  }
+ 
+  :host {
+    /* === Font Families === */
+    --less-font-sans:
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      Roboto,
+      "Helvetica Neue",
+      Arial,
+      sans-serif;
+    --less-font-mono: "SF Mono", "Fira Code", "Fira Mono", Menlo, Consolas, monospace;
+
+    /* === Font Sizes (modular scale ~1.125) === */
+    --less-font-size-xs: 0.6875rem; /* 11px */
+    --less-font-size-sm: 0.75rem; /* 12px */
+    --less-font-size-md: 0.875rem; /* 14px */
+    --less-font-size-lg: 1rem; /* 16px */
+    --less-font-size-xl: 1.125rem; /* 18px */
+    --less-font-size-2xl: 1.25rem; /* 20px */
+    --less-font-size-3xl: 1.5rem; /* 24px */
+
+    /* === Font Weights === */
+    --less-font-weight-normal: 400;
+    --less-font-weight-medium: 500;
+    --less-font-weight-semibold: 600;
+    --less-font-weight-bold: 700;
+    --less-font-weight-extrabold: 800;
+
+    /* === Line Heights === */
+    --less-line-height-tight: 1.2;
+    --less-line-height-normal: 1.5;
+    --less-line-height-relaxed: 1.7;
+
+    /* === Letter Spacing === */
+    --less-letter-spacing-tight: -0.03em;
+    --less-letter-spacing-normal: 0;
+    --less-letter-spacing-wide: 0.02em;
+    --less-letter-spacing-wider: 0.05em;
+    --less-letter-spacing-widest: 0.15em;
+  }
+ 
+  :host {
+    /* v0.6: Color tokens inherit from :root via CSS custom property cascade.
+      DO NOT redeclare them on :host — that breaks inheritance!
+      Setting --less-bg-base: initial would make var(--less-bg-base) invalid
+      inside the shadow root, because 'initial' for custom properties means
+      "guaranteed-invalid value", NOT "inherit from parent".
+
+      For standalone usage (without LessJS head styles), the page must
+      inject lessRootColorCSS into <head> — this is the expected setup.
+      If tokens are missing, var() references without fallbacks will simply
+      not apply, which is acceptable for standalone mode. */
+    color-scheme: light dark;
+  }
+ 
+  :host {
+    --less-shadow-sm: var(--shadow-1);
+    --less-shadow-md: var(--shadow-3);
+    --less-shadow-lg: var(--shadow-5);
+  }
+
+  /* Dark mode: override with light-on-dark shadows */
+  :host([data-theme="dark"]) {
+    --less-shadow-sm: var(--inner-shadow-1);
+    --less-shadow-md: var(--inner-shadow-2);
+    --less-shadow-lg: var(--inner-shadow-3);
+  }
+;
+
+
+      :host {
+        display: inline-block;
+      }
+
+      .theme-toggle {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        border: 0.5px solid var(--less-border);
+        border-radius: var(--less-radius-md);
+        background: transparent;
+        color: var(--less-text-tertiary);
+        cursor: pointer;
+        font-size: 0;
+        line-height: 1;
+        transition:
+          color var(--less-transition-normal),
+          border-color var(--less-transition-normal),
+          background var(--less-transition-normal);
+        }
+
+        .theme-toggle:hover {
+          color: var(--less-text-primary);
+          border-color: var(--less-border-hover);
+          background: var(--less-accent-subtle);
+        }
+
+        .theme-toggle svg {
+          width: 16px;
+          height: 16px;
+        }
+
+        .theme-toggle .icon-sun {
+          display: block;
+        }
+
+        .theme-toggle .icon-moon {
+          display: none;
+        }
+
+        .theme-toggle.is-light .icon-sun {
+          display: none;
+        }
+
+        .theme-toggle.is-light .icon-moon {
+          display: block;
+        }
+      </style>
+    
+        <button
+          class="theme-toggle "
+          title="Switch to light theme"
+          aria-label="Toggle theme"
+         
+        >
+          <svg
+            class="icon-sun"
+            viewBox="0 0 16 16"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.2"
+            stroke-linecap="round"
+          >
+            <circle cx="8" cy="8" r="3" />
+            <line x1="8" y1="1" x2="8" y2="3" />
+            <line x1="8" y1="13" x2="8" y2="15" />
+            <line x1="1" y1="8" x2="3" y2="8" />
+            <line x1="13" y1="8" x2="15" y2="8" />
+            <line x1="3.05" y1="3.05" x2="4.46" y2="4.46" />
+            <line x1="11.54" y1="11.54" x2="12.95" y2="12.95" />
+            <line x1="3.05" y1="12.95" x2="4.46" y2="11.54" />
+            <line x1="11.54" y1="4.46" x2="12.95" y2="3.05" />
+          </svg>
+          <svg
+            class="icon-moon"
+            viewBox="0 0 16 16"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.2"
+            stroke-linecap="round"
+          >
+            <path d="M13.5 9.14A5.5 5.5 0 0 1 6.86 2.5 5.5 5.5 0 1 0 13.5 9.14Z" />
+          </svg>
+        </button>
+      
+  </template>
+</less-theme-toggle>
+                <a class="github-link" href="https://github.com/lessjs-run/LessJS" aria-label="GitHub repository">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                    <path
+                      d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"
+                    />
+                  </svg>
+                  <span class="github-text">GitHub</span>
+                </a>
+              </div>
+            </nav>
+          </header>
+          <div class="mobile-backdrop"></div>
+          <div class="layout-body">
+            
+        <nav class="docs-sidebar" aria-label="Documentation navigation">
+          
+        
+              <details class="nav-section" open>
+                <summary class="nav-section-title">Start Here</summary>
+                
+        <a
+          href="/guide/positioning"
+          class=""
+          aria-current=""
+         
+         
+        >Framework Positioning</a>
+      
+        <a
+          href="/guide/getting-started"
+          class="active"
+          aria-current="page"
+         
+         
+        >Getting Started</a>
+      
+        <a
+          href="/guide/design-philosophy"
+          class=""
+          aria-current=""
+         
+         
+        >Design Philosophy</a>
+      
+        <a
+          href="/guide/architecture"
+          class=""
+          aria-current=""
+         
+         
+        >Architecture</a>
+      
+              </details>
+            
+              <details class="nav-section" open>
+                <summary class="nav-section-title">Core Model</summary>
+                
+        <a
+          href="/guide/routing"
+          class=""
+          aria-current=""
+         
+         
+        >Routing</a>
+      
+        <a
+          href="/guide/ssg"
+          class=""
+          aria-current=""
+         
+         
+        >Rendering &amp; SSG</a>
+      
+        <a
+          href="/guide/islands"
+          class=""
+          aria-current=""
+         
+         
+        >Island Upgrade</a>
+      
+        <a
+          href="/guide/api-routes"
+          class=""
+          aria-current=""
+         
+         
+        >API Routes</a>
+      
+        <a
+          href="/guide/api-design"
+          class=""
+          aria-current=""
+         
+         
+        >API Design</a>
+      
+              </details>
+            
+              <details class="nav-section" open>
+                <summary class="nav-section-title">Production</summary>
+                
+        <a
+          href="/guide/configuration"
+          class=""
+          aria-current=""
+         
+         
+        >Configuration</a>
+      
+        <a
+          href="/guide/security-middleware"
+          class=""
+          aria-current=""
+         
+         
+        >Security &amp; Middleware</a>
+      
+        <a
+          href="/guide/error-handling"
+          class=""
+          aria-current=""
+         
+         
+        >Error Handling</a>
+      
+        <a
+          href="/guide/testing"
+          class=""
+          aria-current=""
+         
+         
+        >Testing</a>
+      
+        <a
+          href="/guide/deployment"
+          class=""
+          aria-current=""
+         
+         
+        >Deployment</a>
+      
+              </details>
+            
+              <details class="nav-section" open>
+                <summary class="nav-section-title">Packages</summary>
+                
+        <a
+          href="/ui"
+          class=""
+          aria-current=""
+         
+         
+        >Design System</a>
+      
+        <a
+          href="/styling/less-ui"
+          class=""
+          aria-current=""
+         
+         
+        >@lessjs/ui</a>
+      
+        <a
+          href="/styling/web-awesome"
+          class=""
+          aria-current=""
+         
+         
+        >Web Awesome</a>
+      
+        <a
+          href="/examples"
+          class=""
+          aria-current=""
+         
+         
+        >Examples</a>
+      
+              </details>
+            
+              <details class="nav-section" open>
+                <summary class="nav-section-title">Strategy</summary>
+                
+        <a
+          href="/roadmap"
+          class=""
+          aria-current=""
+         
+         
+        >Roadmap</a>
+      
+        <a
+          href="/guide/less-compiler"
+          class=""
+          aria-current=""
+         
+         
+        >.less Compiler</a>
+      
+        <a
+          href="/guide/pwa"
+          class=""
+          aria-current=""
+         
+         
+        >PWA Support</a>
+      
+        <a
+          href="/guide/blog-system"
+          class=""
+          aria-current=""
+         
+         
+        >Blog System</a>
+      
+        <a
+          href="/decisions"
+          class=""
+          aria-current=""
+         
+         
+        >Architecture Decisions</a>
+      
+              </details>
+            
+              <details class="nav-section" open>
+                <summary class="nav-section-title">Examples</summary>
+                
+        <a
+          href="/demo"
+          class=""
+          aria-current=""
+         
+         
+        >Live Demo</a>
+      
+        <a
+          href="/examples/hello"
+          class=""
+          aria-current=""
+         
+         
+        >Hello World</a>
+      
+        <a
+          href="/examples/minimal-blog"
+          class=""
+          aria-current=""
+         
+         
+        >Minimal Blog</a>
+      
+        <a
+          href="/examples/fullstack"
+          class=""
+          aria-current=""
+         
+         
+        >Fullstack</a>
+      
+              </details>
+            
+              <details class="nav-section" open>
+                <summary class="nav-section-title">History</summary>
+                
+        <a
+          href="/blog"
+          class=""
+          aria-current=""
+         
+         
+        >Blog</a>
+      
+        <a
+          href="/blog/v0-5-alpha1"
+          class=""
+          aria-current=""
+         
+         
+        >v0.5 Alpha 1</a>
+      
+        <a
+          href="/blog/v0-5-0"
+          class=""
+          aria-current=""
+         
+         
+        >v0.5.0</a>
+      
+        <a
+          href="/blog/v0-4-0"
+          class=""
+          aria-current=""
+         
+         
+        >v0.4.0</a>
+      
+        <a
+          href="/blog/less-compiler"
+          class=""
+          aria-current=""
+         
+         
+        >.less Compiler Note</a>
+      
+        <a
+          href="/changelog"
+          class=""
+          aria-current=""
+         
+         
+        >Changelog</a>
+      
+        <a
+          href="/contributing"
+          class=""
+          aria-current=""
+         
+         
+        >Contributing</a>
+      
+              </details>
+            
+      
+        </nav>
+      
+            <main class="layout-main">
+              <slot></slot>
+            </main>
+          </div>
+          <footer class="app-footer">
+            <p>
+              Built with <a href="https://github.com/lessjs-run/LessJS" target="_blank" rel="noopener noreferrer"
+              >LessJS Framework</a>
+              <span class="divider"></span>
+              Self-bootstrapped from JSR
+              <span class="divider"></span>
+              LESS IS MORE
+            </p>
+          </footer>
+        </div>
+      
+  </template>
+  
+        <div class="container">
+          <h1>快速开始</h1>
+          <p class="subtitle">
+            从一个最小项目开始：创建应用、启动开发服务器、构建静态产物，再理解每个目录负责什么。
+          </p>
+
+          <div class="callout">
+            <p>
+              推荐使用 Deno 2.7+。LessJS 是 Deno-first 项目，依赖通过
+              <span class="inline-code">deno.json</span> 管理，开发和构建命令都从 Deno task 进入。
+            </p>
+          </div>
+
+          <section class="step">
+            <h2>1. Create a Project</h2>
+            <code-block>
+  <template shadowrootmode="open">
+    <style>
+    :host {
+      display: block;
+      position: relative;
+    }
+
+    ::slotted(pre) {
+      margin: 0;
+      padding: 1.25rem;
+      background: var(--less-code-bg);
+      border: 0.5px solid var(--less-code-border);
+      border-radius: 2px;
+      overflow-x: auto;
+      font-family: "SF Mono", "Fira Code", "Fira Mono", Menlo, Consolas, monospace;
+      font-size: 0.8125rem;
+      line-height: 1.6;
+      color: var(--less-text-secondary);
+      scrollbar-width: thin;
+      scrollbar-color: var(--less-scrollbar-thumb) transparent;
+    }
+
+    .copy-btn {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      background: var(--less-bg-elevated);
+      color: var(--less-text-tertiary);
+      border: 0.5px solid var(--less-border);
+      padding: 0.25rem 0.625rem;
+      font-size: 0.6875rem;
+      font-family: inherit;
+      cursor: pointer;
+      border-radius: 2px;
+      transition: color 0.15s, border-color 0.15s;
+      z-index: 1;
+    }
+
+    .copy-btn:hover {
+      color: var(--less-text-secondary);
+      border-color: var(--less-border-hover);
+    }
+
+    .copy-btn.copied {
+      color: var(--less-text-primary);
+      border-color: var(--less-border-hover);
+    }
+
+    .copy-btn.failed {
+      color: var(--less-error, #e55);
+      border-color: var(--less-error, #e55);
+    }
+  </style>
+    
+      <slot></slot>
+      <button
+        class="copy-btn  "
+       
+      >
+        Copy
+      </button>
+    
+  </template>
+  <pre><code>deno run -A jsr:@lessjs/create my-app
+              cd my-app</code></pre>
+</code-block>
+            <p>
+              生成的项目会包含页面路由、示例 island、Vite 配置和常用 Deno tasks。
+            </p>
+          </section>
+
+          <section class="step">
+            <h2>2. Start Dev Server</h2>
+            <code-block>
+  <template shadowrootmode="open">
+    <style>
+    :host {
+      display: block;
+      position: relative;
+    }
+
+    ::slotted(pre) {
+      margin: 0;
+      padding: 1.25rem;
+      background: var(--less-code-bg);
+      border: 0.5px solid var(--less-code-border);
+      border-radius: 2px;
+      overflow-x: auto;
+      font-family: "SF Mono", "Fira Code", "Fira Mono", Menlo, Consolas, monospace;
+      font-size: 0.8125rem;
+      line-height: 1.6;
+      color: var(--less-text-secondary);
+      scrollbar-width: thin;
+      scrollbar-color: var(--less-scrollbar-thumb) transparent;
+    }
+
+    .copy-btn {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      background: var(--less-bg-elevated);
+      color: var(--less-text-tertiary);
+      border: 0.5px solid var(--less-border);
+      padding: 0.25rem 0.625rem;
+      font-size: 0.6875rem;
+      font-family: inherit;
+      cursor: pointer;
+      border-radius: 2px;
+      transition: color 0.15s, border-color 0.15s;
+      z-index: 1;
+    }
+
+    .copy-btn:hover {
+      color: var(--less-text-secondary);
+      border-color: var(--less-border-hover);
+    }
+
+    .copy-btn.copied {
+      color: var(--less-text-primary);
+      border-color: var(--less-border-hover);
+    }
+
+    .copy-btn.failed {
+      color: var(--less-error, #e55);
+      border-color: var(--less-error, #e55);
+    }
+  </style>
+    
+      <slot></slot>
+      <button
+        class="copy-btn  "
+       
+      >
+        Copy
+      </button>
+    
+  </template>
+  <pre><code>deno task dev</code></pre>
+</code-block>
+            <p>
+              开发模式通过 Vite 提供模块加载和刷新，通过生成的 Hono entry 提供 SSR/API 行为。 默认打开
+              <span class="inline-code">http://localhost:5173</span>。
+            </p>
+          </section>
+
+          <section class="step">
+            <h2>3. Build Static Output</h2>
+            <code-block>
+  <template shadowrootmode="open">
+    <style>
+    :host {
+      display: block;
+      position: relative;
+    }
+
+    ::slotted(pre) {
+      margin: 0;
+      padding: 1.25rem;
+      background: var(--less-code-bg);
+      border: 0.5px solid var(--less-code-border);
+      border-radius: 2px;
+      overflow-x: auto;
+      font-family: "SF Mono", "Fira Code", "Fira Mono", Menlo, Consolas, monospace;
+      font-size: 0.8125rem;
+      line-height: 1.6;
+      color: var(--less-text-secondary);
+      scrollbar-width: thin;
+      scrollbar-color: var(--less-scrollbar-thumb) transparent;
+    }
+
+    .copy-btn {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      background: var(--less-bg-elevated);
+      color: var(--less-text-tertiary);
+      border: 0.5px solid var(--less-border);
+      padding: 0.25rem 0.625rem;
+      font-size: 0.6875rem;
+      font-family: inherit;
+      cursor: pointer;
+      border-radius: 2px;
+      transition: color 0.15s, border-color 0.15s;
+      z-index: 1;
+    }
+
+    .copy-btn:hover {
+      color: var(--less-text-secondary);
+      border-color: var(--less-border-hover);
+    }
+
+    .copy-btn.copied {
+      color: var(--less-text-primary);
+      border-color: var(--less-border-hover);
+    }
+
+    .copy-btn.failed {
+      color: var(--less-error, #e55);
+      border-color: var(--less-error, #e55);
+    }
+  </style>
+    
+      <slot></slot>
+      <button
+        class="copy-btn  "
+       
+      >
+        Copy
+      </button>
+    
+  </template>
+  <pre><code>deno task build</code></pre>
+</code-block>
+            <p>
+              构建命令会依次生成 SSR bundle、client island entry 和 SSG HTML。 最终产物在 <span
+                class="inline-code"
+              >dist/</span>，可以部署到任意静态托管平台。
+            </p>
+          </section>
+
+          <section class="step">
+            <h2>4. Preview Production Build</h2>
+            <code-block>
+  <template shadowrootmode="open">
+    <style>
+    :host {
+      display: block;
+      position: relative;
+    }
+
+    ::slotted(pre) {
+      margin: 0;
+      padding: 1.25rem;
+      background: var(--less-code-bg);
+      border: 0.5px solid var(--less-code-border);
+      border-radius: 2px;
+      overflow-x: auto;
+      font-family: "SF Mono", "Fira Code", "Fira Mono", Menlo, Consolas, monospace;
+      font-size: 0.8125rem;
+      line-height: 1.6;
+      color: var(--less-text-secondary);
+      scrollbar-width: thin;
+      scrollbar-color: var(--less-scrollbar-thumb) transparent;
+    }
+
+    .copy-btn {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      background: var(--less-bg-elevated);
+      color: var(--less-text-tertiary);
+      border: 0.5px solid var(--less-border);
+      padding: 0.25rem 0.625rem;
+      font-size: 0.6875rem;
+      font-family: inherit;
+      cursor: pointer;
+      border-radius: 2px;
+      transition: color 0.15s, border-color 0.15s;
+      z-index: 1;
+    }
+
+    .copy-btn:hover {
+      color: var(--less-text-secondary);
+      border-color: var(--less-border-hover);
+    }
+
+    .copy-btn.copied {
+      color: var(--less-text-primary);
+      border-color: var(--less-border-hover);
+    }
+
+    .copy-btn.failed {
+      color: var(--less-error, #e55);
+      border-color: var(--less-error, #e55);
+    }
+  </style>
+    
+      <slot></slot>
+      <button
+        class="copy-btn  "
+       
+      >
+        Copy
+      </button>
+    
+  </template>
+  <pre><code>deno task preview</code></pre>
+</code-block>
+            <p>
+              预览命令用于检查最终静态产物，而不是开发服务器行为。部署前至少跑一次。
+            </p>
+          </section>
+
+          <h2>Project Shape</h2>
+          <code-block>
+  <template shadowrootmode="open">
+    <style>
+    :host {
+      display: block;
+      position: relative;
+    }
+
+    ::slotted(pre) {
+      margin: 0;
+      padding: 1.25rem;
+      background: var(--less-code-bg);
+      border: 0.5px solid var(--less-code-border);
+      border-radius: 2px;
+      overflow-x: auto;
+      font-family: "SF Mono", "Fira Code", "Fira Mono", Menlo, Consolas, monospace;
+      font-size: 0.8125rem;
+      line-height: 1.6;
+      color: var(--less-text-secondary);
+      scrollbar-width: thin;
+      scrollbar-color: var(--less-scrollbar-thumb) transparent;
+    }
+
+    .copy-btn {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      background: var(--less-bg-elevated);
+      color: var(--less-text-tertiary);
+      border: 0.5px solid var(--less-border);
+      padding: 0.25rem 0.625rem;
+      font-size: 0.6875rem;
+      font-family: inherit;
+      cursor: pointer;
+      border-radius: 2px;
+      transition: color 0.15s, border-color 0.15s;
+      z-index: 1;
+    }
+
+    .copy-btn:hover {
+      color: var(--less-text-secondary);
+      border-color: var(--less-border-hover);
+    }
+
+    .copy-btn.copied {
+      color: var(--less-text-primary);
+      border-color: var(--less-border-hover);
+    }
+
+    .copy-btn.failed {
+      color: var(--less-error, #e55);
+      border-color: var(--less-error, #e55);
+    }
+  </style>
+    
+      <slot></slot>
+      <button
+        class="copy-btn  "
+       
+      >
+        Copy
+      </button>
+    
+  </template>
+  <pre><code>my-app/
+            |-- app/
+            |   |-- routes/
+            |   |   |-- index.ts          # page route for /
+            |   |   |-- about.ts          # page route for /about
+            |   |   └-- api/
+            |   |       └-- status.ts     # API route
+            |   |-- islands/
+            |   |   └-- counter.ts        # client-upgraded Custom Element
+            |   └-- _renderer.ts          # optional layout wrapper
+            |-- deno.json                 # tasks and imports
+            └-- vite.config.ts            # LessJS plugin config</code></pre>
+</code-block>
+
+            <h2>Write a Page</h2>
+            <p>
+              页面是一个 Web Component。SSR 会把它渲染成 Declarative Shadow DOM， 所以内容在 JavaScript
+              运行前就已经可见。
+            </p>
+            <code-block>
+  <template shadowrootmode="open">
+    <style>
+    :host {
+      display: block;
+      position: relative;
+    }
+
+    ::slotted(pre) {
+      margin: 0;
+      padding: 1.25rem;
+      background: var(--less-code-bg);
+      border: 0.5px solid var(--less-code-border);
+      border-radius: 2px;
+      overflow-x: auto;
+      font-family: "SF Mono", "Fira Code", "Fira Mono", Menlo, Consolas, monospace;
+      font-size: 0.8125rem;
+      line-height: 1.6;
+      color: var(--less-text-secondary);
+      scrollbar-width: thin;
+      scrollbar-color: var(--less-scrollbar-thumb) transparent;
+    }
+
+    .copy-btn {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      background: var(--less-bg-elevated);
+      color: var(--less-text-tertiary);
+      border: 0.5px solid var(--less-border);
+      padding: 0.25rem 0.625rem;
+      font-size: 0.6875rem;
+      font-family: inherit;
+      cursor: pointer;
+      border-radius: 2px;
+      transition: color 0.15s, border-color 0.15s;
+      z-index: 1;
+    }
+
+    .copy-btn:hover {
+      color: var(--less-text-secondary);
+      border-color: var(--less-border-hover);
+    }
+
+    .copy-btn.copied {
+      color: var(--less-text-primary);
+      border-color: var(--less-border-hover);
+    }
+
+    .copy-btn.failed {
+      color: var(--less-error, #e55);
+      border-color: var(--less-error, #e55);
+    }
+  </style>
+    
+      <slot></slot>
+      <button
+        class="copy-btn  "
+       
+      >
+        Copy
+      </button>
+    
+  </template>
+  <pre><code>import { html, LitElement } from 'lit';
+
+            export class HomePage extends LitElement {
+              override render() {
+                return html&#96;&lt;main&gt;Hello LessJS&lt;/main&gt;&#96;;
+              }
+            }
+
+            customElements.define('page-home', HomePage);
+            export default HomePage;
+            export const tagName = 'page-home';</code></pre>
+</code-block>
+
+            <h2>Add Interaction</h2>
+            <p>
+              把需要客户端行为的组件放进 <span class="inline-code">app/islands</span>。 页面 HTML
+              先输出，浏览器加载 island entry 后再升级组件。
+            </p>
+            <code-block>
+  <template shadowrootmode="open">
+    <style>
+    :host {
+      display: block;
+      position: relative;
+    }
+
+    ::slotted(pre) {
+      margin: 0;
+      padding: 1.25rem;
+      background: var(--less-code-bg);
+      border: 0.5px solid var(--less-code-border);
+      border-radius: 2px;
+      overflow-x: auto;
+      font-family: "SF Mono", "Fira Code", "Fira Mono", Menlo, Consolas, monospace;
+      font-size: 0.8125rem;
+      line-height: 1.6;
+      color: var(--less-text-secondary);
+      scrollbar-width: thin;
+      scrollbar-color: var(--less-scrollbar-thumb) transparent;
+    }
+
+    .copy-btn {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      background: var(--less-bg-elevated);
+      color: var(--less-text-tertiary);
+      border: 0.5px solid var(--less-border);
+      padding: 0.25rem 0.625rem;
+      font-size: 0.6875rem;
+      font-family: inherit;
+      cursor: pointer;
+      border-radius: 2px;
+      transition: color 0.15s, border-color 0.15s;
+      z-index: 1;
+    }
+
+    .copy-btn:hover {
+      color: var(--less-text-secondary);
+      border-color: var(--less-border-hover);
+    }
+
+    .copy-btn.copied {
+      color: var(--less-text-primary);
+      border-color: var(--less-border-hover);
+    }
+
+    .copy-btn.failed {
+      color: var(--less-error, #e55);
+      border-color: var(--less-error, #e55);
+    }
+  </style>
+    
+      <slot></slot>
+      <button
+        class="copy-btn  "
+       
+      >
+        Copy
+      </button>
+    
+  </template>
+  <pre><code>&lt;counter-island count="1"&gt;&lt;/counter-island&gt;</code></pre>
+</code-block>
+
+            <div class="note">
+              <p>
+                下一步建议先读 <a href="/guide/architecture">Architecture</a>， 再读 <a
+                  href="/guide/routing"
+                >Routing</a>、<a href="/guide/ssg">Rendering & SSG</a>
+                和 <a href="/guide/islands">Island Upgrade</a>。
+              </p>
+            </div>
+
+            <div class="nav-row">
+              <a href="/guide/positioning" class="nav-link">&larr; Framework Positioning</a>
+              <a href="/guide/design-philosophy" class="nav-link">Design Philosophy &rarr;</a>
+            </div>
+          </div>
+        
+</less-layout>
+      
+  </template>
+</page-getting-started>
+  
+  <script type="module" src="/client/islands/client.js"></script>
+<script>addEventListener("load",()=>{navigator.serviceWorker?.register("/sw.js")})</script></body>
+</html>
