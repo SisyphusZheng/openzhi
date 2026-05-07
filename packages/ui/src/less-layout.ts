@@ -479,7 +479,7 @@ export class LessLayout extends LitElement {
             width: 100%;
           }
 
-          .app-footer footer {
+          .app-footer {
             padding: var(--less-size-6) var(--less-size-4);
           }
 
@@ -508,7 +508,7 @@ export class LessLayout extends LitElement {
         }
 
         /* === Footer === */
-        .app-footer footer {
+        .app-footer {
           padding: var(--less-size-8);
           border-top: 0.5px solid var(--less-border);
           text-align: center;
