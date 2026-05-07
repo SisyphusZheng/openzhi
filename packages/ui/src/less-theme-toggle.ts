@@ -37,6 +37,20 @@ export class LessThemeToggle extends LitElement {
   /** DSD: delegates focus for keyboard accessibility */
   static delegatesFocus = true;
 
+  /**
+   * When DSD already created and populated the shadow root,
+   * keep it as-is — no Lit re-render needed.
+   */
+  private _dsdHydrated = false;
+
+  override createRenderRoot(): HTMLElement | DocumentFragment {
+    if (this.shadowRoot && this.shadowRoot.childElementCount > 0) {
+      this._dsdHydrated = true;
+      return this.shadowRoot;
+    }
+    return this.attachShadow({ mode: 'open' });
+  }
+
   static override styles: CSSResult[] = [
     lessDesignTokens,
     css`
@@ -181,8 +195,10 @@ export class LessThemeToggle extends LitElement {
      * selector matching within this component's own styles.
      */
 
-    override render(): TemplateResult {
-      return html`
+  /** When DSD hydrated, return nothing — the shadow DOM already has content. */
+  override render(): TemplateResult | typeof nothing {
+    if (this._dsdHydrated) return nothing;
+    return html`
         <button
           class="theme-toggle ${this._isLight ? 'is-light' : ''}"
           title="${this._isLight ? 'Switch to dark theme' : 'Switch to light theme'}"

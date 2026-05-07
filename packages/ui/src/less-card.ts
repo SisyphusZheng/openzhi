@@ -23,6 +23,19 @@ import { lessDesignTokens } from './design-tokens.js';
 export const tagName = 'less-card';
 
 export class LessCard extends LitElement {
+  /**
+   * When DSD already created and populated the shadow root,
+   * keep it as-is — no Lit re-render needed.
+   */
+  private _dsdHydrated = false;
+
+  override createRenderRoot(): HTMLElement | DocumentFragment {
+    if (this.shadowRoot && this.shadowRoot.childElementCount > 0) {
+      this._dsdHydrated = true;
+      return this.shadowRoot;
+    }
+    return this.attachShadow({ mode: 'open' });
+  }
   static override styles: CSSResult[] = [
     lessDesignTokens,
     css`
@@ -78,7 +91,9 @@ export class LessCard extends LitElement {
     this.variant = 'default';
   }
 
-  override render(): TemplateResult {
+  /** When DSD hydrated, return nothing — the shadow DOM already has content. */
+  override render(): TemplateResult | typeof nothing {
+    if (this._dsdHydrated) return nothing;
     return html`
       <article part="base">
         <slot name="header"></slot>
