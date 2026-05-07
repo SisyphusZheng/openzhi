@@ -1,10 +1,12 @@
 {
   "name": "@lessjs/core",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "exports": {
     ".": "./src/index.ts",
     "./render-dsd": "./src/render-dsd.ts",
+    "./render-dsd.js": "./src/render-dsd.ts",
     "./less-runtime": "./src/less-runtime.ts",
+    "./less-runtime.js": "./src/less-runtime.ts",
     "./cli/build": "./src/cli/build.ts",
     "./cli/build-client": "./src/cli/build-client.ts",
     "./cli/build-ssg": "./src/cli/build-ssg.ts"
@@ -13,7 +15,7 @@
     "hono": "npm:hono@^4",
     "@hono/vite-dev-server": "npm:@hono/vite-dev-server@^0.25.3",
     "vite": "npm:vite@8.0.10",
-    "@lessjs/ui/tokens/color-values": "jsr:@lessjs/ui@^0.6.1/tokens/color-values"
+    "@lessjs/ui/tokens/color-values": "jsr:@lessjs/ui@^0.6.2/tokens/color-values"
   },
   "tasks": {
     "build": "deno check src/index.ts src/render-dsd.ts src/less-runtime.ts",

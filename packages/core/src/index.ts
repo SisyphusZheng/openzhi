@@ -59,10 +59,12 @@ export {
 export { printBuildManifest, scanClientBuild, scanSSGOutput } from './build-manifest.js';
 export type { ArtifactInfo, BuildManifest } from './build-manifest.js';
 export {
+  type ComponentLayer,
   type DsdOptions,
   escapeAttr,
   escapeAttrValue,
   escapeHtml,
+  type HydrateEventDescriptor,
   registerAdapter,
   type RenderAdapter,
   renderDSD,

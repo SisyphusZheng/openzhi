@@ -72,12 +72,62 @@ export function escapeAttrValue(value: unknown): string {
   return escapeAttr(String(value));
 }
 
+// ─── Three-Layer Component Model (v0.6.2) ────────────────────────
+//
+// LessJS components belong to one of three layers, each with different
+// hydration requirements. Core defines the contract; adapters implement
+// framework-specific behavior.
+//
+//   Layer 1: DSD Static     — layout/content, zero hydration cost
+//   Layer 2: DSD Interactive — needs first-paint + interaction, adapter handles events
+//   Layer 3: Pure Island     — no DSD, framework fully owns shadow root, full reactivity
+//
+// The "trilemma" (own SSR engine + Lit reactivity + DSD no-flicker) is resolved
+// at the COMPONENT level, not the framework level. Not all components need DSD,
+// and Pure Islands get full framework reactivity without DSD.
+
+/** Component layer in the three-layer model */
+export type ComponentLayer = 'dsd-static' | 'dsd-interactive' | 'pure-island';
+
+/**
+ * Declarative event binding for DSD Interactive components.
+ *
+ * When a component's shadow root is pre-populated by DSD, framework template
+ bindings
+ * (e.g. Lit's @click) are never executed because render() returns nothing.
+ * This descriptor tells the adapter which DOM events need manual wiring.
+ *
+ * @example
+ * ```ts
+ * static hydrateEvents: HydrateEventDescriptor[] = [
+ *   { selector: 'button.theme-toggle', event: 'click', method: '_handleToggle' },
+ * ];
+ * ```
+ */
+export interface HydrateEventDescriptor {
+  /** CSS selector within shadow root to find the target element */
+  selector: string;
+  /** DOM event name (e.g. 'click', 'input', 'keydown') */
+  event: string;
+  /** Method name on the component instance to call */
+  method: string;
+}
+
 // ─── Adapter Protocol ──────────────────────────────────────────
 // Adapters are injected explicitly via registerAdapter().
-// v0.6.0: No globalThis pollution — adapters and renderDSD must share
+// v0.6.2: DSD hydration is handled at the component level via
+// WithDsdHydration Mixin (in @lessjs/adapter-lit) and declarative
+// hydrateEvents. The adapter only needs render + isTemplate + extractStyles.
+// No globalThis pollution — adapters and renderDSD must share
 // the same module scope (both imported from @lessjs/core/less-runtime).
 
-/** Adapter interface for framework-specific rendering (e.g., Lit) */
+/**
+ * Adapter interface for framework-specific rendering.
+ *
+ * v0.6.2: DSD hydration is handled at the component level via
+ * WithDsdHydration Mixin (in @lessjs/adapter-lit) and declarative
+ * hydrateEvents. The adapter only needs render + isTemplate + extractStyles.
+ */
 export interface RenderAdapter {
   /** Check if a value is a template type this adapter handles */
   isTemplate?: (value: unknown) => boolean;
@@ -127,6 +177,13 @@ function serializeAttributes(props: Record<string, unknown>): string {
  *
  * render() MUST return a string. If you use Lit components that return
  * TemplateResult, install @lessjs/adapter-lit to handle the conversion.
+ *
+ * v0.6.2: Added `layer` property for three-layer component model.
+ *   - 'dsd-static' (default): static content, no hydration needed
+ *   - 'dsd-interactive': needs event bindings after DSD upgrade
+ *   - 'pure-island': no DSD, framework fully owns shadow root
+ *
+ * v0.6.2: Added `hydrateEvents` for declarative event binding (Layer 2).
  */
 export interface DsdComponent {
   /** Return Shadow DOM inner HTML as a string */
@@ -134,6 +191,22 @@ export interface DsdComponent {
 
   /** Optional: called after setting props, before render() */
   connectedCallback?(): void;
+
+  /**
+   * Component layer in the three-layer model.
+   * - 'dsd-static': default, no client-side hydration needed
+   * - 'dsd-interactive': DSD for first paint, adapter hydrates events
+   * - 'pure-island': no DSD, framework fully owns shadow root
+   * @default 'dsd-static'
+   */
+  layer?: ComponentLayer;
+
+  /**
+   * Declarative event bindings for DSD Interactive components.
+   * Used by adapters to attach event listeners to existing DSD DOM.
+   * Only relevant when layer === 'dsd-interactive'.
+   */
+  hydrateEvents?: HydrateEventDescriptor[];
 
   /** Set named property/value */
   [key: string]: unknown;
@@ -149,6 +222,13 @@ export interface DsdOptions {
   slotAssignment?: 'named' | 'manual';
   /** Set shadowrootcustomelementregistry — reference to a scoped registry */
   customElementRegistry?: string;
+  /**
+   * Component layer — controls whether DSD template is emitted.
+   * 'pure-island' → no DSD template, framework owns shadow root entirely.
+   * 'dsd-static' | 'dsd-interactive' → DSD template emitted.
+   * @default 'dsd-static'
+   */
+  layer?: ComponentLayer;
 }
 
 /**
@@ -268,8 +348,21 @@ export async function renderDSD(
     }
   }
 
-  // 6. Wrap in DSD
-  // v0.6': Full WHATWG DSD attribute support
+  // 6. Wrap in DSD (or skip for Pure Island layer)
+  // v0.6.2: Layer 3 (pure-island) components skip DSD entirely.
+  // The framework fully owns the shadow root — no pre-rendered template.
+  const resolvedLayer = dsdOptions?.layer || instance.layer || 'dsd-static';
+
+  if (resolvedLayer === 'pure-island') {
+    // Pure Island: no DSD template, framework will create shadow root on client
+    const attrs = serializeAttributes(props);
+    const ssrPropsAttr = Object.keys(props).length > 0
+      ? ` data-ssr-props="${escapeAttrValue(JSON.stringify(props))}"`
+      : '';
+    return `<${tagName}${attrs}${ssrPropsAttr}${sourceStr}></${tagName}>`;
+  }
+
+  // Layer 1 (dsd-static) and Layer 2 (dsd-interactive): emit DSD template
   const attrs = serializeAttributes(props);
   const ssrPropsAttr = Object.keys(props).length > 0
     ? ` data-ssr-props="${escapeAttrValue(JSON.stringify(props))}"`

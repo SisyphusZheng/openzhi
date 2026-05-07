@@ -11,6 +11,11 @@
  * - inert attribute on background content for accessibility
  * - Form-associated: can participate in <form> as a dialog
  *
+ * DSD Hydration:
+ * - Layer 2 (DSD Interactive): uses WithDsdHydration Mixin
+ * - Declarative hydrateEvents for click/cancel/close binding after DSD upgrade
+ * - Direct DOM manipulation for state changes (Lit won't re-render)
+ *
  * Usage:
  * ```html
  * <less-dialog>
@@ -22,12 +27,29 @@
 
 import { css, type CSSResult, html, LitElement, nothing, type TemplateResult } from 'lit';
 import { lessDesignTokens } from './design-tokens.js';
+import { WithDsdHydration } from '@lessjs/adapter-lit/dsd-hydration.js';
 
 export const tagName = 'less-dialog';
 
-export class LessDialog extends LitElement {
+/**
+ * Dialog component with DSD hydration.
+ *
+ * Uses WithDsdHydration Mixin for the common DSD pattern:
+ *   - Detects pre-populated shadow root from DSD
+ *   - Binds events declared in `static hydrateEvents`
+ *   - Cleans up listeners on disconnect
+ */
+export class LessDialog extends WithDsdHydration(LitElement) {
   /** DSD: delegates focus for keyboard accessibility */
   static delegatesFocus = true;
+
+  /** Declarative event bindings for DSD hydration */
+  static hydrateEvents = [
+    { selector: 'slot[name="trigger"]', event: 'click', method: '_handleTrigger' },
+    { selector: 'dialog', event: 'cancel', method: '_handleCancel' },
+    { selector: 'dialog', event: 'close', method: '_handleClose' },
+    { selector: 'button.dialog-close', event: 'click', method: '_handleClose' },
+  ];
 
   /** Form-associated: enables dialog form method */
   static formAssociated = true;
@@ -144,7 +166,7 @@ export class LessDialog extends LitElement {
   }
 
   override connectedCallback(): void {
-    super.connectedCallback();
+    super.connectedCallback(); // Mixin handles _hydrateEvents()
     this._updateStates();
   }
 
@@ -200,14 +222,12 @@ export class LessDialog extends LitElement {
     if (!this.parentNode) return;
     const parent = this.parentNode as Element;
     if (this.open) {
-      // Mark siblings as inert
       for (const child of Array.from(parent.children)) {
         if (child !== this) {
           child.setAttribute('inert', '');
         }
       }
     } else {
-      // Remove inert from siblings
       for (const child of Array.from(parent.children)) {
         if (child !== this) {
           child.removeAttribute('inert');
@@ -218,6 +238,9 @@ export class LessDialog extends LitElement {
 
   private _handleClose(): void {
     this.open = false;
+    this._updateStates();
+    this._syncDialogElement();
+    this._syncInert();
     this.dispatchEvent(new CustomEvent('less-dialog-close', { bubbles: true, composed: true }));
   }
 
@@ -230,7 +253,9 @@ export class LessDialog extends LitElement {
     this.toggle();
   }
 
-  override render(): TemplateResult {
+  /** When DSD hydrated, return nothing — the shadow DOM already has content. */
+  override render(): TemplateResult | typeof nothing {
+    if (this._dsdHydrated) return nothing;
     return html`
       <slot name="trigger" @click="${this._handleTrigger}"></slot>
       <dialog

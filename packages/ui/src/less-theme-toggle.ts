@@ -4,6 +4,12 @@
  * Theme toggle Island component for Dark/Light mode switching.
  * Swiss International Style: Pure B&W, minimal.
  *
+ * v0.6.2: Proper DSD hydration for interactive components.
+ *   - Uses WithDsdHydration Mixin for DSD detection + event binding
+ *   - Declarative hydrateEvents for click binding after DSD upgrade
+ *   - Direct DOM manipulation for class toggling after DSD
+ *   - Theme toggle now WORKS after DSD hydration (was broken in v0.6)
+ *
  * Features:
  * - Accepts initial theme via `theme` attribute (avoids localStorage race)
  * - Falls back to reading localStorage if no attribute is set
@@ -21,7 +27,7 @@
  * ```
  *
  * LessJS Architecture:
- * - This is an Island component with Shadow DOM and client-side behavior
+ * - This is a Layer 2 (DSD Interactive) Island component
  * - Requires eager upgrade (theme should be applied immediately)
  * - The `theme` attribute lets the SSR pipeline pass the resolved theme
  *   from the head inline script, avoiding a race between connectedCallback
@@ -30,26 +36,26 @@
 
 import { css, type CSSResult, html, LitElement, nothing, type TemplateResult } from 'lit';
 import { lessDesignTokens } from './design-tokens.js';
+import { WithDsdHydration } from '@lessjs/adapter-lit/dsd-hydration.js';
 
 export const tagName = 'less-theme-toggle';
 
-export class LessThemeToggle extends LitElement {
+/**
+ * Theme toggle component with DSD hydration.
+ *
+ * Uses WithDsdHydration Mixin for the common DSD pattern:
+ *   - Detects pre-populated shadow root from DSD
+ *   - Binds events declared in `static hydrateEvents`
+ *   - Cleans up listeners on disconnect
+ */
+export class LessThemeToggle extends WithDsdHydration(LitElement) {
   /** DSD: delegates focus for keyboard accessibility */
   static delegatesFocus = true;
 
-  /**
-   * When DSD already created and populated the shadow root,
-   * keep it as-is — no Lit re-render needed.
-   */
-  private _dsdHydrated = false;
-
-  override createRenderRoot(): HTMLElement | DocumentFragment {
-    if (this.shadowRoot && this.shadowRoot.childElementCount > 0) {
-      this._dsdHydrated = true;
-      return this.shadowRoot;
-    }
-    return this.attachShadow({ mode: 'open' });
-  }
+  /** Declarative event bindings for DSD hydration */
+  static hydrateEvents = [
+    { selector: 'button.theme-toggle', event: 'click', method: '_handleToggle' },
+  ];
 
   static override styles: CSSResult[] = [
     lessDesignTokens,
@@ -126,7 +132,7 @@ export class LessThemeToggle extends LitElement {
     }
 
     override connectedCallback() {
-      super.connectedCallback();
+      super.connectedCallback(); // Mixin handles _hydrateEvents()
 
       // Priority: `theme` attribute > document.documentElement > localStorage > prefers-color-scheme > default
       // The `theme` attribute is set by SSR/head inline script, which runs
@@ -184,16 +190,25 @@ export class LessThemeToggle extends LitElement {
         // Silently ignore — localStorage may be unavailable in private browsing
       }
       this.setAttribute('data-theme', theme);
+
+      // v0.6.2: Direct DOM update since Lit won't re-render after DSD
+      this._updateToggleDOM();
     }
 
-    /** Propagate data-theme to the host element.
-     *
-     * v0.6: CSS custom properties on :root cascade into shadow DOM
-     * automatically via the platform's CSS inheritance model. We no
-     * longer need to walk all shadow roots setting data-theme.
-     * Only set data-theme on this host for direct :host([data-theme])
-     * selector matching within this component's own styles.
+    /**
+     * Update toggle button DOM directly after DSD hydration.
+     * Since render() returns nothing when _dsdHydrated is true,
+     * Lit's reactive update cycle is bypassed. We must update
+     * the DOM manually to reflect the new theme state.
      */
+    private _updateToggleDOM(): void {
+      if (!this.shadowRoot) return;
+      const btn = this.shadowRoot.querySelector('button.theme-toggle');
+      if (btn) {
+        btn.classList.toggle('is-light', this._isLight);
+        btn.setAttribute('title', this._isLight ? 'Switch to dark theme' : 'Switch to light theme');
+      }
+    }
 
     /** When DSD hydrated, return nothing — the shadow DOM already has content. */
     override render(): TemplateResult | typeof nothing {

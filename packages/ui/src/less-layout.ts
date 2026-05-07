@@ -12,7 +12,9 @@
  * - Footer with links
  *
  * LessJS Architecture:
- * - This is a static layout component (no client re-render needed)
+ * - This is a Layer 2 (DSD Interactive) component
+ * - v0.6.2: Uses WithDsdHydration Mixin for DSD hydration
+ *   with declarative event binding and direct DOM manipulation
  * - Theme toggle is handled by less-theme-toggle Island
  * - Navigation is data-driven via navItems property (no hardcoded links)
  *
@@ -39,6 +41,7 @@
 
 import { css, type CSSResult, html, LitElement, nothing, type TemplateResult } from 'lit';
 import { lessDesignTokens } from './design-tokens.js';
+import { WithDsdHydration } from '@lessjs/adapter-lit/dsd-hydration.js';
 // CRITICAL: less-layout's template uses <less-theme-toggle>, so we MUST import it
 // so that the SSR renderer can recursively render its DSD shadow root.
 // Without this import, SSR outputs <less-theme-toggle></less-theme-toggle> without
@@ -74,7 +77,22 @@ export interface HeaderNavLink {
   label: string;
 }
 
-export class LessLayout extends LitElement {
+/**
+ * App layout with DSD hydration.
+ *
+ * Uses WithDsdHydration Mixin for the common DSD pattern:
+ *   - Detects pre-populated shadow root from DSD
+ *   - Binds events declared in `static hydrateEvents`
+ *   - Cleans up listeners on disconnect
+ *
+ * Layout-specific: also sets up native <details> toggle for mobile menu.
+ */
+export class LessLayout extends WithDsdHydration(LitElement) {
+  /** Declarative event bindings for DSD hydration */
+  static hydrateEvents = [
+    { selector: 'summary.mobile-menu-btn', event: 'click', method: '_toggleMenu' },
+  ];
+
   static override styles: CSSResult[] = [
     lessDesignTokens,
     css`
@@ -579,28 +597,6 @@ export class LessLayout extends LitElement {
       this.githubUrl = 'https://github.com/lessjs-run/LessJS';
     }
 
-    /**
-     * When DSD already created and populated the shadow root,
-     * keep it as-is — no Lit re-render needed.
-     * DSD rendered the complete layout (header, sidebar, footer, CSS).
-     * Re-rendering would either duplicate content (if Lit appends)
-     * or waste the DSD advantage (if we clear + re-render).
-     *
-     * Instead, we only need to:
-     * 1. Reuse the existing shadow root (return it from createRenderRoot)
-     * 2. Mark ourselves as "DSD hydrated" so render() returns nothing
-     * 3. Wire up interactive behavior in connectedCallback
-     */
-    private _dsdHydrated = false;
-
-    override createRenderRoot(): HTMLElement | DocumentFragment {
-      if (this.shadowRoot && this.shadowRoot.childElementCount > 0) {
-        this._dsdHydrated = true;
-        return this.shadowRoot;
-      }
-      return this.attachShadow({ mode: 'open' });
-    }
-
     /** When DSD hydrated, return nothing — the shadow DOM already has content. */
     override render(): TemplateResult | typeof nothing {
       if (this._dsdHydrated) return nothing;
@@ -669,15 +665,30 @@ export class LessLayout extends LitElement {
     }
 
     override connectedCallback() {
-      super.connectedCallback();
-      // DSD hydration: wire up interactive behavior without re-rendering
+      super.connectedCallback(); // Mixin handles _hydrateEvents()
+
+      // Layout-specific: also set up native <details> toggle for mobile menu
       if (this._dsdHydrated) {
-        this._syncMenuState();
+        this._setupDetailsToggle();
       }
     }
 
-    override firstUpdated() {
-      this._syncMenuState();
+    /**
+     * Set up native <details> toggle event listener.
+     * This uses the platform's native toggle event, not Lit's @click,
+     * so it works with both DSD and non-DSD rendering.
+     */
+    private _setupDetailsToggle(): void {
+      if (!this.shadowRoot) return;
+      const details = this.shadowRoot.querySelector('details.mobile-menu');
+      if (details) {
+        details.addEventListener('toggle', () => {
+          const isOpen = (details as HTMLDetailsElement).open;
+          this.toggleAttribute('menu-open', isOpen);
+          this._syncInert(isOpen);
+        });
+        this.toggleAttribute('menu-open', (details as HTMLDetailsElement).open);
+      }
     }
 
     /** Explicit toggle: directly sets open + menu-open (no native <details> reliance) */
@@ -690,19 +701,6 @@ export class LessLayout extends LitElement {
       this.toggleAttribute('menu-open', willOpen);
       // Accessibility: set inert on main content when menu is open
       this._syncInert(willOpen);
-    }
-
-    /** Sync menu-open attribute with details.open initial state */
-    private _syncMenuState() {
-      const details = this.shadowRoot?.querySelector('details.mobile-menu');
-      if (details) {
-        details.addEventListener('toggle', () => {
-          const isOpen = (details as HTMLDetailsElement).open;
-          this.toggleAttribute('menu-open', isOpen);
-          this._syncInert(isOpen);
-        });
-        this.toggleAttribute('menu-open', (details as HTMLDetailsElement).open);
-      }
     }
 
     /** Accessibility: mark main content as inert when mobile menu is open */

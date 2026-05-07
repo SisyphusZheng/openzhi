@@ -1,16 +1,19 @@
 {
   "name": "@lessjs/adapter-lit",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "exports": {
     ".": "./src/index.ts",
-    "./ssr": "./src/ssr.ts"
+    "./ssr": "./src/ssr.ts",
+    "./ssr.js": "./src/ssr.ts",
+    "./dsd-hydration": "./src/dsd-hydration.ts",
+    "./dsd-hydration.js": "./src/dsd-hydration.ts"
   },
   "imports": {
-    "@lessjs/core/render-dsd": "jsr:@lessjs/core@^0.6.0/render-dsd",
-    "@lessjs/core/less-runtime": "jsr:@lessjs/core@^0.6.0/less-runtime"
+    "@lessjs/core/render-dsd": "jsr:@lessjs/core@^0.6.2/render-dsd",
+    "@lessjs/core/less-runtime": "jsr:@lessjs/core@^0.6.2/less-runtime"
   },
   "tasks": {
-    "build": "deno check src/index.ts src/ssr.ts"
+    "build": "deno check src/index.ts src/ssr.ts src/dsd-hydration.ts"
   },
   "publish": {
     "include": ["src/**", "deno.json", "LICENSE"]

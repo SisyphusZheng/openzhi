@@ -1,14 +1,22 @@
 /**
- * Hero Ping Island — calls real Deno Deploy API, shows 🟢/🔴 status dot.
+ * Hero Ping Island — calls real API, shows status dot.
+ *
+ * Layer 3 (Pure Island): no DSD template.
+ * Uses Lit's full reactivity cycle (requestUpdate) for state changes,
+ * which requires framework ownership of the shadow root.
+ * SSR emits just <less-hero-ping></less-hero-ping>, client creates shadow DOM.
  */
-import { css, html, LitElement } from 'lit';
+import { css, type CSSResult, html, LitElement } from 'lit';
 
 export const tagName = 'less-hero-ping';
 
 export default class HeroPing extends LitElement {
+  /** Pure Island: no DSD template, framework fully owns shadow root */
+  declare layer: 'pure-island';
+
   static override properties = { apiUrl: { type: String, attribute: 'api-url' } };
 
-  static override styles: ReturnType<typeof css> = css`
+  static override styles: CSSResult = css`
     :host {
       display: inline-flex;
       align-items: center;

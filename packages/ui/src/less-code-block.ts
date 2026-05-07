@@ -4,6 +4,12 @@
  * Code block with copy button.
  * DSD makes content visible without JavaScript.
  *
+ * v0.6.2: Fixed DSD hydration — copy button now works after DSD upgrade.
+ *   - Uses WithDsdHydration Mixin for DSD detection + event binding
+ *   - Added _updateCopyButtonDOM() for direct DOM updates
+ *     (Lit won't re-render when _dsdHydrated is true)
+ *   - _copyState is tracked internally but DOM is updated directly
+ *
  * Usage:
  * ```html
  * <less-code-block>
@@ -14,23 +20,24 @@
 
 import { css, type CSSResult, html, LitElement, nothing, type TemplateResult } from 'lit';
 import { lessDesignTokens } from './design-tokens.js';
+import { WithDsdHydration } from '@lessjs/adapter-lit/dsd-hydration.js';
 
 export const tagName = 'less-code-block';
 
-export class LessCodeBlock extends LitElement {
-  /**
-   * When DSD already created and populated the shadow root,
-   * keep it as-is — no Lit re-render needed.
-   */
-  private _dsdHydrated = false;
+/**
+ * Code block with copy button and DSD hydration.
+ *
+ * Uses WithDsdHydration Mixin for the common DSD pattern:
+ *   - Detects pre-populated shadow root from DSD
+ *   - Binds events declared in `static hydrateEvents`
+ *   - Cleans up listeners on disconnect
+ */
+export class LessCodeBlock extends WithDsdHydration(LitElement) {
+  /** Declarative event bindings for DSD hydration */
+  static hydrateEvents = [
+    { selector: 'button.copy-btn', event: 'click', method: '_copy' },
+  ];
 
-  override createRenderRoot(): HTMLElement | DocumentFragment {
-    if (this.shadowRoot && this.shadowRoot.childElementCount > 0) {
-      this._dsdHydrated = true;
-      return this.shadowRoot;
-    }
-    return this.attachShadow({ mode: 'open' });
-  }
   static override styles: CSSResult[] = [
     lessDesignTokens,
     css`
@@ -100,7 +107,7 @@ export class LessCodeBlock extends LitElement {
   }
 
   override disconnectedCallback() {
-    super.disconnectedCallback();
+    super.disconnectedCallback(); // Mixin handles _hydrateAbortController
     if (this._copyTimer !== undefined) {
       clearTimeout(this._copyTimer);
       this._copyTimer = undefined;
@@ -132,16 +139,45 @@ export class LessCodeBlock extends LitElement {
       const text = this.textContent || '';
       await navigator.clipboard.writeText(text);
       this._copyState = 'copied';
+      this._updateCopyButtonDOM();
       this._copyTimer = globalThis.setTimeout(() => {
         this._copyState = 'idle';
+        this._updateCopyButtonDOM();
         this._copyTimer = undefined;
       }, 2000);
     } catch {
       this._copyState = 'failed';
+      this._updateCopyButtonDOM();
       this._copyTimer = globalThis.setTimeout(() => {
         this._copyState = 'idle';
+        this._updateCopyButtonDOM();
         this._copyTimer = undefined;
       }, 2000);
+    }
+  }
+
+  /**
+   * Update copy button DOM directly after DSD hydration.
+   * Since render() returns nothing when _dsdHydrated is true,
+   * Lit's reactive update cycle is bypassed. We must update
+   * the DOM manually to reflect the copy state.
+   */
+  private _updateCopyButtonDOM(): void {
+    if (!this.shadowRoot) return;
+    const btn = this.shadowRoot.querySelector('button.copy-btn');
+    if (!btn) return;
+
+    // Update class list
+    btn.classList.toggle('copied', this._copyState === 'copied');
+    btn.classList.toggle('failed', this._copyState === 'failed');
+
+    // Update text content
+    if (this._copyState === 'copied') {
+      btn.textContent = 'Copied!';
+    } else if (this._copyState === 'failed') {
+      btn.textContent = 'Failed';
+    } else {
+      btn.textContent = 'Copy';
     }
   }
 }

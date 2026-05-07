@@ -1,6 +1,6 @@
 {
   "name": "@lessjs/ui",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "exports": {
     ".": "./src/index.ts",
     "./less-button": "./src/less-button.ts",
@@ -18,14 +18,23 @@
   },
   "imports": {
     "lit": "npm:lit@^3.2.0",
-    "@lessjs/core": "jsr:@lessjs/core@^0.6.0"
+    "@lessjs/core": "jsr:@lessjs/core@^0.6.2"
   },
   "publish": {
-    "include": ["src/**", "deno.json", "LICENSE"]
+    "include": [
+      "src/**",
+      "deno.json",
+      "LICENSE"
+    ]
   },
   "compilerOptions": {
     "skipLibCheck": true
   },
-  "include": ["src"],
-  "exclude": ["node_modules", "dist"]
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }

@@ -6,8 +6,24 @@
  * aliases `@lessjs/core/less-runtime` to it so generated SSR entries stay
  * package-manager agnostic.
  *
- * v0.6: Mirrors render-dsd.ts with error visibility, data-ssr-props,
- * nested DSD, slot/projection support, and WHATWG DSD options.
+ * ⚠️  MAINTENANCE WARNING ⚠️
+ * This file is a HAND-MAINTAINED code generator that mirrors the logic in
+ * `render-dsd.ts`. When you modify render-dsd.ts, you MUST also update this
+ * file to keep them in sync. Key areas to watch:
+ *   - escapeHtml / escapeAttr
+ *   - serializeAttributes
+ *   - findTemplateShadowRanges regex
+ *   - alreadyHasDSD regex
+ *   - renderNestedCustomElements algorithm
+ *   - renderDSD main function
+ *   - buildDsdTemplateAttrs / inferDsdOptions
+ *   - DsdOptions / ComponentLayer (v0.6.2: pure-island skips DSD)
+ *
+ * Long-term direction: replace with AST-based code generation from render-dsd.ts.
+ *
+ * v0.6.2: Mirrors render-dsd.ts with three-layer model (pure-island skips DSD),
+ * error visibility, data-ssr-props, nested DSD, slot/projection support,
+ * and WHATWG DSD options.
  */
 
 export function createRuntimeShimCode(): string {
@@ -115,7 +131,10 @@ function findMatchingCloseTag(html, tagName, searchFrom) {
 
 function findTemplateShadowRanges(html) {
   const ranges = [];
-  const templateOpenRegex = /<template\\s+shadowrootmode\\s*=\\s*"open"\\s*>/g;
+  // v0.6.2 fix: must match additional DSD attributes (shadowrootdelegatesfocus, etc.)
+  // not just <template shadowrootmode="open"> but also
+  // <template shadowrootmode="open" shadowrootdelegatesfocus>
+  const templateOpenRegex = /<template\\s+shadowrootmode\\s*=\\s*"open"[^>]*>/g;
   let match;
   while ((match = templateOpenRegex.exec(html)) !== null) {
     const contentStart = match.index + match[0].length;
@@ -149,7 +168,9 @@ function isInRange(pos, ranges) {
 
 function alreadyHasDSD(html, openEnd, _closeIdx) {
   const content = html.slice(openEnd);
-  const match = content.match(/^\\s*<template\\s+shadowrootmode\\s*=\\s*"open"\\s*>/);
+  // v0.6.2 fix: must accept additional DSD attributes after shadowrootmode="open"
+  // otherwise components with delegatesFocus=true cause an infinite loop
+  const match = content.match(/^\\s*<template\\s+shadowrootmode\\s*=\\s*"open"[^>]*>/);
   return match !== null;
 }
 
@@ -318,10 +339,18 @@ export async function renderDSD(tagName, componentClass, props = {}, sourceInfo,
   }
 
   // data-ssr-props
+  const resolvedLayer = dsdOptions?.layer || instance.layer || 'dsd-static';
   const attrs = serializeAttributes(props);
   const ssrPropsAttr = Object.keys(props).length > 0
     ? \` data-ssr-props="\${escapeAttrValue(JSON.stringify(props))}"\`
     : '';
+
+  // v0.6.2: Layer 3 (pure-island) — no DSD template, framework owns shadow root
+  if (resolvedLayer === 'pure-island') {
+    return \`<\${tagName}\${attrs}\${ssrPropsAttr}\${sourceStr}></\${tagName}>\`;
+  }
+
+  // Layer 1/2: emit DSD template
   const styleTag = styleCss ? \`\\\\n    <style>\${styleCss}</style>\` : '';
   const dsdAttrs = buildDsdTemplateAttrs(dsdOptions);
   return \`<\${tagName}\${attrs}\${ssrPropsAttr}\${sourceStr}>

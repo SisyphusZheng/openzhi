@@ -127,16 +127,6 @@ function startsWithCustomElement(html: string): boolean {
   return /^<[a-z][a-z0-9]*-[a-z0-9-]+[\s>]/.test(html.trimStart());
 }
 
-/** Extract the custom element tag name from DSD HTML.
- *  Input: `<custom-element[attrs]><template shadowrootmode="open">CONTENT</template></custom-element>`
- *  Returns: `custom-element[attrs]` (the tag + attributes)
- */
-function _extractCeTag(dsdHtml: string): string | null {
-  const trimmed = dsdHtml.trimStart();
-  const match = trimmed.match(/^<([a-z][a-z0-9]*-[a-z0-9-]+)[^>]*>/);
-  return match ? match[0] : null;
-}
-
 /** Unwrap DSD for nested custom elements.
  *
  * v0.6 FIX: When a Lit component renders another custom element, the SSR adapter

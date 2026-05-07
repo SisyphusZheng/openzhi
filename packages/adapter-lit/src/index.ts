@@ -14,8 +14,13 @@
  *   import { installLitAdapter } from '@lessjs/adapter-lit';
  *   installLitAdapter(); // patches renderDSD to handle Lit TemplateResult
  *
+ * Usage (for DSD Interactive components):
+ *   import { WithDsdHydration } from '@lessjs/adapter-lit';
+ *   class MyToggle extends WithDsdHydration(LitElement) { ... }
+ *
  * @module @lessjs/adapter-lit
  */
 
 export { installLitAdapter, uninstallLitAdapter } from './ssr.js';
 export { isLitTemplateResult, renderLitToString } from './ssr.js';
+export { WithDsdHydration } from './dsd-hydration.js';
