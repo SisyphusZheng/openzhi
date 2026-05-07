@@ -57,6 +57,15 @@ export {
   injectDsdPolyfill,
   insertAfterHead,
 } from './ssg-postprocess.js';
+export {
+  extractCustomElementTags,
+  generateIslandManifests,
+  type IslandLayerMap,
+  type IslandManifestEntry,
+  type IslandStrategyMap,
+  type PageIslandManifest,
+  writeIslandManifests,
+} from './island-manifest.js';
 export { printBuildManifest, scanClientBuild, scanSSGOutput } from './build-manifest.js';
 export type { ArtifactInfo, BuildManifest } from './build-manifest.js';
 export {

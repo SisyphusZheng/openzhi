@@ -58,7 +58,7 @@ interface SignalOptions<T> {
 const _SIGNAL = Symbol('SIGNAL');
 const NODE = Symbol('node');
 
-const _engine: SignalEngineNamespace = _createPolyfill();
+const _engine: SignalEngineNamespace = (globalThis as any).Signal ?? _createPolyfill();
 
 // ─── Polyfill Implementation ─────────────────────────────────────
 
@@ -750,6 +750,21 @@ function createThemeSignal(): WritableSignal<string> {
   return s;
 }
 
+/** Returns true if using browser-native Signal implementation */
+export function isNativeSignal(): boolean {
+  return typeof (globalThis as any).Signal !== 'undefined';
+}
+
 // ─── Default Export ──────────────────────────────────────────────
 
-export default { signal, computed, effect, islandEffect, batch, untracked, channel, themeSignal };
+export default {
+  signal,
+  computed,
+  effect,
+  islandEffect,
+  batch,
+  untracked,
+  channel,
+  themeSignal,
+  isNativeSignal,
+};

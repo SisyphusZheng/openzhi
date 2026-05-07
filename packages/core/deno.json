@@ -9,6 +9,8 @@
     "./html-escape.js": "./src/html-escape.ts",
     "./render-nested": "./src/render-nested.ts",
     "./render-nested.js": "./src/render-nested.ts",
+    "./island-manifest": "./src/island-manifest.ts",
+    "./island-manifest.js": "./src/island-manifest.ts",
     "./less-runtime": "./src/less-runtime.ts",
     "./less-runtime.js": "./src/less-runtime.ts",
     "./cli/build": "./src/cli/build.ts",
