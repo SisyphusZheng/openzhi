@@ -14,7 +14,8 @@
     "./less-ui-plugin": "./src/less-ui-plugin.ts",
     "./design-tokens": "./src/design-tokens.ts",
     "./tokens/colors": "./src/tokens/colors.ts",
-    "./tokens/color-values": "./src/tokens/color-values.ts"
+    "./tokens/color-values": "./src/tokens/color-values.ts",
+    "./ssg-inject": "./src/ssg-inject.ts"
   },
   "imports": {
     "lit": "npm:lit@^3.2.0",

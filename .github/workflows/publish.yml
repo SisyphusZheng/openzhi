@@ -43,10 +43,13 @@ jobs:
             (cd "$dir" && deno publish -c deno.json --allow-dirty)
           }
 
-          # Publish in dependency order: rpc → ui → adapter-lit → signal → core → create
-          publish_if_missing "@lessjs/rpc" "packages/rpc"
-          publish_if_missing "@lessjs/ui" "packages/ui"
-          publish_if_missing "@lessjs/adapter-lit" "packages/adapter-lit"
-          publish_if_missing "@lessjs/signal" "packages/signals"
+          # Publish in dependency order: no-deps first, then dependents
+          # core, rpc, signal have zero LessJS deps → publish first
+          # adapter-lit, ui depend on core → publish after core
+          # create has no LessJS deps → publish anytime
           publish_if_missing "@lessjs/core" "packages/core"
+          publish_if_missing "@lessjs/rpc" "packages/rpc"
+          publish_if_missing "@lessjs/signal" "packages/signals"
+          publish_if_missing "@lessjs/adapter-lit" "packages/adapter-lit"
+          publish_if_missing "@lessjs/ui" "packages/ui"
           publish_if_missing "@lessjs/create" "packages/create"

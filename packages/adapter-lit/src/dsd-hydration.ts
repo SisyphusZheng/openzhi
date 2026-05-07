@@ -189,8 +189,10 @@ export function WithDsdHydration<T extends Constructor<LitElement>>(superClass: 
  * }
  * ```
  */
-// deno-lint-ignore no-explicit-any
-export const DsdLitElement: typeof LitElement & (new (...args: any[]) => LitElement & DsdHydration) =
-  WithDsdHydration(LitElement) as unknown as typeof LitElement &
+export const DsdLitElement:
+  & typeof LitElement
+  // deno-lint-ignore no-explicit-any
+  & (new (...args: any[]) => LitElement & DsdHydration) = WithDsdHydration(LitElement) as unknown as
+    & typeof LitElement
     // deno-lint-ignore no-explicit-any
-    (new (...args: any[]) => LitElement & DsdHydration);
+    & (new (...args: any[]) => LitElement & DsdHydration);

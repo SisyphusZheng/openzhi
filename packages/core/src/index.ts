@@ -54,7 +54,7 @@ export {
   buildIslandChunkMap,
   injectClientScript,
   injectCspMeta,
-  injectLayoutStyles,
+  injectDsdPolyfill,
 } from './ssg-postprocess.js';
 export { printBuildManifest, scanClientBuild, scanSSGOutput } from './build-manifest.js';
 export type { ArtifactInfo, BuildManifest } from './build-manifest.js';

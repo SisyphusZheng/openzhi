@@ -341,10 +341,9 @@ async function buildSSG(options: BuildSSGOptions = {}): Promise<void> {
       }
 
       // Post-process: build island chunk map for speculative links
-      const { buildIslandChunkMap, injectCspMeta, injectDsdPolyfill, injectLayoutStyles } =
-        await import(
-          '../ssg-postprocess.js'
-        );
+      const { buildIslandChunkMap, injectCspMeta, injectDsdPolyfill } = await import(
+        '../ssg-postprocess.js'
+      );
       const _islandChunkMap = buildIslandChunkMap(root, outDir, islandTagNames, basePath);
 
       // Post-process: inject CSP <meta> tag into static HTML files.
@@ -361,11 +360,6 @@ async function buildSSG(options: BuildSSGOptions = {}): Promise<void> {
         );
         console.log('[LessJS SSG] CSP meta tag injected into static HTML');
       }
-
-      // Inject inline layout styles so less-layout header/sidebar/footer
-      // are styled immediately without waiting for JS.
-      injectLayoutStyles(outputDir);
-      console.log('[LessJS SSG] Layout styles injected into static HTML');
 
       // Inject DSD polyfill for browsers that don't support Declarative Shadow DOM
       // (Firefox does NOT support shadowrootmode as of 2025).

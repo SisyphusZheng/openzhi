@@ -4,6 +4,7 @@
     "jsr:@david/code-block-writer@^13.0.3": "13.0.3",
     "jsr:@deno/dnt@*": "0.42.3",
     "jsr:@deno/dnt@0.42": "0.42.3",
+    "jsr:@lessjs/ui@0.6.1": "0.6.1",
     "jsr:@std/assert@1": "1.0.19",
     "jsr:@std/fmt@1": "1.0.10",
     "jsr:@std/fs@1": "1.0.23",
@@ -39,6 +40,9 @@
         "jsr:@std/path@1",
         "jsr:@ts-morph/bootstrap"
       ]
+    },
+    "@lessjs/ui@0.6.1": {
+      "integrity": "5b18fe15e2f4ca436fe3b0ada9d139fcfc13b392b1beb72f421fabe849c7af16"
     },
     "@std/assert@1.0.19": {
       "integrity": "eaada96ee120cb980bc47e040f82814d786fe8162ecc53c91d8df60b8755991e",
@@ -664,7 +668,6 @@
       },
       "packages/core": {
         "dependencies": [
-          "jsr:@lessjs/ui@~0.6.2",
           "npm:@hono/vite-dev-server@~0.25.3",
           "npm:hono@4",
           "npm:vite@8.0.10"

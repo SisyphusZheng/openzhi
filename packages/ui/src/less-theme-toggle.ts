@@ -38,7 +38,6 @@ import { css, type CSSResult, html, nothing, type TemplateResult } from 'lit';
 import { lessDesignTokens } from './design-tokens.js';
 import { DsdLitElement } from '@lessjs/adapter-lit';
 
-
 export const tagName = 'less-theme-toggle';
 
 /**

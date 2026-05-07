@@ -9,9 +9,6 @@
 
 import { join, resolve } from 'node:path';
 import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
-// DRY: Color token values from single source of truth (zero lit dependency)
-// JSR requires bare specifiers for cross-package imports
-import { generateRootColorCSS } from '@lessjs/ui/tokens/color-values';
 
 // ─── HTML Insertion Helpers ────────────────────────────────────────────
 
@@ -197,42 +194,6 @@ export function injectDsdPolyfill(dir: string): void {
       let content = readFileSync(fullPath, 'utf-8');
       if (!content.includes('DSD Polyfill')) {
         content = insertAfterHead(content, DSD_POLYFILL);
-        writeFileSync(fullPath, content, 'utf-8');
-      }
-    }
-  }
-}
-
-/**
- * Inject inline layout styles into all HTML files.
- *
- * less-layout is a Lit component without DSD in SSR output,
- * so its shadow DOM CSS only appears after JS executes.
- * This injects the layout CSS into the HTML <head> so the
- * header, sidebar, footer are styled immediately.
- *
- * v0.6: Also injects :root theme CSS custom properties.
- * Generated from @lessjs/ui/tokens/color-values.ts — SINGLE SOURCE OF TRUTH.
- */
-export function injectLayoutStyles(dir: string): void {
-  const rootColorVars = generateRootColorCSS();
-
-  const style = [
-    '<style id="less-layout-inline">',
-    rootColorVars,
-    'less-layout{display:block}',
-    '</style>',
-  ].join('');
-
-  const entries = readdirSync(dir, { withFileTypes: true });
-  for (const entry of entries) {
-    const fullPath = join(dir, entry.name);
-    if (entry.isDirectory()) {
-      injectLayoutStyles(fullPath);
-    } else if (entry.name.endsWith('.html')) {
-      let content = readFileSync(fullPath, 'utf-8');
-      if (!content.includes('id="less-layout-inline"')) {
-        content = insertAfterHead(content, style);
         writeFileSync(fullPath, content, 'utf-8');
       }
     }
