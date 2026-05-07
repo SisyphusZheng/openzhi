@@ -664,7 +664,7 @@
     "members": {
       "packages/adapter-lit": {
         "dependencies": [
-          "jsr:@lessjs/core@~0.6.2"
+          "jsr:@lessjs/core@0.7"
         ]
       },
       "packages/core": {
@@ -676,7 +676,7 @@
       },
       "packages/ui": {
         "dependencies": [
-          "jsr:@lessjs/core@~0.6.2",
+          "jsr:@lessjs/core@0.7",
           "npm:lit@^3.2.0"
         ]
       }
