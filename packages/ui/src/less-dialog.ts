@@ -25,12 +25,10 @@
  * ```
  */
 
-import { css, type CSSResult, html, LitElement, nothing, type TemplateResult } from 'lit';
+import { css, type CSSResult, html, nothing, type TemplateResult } from 'lit';
 import { lessDesignTokens } from './design-tokens.js';
-import { WithDsdHydration } from '@lessjs/adapter-lit';
+import { DsdLitElement } from '@lessjs/adapter-lit';
 
-/** @internal */
-const DsdLitElement = WithDsdHydration(LitElement);
 
 export const tagName = 'less-dialog';
 

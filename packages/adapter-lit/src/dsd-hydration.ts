@@ -1,16 +1,16 @@
 /**
- * @lessjs/adapter-lit - WithDsdHydration Mixin
+ * @lessjs/adapter-lit - WithDsdHydration Mixin + DsdLitElement base class
  *
  * Mixin for Lit components that need DSD hydration (Layer 2).
  * Provides the common DSD detection, event binding, and cleanup pattern
  * shared by all DSD Interactive components.
  *
- * Usage:
+ * Usage (recommended — extend pre-composed base class):
  * ```ts
- * import { WithDsdHydration } from '@lessjs/adapter-lit/dsd-hydration';
+ * import { DsdLitElement } from '@lessjs/adapter-lit';
  *
- * class MyToggle extends WithDsdHydration(LitElement) {
- *   static override hydrateEvents = [
+ * class MyToggle extends DsdLitElement {
+ *   static hydrateEvents = [
  *     { selector: 'button.toggle', event: 'click', method: '_handleToggle' },
  *   ];
  *
@@ -19,6 +19,13 @@
  *     return html`<button class="toggle" @click=${this._handleToggle}>Toggle</button>`;
  *   }
  * }
+ * ```
+ *
+ * Usage (advanced — Mixin with custom base class):
+ * ```ts
+ * import { WithDsdHydration } from '@lessjs/adapter-lit';
+ *
+ * class MyToggle extends WithDsdHydration(SomeOtherBase) { ... }
  * ```
  *
  * What the Mixin provides:
@@ -41,6 +48,17 @@ import type { HydrateEventDescriptor } from '@lessjs/core/render-dsd';
 /** Constructor type for Mixin pattern — `any[]` is standard TS Mixin signature */
 // deno-lint-ignore no-explicit-any
 type Constructor<T = LitElement> = new (...args: any[]) => T;
+
+/**
+ * Instance interface for DSD-hydrated Lit components.
+ * Exposed so that consumers can type-check against the DSD hydration contract.
+ */
+export interface DsdHydration {
+  /** Whether DSD has already hydrated this component's shadow root */
+  _dsdHydrated: boolean;
+  /** Bind declared events to existing shadow DOM elements after DSD upgrade */
+  _hydrateEvents(): void;
+}
 
 /**
  * Mixin that adds DSD hydration support to a LitElement subclass.
@@ -152,3 +170,27 @@ export function WithDsdHydration<T extends Constructor<LitElement>>(superClass: 
 
   return WithDsdHydrationClass as unknown as T & Constructor<WithDsdHydrationClass>;
 }
+
+/**
+ * Pre-composed DSD-hydrated LitElement base class.
+ *
+ * Use this instead of `WithDsdHydration(LitElement)` in your component
+ * `extends` clause. JSR's fast type checker requires extracted super
+ * class expressions — this pre-composed class satisfies that requirement.
+ *
+ * @example
+ * ```ts
+ * import { DsdLitElement } from '@lessjs/adapter-lit';
+ *
+ * class MyToggle extends DsdLitElement {
+ *   static hydrateEvents = [
+ *     { selector: 'button', event: 'click', method: '_handleClick' },
+ *   ];
+ * }
+ * ```
+ */
+// deno-lint-ignore no-explicit-any
+export const DsdLitElement: typeof LitElement & (new (...args: any[]) => LitElement & DsdHydration) =
+  WithDsdHydration(LitElement) as unknown as typeof LitElement &
+    // deno-lint-ignore no-explicit-any
+    (new (...args: any[]) => LitElement & DsdHydration);

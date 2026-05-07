@@ -39,12 +39,10 @@
  * ```
  */
 
-import { css, type CSSResult, html, LitElement, nothing, type TemplateResult } from 'lit';
+import { css, type CSSResult, html, nothing, type TemplateResult } from 'lit';
 import { lessDesignTokens } from './design-tokens.js';
-import { WithDsdHydration } from '@lessjs/adapter-lit';
+import { DsdLitElement } from '@lessjs/adapter-lit';
 
-/** @internal */
-const DsdLitElement = WithDsdHydration(LitElement);
 // CRITICAL: less-layout's template uses <less-theme-toggle>, so we MUST import it
 // so that the SSR renderer can recursively render its DSD shadow root.
 // Without this import, SSR outputs <less-theme-toggle></less-theme-toggle> without
