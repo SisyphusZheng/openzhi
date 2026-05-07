@@ -111,6 +111,17 @@ export class LessButton extends LitElement {
         border-color: transparent;
       }
 
+      /* External link icon for buttons pointing to external URLs */
+      .external-icon {
+        flex-shrink: 0;
+        opacity: 0.5;
+        transition: opacity var(--less-transition-fast);
+      }
+
+      a.btn:hover .external-icon {
+        opacity: 1;
+      }
+
       /* States */
       .btn:disabled,
       .btn[aria-disabled="true"] {
@@ -197,6 +208,11 @@ export class LessButton extends LitElement {
     e.preventDefault();
   }
 
+  /** Whether this button links to an external URL */
+  private get _isExternal(): boolean {
+    return this.href ? /^https?:\/\//.test(this.href) : false;
+  }
+
   override render(): TemplateResult {
     const classes = `btn btn--${this.variant} btn--${this.size}`;
 
@@ -213,6 +229,9 @@ export class LessButton extends LitElement {
           @click="${this.disabled ? this._preventClick : nothing}"
         >
           <slot></slot>
+          ${this._isExternal
+            ? html`<svg class="external-icon" width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4L4 12M12 4H7M12 4V9"/></svg>`
+            : nothing}
         </a>
       `;
     }
