@@ -144,6 +144,66 @@ export function injectCspMeta(
 }
 
 /**
+ * DSD polyfill for browsers that don't support Declarative Shadow DOM.
+ * Firefox does NOT support shadowrootmode as of 2025.
+ * This polyfill attaches Shadow Roots manually via attachShadow().
+ */
+const DSD_POLYFILL = `
+<script>
+// DSD Polyfill (Firefox, older browsers)
+(function() {
+  try {
+    const t = document.createElement('template');
+    t.setAttribute('shadowrootmode', 'open');
+    if ('shadowRootMode' in t) return; // Native support
+  } catch {}
+  
+  const attachDSD = (root) => {
+    root.querySelectorAll('template[shadowrootmode]').forEach(tpl => {
+      const parent = tpl.parentNode;
+      if (!parent || parent.shadowRoot) return;
+      try {
+        const mode = tpl.getAttribute('shadowrootmode');
+        const opts = { mode: mode === 'open' ? 'open' : 'closed' };
+        if (tpl.hasAttribute('shadowrootdelegatesfocus')) opts.delegatesFocus = true;
+        const sr = parent.attachShadow(opts);
+        sr.innerHTML = tpl.innerHTML;
+        tpl.remove();
+        attachDSD(sr); // Handle nested DSD
+      } catch {}
+    });
+  };
+  
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => attachDSD(document));
+  } else {
+    attachDSD(document);
+  }
+})();
+</script>
+`;
+
+/**
+ * Inject DSD polyfill into all HTML files.
+ * Handles browsers that don't natively support Declarative Shadow DOM.
+ */
+export function injectDsdPolyfill(dir: string): void {
+  const entries = readdirSync(dir, { withFileTypes: true });
+  for (const entry of entries) {
+    const fullPath = join(dir, entry.name);
+    if (entry.isDirectory()) {
+      injectDsdPolyfill(fullPath);
+    } else if (entry.name.endsWith('.html')) {
+      let content = readFileSync(fullPath, 'utf-8');
+      if (!content.includes('DSD Polyfill')) {
+        content = insertAfterHead(content, DSD_POLYFILL);
+        writeFileSync(fullPath, content, 'utf-8');
+      }
+    }
+  }
+}
+
+/**
  * Inject inline layout styles into all HTML files.
  *
  * less-layout is a Lit component without DSD in SSR output,
