@@ -272,8 +272,9 @@ async function buildSSG(options: BuildSSGOptions = {}): Promise<void> {
         isDirectory: (path: string) => {
           try {
             return nodeFs.statSync(path).isDirectory();
-          } catch {
+          } catch (e) {
             // Path doesn't exist or is inaccessible — not a directory
+            console.debug(`[LessJS SSG] isDirectory("${path}"): ${e instanceof Error ? e.message : String(e)}`);
             return false;
           }
         },
