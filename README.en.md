@@ -238,7 +238,7 @@ Resource hints injected based on island strategy:
 
 | Package               | Responsibility                                                              | Version |
 | --------------------- | --------------------------------------------------------------------------- | ------- |
-| `@lessjs/core`        | Vite plugin, route scanning, DSD rendering (L2 nested), structured logging, Navigation API, SSG | 0.9.0   |
+| `@lessjs/core`        | Vite plugin, route scanning, DSD rendering (L2 nested), structured logging, Navigation API, SSG | 0.9.0-alpha-1 |
 | `@lessjs/ui`          | Lit-based Web Component library (with DSD hydration)                        | 0.6.2   |
 | `@lessjs/signal`      | TC39 Signals fork (signal/computed/effect/islandEffect)                     | 0.6.2   |
 | `@lessjs/adapter-lit` | Optional Lit SSR adapter                                                    | 0.7.0   |
@@ -396,7 +396,7 @@ Theme variable example:
 
 | Version           | Date       | Highlights                                                                                   |
 | ----------------- | ---------- | -------------------------------------------------------------------------------------------- |
-| **0.9.0**         | 2026-05-09 | @lessjs/content unified content plugin, SSR property bindings preserved, monorepo version strategy |
+| **0.9.0-alpha-1** | 2026-05-09 | @lessjs/content unified content plugin, SSR property bindings preserved, monorepo version strategy |
 | **0.8.0**         | 2026-05-08 | Structured logging (createLogger), runtime-shim auto-generation, @lessjs/blog plugin, parse5 nested optimization, Playwright E2E |
 | **0.7.0**         | 2026-05-07 | P0 audit fixes — 73 new tests, runtime-shim consistency, XSS warnings, silent catch elimination, CI gaps, pre-commit hooks |
 | **0.6.2**         | 2026-05-07 | adapter-lit silent catch fix                                                                 |

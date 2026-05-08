@@ -235,7 +235,7 @@ navigate('/about');
 
 | 包                    | 职责                                                               | 当前版本 |
 | --------------------- | ------------------------------------------------------------------ | -------- |
-| `@lessjs/core`        | Vite 插件、路由扫描、DSD 渲染（L2 嵌套）、结构化日志、Navigation API、SSG 管线 | 0.9.0    |
+| `@lessjs/core`        | Vite 插件、路由扫描、DSD 渲染（L2 嵌套）、结构化日志、Navigation API、SSG 管线 | 0.9.0-alpha-1 |
 | `@lessjs/ui`          | 基于 Lit 的 Web Component 组件库（含 DSD hydration）               | 0.6.2    |
 | `@lessjs/signal`      | TC39 Signals 二开（signal/computed/effect/islandEffect）           | 0.6.2    |
 | `@lessjs/adapter-lit` | 可选 Lit SSR 适配器                                                | 0.7.0    |
@@ -390,7 +390,7 @@ LessJS UI 组件遵循瑞士国际主义风格（Swiss International Style）：
 
 | Version           | Date       | Highlights                                                                                   |
 | ----------------- | ---------- | -------------------------------------------------------------------------------------------- |
-| **0.9.0**         | 2026-05-09 | @lessjs/content 统一内容插件、SSR 属性绑定保留、Monorepo 包版本策略 |
+| **0.9.0-alpha-1** | 2026-05-09 | @lessjs/content 统一内容插件、SSR 属性绑定保留、Monorepo 包版本策略 |
 | **0.8.0**         | 2026-05-08 | 结构化日志（createLogger）、runtime-shim 自动生成、@lessjs/blog 博客插件、parse5 嵌套优化、Playwright E2E |
 | **0.7.0**         | 2026-05-07 | P0 审计修复 — 73 新测试、runtime-shim 一致性、XSS 警告、静默 catch 消除、CI 补全、pre-commit hooks |
 | **0.6.2**         | 2026-05-07 | adapter-lit 静默 catch 修复                                                                   |

@@ -121,7 +121,7 @@ export class ChangelogPage extends LitElement {
 
           <div class="version-section">
             <div class="version-header">
-              <span class="version-number">0.9.0</span>
+              <span class="version-number">0.9.0-alpha-1</span>
               <span class="version-date">2026-05-09</span>
             </div>
             <div class="change-category added">
@@ -183,7 +183,7 @@ export class ChangelogPage extends LitElement {
                 </li>
                 <li>
                   <strong>包版本变更</strong>：
-                  @lessjs/core 0.8.1→0.9.0，
+                  @lessjs/core 0.8.1→0.9.0-alpha-1，
                   @lessjs/adapter-lit 0.6.4→0.7.0，
                   @lessjs/content 0.1.0→0.2.0；
                   ui/rpc/signal/create 不变。
@@ -1522,7 +1522,7 @@ export class ChangelogPage extends LitElement {
               </thead>
               <tbody>
                 <tr>
-                  <td>0.9.0</td>
+                  <td>0.9.0-alpha-1</td>
                   <td>2026-05-09</td>
                   <td>@lessjs/content 统一内容插件 + SSR 属性绑定保留 + Monorepo 包版本策略</td>
                 </tr>
