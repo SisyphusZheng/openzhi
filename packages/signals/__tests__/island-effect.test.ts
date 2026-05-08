@@ -12,6 +12,10 @@ import { islandEffect, signal } from '../src/index.ts';
 class MockElement {
   isConnected = true;
   parentNode: MockParentNode | null = null;
+  /** parentElement mirrors parentNode for islandEffect's observeParent() */
+  get parentElement(): MockParentNode | null {
+    return this.parentNode;
+  }
 }
 
 class MockParentNode {
@@ -36,6 +40,12 @@ class MockParentNode {
 const OriginalMO = globalThis.MutationObserver;
 // deno-lint-ignore no-explicit-any
 const OriginalSetInterval = (globalThis as any).setInterval;
+// deno-lint-ignore no-explicit-any
+const OriginalClearInterval = (globalThis as any).clearInterval;
+
+/** Track which intervalIds were cleared */
+let clearedIntervalIds: Set<number> = [];
+let nextIntervalId = 1;
 
 function installMocks() {
   // deno-lint-ignore no-explicit-any
@@ -59,11 +69,17 @@ function installMocks() {
     }
   };
 
-  // Override setInterval to be immediate for test control
+  clearedIntervalIds = new Set();
+  nextIntervalId = 1;
+
   // deno-lint-ignore no-explicit-any
   (globalThis as any).setInterval = (_fn: () => void, _ms: number) => {
-    // No-op: we'll manually trigger connectivity checks
-    return 999;
+    return nextIntervalId++;
+  };
+
+  // deno-lint-ignore no-explicit-any
+  (globalThis as any).clearInterval = (id: number) => {
+    clearedIntervalIds.add(id);
   };
 }
 
@@ -72,6 +88,8 @@ function restoreMocks() {
   (globalThis as any).MutationObserver = OriginalMO;
   // deno-lint-ignore no-explicit-any
   (globalThis as any).setInterval = OriginalSetInterval;
+  // deno-lint-ignore no-explicit-any
+  (globalThis as any).clearInterval = OriginalClearInterval;
 }
 
 /** Flush microtask queue */
@@ -138,11 +156,33 @@ Deno.test('islandEffect() — lifecycle', async (t) => {
     await flush();
     assertEquals(count, 1);
 
-    // Also call dispose to clean up interval
+    // Calling dispose again should be safe (idempotent)
     dispose();
   });
 
-  await t.step('explicit dispose cleans up', () => {
+  await t.step('auto-dispose clears interval (no leak)', () => {
+    const host = new MockElement();
+    const parent = new MockParentNode();
+    parent.appendChild(host);
+
+    const s = signal(0);
+    let count = 0;
+    const _dispose = islandEffect(host as unknown as Element, () => {
+      s.value;
+      count++;
+    });
+
+    // The interval id assigned by our mock
+    const intervalId = nextIntervalId - 1;
+
+    // Auto-dispose via MO
+    parent.removeChild(host);
+
+    // The interval should have been cleared by teardown()
+    assertEquals(clearedIntervalIds.has(intervalId), true);
+  });
+
+  await t.step('explicit dispose clears interval (no leak)', () => {
     const host = new MockElement();
     const parent = new MockParentNode();
     parent.appendChild(host);
@@ -153,8 +193,13 @@ Deno.test('islandEffect() — lifecycle', async (t) => {
       s.value;
       count++;
     });
+
+    const intervalId = nextIntervalId - 1;
     assertEquals(count, 1);
     dispose();
+
+    // The interval should have been cleared
+    assertEquals(clearedIntervalIds.has(intervalId), true);
   });
 
   await t.step('effect cleanup function is called on dispose', () => {
@@ -169,6 +214,42 @@ Deno.test('islandEffect() — lifecycle', async (t) => {
       };
     });
     dispose();
+    assertEquals(cleanupCalled, true);
+  });
+
+  await t.step('double dispose is safe (idempotent teardown)', () => {
+    const host = new MockElement();
+    const parent = new MockParentNode();
+    parent.appendChild(host);
+
+    let cleanupCount = 0;
+    const dispose = islandEffect(host as unknown as Element, () => {
+      return () => {
+        cleanupCount++;
+      };
+    });
+    dispose();
+    dispose(); // second call should be no-op
+    assertEquals(cleanupCount, 1);
+  });
+
+  await t.step('auto-dispose cleanup function is called', () => {
+    const host = new MockElement();
+    const parent = new MockParentNode();
+    parent.appendChild(host);
+
+    const s = signal(0);
+    let cleanupCalled = false;
+    const _dispose = islandEffect(host as unknown as Element, () => {
+      s.value;
+      return () => {
+        cleanupCalled = true;
+      };
+    });
+
+    // Auto-dispose via MO
+    parent.removeChild(host);
+
     assertEquals(cleanupCalled, true);
   });
 

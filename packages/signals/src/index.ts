@@ -611,43 +611,58 @@ export function effect(fn: () => void | (() => void)): Unsubscribe {
 
 /**
  * Island-aware effect: automatically disposes when the island disconnects.
- * Uses MutationObserver to detect when the host element is removed from DOM.
+ *
+ * Cleanup strategy (ordered by reliability):
+ *   1. MutationObserver on parentElement — catches removeChild / replaceChild
+ *   2. setInterval fallback — catches shadow DOM / edge cases MO can't see
+ *   3. Manual dispose — caller invokes the returned function
+ *
+ * All three paths converge to a single `teardown()` to guarantee no resource leak.
  */
 export function islandEffect(
   host: Element,
   fn: () => void | (() => void),
 ): Unsubscribe {
-  const dispose = effect(fn);
+  let disposed = false;
 
-  // Watch for disconnection
-  const mo = new MutationObserver(() => {
-    if (!host.isConnected) {
-      dispose();
-      mo.disconnect();
-    }
-  });
+  const disposeEffect = effect(fn);
 
-  // Observe parent changes (element itself won't mutate for isConnected)
-  if (host.parentNode) {
-    mo.observe(host.parentNode, { childList: true });
-  }
-
-  // Also check on each transition (fallback for shadow DOM scenarios)
-  const checkConnected = () => {
-    if (!host.isConnected) {
-      dispose();
-      mo.disconnect();
-    }
-  };
-
-  // Periodic check as fallback (lightweight)
-  const intervalId = setInterval(checkConnected, 5000);
-
-  return () => {
-    dispose();
+  function teardown() {
+    if (disposed) return;
+    disposed = true;
+    disposeEffect();
     mo.disconnect();
     clearInterval(intervalId);
-  };
+  }
+
+  // ── MutationObserver: detect removal from parent ──
+  const mo = new MutationObserver(() => {
+    if (!host.isConnected) teardown();
+  });
+
+  // Observe current parent; re-observe if parent changes (see interval fallback)
+  function observeParent() {
+    mo.disconnect();
+    const parent = host.parentElement ?? host.parentNode;
+    if (parent) {
+      mo.observe(parent, { childList: true });
+    }
+  }
+  observeParent();
+
+  // ── Interval fallback: re-observe parent + connectivity check ──
+  // Serves dual purpose:
+  //   a) Re-observe if parentElement changed (e.g. DOM rebuild)
+  //   b) Catch disconnections that MO misses (shadow DOM, documentFragment moves)
+  const intervalId = setInterval(() => {
+    if (!host.isConnected) {
+      teardown();
+    } else {
+      observeParent();
+    }
+  }, 5000);
+
+  return teardown;
 }
 
 /**

@@ -45,10 +45,6 @@ export { LessThemeToggle, tagName as lessThemeToggleTagName } from './less-theme
 export { default as LessHeroPing, tagName as lessHeroPingTagName } from './less-hero-ping.js';
 export { LessDialog, tagName as lessDialogTagName } from './less-dialog.js';
 
-// Vite plugin for Web Awesome CDN injection (convenience only)
-export { lessUI } from './less-ui-plugin.js';
-export type { LessUIOptions } from './less-ui-plugin.js';
-
 // Island metadata for auto-detection by @lessjs/core
 // These components are Islands with Shadow DOM and client-side behavior.
 // Any component that appears in SSR output must be listed here so the

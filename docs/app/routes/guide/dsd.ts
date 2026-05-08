@@ -7,24 +7,6 @@ export class DsdGuidePage extends LitElement {
   static override styles = [
     pageStyles,
     css`
-      .layer-card {
-        padding: 1.25rem 1.5rem;
-        margin: 1rem 0;
-        border-left: 2px solid var(--less-border-hover);
-        background: var(--less-bg-surface);
-        border-radius: 0 3px 3px 0;
-      }
-      .layer-card .layer-tag {
-        font-size: 0.6875rem;
-        font-weight: 500;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        color: var(--less-text-muted);
-        margin-bottom: 0.25rem;
-      }
-      .layer-card h3 {
-        margin: 0 0 0.5rem;
-      }
       .comparison {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -43,19 +25,6 @@ export class DsdGuidePage extends LitElement {
         .comparison {
           grid-template-columns: 1fr;
         }
-      }
-      .mermaid {
-        background: var(--less-code-bg);
-        border: 0.5px solid var(--less-code-border);
-        border-radius: 3px;
-        padding: 1rem 1.25rem;
-        margin: 0.75rem 0;
-        font-size: 0.75rem;
-        line-height: 1.6;
-        color: var(--less-text-secondary);
-        overflow-x: auto;
-        white-space: pre;
-        font-family: "SF Mono", "Fira Code", "Consolas", monospace;
       }
     `,
   ];
@@ -103,59 +72,45 @@ export class DsdGuidePage extends LitElement {
             </div>
           </div>
 
-          <h2>三层组件模型</h2>
+          <h2>三层组件模型（概述）</h2>
           <p>
-            LessJS 将组件分为三个层级，每一层对应不同的交互需求和客户端 JS 开销。
-            层级越高，客户端 JavaScript 参与越多。
+            LessJS 将组件按交互需求分为三层。层级越高，客户端 JavaScript 参与越多：
           </p>
-
-          <div class="mermaid">graph TD
-    L1["Layer 1: dsd-static"] --> L2["Layer 2: dsd-interactive"]
-    L2 --> L3["Layer 3: pure-island"]
-
-    L1 ---|"无 JS"| JS0["零客户端 JS"]
-    L2 ---|"DSD + 事件绑定"| JS1["仅事件监听器"]
-    L3 ---|"框架完全拥有"| JS2["完整框架运行时"]
-
-    style L1 fill:#e8f5e9,stroke:#4caf50
-    style L2 fill:#fff3e0,stroke:#ff9800
-    style L3 fill:#fce4ec,stroke:#f44336</div>
-
-          <div class="layer-card">
-            <div class="layer-tag">Layer 1</div>
-            <h3>dsd-static</h3>
-            <p>
-              纯静态 DSD，无水合。页面组件、导航栏、文章内容等纯展示性组件属于这一层。
-              SSR 输出完整的 <span class="inline-code">&lt;template shadowrootmode="open"&gt;</span>，
-              客户端不需要加载任何 JavaScript。组件即使不被 <span class="inline-code">customElements.define()</span>
-              升级，内容也始终可见。
-            </p>
-          </div>
-
-          <div class="layer-card">
-            <div class="layer-tag">Layer 2</div>
-            <h3>dsd-interactive</h3>
-            <p>
-              DSD + 事件绑定水合。需要用户交互但状态简单的组件属于这一层（如展开/折叠、
-              主题切换、Tab 切换）。SSR 仍然输出完整 DSD，客户端加载模块后：
-            </p>
-            <ul>
-              <li>检测已有 shadow root（<span class="inline-code">_dsdHydrated</span> 标志）</li>
-              <li>跳过 render()，避免重复 DOM</li>
-              <li>通过 <span class="inline-code">hydrateEvents</span> 声明式绑定事件</li>
-            </ul>
-          </div>
-
-          <div class="layer-card">
-            <div class="layer-tag">Layer 3</div>
-            <h3>pure-island</h3>
-            <p>
-              无 DSD，框架完全拥有 shadow root。需要完整框架响应性（本地状态、
-              定时器、WebSocket、复杂表单）的组件属于这一层。SSR 只输出
-              <span class="inline-code">&lt;my-island data-ssr-props="..."&gt;&lt;/my-island&gt;</span>，
-              客户端框架创建 shadow root 并完全控制渲染。
-            </p>
-          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>层级</th>
+                <th>名称</th>
+                <th>客户端 JS</th>
+                <th>典型场景</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Layer 1</td>
+                <td><span class="inline-code">dsd-static</span></td>
+                <td>零</td>
+                <td>导航栏、文章内容、页脚</td>
+              </tr>
+              <tr>
+                <td>Layer 2</td>
+                <td><span class="inline-code">dsd-interactive</span></td>
+                <td>仅事件绑定</td>
+                <td>展开/折叠、主题切换、Tab 切换</td>
+              </tr>
+              <tr>
+                <td>Layer 3</td>
+                <td><span class="inline-code">pure-island</span></td>
+                <td>完整框架</td>
+                <td>实时图表、复杂表单、WebSocket</td>
+              </tr>
+            </tbody>
+          </table>
+          <p>
+            三层模型的完整讲解、升级策略、<span class="inline-code">hydrateEvents</span>
+            声明式绑定和 <span class="inline-code">data-ssr-props</span> 机制，
+            详见 <a href="/guide/islands-deep">Island 深度指南</a>。
+          </p>
 
           <h2>Slot 投影机制</h2>
           <p>
@@ -244,68 +199,6 @@ const html = await renderDSD(
             <li><strong>SEO 友好</strong>：搜索引擎爬虫无需执行 JavaScript 即可获取完整内容。</li>
           </ul>
 
-          <h2>代码示例：DSD Interactive 组件</h2>
-          <code-block><pre><code>import { html, nothing } from 'lit';
-import { DsdLitElement } from '@lessjs/adapter-lit';
-
-class ThemeToggle extends DsdLitElement {
-  // 声明式事件绑定：DSD 升级后自动附加
-  static hydrateEvents = [
-    { selector: 'button.toggle', event: 'click', method: '_handleToggle' },
-  ];
-
-  private _dark = false;
-
-  override render() {
-    // DSD 已存在时跳过重复渲染
-    if (this._dsdHydrated) return nothing;
-    return html\`
-      &lt;button class="toggle" @click=\${this._handleToggle}&gt;
-        \${this._dark ? '🌙' : '☀️'}
-      &lt;/button&gt;
-    \`;
-  }
-
-  private _handleToggle() {
-    this._dark = !this._dark;
-    document.documentElement.classList.toggle('dark', this._dark);
-  }
-}
-
-customElements.define('theme-toggle', ThemeToggle);</code></pre></code-block>
-
-          <h2>代码示例：Pure Island 组件</h2>
-          <code-block><pre><code>import { html, LitElement } from 'lit';
-import { island } from '@lessjs/core';
-
-class LiveCounter extends LitElement {
-  static properties = {
-    count: { type: Number },
-  };
-
-  declare count: number;
-
-  constructor() {
-    super();
-    this.count = 0;
-  }
-
-  override render() {
-    return html\`
-      &lt;button @click=\${() =&gt; this.count--}&gt;-&lt;/button&gt;
-      &lt;span&gt;\${this.count}&lt;/span&gt;
-      &lt;button @click=\${() =&gt; this.count++}&gt;+&lt;/button&gt;
-    \`;
-  }
-}
-
-// dsd: false → Pure Island (Layer 3)
-// 框架完全拥有 shadow root，获得完整响应性
-export default island('live-counter', LiveCounter, {
-  strategy: 'eager',
-  dsd: false,
-});</code></pre></code-block>
-
           <h2>与其他框架对比</h2>
           <table>
             <thead>
@@ -378,13 +271,6 @@ export default island('live-counter', LiveCounter, {
             这是为 Lit 客户端水合管线设计的。LessJS 需要纯净的 DSD HTML，
             不依赖任何框架专有标记。<span class="inline-code">@lessjs/adapter-lit</span>
             通过安全插值将 TemplateResult 直接转为字符串，保持 Lit 的转义语义。
-          </p>
-
-          <h3>Layer 2 和 Layer 3 怎么选？</h3>
-          <p>
-            如果组件只需要绑定几个事件处理器，用 Layer 2。如果组件有复杂的本地状态、
-            定时器、WebSocket 连接或需要完整响应式更新，用 Layer 3。
-            当犹豫时，从 Layer 1 开始，按需升级。
           </p>
 
           <div class="nav-row">

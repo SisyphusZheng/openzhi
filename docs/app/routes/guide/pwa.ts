@@ -1,112 +1,156 @@
 /**
- * PWA Support — architecture decision for LessJS SSG
+ * PWA Support — @lessjs/core PWA feature guide
  */
-import { css, html, LitElement } from 'lit';
+import { html, LitElement } from 'lit';
 import { pageStyles } from '../../components/page-styles.js';
 import '@lessjs/ui/less-layout';
+import '../../islands/code-block.js';
 
 export class PwaPage extends LitElement {
-  static override styles = [
-    pageStyles,
-    css`
-      .adr-meta {
-        font-size: 0.75rem;
-        color: var(--less-text-muted);
-        margin-bottom: 1.5rem;
-      }
-      h2 {
-        font-size: 1rem;
-        font-weight: 500;
-        margin: 1.5rem 0 0.5rem;
-        color: var(--less-text-primary);
-      }
-      h3 {
-        font-size: 0.875rem;
-        font-weight: 500;
-        margin: 1rem 0 0.25rem;
-        color: var(--less-text-secondary);
-      }
-      p {
-        font-size: 0.8125rem;
-        line-height: 1.7;
-        color: var(--less-text-secondary);
-        margin: 0 0 0.75rem;
-      }
-      .code-block {
-        background: var(--less-bg-surface);
-        border: 0.5px solid var(--less-border);
-        border-radius: 4px;
-        padding: 1rem;
-        font-family: "SF Mono", "Fira Code", monospace;
-        font-size: 0.75rem;
-        line-height: 1.6;
-        overflow-x: auto;
-        margin: 0.75rem 0 1.25rem;
-        color: var(--less-text-secondary);
-        white-space: pre;
-      }
-    `,
-  ];
+  static override styles = [pageStyles];
 
   override render() {
     return html`
       <less-layout currentPath="/guide/pwa">
         <div class="container">
-          <p class="adr-meta">ADR 0003 · 2026-04-30 · Partially implemented</p>
-          <h1>PWA Support for LessJS SSG</h1>
-
-          <h2>Context</h2>
-          <p>
-            LessJS generates pure static HTML with Declarative Shadow DOM. This is the ideal substrate for
-            a PWA: pages are pre-rendered, assets are versioned hashes, and API routes can stay outside
-            the static artifact on a serverless platform. The important rule is freshness: HTML should
-            prefer network, while hashed assets can prefer cache.
+          <h1>PWA 支持</h1>
+          <p class="subtitle">
+            LessJS 生成纯静态 HTML + Declarative Shadow DOM，天然是 PWA 的理想基座：
+            页面预渲染、资源版本化哈希、API routes 可独立部署到 serverless 平台。
+            关键原则是新鲜度：HTML 优先走网络，哈希资源优先走缓存。
           </p>
 
-          <h2>Implementation</h2>
+          <h2>快速启用</h2>
           <p>
-            Added to <code>build-ssg.ts</code> — after Phase 3, the SSG script generates:
+            在 <span class="inline-code">vite.config.ts</span> 中给 <span class="inline-code">less()</span>
+            插件传入 <span class="inline-code">pwa</span> 选项即可：
           </p>
-          <ul
-            style="font-size:0.8125rem;color:var(--less-text-secondary);margin:0.5rem 0 1rem;line-height:1.8"
-          >
-            <li><code>manifest.json</code> — Web App Manifest with name, theme_color, icons</li>
-            <li>
-              <code>sw.js</code> — Service Worker with NetworkFirst (HTML/API) + CacheFirst (assets)
-            </li>
-            <li>HTML injection — <code>&lt;link rel="manifest"&gt;</code> + sw registration script</li>
+          <code-block><pre><code>// vite.config.ts
+import { less } from '@lessjs/core';
+
+export default defineConfig({
+  plugins: [
+    less({
+      pwa: {
+        name: 'My LessJS App',
+        shortName: 'LessJS',
+        themeColor: '#000000',
+        backgroundColor: '#ffffff',
+      },
+    }),
+  ],
+});</code></pre></code-block>
+
+          <h2>构建产物</h2>
+          <p>
+            启用 PWA 后，SSG 构建会在 <span class="inline-code">dist/</span> 中额外生成：
+          </p>
+          <ul>
+            <li><span class="inline-code">manifest.json</span> — Web App Manifest，包含 name、theme_color、icons</li>
+            <li><span class="inline-code">sw.js</span> — Service Worker，策略为 NetworkFirst（HTML/API）+ CacheFirst（静态资源）</li>
+            <li>HTML 注入 — 每个 HTML 文件自动注入 <span class="inline-code">&lt;link rel="manifest"&gt;</span> 和 sw 注册脚本</li>
           </ul>
 
-          <h3>API</h3>
-          <div class="code-block">
-            // vite.config.ts export default defineConfig({ plugins: [less({ pwa: { name: 'My LessJS App',
-            shortName: 'LessJS', themeColor: '#000000', backgroundColor: '#ffffff', }, })], })
-          </div>
-
-          <h3>Service Worker strategy</h3>
-          <div class="code-block">
-            self.addEventListener('install', () => self.skipWaiting()) self.addEventListener('fetch', (e)
-            => { const url = new URL(e.request.url) const isAsset = /\\.[a-z0-9]+$/i.test(url.pathname) &&
-            !url.pathname.includes('/api/') e.respondWith(isAsset ? cacheFirst(e.request) :
-            networkFirst(e.request)) })
-          </div>
-
-          <h2>Current status</h2>
+          <h2>Service Worker 策略</h2>
           <p>
-            The <code>build-ssg.ts</code> script accepts a <code>pwa</code> option. When provided, it
-            generates manifest.json and sw.js in the output directory, and injects manifest links + sw
-            registration into every HTML file. The <code>less()</code> plugin already carries this option
-            through build metadata.
+            LessJS 内置的 Service Worker 不依赖 Workbox，约 100 行代码，策略简洁：
           </p>
+          <code-block><pre><code>self.addEventListener('install', () => self.skipWaiting());
+
+self.addEventListener('fetch', (e) => {
+  const url = new URL(e.request.url);
+  const isAsset = /\\.[a-z0-9]+$/i.test(url.pathname)
+    && !url.pathname.includes('/api/');
+
+  e.respondWith(
+    isAsset
+      ? cacheFirst(e.request)   // 带 hash 的 JS/CSS/图片
+      : networkFirst(e.request)  // HTML 和 API
+  );
+});</code></pre></code-block>
+
+          <h3>为什么不预缓存 HTML</h3>
           <p>
-            Benefit: offline access, instant repeat visits, installable on mobile. Cost: ~100 lines of
-            code. No dependency on Workbox. The current service worker intentionally avoids full precache
-            because stale <code>index.html</code> is worse than a first-load network request.
+            过期的 <span class="inline-code">index.html</span> 比第一次加载的网络请求更糟。
+            因此 Service Worker 刻意避免完整 precache，HTML 始终优先走网络。
+            带 hash 的 JS/CSS 资源可以放心缓存，因为文件名变化时 URL 自然失效。
           </p>
 
-          <div class="nav-row" style="margin-top:2rem">
-            <a href="/guide/less-compiler" class="nav-link">&larr; LessJS Compiler</a>
-            <a href="/roadmap" class="nav-link">Roadmap &rarr;</a>
+          <h2>配置选项</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>选项</th>
+                <th>类型</th>
+                <th>说明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="inline-code">name</span></td>
+                <td>string</td>
+                <td>应用全名，显示在安装提示和启动画面</td>
+              </tr>
+              <tr>
+                <td><span class="inline-code">shortName</span></td>
+                <td>string</td>
+                <td>短名称，显示在主屏幕图标下方</td>
+              </tr>
+              <tr>
+                <td><span class="inline-code">themeColor</span></td>
+                <td>string</td>
+                <td>主题色，影响浏览器 UI 着色</td>
+              </tr>
+              <tr>
+                <td><span class="inline-code">backgroundColor</span></td>
+                <td>string</td>
+                <td>启动画面背景色</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h2>收益与成本</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>维度</th>
+                <th>说明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>离线访问</td>
+                <td>已访问的页面和资源在离线时可用</td>
+              </tr>
+              <tr>
+                <td>即时重访</td>
+                <td>缓存资源零延迟加载</td>
+              </tr>
+              <tr>
+                <td>可安装</td>
+                <td>移动端可以"添加到主屏幕"</td>
+              </tr>
+              <tr>
+                <td>代码量</td>
+                <td>约 100 行 Service Worker，无 Workbox 依赖</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h2>与 Islands 的配合</h2>
+          <p>
+            PWA 和 Islands 架构天然互补：
+          </p>
+          <ul>
+            <li>Layer 1 (dsd-static) 组件的 HTML 已在 DSD 中，离线时直接可用</li>
+            <li>Layer 2 (dsd-interactive) 组件的 JS chunk 被 CacheFirst 缓存，离线升级无延迟</li>
+            <li>Layer 3 (pure-island) 组件需要网络获取数据，但框架代码已缓存</li>
+            <li>API routes 走 NetworkFirst，离线时 Service Worker 可以返回缓存或离线页面</li>
+          </ul>
+
+          <div class="nav-row">
+            <a href="/guide/deployment" class="nav-link">&larr; Deployment</a>
+            <a href="/guide/blog-system" class="nav-link">Blog System &rarr;</a>
           </div>
         </div>
       </less-layout>

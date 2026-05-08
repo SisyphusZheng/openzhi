@@ -11,11 +11,9 @@
     "./less-theme-toggle": "./src/less-theme-toggle.ts",
     "./less-hero-ping": "./src/less-hero-ping.ts",
     "./less-dialog": "./src/less-dialog.ts",
-    "./less-ui-plugin": "./src/less-ui-plugin.ts",
     "./design-tokens": "./src/design-tokens.ts",
     "./tokens/colors": "./src/tokens/colors.ts",
-    "./tokens/color-values": "./src/tokens/color-values.ts",
-    "./ssg-inject": "./src/ssg-inject.ts"
+    "./tokens/color-values": "./src/tokens/color-values.ts"
   },
   "imports": {
     "lit": "npm:lit@^3.2.0",

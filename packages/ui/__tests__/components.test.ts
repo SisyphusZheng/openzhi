@@ -1,4 +1,4 @@
-// deno-lint-ignore-file no-explicit-any no-unused-vars ban-types require-await
+// deno-lint-ignore-file no-explicit-any no-unused-vars require-await
 /**
  * @lessjs/ui — Comprehensive component tests (Deno)
  *
@@ -110,9 +110,7 @@ Deno.test('index: re-exports all components', async () => {
   assertExists(mod.lessColorTokens);
   assertExists(mod.lessEffectTokens);
 
-  // Plugin
-  assertExists(mod.lessUI);
-  // No default export — lessUI is the main entry point
+  // Plugin removed — lessUI() was dead code (zero consumers)
 });
 
 Deno.test('index: islands array has correct entries', async () => {
@@ -127,22 +125,6 @@ Deno.test('index: islands array has correct entries', async () => {
     assertExists(island.strategy, 'island must have an upgrade strategy');
     assertEquals(typeof island.strategy, 'string');
   }
-});
-
-// ─── Vite Plugin ──────────────────────────────────────────
-
-Deno.test('less-ui-plugin: returns a Vite plugin', async () => {
-  const { lessUI } = await import('../src/less-ui-plugin.ts');
-  const plugin = lessUI();
-  assertExists(plugin.name);
-  assertEquals(plugin.name.startsWith('less'), true);
-  assertExists(plugin.transformIndexHtml, 'Plugin must have transformIndexHtml hook');
-});
-
-Deno.test('less-ui-plugin: accepts options', async () => {
-  const { lessUI } = await import('../src/less-ui-plugin.ts');
-  const plugin = lessUI({ cdn: true });
-  assertExists(plugin.name);
 });
 
 // ─── Component Instantiation & render() ─────────────────────
@@ -264,35 +246,6 @@ Deno.test('less-code-block: renders with properties', async () => {
   // language is not a declared reactive property — set via any for test
   (instance as any).language = 'typescript';
   const result = instance.render();
-  assertExists(result);
-});
-
-// ─── lessUI Plugin transformIndexHtml ─────────────────────
-
-Deno.test('less-ui-plugin: transformIndexHtml injects CDN links (cdn=true)', async () => {
-  const { lessUI } = await import('../src/less-ui-plugin.ts');
-  const plugin = lessUI({ cdn: true, version: '3.5.0' });
-  assertExists(plugin.transformIndexHtml);
-  const result = (plugin.transformIndexHtml as Function)(
-    '<html><head></head><body></body></html>',
-  );
-  // Should return an array of tag descriptors
-  assertExists(result);
-  assertEquals(Array.isArray(result) || typeof result === 'string', true);
-});
-
-Deno.test('less-ui-plugin: transformIndexHtml skips when cdn=false', async () => {
-  const { lessUI } = await import('../src/less-ui-plugin.ts');
-  const plugin = lessUI({ cdn: false });
-  const result = (plugin.transformIndexHtml as Function)('<html></html>');
-  // When cdn=false, returns html unchanged
-  assertEquals(result, '<html></html>');
-});
-
-Deno.test('less-ui-plugin: transformIndexHtml uses custom version', async () => {
-  const { lessUI } = await import('../src/less-ui-plugin.ts');
-  const plugin = lessUI({ cdn: true, version: '3.4.0' });
-  const result = (plugin.transformIndexHtml as Function)('<html><head></head></html>');
   assertExists(result);
 });
 

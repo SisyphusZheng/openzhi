@@ -271,10 +271,6 @@ Deno.test('create-less: generated project builds through the one-command pipelin
         find: '@lessjs/ui/less-dialog',
         replacement: vitePath(join(uiSrc, 'less-dialog.ts')),
       },
-      {
-        find: '@lessjs/ui/less-ui-plugin',
-        replacement: vitePath(join(uiSrc, 'less-ui-plugin.ts')),
-      },
     ];
     const viteConfigPath = join(appDir, 'vite.config.ts');
     let viteConfig = readFileSync(viteConfigPath, 'utf-8');

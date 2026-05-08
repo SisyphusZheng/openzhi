@@ -26,7 +26,6 @@ export const SIDEBAR_NAV: NavSection[] = [
     items: [
       { path: '/guide/positioning', label: 'Framework Positioning' },
       { path: '/guide/getting-started', label: 'Getting Started' },
-      { path: '/guide/design-philosophy', label: 'Design Philosophy' },
       { path: '/guide/architecture', label: 'Architecture' },
     ],
   },
@@ -35,9 +34,11 @@ export const SIDEBAR_NAV: NavSection[] = [
     items: [
       { path: '/guide/routing', label: 'Routing' },
       { path: '/guide/ssg', label: 'Rendering & SSG' },
+      { path: '/guide/dsd', label: 'DSD Rendering' },
       { path: '/guide/islands', label: 'Island Upgrade' },
-      { path: '/guide/api-routes', label: 'API Routes' },
-      { path: '/guide/api-design', label: 'API Design' },
+      { path: '/guide/islands-deep', label: 'Island Deep Dive' },
+      { path: '/guide/api', label: 'API Routes' },
+      { path: '/guide/rpc', label: 'RPC' },
     ],
   },
   {
@@ -48,6 +49,7 @@ export const SIDEBAR_NAV: NavSection[] = [
       { path: '/guide/error-handling', label: 'Error Handling' },
       { path: '/guide/testing', label: 'Testing' },
       { path: '/guide/deployment', label: 'Deployment' },
+      { path: '/guide/pwa', label: 'PWA Support' },
     ],
   },
   {
@@ -56,16 +58,14 @@ export const SIDEBAR_NAV: NavSection[] = [
       { path: '/ui', label: 'Design System' },
       { path: '/styling/less-ui', label: '@lessjs/ui' },
       { path: '/styling/web-awesome', label: 'Web Awesome' },
+      { path: '/guide/blog-system', label: '@lessjs/blog' },
       { path: '/examples', label: 'Examples' },
     ],
   },
   {
-    section: 'Strategy',
+    section: 'Roadmap & Decisions',
     items: [
       { path: '/roadmap', label: 'Roadmap' },
-      { path: '/guide/less-compiler', label: '.less Compiler' },
-      { path: '/guide/pwa', label: 'PWA Support' },
-      { path: '/guide/blog-system', label: 'Blog System' },
       { path: '/decisions', label: 'Architecture Decisions' },
     ],
   },

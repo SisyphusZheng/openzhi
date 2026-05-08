@@ -80,16 +80,13 @@ export class IslandsDeepGuidePage extends LitElement {
             本页深入讲解 Island 的三层架构、升级策略、声明式事件绑定和数据传递机制。
           </p>
 
-          <h2>Island 架构要解决的问题</h2>
+          <h2>Island 架构原理</h2>
           <p>
-            传统 SPA 把整页 JavaScript 作为渲染的前提，导致首屏性能差、SEO 困难、
-            JS 失败则应用不可用。Island 架构的思路是：HTML 先行，JavaScript 按需加载。
-          </p>
-          <p>
-            LessJS 的 Island 不是从零发明的新概念，而是对 Custom Element Upgrade
-            机制的诚实利用。浏览器解析 HTML 时看到 <span class="inline-code">&lt;my-counter&gt;</span>，
-            稍后加载模块调用 <span class="inline-code">customElements.define()</span>，
-            已有元素被升级——这就是 Island 的全部原理。
+            LessJS 的 Island 是对 Custom Element Upgrade 机制的诚实利用。浏览器解析 HTML 时看到
+            <span class="inline-code">&lt;my-counter&gt;</span>，稍后加载模块调用
+            <span class="inline-code">customElements.define()</span>，已有元素被升级——这就是 Island 的全部原理。
+            关于 DSD 渲染模型和为什么选择 DSD-first，参见
+            <a href="/guide/dsd">DSD 渲染架构</a>。
           </p>
 
           <h2>三层 Island 架构</h2>
@@ -135,9 +132,9 @@ export class IslandsDeepGuidePage extends LitElement {
               检测已有 shadow root，跳过 render()，只绑定声明的事件处理器。
             </p>
             <code-block><pre><code>import { html, nothing } from 'lit';
-import { DsdLitElement } from '@lessjs/adapter-lit';
+import { WithDsdHydration } from '@lessjs/adapter-lit/dsd-hydration';
 
-class ExpandableSection extends DsdLitElement {
+class ExpandableSection extends WithDsdHydration(LitElement) {
   static hydrateEvents = [
     { selector: 'button.expand-btn', event: 'click', method: '_toggle' },
   ];
@@ -267,10 +264,10 @@ island('live-chart', LiveChart, { strategy: 'visible', dsd: false });</code></pr
           </p>
 
           <code-block><pre><code>import { html, nothing } from 'lit';
-import { DsdLitElement } from '@lessjs/adapter-lit';
+import { WithDsdHydration } from '@lessjs/adapter-lit/dsd-hydration';
 import type { HydrateEventDescriptor } from '@lessjs/core/render-dsd';
 
-class TabPanel extends DsdLitElement {
+class TabPanel extends WithDsdHydration(LitElement) {
   // 声明式事件绑定描述符
   static hydrateEvents: HydrateEventDescriptor[] = [
     { selector: 'button.tab', event: 'click', method: '_onTabClick' },
@@ -345,10 +342,10 @@ class MyComponent extends LitElement {
 
           <code-block><pre><code>// app/islands/dark-toggle.ts — Layer 2
 import { html, nothing } from 'lit';
-import { DsdLitElement } from '@lessjs/adapter-lit';
+import { WithDsdHydration } from '@lessjs/adapter-lit/dsd-hydration';
 import { island } from '@lessjs/core';
 
-class DarkToggle extends DsdLitElement {
+class DarkToggle extends WithDsdHydration(LitElement) {
   static hydrateEvents = [
     { selector: 'button', event: 'click', method: '_toggle' },
   ];
@@ -458,7 +455,7 @@ export const tagName = 'page-blog-post';</code></pre></code-block>
             而不是序列化到 HTML 中。只传递初始化所需的最小数据。
           </p>
 
-          <h3>6. DsdLitElement 的 render() 必须检查 _dsdHydrated</h3>
+          <h3>6. WithDsdHydration 的 render() 必须检查 _dsdHydrated</h3>
           <p>
             忘记检查 <span class="inline-code">this._dsdHydrated</span> 会导致 DSD DOM
             被重复渲染。这是 Layer 2 组件最常见的 bug：
