@@ -11,6 +11,15 @@ import { getPostBySlug, getPosts } from '@lessjs/blog';
 
 export const tagName = 'page-blog-slug';
 
+/**
+ * getStaticPaths — tells the SSG pipeline which concrete pages to generate.
+ * Without this, Hono's toSSG() skips parameter routes entirely.
+ */
+export async function getStaticPaths(): Promise<Array<Record<string, string>>> {
+  const posts = getPosts();
+  return posts.map((post) => ({ slug: post.slug }));
+}
+
 export default class BlogPostPage extends LitElement {
   /** Set by LessJS dynamic routing from /blog/:slug */
   slug = '';

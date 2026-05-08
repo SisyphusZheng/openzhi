@@ -264,6 +264,100 @@ async function buildSSG(options: BuildSSGOptions = {}): Promise<void> {
         throw new SsrRenderError('.less-ssg-entry.ts', new Error('Failed to load Hono app'));
       }
 
+      // ── Dynamic route expansion via getStaticPaths() ──────────
+      // Hono's toSSG() skips parameter routes (e.g. /blog/:slug).
+      // We detect dynamic routes, call their getStaticPaths() to get
+      // concrete parameter values, and render each page via Vite SSR.
+      // The rendered HTML is written directly to the output directory.
+      const dynamicRoutes = routes.filter(
+        (r) => r.type === 'page' && !r.special && r.path.includes(':'),
+      );
+
+      if (dynamicRoutes.length > 0) {
+        const { renderDSD } = await import('../render-dsd.js');
+        const { wrapInDocument } = await import('../ssr-handler.js');
+
+        for (const route of dynamicRoutes) {
+          const paramNames = [...route.path.matchAll(/:([^/]+)/g)].map((m) => m[1]);
+          const routeModulePath = `/${routesDir}/${route.filePath}`;
+          let routeMod: Record<string, unknown>;
+
+          try {
+            routeMod = await server.ssrLoadModule(routeModulePath) as Record<string, unknown>;
+          } catch (e) {
+            log.warn(
+              `Cannot load dynamic route module ${routeModulePath}: ${
+                e instanceof Error ? e.message : String(e)
+              }`,
+            );
+            continue;
+          }
+
+          if (typeof routeMod.getStaticPaths !== 'function') {
+            log.warn(
+              `Dynamic route ${route.path} has no getStaticPaths() export — skipping SSG generation`,
+            );
+            continue;
+          }
+
+          const paramsList =
+            await (routeMod.getStaticPaths as () => Promise<Array<Record<string, string>>>)();
+          const tagName = (routeMod.tagName as string) || fileToTagName(route.filePath);
+          const ComponentClass = routeMod.default as CustomElementConstructor;
+
+          if (!ComponentClass) {
+            log.warn(`Dynamic route ${route.path} has no default export — skipping`);
+            continue;
+          }
+
+          // Register the component in SSR customElements registry
+          if (!globalThis.customElements.get(tagName)) {
+            try {
+              globalThis.customElements.define(tagName, ComponentClass);
+            } catch {
+              // Already defined — safe to skip
+            }
+          }
+
+          for (const params of paramsList) {
+            // Resolve concrete path: /blog/:slug + { slug: 'v0-8-0' } → /blog/v0-8-0
+            let resolvedPath = route.path;
+            for (const name of paramNames) {
+              resolvedPath = resolvedPath.replace(`:${name}`, params[name] || name);
+            }
+
+            try {
+              // Render the component with route params as props
+              const html = await renderDSD(tagName, ComponentClass, params, {
+                route: resolvedPath,
+                source: route.filePath,
+              });
+
+              const fullHtml = wrapInDocument(html, {
+                title: options.html?.title || 'LessJS',
+                lang: options.html?.lang || 'en',
+                headExtras: options.headExtras || '',
+              });
+
+              // Write to dist/blog/v0-8-0/index.html
+              const ssgOutputDir = join(root, outDir);
+              const pageDir = join(ssgOutputDir, resolvedPath);
+              const { mkdirSync: mkDir, writeFileSync: writeFile } = await import('node:fs');
+              mkDir(pageDir, { recursive: true });
+              writeFile(join(pageDir, 'index.html'), fullHtml, 'utf-8');
+
+              log.info(`Dynamic route: ${resolvedPath} → ${resolvedPath}/index.html`);
+            } catch (e) {
+              log.warn(
+                `Failed to render dynamic route ${resolvedPath}: ${
+                  e instanceof Error ? e.message : String(e)
+                }`,
+              );
+            }
+          }
+        }
+      }
+
       const { toSSG } = await import('hono/ssg');
       const nodeFs = await import('node:fs');
       const nodePath = await import('node:path');

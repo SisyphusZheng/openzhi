@@ -85,6 +85,10 @@ export interface PageRouteDecl {
   defaultTagName: string;
   /** Full import path for Vite SSR (e.g. '/app/routes/about.ts') */
   importPath: string;
+  /** Whether this is a dynamic route containing :param segments */
+  isDynamic?: boolean;
+  /** Parameter names extracted from the path (e.g. ['slug'] for /blog/:slug) */
+  paramNames?: string[];
 }
 
 /** Union type for all route declarations */
@@ -297,14 +301,20 @@ export function buildEntryDescriptor(
 
   const pageRoutes: PageRouteDecl[] = routes
     .filter((r) => r.type === 'page' && !r.special)
-    .map((r) => ({
-      kind: 'page' as const,
-      path: r.path,
-      varName: `$${r.varName}`,
-      filePath: r.filePath,
-      defaultTagName: fileToTagName(r.filePath),
-      importPath: `/${routesDir}/${r.filePath}`,
-    }));
+    .map((r) => {
+      const isDynamic = r.path.includes(':');
+      const paramNames = isDynamic ? [...r.path.matchAll(/:([^/]+)/g)].map((m) => m[1]) : [];
+      return {
+        kind: 'page' as const,
+        path: r.path,
+        varName: `$${r.varName}`,
+        filePath: r.filePath,
+        defaultTagName: fileToTagName(r.filePath),
+        importPath: `/${routesDir}/${r.filePath}`,
+        isDynamic,
+        paramNames,
+      };
+    });
 
   // --- Special files: _renderer.ts / _middleware.ts (v0.3.0) ---
   const specialRoutes = routes.filter((r) => r.type === 'special');
