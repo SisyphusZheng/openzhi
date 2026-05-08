@@ -19,7 +19,6 @@ import type { DefaultTreeAdapterMap } from 'parse5';
 import { type DsdOptions } from './types.js';
 
 type P5Element = DefaultTreeAdapterMap['element'];
-type P5Document = DefaultTreeAdapterMap['document'];
 type P5ChildNode = DefaultTreeAdapterMap['childNode'];
 type P5TextNode = DefaultTreeAdapterMap['textNode'];
 
@@ -136,11 +135,14 @@ function isInsideDsdTemplate(node: P5Element): boolean {
  * Recursively render nested Custom Elements with DSD using parse5 AST.
  *
  * v0.8: Replaced regex-based O(n²) approach with parse5 AST traversal.
+ * v0.8.1: Fixed two critical bugs:
+ *   - Use parseFragment() instead of parse() to avoid <html><head><body> wrapping
+ *   - Only insert DSD template children (not full CE wrapper) into existing CE nodes
  *
  * Strategy:
- *   - Parse HTML → AST with parse5.parse()
+ *   - Parse HTML → AST with parse5.parseFragment() (NOT parse() — avoids doc wrapping)
  *   - Collect all custom element nodes in a bottom-up order
- *   - For each un-rendered CE: render DSD, insert template, preserve light DOM
+ *   - For each un-rendered CE: render DSD, extract template + attrs, merge into CE
  *   - Serialize AST → HTML with parse5.serialize()
  *
  * Complexity: O(n·d) where n = total nodes, d = max nesting depth
@@ -155,8 +157,10 @@ export async function renderNestedCustomElements(html: string): Promise<string> 
   // Import renderDSD dynamically to avoid circular dependency
   const { renderDSD } = await import('./render-dsd.js');
 
-  // Parse HTML into AST
-  const ast = parse5.parse(html);
+  // Use parseFragment() — NOT parse(). parse5.parse() wraps fragments in
+  // <html><head><body>, which would appear inside shadow DOM when this
+  // function processes render() output (which is a fragment, not a document).
+  const ast = parse5.parseFragment(html);
 
   // Collect custom element nodes in bottom-up (deepest-first) order
   const ceNodes: P5Element[] = [];
@@ -188,7 +192,8 @@ export async function renderNestedCustomElements(html: string): Promise<string> 
     ceNodes.push(element);
   }
 
-  for (const child of (ast as P5Document).childNodes ?? []) {
+  // Fragment childNodes are the top-level nodes directly
+  for (const child of ast.childNodes ?? []) {
     collectCustomElements(child);
   }
 
@@ -207,19 +212,42 @@ export async function renderNestedCustomElements(html: string): Promise<string> 
     // Parse the DSD HTML into a fragment
     const dsdFragment = parse5.parseFragment(dsdHtml);
 
+    // The DSD fragment contains a top-level CE element (e.g. <less-layout>).
+    // We must NOT insert this entire element — that would create double nesting
+    // (<existing-ce><new-ce-from-dsd>...</new-ce></existing-ce>).
+    // Instead, extract the inner children (the <template> and any light DOM)
+    // and merge new attributes (like data-ssr-props) onto the existing CE node.
+    const dsdCeElement = dsdFragment.childNodes?.find(
+      (child): child is P5Element =>
+        'tagName' in (child as P5Element) && (child as P5Element).tagName === tagName,
+    );
+
+    // Merge attributes from DSD CE onto the existing CE node
+    // (e.g. data-ssr-props, source, route attrs added by renderDSD)
+    if (dsdCeElement) {
+      for (const attr of dsdCeElement.attrs) {
+        // Only add attrs that don't already exist on the CE node
+        const alreadyExists = ceNode.attrs.some((a: { name: string; value: string }) =>
+          a.name === attr.name
+        );
+        if (!alreadyExists) {
+          ceNode.attrs.push(attr);
+        }
+      }
+    }
+
     // Collect light DOM children (slot content) — everything currently inside the CE
     const lightDomChildren = [...ceNode.childNodes];
 
     // Clear the CE node and repopulate with DSD content + light DOM
     ceNode.childNodes = [];
 
-    // Insert DSD fragment children into the CE node
-    if (dsdFragment.childNodes) {
-      for (const child of dsdFragment.childNodes) {
-        // Set parentNode to the CE node
-        (child as P5Element).parentNode = ceNode;
-        ceNode.childNodes.push(child);
-      }
+    // Insert only the CHILDREN of the DSD CE element (not the CE wrapper itself)
+    // This is the <template shadowrootmode="open"> and any other shadow DOM content
+    const dsdChildren = dsdCeElement?.childNodes ?? dsdFragment.childNodes ?? [];
+    for (const child of dsdChildren) {
+      (child as P5Element).parentNode = ceNode;
+      ceNode.childNodes.push(child);
     }
 
     // Append light DOM children after the DSD template (for slot projection)
@@ -237,6 +265,6 @@ export async function renderNestedCustomElements(html: string): Promise<string> 
     }
   }
 
-  // Serialize AST back to HTML
+  // Serialize fragment back to HTML (no <html><head><body> wrapper)
   return parse5.serialize(ast);
 }
