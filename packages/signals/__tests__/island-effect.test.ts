@@ -44,7 +44,7 @@ const OriginalSetInterval = (globalThis as any).setInterval;
 const OriginalClearInterval = (globalThis as any).clearInterval;
 
 /** Track which intervalIds were cleared */
-let clearedIntervalIds: Set<number> = [];
+let clearedIntervalIds: Set<number> = new Set();
 let nextIntervalId = 1;
 
 function installMocks() {
