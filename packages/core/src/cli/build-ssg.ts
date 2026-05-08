@@ -648,32 +648,35 @@ async function networkFirst(req) {
         log.info(`PWA: injected manifest + sw into ${htmlFiles.length} HTML files`);
       }
     } finally {
-      await server.close();
-    }
-
-    // ─── Sitemap generation ────────────────────────────────────
-    // After SSG is complete, generate sitemap.xml from dist/ output
-    // if @lessjs/content sitemap module is configured.
-    try {
-      const navDataPath = join(root, '.less', 'nav-data.json');
-      if (existsSync(navDataPath)) {
-        // Nav data exists → @lessjs/content was configured
-        // Check if sitemap is configured via build-metadata
-        const sitemapConfigPath = join(root, '.less', 'sitemap-options.json');
-        if (existsSync(sitemapConfigPath)) {
-          const sitemapOpts = JSON.parse(readFileSync(sitemapConfigPath, 'utf-8'));
-          const sitemapModule = await import('@lessjs/content/sitemap') as Record<string, unknown>;
-          if (typeof sitemapModule.generateSitemap === 'function') {
-            (sitemapModule.generateSitemap as (dir: string, opts: unknown) => string[])(
-              join(root, outDir),
-              sitemapOpts,
-            );
+      // ─── Sitemap generation ────────────────────────────────────
+      // Before closing the Vite server, generate sitemap.xml if
+      // @lessjs/content sitemap module is configured.
+      // Uses ssrLoadModule (not import()) to avoid JSR treating
+      // @lessjs/content as a hard dependency of @lessjs/core.
+      try {
+        const navDataPath = join(root, '.less', 'nav-data.json');
+        if (existsSync(navDataPath)) {
+          const sitemapConfigPath = join(root, '.less', 'sitemap-options.json');
+          if (existsSync(sitemapConfigPath)) {
+            const sitemapOpts = JSON.parse(readFileSync(sitemapConfigPath, 'utf-8'));
+            const sitemapModule = await server.ssrLoadModule('@lessjs/content/sitemap') as Record<
+              string,
+              unknown
+            >;
+            if (typeof sitemapModule.generateSitemap === 'function') {
+              (sitemapModule.generateSitemap as (dir: string, opts: unknown) => string[])(
+                join(root, outDir),
+                sitemapOpts,
+              );
+            }
           }
         }
+      } catch {
+        // Sitemap generation failure is non-fatal
+        log.debug('Sitemap generation skipped or failed');
       }
-    } catch {
-      // Sitemap generation failure is non-fatal
-      log.debug('Sitemap generation skipped or failed');
+
+      await server.close();
     }
   } catch (err) {
     const cause = err instanceof Error ? err : new Error(String(err));

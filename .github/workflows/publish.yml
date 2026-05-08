@@ -49,12 +49,14 @@ jobs:
           }
 
           # Publish in dependency order: no-deps first, then dependents
-          # core, rpc, signal have zero LessJS deps → publish first
-          # adapter-lit, ui depend on core → publish after core
-          # create has no LessJS deps → publish anytime
-          publish_if_missing "@lessjs/core" "packages/core"
+          # rpc, signal, content, create have zero LessJS deps → publish first
+          # core has optional runtime import of @lessjs/content → publish after content
+          # adapter-lit depends on core → publish after core
+          # ui depends on core → publish after core
           publish_if_missing "@lessjs/rpc" "packages/rpc"
           publish_if_missing "@lessjs/signal" "packages/signals"
+          publish_if_missing "@lessjs/content" "packages/content"
+          publish_if_missing "@lessjs/core" "packages/core"
           publish_if_missing "@lessjs/adapter-lit" "packages/adapter-lit"
           publish_if_missing "@lessjs/ui" "packages/ui"
           publish_if_missing "@lessjs/create" "packages/create"

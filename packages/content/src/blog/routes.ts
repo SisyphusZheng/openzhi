@@ -46,7 +46,23 @@ export async function scanPosts(options?: LessBlogOptions): Promise<BlogPost[]> 
  * Generate route data for all blog pages.
  * Returns an array of route objects suitable for LessJS route system.
  */
-export async function generateBlogRoutes(options?: LessBlogOptions) {
+export async function generateBlogRoutes(options?: LessBlogOptions): Promise<{
+  posts: BlogPost[];
+  basePath: string;
+  listRoute: {
+    path: string;
+    posts: Array<{ slug: string; title: string; date: string; excerpt: string; tags: string[] }>;
+  };
+  postRoutes: Array<
+    {
+      path: string;
+      slug: string;
+      title: string;
+      html: string;
+      frontmatter: BlogPost['frontmatter'];
+    }
+  >;
+}> {
   const basePath = options?.basePath ?? '/blog';
   const posts = await scanPosts(options);
 
