@@ -10,7 +10,7 @@
 import type { Plugin } from 'vite';
 import type { LessBlogOptions } from './types.ts';
 import { initBlogData } from './blog-data.ts';
-import { createLogger } from '@lessjs/core';
+import { createLogger } from '@lessjs/core/logger';
 
 const log = createLogger('blog');
 

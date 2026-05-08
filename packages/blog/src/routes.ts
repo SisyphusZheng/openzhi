@@ -8,7 +8,7 @@ import { join } from 'node:path';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import type { BlogPost, LessBlogOptions } from './types.ts';
 import { parseMarkdownFile, slugFromFilename } from './markdown.ts';
-import { createLogger } from '@lessjs/core';
+import { createLogger } from '@lessjs/core/logger';
 
 const log = createLogger('blog');
 
