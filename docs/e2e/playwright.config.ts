@@ -29,7 +29,7 @@ export default defineConfig({
 
   // Auto-start a simple static file server for docs/dist/
   webServer: {
-    command: 'npx -y serve docs/dist -l 4173 --no-clipboard',
+    command: 'npx -y serve ../dist -l 4173 --no-clipboard',
     port: 4173,
     reuseExistingServer: !process.env.CI,
     timeout: 30_000,
