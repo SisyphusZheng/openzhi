@@ -14,11 +14,11 @@ export class ConfigurationPage extends LitElement {
         <div class="container">
           <h1>配置</h1>
           <p class="subtitle">
-            LessJS is configured through the Vite plugin. Keep configuration explicit:
-            routes, islands, static output, head injection, PWA and middleware are separate concerns.
+            LessJS 通过 Vite 插件配置。保持配置显式：
+            路由、island、静态输出、head 注入、PWA 和 middleware 是各自独立的关注点。
           </p>
 
-          <h2>Minimal Config</h2>
+          <h2>Minimal Configuration</h2>
           <code-block><pre><code>// vite.config.ts
 import { defineConfig } from 'vite';
 import { less } from '@lessjs/core';
@@ -40,12 +40,12 @@ export default defineConfig({
               <tr>
                 <td><span class="inline-code">routesDir</span></td>
                 <td><span class="inline-code">'app/routes'</span></td>
-                <td>Page routes, API routes, renderers and route-tree middleware.</td>
+                <td>Page routes, API routes, renderer and route-tree middleware.</td>
               </tr>
               <tr>
                 <td><span class="inline-code">islandsDir</span></td>
                 <td><span class="inline-code">'app/islands'</span></td>
-                <td>Local client-upgraded Custom Elements.</td>
+                <td>Custom Elements for local client-side upgrade.</td>
               </tr>
               <tr>
                 <td><span class="inline-code">componentsDir</span></td>
@@ -75,8 +75,8 @@ export default defineConfig({
 
           <h2>Head Injection</h2>
           <p>
-            Use <span class="inline-code">inject</span> for external stylesheets, module scripts and small head fragments.
-            URLs are validated before being added to the generated document.
+            使用 <span class="inline-code">inject</span> 注入外部样式表、模块脚本和小的 head 片段。
+            URL 在写入生成的文档前会经过验证。
           </p>
           <code-block><pre><code>less({
   inject: {
@@ -94,8 +94,8 @@ export default defineConfig({
 
           <h2>Package Islands</h2>
           <p>
-            Package islands are reusable Web Components discovered at build time.
-            This is how <span class="inline-code">@lessjs/ui</span> contributes interactive components to the docs site.
+            Package islands 是在构建时发现的可复用 Web Components。
+            <span class="inline-code">@lessjs/ui</span> 就是通过这种方式为文档站提供交互组件的。
           </p>
           <code-block><pre><code>less({
   packageIslands: ['@lessjs/ui'],
@@ -103,8 +103,8 @@ export default defineConfig({
 
           <h2>Island Strategy</h2>
           <p>
-            The framework option declares the default upgrade strategy. Current implementation still needs hardening
-            so this metadata consistently reaches the client build.
+            框架选项声明默认升级策略。当前实现仍需加强，
+            以确保此元数据一致地传递到客户端构建。
           </p>
           <code-block><pre><code>less({
   island: {
@@ -130,8 +130,8 @@ export default defineConfig({
 
           <h2>PWA</h2>
           <p>
-            PWA support generates manifest and service worker assets during SSG. Treat it as an enhancement,
-            not as a replacement for static HTML correctness.
+            PWA 支持在 SSG 期间生成 manifest 和 service worker 资源。
+            把它当作增强，而不是静态 HTML 正确性的替代。
           </p>
           <code-block><pre><code>less({
   pwa: {
@@ -142,7 +142,7 @@ export default defineConfig({
   },
 });</code></pre></code-block>
 
-          <h2>Complete Example</h2>
+          <h2>Full Example</h2>
           <code-block><pre><code>export default defineConfig({
   base: '/',
   plugins: [
@@ -163,8 +163,8 @@ export default defineConfig({
 });</code></pre></code-block>
 
           <div class="nav-row">
-            <a href="/guide/api-design" class="nav-link">&larr; API Design</a>
-            <a href="/guide/security-middleware" class="nav-link">Security & Middleware &rarr;</a>
+            <a href="/guide/api-design" class="nav-link">&larr; API 设计</a>
+            <a href="/guide/security-middleware" class="nav-link">安全与中间件 &rarr;</a>
           </div>
         </div>
       </less-layout>

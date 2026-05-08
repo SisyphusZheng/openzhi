@@ -151,9 +151,9 @@ export class ChangelogPage extends LitElement {
                 </li>
                 <li>
                   <strong>SSR 属性绑定保留</strong>：
-                  Lit 模板中的 <span class="inline-code">.prop="${val}"</span>
+                  Lit 模板中的 <span class="inline-code">.prop="$&#123;val&#125;"</span>
                   不再被 SSR 剥弃，而是转换为 kebab-case HTML 属性 + JSON 序列化值
-                  （如 <span class="inline-code">.navItems="${arr}"</span> →
+                  （如 <span class="inline-code">.navItems="$&#123;arr&#125;"</span> →
                   <span class="inline-code">nav-items="[{...}]"</span>），
                   嵌套自定义元素在 SSR 阶段获得属性数据。事件绑定仍被剥离。
                 </li>
@@ -195,7 +195,7 @@ export class ChangelogPage extends LitElement {
               <ul class="change-list">
                 <li>
                   <strong>Sidebar 空白修复</strong>：移除 DEFAULT_NAV 后 SSR 管线剥离所有属性绑定，
-                  导致 <span class="inline-code">&lt;less-layout .navItems="${data}"&gt;</span>
+                  导致 <span class="inline-code">&lt;less-layout .navItems="$&#123;data&#125;"&gt;</span>
                   在 SSR 阶段收到空数据。根因：属性绑定现在保留为 HTML 属性。
                 </li>
                 <li>

@@ -18,7 +18,7 @@ export class SSGGuidePage extends LitElement {
             的文档，并注入必要的 client island entry。
           </p>
 
-          <h2>Default Output</h2>
+          <h2>默认输出</h2>
           <p>
             对用户来说，生产构建只有一个入口：
           </p>
@@ -29,7 +29,7 @@ export class SSGGuidePage extends LitElement {
             或 S3/CloudFront。
           </p>
 
-          <h2>What Gets Rendered</h2>
+          <h2>渲染内容</h2>
           <p>
             页面组件会在构建时执行 SSR，输出 Web Component host 和 shadow root template。
             内容在 JavaScript 下载前就已经存在于 HTML 中。
@@ -41,81 +41,81 @@ export class SSGGuidePage extends LitElement {
   &lt;/template&gt;
 &lt;/page-home&gt;</code></pre></code-block>
 
-          <h2>Three Internal Phases</h2>
+          <h2>三个内部阶段</h2>
           <table>
             <thead>
               <tr>
-                <th>Phase</th>
-                <th>Input</th>
-                <th>Output</th>
+                <th>阶段</th>
+                <th>输入</th>
+                <th>输出</th>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <td>SSR bundle</td>
-                <td>routes, renderers, middleware, API handlers, islands</td>
-                <td>generated Hono entry and <span class="inline-code">.less/build-metadata.json</span></td>
+                <td>routes、renderers、middleware、API handlers、islands</td>
+                <td>生成的 Hono entry 和 <span class="inline-code">.less/build-metadata.json</span></td>
               </tr>
               <tr>
                 <td>Client islands</td>
                 <td>build metadata</td>
-                <td>island entry and browser chunks under <span class="inline-code">dist/client</span></td>
+                <td>island entry 和浏览器 chunks，输出到 <span class="inline-code">dist/client</span></td>
               </tr>
               <tr>
                 <td>SSG</td>
-                <td>generated Hono app</td>
-                <td>static HTML, copied assets and post-processed document head</td>
+                <td>生成的 Hono app</td>
+                <td>静态 HTML、复制的资源和后处理的文档 head</td>
               </tr>
             </tbody>
           </table>
 
-          <h2>DSD Semantics</h2>
+          <h2>DSD 语义</h2>
           <table>
             <thead>
               <tr>
-                <th>Capability</th>
-                <th>Current state</th>
+                <th>能力</th>
+                <th>当前状态</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td>First screen</td>
-                <td>Rendered HTML is visible before client JavaScript runs.</td>
+                <td>首屏</td>
+                <td>渲染的 HTML 在客户端 JavaScript 运行前即可见。</td>
               </tr>
               <tr>
-                <td>Component styles</td>
-                <td>Styles can be emitted into shadow roots through the Lit adapter path.</td>
+                <td>组件样式</td>
+                <td>样式可以通过 Lit adapter 路径写入 shadow root。</td>
               </tr>
               <tr>
-                <td>Interaction</td>
-                <td>Custom Elements upgrade after the island module is loaded.</td>
+                <td>交互</td>
+                <td>Custom Elements 在 island 模块加载后升级。</td>
               </tr>
               <tr>
-                <td>Nested DSD</td>
-                <td>v0.6.0: Fully implemented with recursive rendering and slot projection.</td>
+                <td>嵌套 DSD</td>
+                <td>v0.6.0：完全实现递归渲染和 slot 投射。</td>
               </tr>
               <tr>
-                <td>Safe HTML</td>
-                <td>v0.6.0: SafeHtml/UnsafeHtml branded types with proper escaping semantics.</td>
+                <td>安全 HTML</td>
+                <td>v0.6.0：SafeHtml/UnsafeHtml 品牌类型，正确的转义语义。</td>
               </tr>
             </tbody>
           </table>
 
-          <h2>Security Post-Processing</h2>
+          <h2>安全后处理</h2>
           <p>
-            SSG output must preserve security behavior from the generated Hono entry. CSP metadata, nonces,
-            PWA head tags and island scripts should be injected through one shared post-processing path,
-            so static deployment does not silently lose protections that exist in SSR mode.
+            SSG 输出必须保留生成的 Hono entry 中的安全行为。CSP metadata、nonce、
+            PWA head 标签和 island 脚本应通过一条共享的后处理路径注入，
+            以确保静态部署不会静默丢失 SSR 模式中已有的保护。
           </p>
 
-          <h2>Not ISR Yet</h2>
+          <h2>暂不支持 ISR</h2>
           <p>
             LessJS 当前稳定交付是 SSG。ISR 需要 route-level revalidate、cache lock、adapter contracts、
             failure fallback 和 CDN semantics。它属于 roadmap，而不是当前可依赖的生产能力。
           </p>
 
           <div class="nav-row">
-            <a href="/guide/routing" class="nav-link">&larr; Routing</a>
+            <a href="/guide/routing" class="nav-link">&larr; 路由</a>
             <a href="/guide/dsd" class="nav-link">DSD 渲染架构 &rarr;</a>
           </div>
         </div>

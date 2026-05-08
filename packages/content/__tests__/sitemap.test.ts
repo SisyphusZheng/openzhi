@@ -89,7 +89,7 @@ Deno.test('generateSitemap: writes sitemap.xml and robots.txt', () => {
   writeFileSync(join(TMP_DIR, 'index.html'), '<html></html>');
   writeFileSync(join(TMP_DIR, 'guide', 'index.html'), '<html></html>');
 
-  generateSitemap(TMP_DIR, {
+  const generated = generateSitemap(TMP_DIR, {
     hostname: 'https://lessjs.org',
   });
 

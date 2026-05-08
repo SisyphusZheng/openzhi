@@ -157,6 +157,45 @@ v2.0.0  ← Compiler 成为默认（如需 Breaking Change）
 
 **如果 Lit 兼容模式可以无缝共存，则不需要 2.0。**
 
+### Monorepo 包版本策略
+
+LessJS 是 Deno workspace monorepo，7 个包发布到 JSR。仓库 Release tag 和包版本号**不需要一致**。
+
+**规则：谁改了谁升级，仓库 tag 取本次发布中最大的包版本号。**
+
+```
+仓库 tag: v0.9.0
+
+包版本变更：
+  @lessjs/core         0.8.1 → 0.9.0   (SSR 属性绑定行为变更)
+  @lessjs/adapter-lit  0.6.4 → 0.7.0   (interpolate 属性绑定输出变更)
+  @lessjs/content      0.1.0 → 0.2.0   (新增 nav/sitemap 模块)
+  @lessjs/ui           0.6.2 → 不变    (无变更)
+  @lessjs/rpc          0.6.1 → 不变    (无变更)
+  @lessjs/signal        0.6.2 → 不变   (无变更)
+  @lessjs/create       0.6.1 → 不变    (无变更)
+```
+
+**具体规则**：
+
+1. **仓库 Release tag ≠ 任何单个包的版本**。tag 是这批变更的整体发布代号。
+2. **包独立发版**：JSR 按包发版，不要求所有包版本一致。
+3. **版本号判断标准**：
+   - 有 Breaking Change 或行为变更 → MINOR bump（0.x 阶段）
+   - 纯 Bug fix / 新增非 Breaking 功能 → PATCH bump
+   - 没改 → 不动
+4. **Release Note 按包分组**，列出每个包的变更版本，末尾列出未变更的包。
+5. **跨包依赖版本引用**：必须引用已发布到 JSR 的版本（`jsr:@scope/package@^version/subpath`），不能引用本地路径。
+
+**为什么不用固定版本（Fixed/Locked）**：
+- Babel/Angular 的做法要求所有包版本号相同，但在 JSR 生态中不必要——JSR 天然按包发版。
+- 新增包（如 content 0.1.0）如果被强制跳到 0.9.0，版本号含金量稀释。
+- 没改的包浪费版本号，changelog 虚胖。
+
+**为什么不用完全独立版本（不加仓库 tag）**：
+- 用户需要知道"这一批变更的整体节奏"——仓库 tag 提供叙事感。
+- GitHub Release 是用户发现更新的入口，不能省略。
+
 ### 版本号语义总结
 
 | 版本段 | 含义 | Breaking Change 规则 |

@@ -22,7 +22,7 @@ serverless fullstack and ISR scenarios. See [Roadmap](https://lessjs.com/roadmap
 [![@lessjs/rpc](https://img.shields.io/jsr/v/@lessjs/rpc?label=@lessjs/rpc&style=flat-square)](https://jsr.io/@lessjs/rpc)
 [![@lessjs/signal](https://img.shields.io/jsr/v/@lessjs/signal?label=@lessjs/signal&style=flat-square)](https://jsr.io/@lessjs/signal)
 [![@lessjs/create](https://img.shields.io/jsr/v/@lessjs/create?label=@lessjs/create&style=flat-square)](https://jsr.io/@lessjs/create)
-[![@lessjs/blog](https://img.shields.io/jsr/v/@lessjs/blog?label=@lessjs/blog&style=flat-square)](https://jsr.io/@lessjs/blog)
+[![@lessjs/content](https://img.shields.io/jsr/v/@lessjs/content?label=@lessjs/content&style=flat-square)](https://jsr.io/@lessjs/content)
 
 ## Why LessJS
 
@@ -124,28 +124,39 @@ deno task generate:runtime-shim          # Regenerate
 deno task generate:runtime-shim && git diff --exit-code packages/core/src/runtime-shim.ts  # Verify consistency
 ```
 
-### @lessjs/blog — Blog Plugin
+### @lessjs/content — Unified Content Plugin
 
-New package `@lessjs/blog` provides blog capabilities as a Vite plugin:
+`@lessjs/content` is a Blog + Nav + Sitemap Vite plugin with opt-in modules:
 
 ```ts
-import { lessBlog } from '@lessjs/blog';
+import { lessContent } from '@lessjs/content';
 
 export default defineConfig({
   plugins: [
     less(),
-    lessBlog({
-      contentDir: resolve(__dirname, 'content/blog'),
-      basePath: '/blog',
+    lessContent({
+      blog: {
+        contentDir: resolve(__dirname, 'content/blog'),
+        basePath: '/blog',
+      },
+      nav: {
+        routesDir: resolve(__dirname, 'app/routes'),
+        headerNav: [
+          { href: '/guide', label: 'Docs' },
+        ],
+      },
+      sitemap: {
+        hostname: 'https://example.com',
+      },
     }),
   ],
 });
 ```
 
-- `parseMarkdownFile()` — Parse Markdown + frontmatter
-- `scanPosts()` + `generateBlogRoutes()` — Auto-generate routes
-- Draft filtering, custom basePath, and custom markdown renderer
-- v0.8 scope: `.md → routes → list/post pages`
+- **Blog**: `parseMarkdownFile()` + `scanPosts()` + `generateBlogRoutes()` — Markdown → routes → list/post pages
+- **Nav**: `scanNavData()` → `virtual:less-nav` — route meta scanning → auto-generated sidebar
+- **Sitemap**: `generateSitemap()` — auto-generate sitemap.xml + robots.txt after SSG
+- Build-time only, zero runtime
 
 ### Nested DSD Rendering — parse5 Optimization
 
@@ -227,13 +238,13 @@ Resource hints injected based on island strategy:
 
 | Package               | Responsibility                                                              | Version |
 | --------------------- | --------------------------------------------------------------------------- | ------- |
-| `@lessjs/core`        | Vite plugin, route scanning, DSD rendering (L2 nested), structured logging, Navigation API, SSG | 0.8.0   |
+| `@lessjs/core`        | Vite plugin, route scanning, DSD rendering (L2 nested), structured logging, Navigation API, SSG | 0.9.0   |
 | `@lessjs/ui`          | Lit-based Web Component library (with DSD hydration)                        | 0.6.2   |
-| `@lessjs/signal`      | TC39 Signals fork (signal/computed/effect/islandEffect)                     | 0.6.1   |
-| `@lessjs/adapter-lit` | Optional Lit SSR adapter                                                    | 0.6.3   |
+| `@lessjs/signal`      | TC39 Signals fork (signal/computed/effect/islandEffect)                     | 0.6.2   |
+| `@lessjs/adapter-lit` | Optional Lit SSR adapter                                                    | 0.7.0   |
 | `@lessjs/rpc`         | Lightweight fetch/RPC controller tools                                      | 0.6.1   |
 | `@lessjs/create`      | Project scaffolding CLI                                                     | 0.6.1   |
-| `@lessjs/blog`        | Markdown blog plugin (Vite plugin, auto route generation)                   | 0.8.0   |
+| `@lessjs/content`     | Unified content plugin (Blog + Nav + Sitemap, build-time only)              | 0.2.0   |
 
 Legacy packages `@lessjs/vite` and `@lessjs/ssg` are deprecated.
 
@@ -263,7 +274,7 @@ my-app/
       index.ts          # Pages = file routing
       about.ts
       blog/
-        index.ts        # Blog listing (@lessjs/blog)
+        index.ts        # Blog listing (@lessjs/content)
         [slug].ts       # Blog post
       api/
         status.ts       # Hono API route
@@ -385,6 +396,7 @@ Theme variable example:
 
 | Version           | Date       | Highlights                                                                                   |
 | ----------------- | ---------- | -------------------------------------------------------------------------------------------- |
+| **0.9.0**         | 2026-05-09 | @lessjs/content unified content plugin, SSR property bindings preserved, monorepo version strategy |
 | **0.8.0**         | 2026-05-08 | Structured logging (createLogger), runtime-shim auto-generation, @lessjs/blog plugin, parse5 nested optimization, Playwright E2E |
 | **0.7.0**         | 2026-05-07 | P0 audit fixes — 73 new tests, runtime-shim consistency, XSS warnings, silent catch elimination, CI gaps, pre-commit hooks |
 | **0.6.2**         | 2026-05-07 | adapter-lit silent catch fix                                                                 |

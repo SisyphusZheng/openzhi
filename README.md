@@ -22,7 +22,7 @@ LessJS 正在演化为一个**混合框架 + 编译器**：当前以 SSG + Islan
 [![@lessjs/rpc](https://img.shields.io/jsr/v/@lessjs/rpc?label=@lessjs/rpc&style=flat-square)](https://jsr.io/@lessjs/rpc)
 [![@lessjs/signal](https://img.shields.io/jsr/v/@lessjs/signal?label=@lessjs/signal&style=flat-square)](https://jsr.io/@lessjs/signal)
 [![@lessjs/create](https://img.shields.io/jsr/v/@lessjs/create?label=@lessjs/create&style=flat-square)](https://jsr.io/@lessjs/create)
-[![@lessjs/blog](https://img.shields.io/jsr/v/@lessjs/blog?label=@lessjs/blog&style=flat-square)](https://jsr.io/@lessjs/blog)
+[![@lessjs/content](https://img.shields.io/jsr/v/@lessjs/content?label=@lessjs/content&style=flat-square)](https://jsr.io/@lessjs/content)
 
 
 ## 为什么是 LessJS
@@ -122,28 +122,39 @@ deno task generate:runtime-shim          # 重新生成
 deno task generate:runtime-shim && git diff --exit-code packages/core/src/runtime-shim.ts  # 验证一致性
 ```
 
-### @lessjs/blog — 博客插件
+### @lessjs/content — 统一内容插件
 
-新包 `@lessjs/blog` 以 Vite 插件形态提供博客能力：
+`@lessjs/content` 是 Blog + Nav + Sitemap 三合一的 Vite 插件，每个模块 opt-in：
 
 ```ts
-import { lessBlog } from '@lessjs/blog';
+import { lessContent } from '@lessjs/content';
 
 export default defineConfig({
   plugins: [
     less(),
-    lessBlog({
-      contentDir: resolve(__dirname, 'content/blog'),
-      basePath: '/blog',
+    lessContent({
+      blog: {
+        contentDir: resolve(__dirname, 'content/blog'),
+        basePath: '/blog',
+      },
+      nav: {
+        routesDir: resolve(__dirname, 'app/routes'),
+        headerNav: [
+          { href: '/guide', label: 'Docs' },
+        ],
+      },
+      sitemap: {
+        hostname: 'https://example.com',
+      },
     }),
   ],
 });
 ```
 
-- `parseMarkdownFile()` — 解析 Markdown + frontmatter
-- `scanPosts()` + `generateBlogRoutes()` — 自动生成路由
-- 支持 draft 过滤、自定义 basePath 和 markdown 渲染器
-- v0.8 范围：`.md → 路由 → 列表/文章页`
+- **Blog**：`parseMarkdownFile()` + `scanPosts()` + `generateBlogRoutes()` — Markdown → 路由 → 列表/文章页
+- **Nav**：`scanNavData()` → `virtual:less-nav` — 路由 meta 扫描 → sidebar 自动生成
+- **Sitemap**：`generateSitemap()` — SSG 后自动生成 sitemap.xml + robots.txt
+- 纯构建时插件，零运行时
 
 ### 嵌套 DSD 渲染 — parse5 优化
 
@@ -224,13 +235,13 @@ navigate('/about');
 
 | 包                    | 职责                                                               | 当前版本 |
 | --------------------- | ------------------------------------------------------------------ | -------- |
-| `@lessjs/core`        | Vite 插件、路由扫描、DSD 渲染（L2 嵌套）、结构化日志、Navigation API、SSG 管线 | 0.8.0    |
+| `@lessjs/core`        | Vite 插件、路由扫描、DSD 渲染（L2 嵌套）、结构化日志、Navigation API、SSG 管线 | 0.9.0    |
 | `@lessjs/ui`          | 基于 Lit 的 Web Component 组件库（含 DSD hydration）               | 0.6.2    |
-| `@lessjs/signal`      | TC39 Signals 二开（signal/computed/effect/islandEffect）           | 0.6.1    |
-| `@lessjs/adapter-lit` | 可选 Lit SSR 适配器                                                | 0.6.3    |
+| `@lessjs/signal`      | TC39 Signals 二开（signal/computed/effect/islandEffect）           | 0.6.2    |
+| `@lessjs/adapter-lit` | 可选 Lit SSR 适配器                                                | 0.7.0    |
 | `@lessjs/rpc`         | 轻量 fetch/RPC controller 工具                                     | 0.6.1    |
 | `@lessjs/create`      | 项目脚手架 CLI                                                     | 0.6.1    |
-| `@lessjs/blog`        | Markdown 博客插件（Vite 插件、路由自动生成）                       | 0.8.0    |
+| `@lessjs/content`     | 统一内容插件（Blog + Nav + Sitemap，纯构建时）                     | 0.2.0    |
 
 历史包 `@lessjs/vite` 和 `@lessjs/ssg` 已废弃。
 
@@ -259,7 +270,7 @@ my-app/
       index.ts          # 页面 = 文件路由
       about.ts
       blog/
-        index.ts        # 博客列表（@lessjs/blog）
+        index.ts        # 博客列表（@lessjs/content）
         [slug].ts       # 博客文章
       api/
         status.ts       # Hono API route
@@ -379,6 +390,7 @@ LessJS UI 组件遵循瑞士国际主义风格（Swiss International Style）：
 
 | Version           | Date       | Highlights                                                                                   |
 | ----------------- | ---------- | -------------------------------------------------------------------------------------------- |
+| **0.9.0**         | 2026-05-09 | @lessjs/content 统一内容插件、SSR 属性绑定保留、Monorepo 包版本策略 |
 | **0.8.0**         | 2026-05-08 | 结构化日志（createLogger）、runtime-shim 自动生成、@lessjs/blog 博客插件、parse5 嵌套优化、Playwright E2E |
 | **0.7.0**         | 2026-05-07 | P0 审计修复 — 73 新测试、runtime-shim 一致性、XSS 警告、静默 catch 消除、CI 补全、pre-commit hooks |
 | **0.6.2**         | 2026-05-07 | adapter-lit 静默 catch 修复                                                                   |

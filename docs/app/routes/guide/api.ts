@@ -23,13 +23,13 @@ export class ApiPage extends LitElement {
     return html`
       <less-layout .navItems="${navSections}" .headerNav="${headerNav}" currentPath="/guide/api">
         <div class="container">
-          <h1>API 路由</h1>
+          <h1>API Routes</h1>
           <p class="subtitle">
             LessJS 的服务端层是 Hono。API routes 使用标准 Request/Response 语义，
             适合部署到 serverless 或 edge runtime。
           </p>
 
-          <h2>设计原则</h2>
+          <h2>Design Principles</h2>
           <div class="principle">
             <p>
               <strong>使用平台原语。</strong>
@@ -45,7 +45,7 @@ export class ApiPage extends LitElement {
             </p>
           </div>
 
-          <h2>创建 API 路由</h2>
+          <h2>Create API Routes</h2>
           <p>
             API routes 放在 <span class="inline-code">app/routes/api</span>。
             模块默认导出一个 Hono app。
@@ -69,7 +69,7 @@ app.post('/', async (c) => {
 export default app;
 export type AppType = typeof app;</code></pre></code-block>
 
-          <h2>路由映射</h2>
+          <h2>Route Mapping</h2>
           <table>
             <thead>
               <tr>
@@ -102,7 +102,7 @@ export type AppType = typeof app;</code></pre></code-block>
             </tbody>
           </table>
 
-          <h2>请求校验</h2>
+          <h2>Request Validation</h2>
           <p>
             LessJS 不强制校验库。Zod 配合 <span class="inline-code">@hono/zod-validator</span>
             是实用的默认选择：
@@ -125,7 +125,7 @@ app.post('/', zValidator('json', schema), (c) => {
 
 export default app;</code></pre></code-block>
 
-          <h2>响应格式</h2>
+          <h2>Response Format</h2>
           <p>
             成功响应保持简单和可预测。用 HTTP 状态码表示状态，JSON 体承载数据，
             结构化错误用于可操作的失败：
@@ -134,7 +134,7 @@ export default app;</code></pre></code-block>
 return c.json({ id, ...created }, 201);
 return c.json({ error: { code: 'NOT_FOUND', message: 'Post not found' } }, 404);</code></pre></code-block>
 
-          <h2>从 Island 调用 API</h2>
+          <h2>Calling API from Island</h2>
           <p>
             Island 可以用 <span class="inline-code">fetch</span> 或 Hono client helpers 调用 API routes。
             保持 fetch 状态局部化，除非多个 island 确实需要共享协议。
@@ -145,14 +145,14 @@ return c.json({ error: { code: 'NOT_FOUND', message: 'Post not found' } }, 404);
   return await res.json();
 }</code></pre></code-block>
 
-          <h2>类型安全 RPC</h2>
+          <h2>Type-Safe RPC</h2>
           <p>
             <span class="inline-code">@lessjs/rpc</span> 提供类型安全的客户端/服务端调用约定。
             把它看作 Hono 之上的可选层，而不是替代普通 API routes。
             详见 <a href="/guide/rpc">RPC 远程调用</a>。
           </p>
 
-          <h2>静态构建边界</h2>
+          <h2>Static Build Boundary</h2>
           <p>
             SSG 输出是静态文件。API routes 是生成的 Hono app 的一部分，
             但纯静态托管不会运行它们。当应用需要运行时行为时，

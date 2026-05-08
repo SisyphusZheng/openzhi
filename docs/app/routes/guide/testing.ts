@@ -14,19 +14,19 @@ export class TestingPage extends LitElement {
         <div class="container">
           <h1>测试</h1>
           <p class="subtitle">
-            LessJS tests should protect the framework contract: route scanning, DSD output, island
-            metadata, middleware scope, SSG post-processing and package boundaries.
+            LessJS 测试应保护框架契约：路由扫描、DSD 输出、island 元数据、
+            middleware 范围、SSG 后处理和包边界。
           </p>
 
-          <h2>Project Tests</h2>
+          <h2>项目测试</h2>
           <p>
-            Application code can use Deno's built-in test runner. Start with units for pure logic and API
-            handlers, then add build smoke tests for the routes that matter most.
+            应用代码可以使用 Deno 内置的测试运行器。从纯逻辑和 API handler 的单元测试开始，
+            再为最重要的路由添加构建冒烟测试。
           </p>
           <code-block
           ><pre><code>deno test --allow-read --allow-write --allow-env --allow-net --allow-run</code></pre></code-block>
 
-          <h2>Route Utilities</h2>
+          <h2>路由工具</h2>
           <code-block
           ><pre><code>import { assertEquals } from 'jsr:@std/assert';
             import { extractParams, parseQuery } from '@lessjs/core';
@@ -41,19 +41,19 @@ export class TestingPage extends LitElement {
               assertEquals(query, { page: '2' });
             });</code></pre></code-block>
 
-            <h2>Build Smoke Test</h2>
+            <h2>构建冒烟测试</h2>
             <p>
-              A static-first framework needs at least one test that builds the site and verifies generated
-              HTML. This catches route scanner, SSR, client island and SSG integration problems.
+              静态优先框架至少需要一个测试来构建站点并验证生成的 HTML。
+              这能捕获路由扫描、SSR、client island 和 SSG 集成问题。
             </p>
             <code-block
             ><pre><code>deno task build
               # then inspect dist/index.html, dist/client, manifest, CSP/PWA tags as needed</code></pre></code-block>
 
-              <h2>Framework CI Baseline</h2>
+              <h2>框架 CI 基线</h2>
               <p>
-                For this repository, the package-level CI baseline is intentionally narrower than a full-root
-                lint/typecheck because generated docs/public assets can have different tool constraints.
+                对于本仓库，包级别 CI 基线故意比全根 lint/typecheck 更窄，
+                因为生成的 docs/public 资源可能有不同的工具约束。
               </p>
               <code-block
               ><pre><code>deno test --allow-read --allow-write --allow-env --allow-net --allow-run
@@ -62,7 +62,7 @@ export class TestingPage extends LitElement {
                 deno check packages/core/src/index.ts packages/rpc/src/index.ts packages/ui/src/index.ts
                 deno task build:all</code></pre></code-block>
 
-                <h2>High-Value Regression Tests</h2>
+                <h2>高价值回归测试</h2>
                 <table>
                   <thead>
                     <tr>
@@ -74,7 +74,7 @@ export class TestingPage extends LitElement {
                     <tr>
                       <td>Middleware</td>
                       <td>
-                        Root <span class="inline-code">_middleware.ts</span> protects <span class="inline-code"
+                        Root <span class="inline-code">_middleware.ts</span> covers <span class="inline-code"
                         >/</span> and nested routes.
                       </td>
                     </tr>
@@ -83,39 +83,38 @@ export class TestingPage extends LitElement {
                       <td>Static HTML receives CSP meta when middleware CSP is configured.</td>
                     </tr>
                     <tr>
-                      <td>Nested islands</td>
+                      <td>嵌套 island</td>
                       <td>
-                        <span class="inline-code">app/islands/posts/index.ts</span> resolves to the scanned file
-                        path.
+                        <span class="inline-code">app/islands/posts/index.ts</span> resolves to the scanned file path.
                       </td>
                     </tr>
                     <tr>
-                      <td>Strategies</td>
+                      <td>策略</td>
                       <td>
-                        Package and default island strategies are represented in the generated client entry.
+                        Package and default island strategies are reflected in generated client entry.
                       </td>
                     </tr>
                     <tr>
-                      <td>Renderer</td>
+                      <td>渲染器</td>
                       <td>
-                        Unsafe HTML, attributes, nested DSD and Lit adapter output have explicit expectations.
+                        Unsafe HTML, attributes, nested DSD and Lit adapter output have clear expectations.
                       </td>
                     </tr>
                   </tbody>
                 </table>
 
-                <h2>Browser Tests</h2>
+                <h2>浏览器测试</h2>
                 <p>
-                  Use browser tests when behavior depends on Custom Element upgrade, IntersectionObserver, idle
-                  loading, service workers or real DOM semantics. Unit tests are not enough for island strategy
-                  work.
+                  当行为依赖 Custom Element 升级、IntersectionObserver、idle 加载、
+                  service worker 或真实 DOM 语义时，使用浏览器测试。
+                  单元测试不足以覆盖 island 策略工作。
                 </p>
 
-                <h2>Playwright E2E Tests</h2>
+                <h2>Playwright E2E 测试</h2>
                 <p>
-                  LessJS includes Playwright end-to-end tests that verify the SSG output in a real browser.
-                  These tests confirm that Declarative Shadow DOM is correctly parsed, custom elements upgrade,
-                  and island strategies work as expected.
+                  LessJS 包含 Playwright 端到端测试，在真实浏览器中验证 SSG 输出。
+                  这些测试确认 Declarative Shadow DOM 被正确解析、Custom Elements 升级、
+                  island 策略按预期工作。
                 </p>
                 <code-block
                 ><pre><code># Install Playwright browsers (first time)
@@ -124,16 +123,16 @@ deno task test:e2e:install
 # Run E2E tests (builds docs site first, then tests against static server)
 deno task test:e2e</code></pre></code-block>
                 <p>
-                  The E2E suite covers two areas:
+                  E2E 测试套件覆盖两个领域：
                 </p>
                 <ul>
-                  <li><strong>DSD Layers</strong> — HTML structure, shadow root attachment, styles, no raw template text</li>
-                  <li><strong>Nested Custom Elements</strong> — CE discovery, shadow root upgrade after DSD parsing, navigation</li>
+                  <li><strong>DSD 层级</strong> — HTML 结构、shadow root 挂载、样式、无原始 template 文本</li>
+                  <li><strong>嵌套 Custom Elements</strong> — CE 发现、DSD 解析后 shadow root 升级、导航</li>
                 </ul>
 
                 <div class="nav-row">
-                  <a href="/guide/error-handling" class="nav-link">&larr; Error Handling</a>
-                  <a href="/guide/deployment" class="nav-link">Deployment &rarr;</a>
+                  <a href="/guide/error-handling" class="nav-link">&larr; 错误处理</a>
+                  <a href="/guide/deployment" class="nav-link">部署 &rarr;</a>
                 </div>
               </div>
             </less-layout>

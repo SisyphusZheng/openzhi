@@ -36,6 +36,8 @@ Thumbs.db
 coverage/
 .coverage/
 __test_fixtures__/
+playwright-report/
+test-results/
 
 # Framework internals
 .less/

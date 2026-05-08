@@ -12,7 +12,7 @@ export class ArchitecturePage extends LitElement {
     return html`
       <less-layout .navItems="${navSections}" .headerNav="${headerNav}" currentPath="/guide/architecture">
         <div class="container">
-          <h1>架构</h1>
+          <h1>Architecture</h1>
           <p class="subtitle">
             LessJS 的架构核心是把路由、渲染、island、API 和静态产物连接成一条可观察的构建链。
             这页描述当前模型，也明确哪些边界还在硬化中。
@@ -75,7 +75,7 @@ Phase 3: SSG
             应该保留 Lit 的转义语义、隔离 unsafe HTML、覆盖 CSP nonce/meta 注入，并用测试锁住这些安全契约。
           </p>
 
-          <h2>Island Upgrade</h2>
+          <h2>Island 升级</h2>
           <p>
             Island 是已经在 HTML 中出现的 Custom Element。客户端 entry 加载模块后，
             浏览器通过 <span class="inline-code">customElements.define()</span>
@@ -88,7 +88,7 @@ Phase 3: SSG
             策略都应该成为 v0.7 前的重点。
           </p>
 
-          <h2>Server Runtime</h2>
+          <h2>服务端运行时</h2>
           <p>
             SSR 和 API 入口都由 Hono 组织。LessJS 选择 Hono 不是为了制造一个专有服务端模型，
             而是为了贴近 Fetch API、Web Request/Response 和多运行时部署。
@@ -126,7 +126,7 @@ Phase 3: SSG
             </tbody>
           </table>
 
-          <h2>Package Boundaries</h2>
+          <h2>包边界</h2>
           <table>
             <thead>
               <tr>
@@ -154,7 +154,7 @@ Phase 3: SSG
             </tbody>
           </table>
 
-          <h2>Trust Boundaries</h2>
+          <h2>信任边界</h2>
           <p>
             当前最重要的架构工作不是增加功能，而是把已经承诺的能力做可信：
             middleware 范围必须准确，SSG 和 Hono entry 的 CSP 行为必须一致，嵌套 island
@@ -162,8 +162,8 @@ Phase 3: SSG
           </p>
 
           <div class="nav-row">
-            <a href="/guide/design-philosophy" class="nav-link">&larr; Design Philosophy</a>
-            <a href="/guide/routing" class="nav-link">Routing &rarr;</a>
+            <a href="/guide/design-philosophy" class="nav-link">&larr; 设计哲学</a>
+            <a href="/guide/routing" class="nav-link">路由 &rarr;</a>
           </div>
         </div>
       </less-layout>

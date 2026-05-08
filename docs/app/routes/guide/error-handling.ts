@@ -49,8 +49,8 @@ export class ErrorHandlingPage extends LitElement {
         <div class="container">
           <h1>错误处理</h1>
           <p class="subtitle">
-            LessJS separates framework errors, build-time rendering errors, API errors and browser island failures.
-            The goal is clear diagnosis without leaking internals in production.
+            LessJS 区分框架错误、构建时渲染错误、API 错误和浏览器 island 故障。
+            目标是在不泄露生产环境内部信息的前提下实现清晰诊断。
           </p>
 
           <h2>Error Hierarchy</h2>
@@ -108,25 +108,25 @@ app.post('/api/posts', async (c) => {
 
           <h2>SSR / SSG Errors</h2>
           <p>
-            LessJS rendering errors happen during dev SSR or static generation. In development,
-            <span class="inline-code">renderSsrError()</span> can show message and stack.
-            In production output, errors should be safe and generic.
+            LessJS 渲染错误发生在 dev SSR 或静态生成阶段。开发时，
+            <span class="inline-code">renderSsrError()</span> 可以显示消息和调用栈。
+            生产输出中的错误应该是安全且通用的。
           </p>
           <p>
-            Renderer 2 should improve this further: failures should name the route, tag name, module path
-            and original cause, so build logs point to the broken component instead of an empty shell.
+            Renderer 2 应进一步改进：失败时应该输出路由名、tag name、模块路径
+            和原始原因，让构建日志指向出问题的组件，而不是一个空壳。
           </p>
 
           <h2>Island Errors</h2>
           <p>
-            Island failures happen in the browser after static HTML is already visible.
-            Prefer graceful degradation: keep content readable, log the failed island, and avoid global crashes.
+            Island 故障发生在浏览器端，此时静态 HTML 已经可见。
+            优先优雅降级：保持内容可读，记录失败的 island，避免全局崩溃。
           </p>
 
           <h2>API Error Shape</h2>
           <p>
-            <span class="inline-code">LessError#toJSON()</span> returns a small structured payload.
-            API routes can use that shape directly when adding global error middleware.
+            <span class="inline-code">LessError#toJSON()</span> 返回一个精简的结构化 payload。
+            API routes 在添加全局错误 middleware 时可以直接使用这个 shape。
           </p>
           <code-block><pre><code>{
   "error": {
@@ -137,10 +137,10 @@ app.post('/api/posts', async (c) => {
 
           <h2>Structured Logging & Classification</h2>
           <p>
-            LessJS uses <span class="inline-code">createLogger(scope)</span> to provide scoped,
-            leveled logging across all modules. Every log message carries a prefix that identifies its
-            origin — for example <span class="inline-code">[LessJS/SSG]</span> or
-            <span class="inline-code">[LessJS/Blog]</span>.
+            LessJS 使用 <span class="inline-code">createLogger(scope)</span> 在所有模块中提供
+            带 scope 的分级日志。每条日志消息都带有一个标识来源的前缀——例如
+            <span class="inline-code">[LessJS/SSG]</span> 或
+            <span class="inline-code">[LessJS/Blog]</span>。
           </p>
 
           <h3>Log Levels</h3>
@@ -230,7 +230,7 @@ log.debug('customElements.define("my-counter") skipped: already defined');</code
 
           <h3>Error-Log Mapping</h3>
           <p>
-            <code>LessError</code> subclasses map to specific log levels:
+            <code>LessError</code> 子类映射到特定的 log level：
           </p>
           <table class="log-table">
             <thead>
@@ -265,7 +265,7 @@ log.debug('customElements.define("my-counter") skipped: already defined');</code
           </table>
 
           <div class="nav-row">
-            <a href="/guide/security-middleware" class="nav-link">&larr; Security & Middleware</a>
+            <a href="/guide/security-middleware" class="nav-link">&larr; 安全与 Middleware</a>
             <a href="/guide/testing" class="nav-link">Testing &rarr;</a>
           </div>
         </div>

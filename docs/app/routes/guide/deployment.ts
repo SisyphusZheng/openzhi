@@ -39,51 +39,51 @@ export class DeploymentPage extends LitElement {
         <div class="container">
           <h1>部署</h1>
           <p class="subtitle">
-            LessJS deploys static files first. Runtime API routes are deployed separately through
-            serverless or edge adapters when your application needs dynamic behavior.
+            LessJS 优先部署静态文件。运行时 API 路由在应用需要动态行为时，
+            通过 serverless 或 edge adapter 单独部署。
           </p>
 
           <h2>Build Once</h2>
           <code-block><pre><code>deno task build</code></pre></code-block>
           <p>
-            The build writes <span class="inline-code">dist/</span>: static HTML with Declarative Shadow
-            DOM, client island chunks and copied public assets.
+            构建输出 <span class="inline-code">dist/</span>：带 Declarative Shadow DOM 的静态 HTML、
+            client island chunks 和复制的公开资源。
           </p>
 
           <h2>Static Hosting</h2>
           <div class="platform-grid">
             <div class="platform-card">
               <h3>GitHub Pages</h3>
-              <p>Set Vite <span class="inline-code">base</span> when deploying under a repo path.</p>
+              <p>部署在仓库子路径下时，设置 Vite <span class="inline-code">base</span>。</p>
             </div>
             <div class="platform-card">
               <h3>Cloudflare Pages</h3>
               <p>
-                Build command: <span class="inline-code">deno task build</span>; output: <span
+                构建命令：<span class="inline-code">deno task build</span>；输出目录：<span
                   class="inline-code"
-                >dist</span>.
+                >dist</span>。
               </p>
             </div>
             <div class="platform-card">
               <h3>Netlify</h3>
-              <p>Publish directory: <span class="inline-code">dist</span>.</p>
+              <p>发布目录：<span class="inline-code">dist</span>。</p>
             </div>
             <div class="platform-card">
               <h3>Vercel</h3>
-              <p>Use static output with framework preset “Other”.</p>
+              <p>使用静态输出，Framework 预设选 "Other"。</p>
             </div>
             <div class="platform-card">
               <h3>S3 / CloudFront</h3>
               <p>
-                Upload <span class="inline-code">dist</span> and configure cache headers deliberately.
+                上传 <span class="inline-code">dist</span> 并配置合适的缓存头。
               </p>
             </div>
           </div>
 
           <h2>GitHub Pages Base Path</h2>
           <p>
-            If the site is served from <span class="inline-code">https://user.github.io/repo/</span>,
-            configure the base path in Vite.
+            如果站点从 <span class="inline-code">https://user.github.io/repo/</span> 提供服务，
+            在 Vite 中配置基础路径。
           </p>
           <code-block
           ><pre><code>// vite.config.ts
@@ -97,8 +97,8 @@ export class DeploymentPage extends LitElement {
 
             <h2>API Deployment</h2>
             <p>
-              API routes belong to the generated Hono app. Static hosts do not execute them automatically.
-              Deploy API routes through a platform adapter when the app needs runtime behavior.
+              API 路由属于生成的 Hono app。静态托管不会自动执行它们。
+              当应用需要运行时行为时，通过平台 adapter 部署 API 路由。
             </p>
             <table>
               <thead>
@@ -111,41 +111,40 @@ export class DeploymentPage extends LitElement {
               <tbody>
                 <tr>
                   <td>Deno Deploy</td>
-                  <td>Natural target</td>
+                  <td>Natural fit</td>
                   <td>Closest to the Deno-first development model.</td>
                 </tr>
                 <tr>
                   <td>Cloudflare Workers</td>
-                  <td>Good target</td>
-                  <td>Hono already maps well to Workers.</td>
+                  <td>Good fit</td>
+                  <td>Hono maps well to Workers.</td>
                 </tr>
                 <tr>
                   <td>Vercel / Netlify Functions</td>
-                  <td>Adapter work</td>
-                  <td>Needs documented build output and runtime entry contracts.</td>
+                  <td>Needs adapter</td>
+                  <td>Requires documented build output and runtime entry contract.</td>
                 </tr>
               </tbody>
             </table>
 
             <h2>No Production SSR Server by Default</h2>
             <p>
-              LessJS does not require a long-running production SSR server for its main path. Static pages
-              should stay static; dynamic behavior should be explicit API or future ISR behavior. This keeps
-              hosting cheap, cacheable and operationally small.
+              LessJS 主路径不需要长期运行的生产 SSR 服务器。静态页面应保持静态；
+              动态行为应为显式 API 或未来的 ISR。这使托管便宜、可缓存、运维轻量。
             </p>
 
             <h2>Deployment Checklist</h2>
             <ul>
-              <li>Run <span class="inline-code">deno task build</span> locally or in CI.</li>
-              <li>Preview <span class="inline-code">dist/</span> before publishing.</li>
-              <li>Confirm base path when deploying below a subdirectory.</li>
-              <li>Confirm CSP/security headers survive the selected hosting path.</li>
-              <li>Deploy API routes separately if islands call runtime endpoints.</li>
+              <li>在本地或 CI 中运行 <span class="inline-code">deno task build</span>。</li>
+              <li>发布前预览 <span class="inline-code">dist/</span>。</li>
+              <li>确认部署在子目录下时的 base path。</li>
+              <li>确认所选托管路径下 CSP/安全头仍然有效。</li>
+              <li>如果 island 调用运行时端点，单独部署 API 路由。</li>
             </ul>
 
             <div class="nav-row">
-              <a href="/guide/testing" class="nav-link">&larr; Testing</a>
-              <a href="/roadmap" class="nav-link">Roadmap &rarr;</a>
+              <a href="/guide/testing" class="nav-link">&larr; 测试</a>
+              <a href="/roadmap" class="nav-link">开发计划 &rarr;</a>
             </div>
           </div>
         </less-layout>

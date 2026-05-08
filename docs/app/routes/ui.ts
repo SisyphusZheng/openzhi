@@ -299,7 +299,7 @@ export class UIShowcase extends LitElement {
 
   override render() {
     return html`
-      <less-layout current-path="/ui">
+      <less-layout .navItems="${navSections}" .headerNav="${headerNav}" currentPath="/ui">
         <div class="container">
           <h1>设计系统</h1>
           <p class="subtitle">

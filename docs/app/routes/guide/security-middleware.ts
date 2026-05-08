@@ -28,16 +28,16 @@ export class SecurityMiddlewarePage extends LitElement {
     return html`
       <less-layout .navItems="${navSections}" .headerNav="${headerNav}" currentPath="/guide/security-middleware">
         <div class="container">
-          <h1>安全与中间件</h1>
+          <h1>安全与 Middleware</h1>
           <p class="subtitle">
-            Middleware is where LessJS connects route-tree structure with production safety:
-            request headers, CSP, auth guards, CORS and API-specific protections.
+            Middleware 是 LessJS 把路由树结构与生产安全连接起来的地方：
+            请求头、CSP、auth guards、CORS 和 API 级别的保护都在这里。
           </p>
 
-          <h2>Mental Model</h2>
+          <h2>心智模型</h2>
           <p>
-            LessJS middleware is Hono middleware mounted from file-system route scopes.
-            A middleware file affects its route subtree; nested middleware composes from outer to inner scope.
+            LessJS middleware 是基于文件系统路由 scope 挂载的 Hono middleware。
+            一个 middleware 文件影响它的路由子树；嵌套 middleware 从外到内依次组合。
           </p>
           <div class="chain">request
   -> root middleware
@@ -56,7 +56,7 @@ export class SecurityMiddlewarePage extends LitElement {
             <tbody>
               <tr>
                 <td><span class="inline-code">app/routes/_middleware.ts</span></td>
-                <td>All pages and API routes.</td>
+                <td>所有页面和 API routes。</td>
               </tr>
               <tr>
                 <td><span class="inline-code">app/routes/admin/_middleware.ts</span></td>
@@ -80,9 +80,8 @@ export default async function adminOnly(c: Context, next: Next) {
 
           <h2>CSP</h2>
           <p>
-            CSP is a framework-level trust boundary because LessJS emits HTML, DSD templates and island scripts.
-            If CSP is enabled for SSR responses, SSG output must receive the equivalent meta policy during static
-            post-processing.
+            CSP 是框架级别的信任边界，因为 LessJS 会输出 HTML、DSD templates 和 island scripts。
+            如果 SSR 响应启用了 CSP，SSG 输出必须在静态后处理阶段收到等效的 meta policy。
           </p>
           <code-block><pre><code>// vite.config.ts
 less({
@@ -97,8 +96,7 @@ less({
 
           <h2>CORS</h2>
           <p>
-            Configure CORS deliberately for API routes. Content pages often do not need cross-origin access;
-            API routes often do.
+            API routes 需要审慎配置 CORS。内容页面通常不需要跨域访问；API routes 通常需要。
           </p>
           <code-block><pre><code>less({
   middleware: {
@@ -108,7 +106,7 @@ less({
 
           <h2>Security Headers</h2>
           <p>
-            Common production headers should be enabled in one place and tested through both SSR and SSG paths.
+            常见的生产安全头应该在一处启用，并通过 SSR 和 SSG 两条路径测试。
           </p>
           <ul>
             <li><span class="inline-code">X-Content-Type-Options: nosniff</span></li>
@@ -118,15 +116,15 @@ less({
             <li><span class="inline-code">Content-Security-Policy</span> or SSG meta equivalent</li>
           </ul>
 
-          <h2>Current Boundary</h2>
+          <h2>当前边界</h2>
           <p>
-            Two security issues should stay visible until fixed: root middleware must mount across the whole route tree,
-            and SSG must not drop CSP when it post-processes static HTML. These are P1 reliability items because they
-            affect production protections, not only developer ergonomics.
+            两个安全问题需要在修复前保持可见：根 middleware 必须覆盖整个路由树，
+            SSG 后处理静态 HTML 时不能丢失 CSP。这些是 P1 可靠性问题，
+            因为它们影响生产安全保护，而不仅是开发体验。
           </p>
 
           <div class="nav-row">
-            <a href="/guide/configuration" class="nav-link">&larr; Configuration</a>
+            <a href="/guide/configuration" class="nav-link">&larr; 配置</a>
             <a href="/guide/error-handling" class="nav-link">Error Handling &rarr;</a>
           </div>
         </div>

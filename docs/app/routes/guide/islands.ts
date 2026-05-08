@@ -44,21 +44,21 @@ export class IslandsGuidePage extends LitElement {
             也不是把应用状态完整恢复到客户端。
           </p>
 
-          <h2>Why Islands Exist</h2>
+          <h2>为什么需要 Island</h2>
           <div class="comparison">
             <div class="comparison-item">
-              <h3>Traditional SPA Cost</h3>
+              <h3>传统 SPA 的代价</h3>
               <ul>
                 <li>内容和交互都依赖客户端 JavaScript。</li>
-                <li>首屏、SEO 和无 JS fallback 需要额外处理。</li>
-                <li>组件模型通常绑定某个专有 runtime。</li>
+                <li>首屏、SEO 和 no-JS fallback 需要额外处理。</li>
+                <li>组件模型通常绑定专有 runtime。</li>
               </ul>
             </div>
             <div class="comparison-item less">
               <h3>LessJS Island Model</h3>
               <ul>
                 <li>内容先由 SSG + DSD 输出。</li>
-                <li>只有真正需要交互的组件加载客户端模块。</li>
+                <li>只有真正需要交互的组件才加载客户端模块。</li>
                 <li>升级后再绑定事件、本地状态和浏览器 API。</li>
               </ul>
             </div>
@@ -67,12 +67,12 @@ export class IslandsGuidePage extends LitElement {
           <h2>Upgrade, Not Hydration</h2>
           <p>
             浏览器解析 HTML 时，Declarative Shadow DOM 已经把组件内容和样式放进 shadow root。
-            客户端入口加载后调用 <span class="inline-code">customElements.define()</span>，
+            客户端 entry 加载后调用 <span class="inline-code">customElements.define()</span>，
             浏览器把已有元素升级为真正的 Custom Element。这个过程更准确地叫
             <strong>Island Upgrade</strong>。
           </p>
 
-          <h2>When To Create an Island</h2>
+          <h2>何时创建 Island</h2>
           <table>
             <thead>
               <tr>
@@ -100,10 +100,10 @@ export class IslandsGuidePage extends LitElement {
             </tbody>
           </table>
 
-          <h2>Create a Local Island</h2>
+          <h2>创建本地 Island</h2>
           <p>
-            本地 island 放在 <span class="inline-code">app/islands</span>。构建器会扫描它， 生成 client
-            entry，并在静态 HTML 中注入入口脚本。
+            本地 island 放在 <span class="inline-code">app/islands</span>。构建器会扫描它，
+            生成 client entry，并在静态 HTML 中注入 entry script。
           </p>
           <code-block
           ><pre><code>// app/islands/my-counter.ts
@@ -129,7 +129,7 @@ export class IslandsGuidePage extends LitElement {
 
             customElements.define(tagName, MyCounter);</code></pre></code-block>
 
-            <h2>Use an Island in a Page</h2>
+            <h2>在页面中使用 Island</h2>
             <code-block><pre><code>&lt;my-counter&gt;&lt;/my-counter&gt;</code></pre></code-block>
             <p>
               首屏 HTML 中会出现 host 和 shadow root。浏览器加载
@@ -138,8 +138,8 @@ export class IslandsGuidePage extends LitElement {
 
             <h2>Package Islands</h2>
             <p>
-              可复用包可以导出 island metadata，LessJS 在构建时读取这些信息，用于 SSR 注册和客户端入口生成。
-            </p>
+            可复用包可以导出 island metadata，LessJS 在构建时读取这些信息，用于 SSR 注册和 client entry 生成。
+          </p>
             <code-block
             ><pre><code>import type { PackageIslandMeta } from '@lessjs/core';
 
@@ -151,11 +151,11 @@ export class IslandsGuidePage extends LitElement {
               },
             ];</code></pre></code-block>
 
-            <h2>Current Boundary</h2>
+          <h2>当前边界</h2>
             <p>
               当前实现仍以全局 island entry 为主。下一阶段需要把
-              <span class="inline-code">strategy</span> 从 metadata 真正带进 client build， 并引入页面级
-              island manifest，让每个页面只加载实际出现的 island。
+              <span class="inline-code">strategy</span> 从 metadata 真正带进 client build，
+              并引入页面级 island manifest，让每个页面只加载实际出现的 island。
             </p>
 
             <div class="nav-row">

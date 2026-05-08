@@ -18,7 +18,7 @@ export class RoutingGuidePage extends LitElement {
             middleware 和 API handlers。
           </p>
 
-          <h2>Page Routes</h2>
+          <h2>页面路由</h2>
           <p>
             <span class="inline-code">app/routes</span> 下的页面组件会被扫描成页面路由。
             页面模块必须默认导出 Custom Element class，并导出
@@ -27,8 +27,8 @@ export class RoutingGuidePage extends LitElement {
           <table>
             <thead>
               <tr>
-                <th>File</th>
-                <th>Route</th>
+                <th>文件</th>
+                <th>路由</th>
               </tr>
             </thead>
             <tbody>
@@ -51,7 +51,7 @@ export class RoutingGuidePage extends LitElement {
             </tbody>
           </table>
 
-          <h2>Dynamic Segments</h2>
+          <h2>动态片段</h2>
           <p>
             方括号会转换成 Hono route params。SSR 时这些 params 会作为同名 property
             写入页面组件。
@@ -59,9 +59,9 @@ export class RoutingGuidePage extends LitElement {
           <table>
             <thead>
               <tr>
-                <th>File</th>
-                <th>Route</th>
-                <th>Property</th>
+                <th>文件</th>
+                <th>路由</th>
+                <th>属性</th>
               </tr>
             </thead>
             <tbody>
@@ -86,31 +86,31 @@ export class RoutingGuidePage extends LitElement {
   }
 }</code></pre></code-block>
 
-          <h2>Special Files</h2>
+          <h2>特殊文件</h2>
           <table>
             <thead>
               <tr>
-                <th>File</th>
-                <th>Purpose</th>
+                <th>文件</th>
+                <th>用途</th>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <td><span class="inline-code">_renderer.ts</span></td>
-                <td>Wraps SSR output for a route subtree. Use it for layout shells or document-level composition.</td>
+                <td>为路由子树包裹 SSR 输出。用于布局外壳或文档级组合。</td>
               </tr>
               <tr>
                 <td><span class="inline-code">_middleware.ts</span></td>
-                <td>Mounts Hono middleware for a route subtree. Use it for headers, auth, CSP nonce and request guards.</td>
+                <td>为路由子树挂载 Hono middleware。用于 headers、auth、CSP nonce 和请求守卫。</td>
               </tr>
               <tr>
                 <td><span class="inline-code">api/*.ts</span></td>
-                <td>Defines Hono API handlers under the same file-system route tree.</td>
+                <td>在同一文件系统路由树下定义 Hono API handlers。</td>
               </tr>
             </tbody>
           </table>
 
-          <h2>Route Module Contract</h2>
+          <h2>路由模块契约</h2>
           <code-block><pre><code>import { html, LitElement } from 'lit';
 
 export class AboutPage extends LitElement {
@@ -123,7 +123,7 @@ customElements.define('page-about', AboutPage);
 export default AboutPage;
 export const tagName = 'page-about';</code></pre></code-block>
 
-          <h2>Current Boundary</h2>
+          <h2>当前边界</h2>
           <p>
             路由扫描已经可以稳定处理页面、动态片段、renderer、middleware 和 API routes。
             v0.5.3 已修复根级 <span class="inline-code">_middleware.ts</span> 的挂载范围——
@@ -131,8 +131,8 @@ export const tagName = 'page-about';</code></pre></code-block>
           </p>
 
           <div class="nav-row">
-            <a href="/guide/architecture" class="nav-link">&larr; Architecture</a>
-            <a href="/guide/ssg" class="nav-link">Rendering & SSG &rarr;</a>
+            <a href="/guide/architecture" class="nav-link">&larr; 架构</a>
+            <a href="/guide/ssg" class="nav-link">渲染与 SSG &rarr;</a>
           </div>
         </div>
       </less-layout>

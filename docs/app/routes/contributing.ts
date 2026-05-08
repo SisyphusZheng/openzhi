@@ -135,7 +135,7 @@ export class ContributingPage extends LitElement {
 
                 <h2>发布流程</h2>
                 <ol>
-                  <li>更新版本号（packages/*/package.json）</li>
+                  <li>更新版本号（packages/*/deno.json）</li>
                   <li>更新 changelog（docs/app/routes/changelog.ts）</li>
                   <li>运行测试：<code>deno task test</code></li>
                   <li>发布到 JSR：<code>deno task publish</code></li>
