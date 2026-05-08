@@ -46,9 +46,6 @@ const LIT_TEMPLATE_TYPE_MARKER = '_$litType$';
 /** Lit's `nothing` sentinel — used to conditionally remove attributes */
 const NOTHING_SYMBOL = Symbol.for('lit-nothing');
 
-/** Lit's unsafeHTML directive marker — bypasses escaping */
-const UNSAFE_HTML_DIRECTIVE = 'lit-html:unsafe-html';
-
 /**
  * Check if a value is a Lit TemplateResult.
  * Works with any Lit version that uses the _$litType$ marker.
@@ -194,27 +191,36 @@ function stringifyContentValue(value: unknown): string {
     return unwrapDsdForNestedCe(result);
   }
 
-  // v0.6: Check if this value has a directive marker that indicates
-  // it should bypass escaping (e.g., unsafeHTML directive).
-  // Lit's unsafeHTML directive returns a special object with properties
-  // that signal "trust this HTML content".
+  // v0.6.3: Detect Lit 3.x unsafeHTML directive to bypass escaping.
+  // unsafeHTML() returns { _$litDirective$: UnsafeHTML, values: [htmlString] }
+  //   - _$litDirective$ is the directive class (not a string)
+  //   - The class has static `directiveName: 'unsafeHTML'` and `resultType: 1`
+  //   - The HTML string is in `values[0]`
   if (typeof value === 'object' && value !== null) {
     const obj = value as Record<string, unknown>;
-    // Check for Lit's unsafeHTML directive marker
-    if (obj._$litDirective$ === UNSAFE_HTML_DIRECTIVE && typeof obj._$resolve === 'function') {
-      try {
-        const resolved = obj._$resolve();
-        if (resolved != null) {
-          const str = String(resolved);
-          // FIX: Also unwrap DSD from unsafeHTML results containing custom elements
-          return unwrapDsdForNestedCe(str);
+    const directiveCtor = obj._$litDirective$;
+
+    if (typeof directiveCtor === 'function') {
+      const ctor = directiveCtor as unknown as Record<string, unknown>;
+      const isUnsafeHtml = ctor.directiveName === 'unsafeHTML' ||
+        ctor.resultType === 1; // resultType 1 = unsafe HTML in Lit 3.x
+
+      if (isUnsafeHtml && obj.values != null) {
+        try {
+          const vals = Array.isArray(obj.values)
+            ? obj.values
+            : Array.from(obj.values as ArrayLike<unknown>);
+          const resolved = vals[0];
+          if (resolved != null) {
+            const str = String(resolved);
+            return unwrapDsdForNestedCe(str);
+          }
+          return '';
+        } catch (e) {
+          log.debug(
+            `unsafeHTML value extraction failed: ${e instanceof Error ? e.message : String(e)}`,
+          );
         }
-        return '';
-      } catch (e) {
-        // If resolution fails, fall through to escaped string
-        log.debug(
-          `Directive resolution failed: ${e instanceof Error ? e.message : String(e)}`,
-        );
       }
     }
     // _$litDirective$ also appears in other Lit directives — fall through

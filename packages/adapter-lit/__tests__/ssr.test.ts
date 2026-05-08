@@ -226,3 +226,40 @@ Deno.test('renderLitToString passes non-TemplateResult through String()', () => 
   assertEquals(renderLitToString('plain text'), 'plain text');
   assertEquals(renderLitToString(42), '42');
 });
+
+// ─── unsafeHTML Directive Tests ─────────────────────────────────
+
+Deno.test('renderLitToString renders unsafeHTML directive (Lit 3.x)', async () => {
+  // Core bug: blog post content rendered as [object Object]
+  // Lit 3.x: unsafeHTML() returns { _$litDirective$: UnsafeHTML, values: [htmlString] }
+  const { unsafeHTML } = await import('lit/directives/unsafe-html.js');
+  const rawHtml = '<h2>Title</h2><p>Paragraph with <strong>bold</strong></p>';
+  const rendered = renderLitToString(html`
+    <div>${unsafeHTML(rawHtml)}</div>
+  `);
+  assertStringIncludes(rendered, rawHtml);
+  // Must NOT contain [object Object]
+  assertEquals(rendered.includes('[object Object]'), false);
+});
+
+Deno.test('renderLitToString escapes regular content alongside unsafeHTML', async () => {
+  const { unsafeHTML } = await import('lit/directives/unsafe-html.js');
+  const rendered = renderLitToString(html`
+    <section>
+      <p>${'<script>xss</script>'}</p>
+      <div>${unsafeHTML('<em>trusted</em>')}</div>
+    </section>
+  `);
+  // Regular content must be escaped
+  assertStringIncludes(rendered, '&lt;script&gt;xss&lt;/script&gt;');
+  // unsafeHTML content must be raw
+  assertStringIncludes(rendered, '<em>trusted</em>');
+});
+
+Deno.test('renderLitToString handles unsafeHTML with empty/null content', async () => {
+  const { unsafeHTML } = await import('lit/directives/unsafe-html.js');
+  const rendered = renderLitToString(html`
+    <div>${unsafeHTML('')}</div>
+  `);
+  assertEquals(compactHtml(rendered), '<div></div>');
+});
