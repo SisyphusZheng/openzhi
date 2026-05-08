@@ -273,9 +273,52 @@ async function buildSSG(options: BuildSSGOptions = {}): Promise<void> {
         (r) => r.type === 'page' && !r.special && r.path.includes(':'),
       );
 
+      log.info(
+        `Dynamic routes found: ${dynamicRoutes.length}${
+          dynamicRoutes.length > 0 ? ` (${dynamicRoutes.map((r) => r.path).join(', ')})` : ''
+        }`,
+      );
+
       if (dynamicRoutes.length > 0) {
-        const { renderDSD } = await import('../render-dsd.js');
-        const { wrapInDocument } = await import('../ssr-handler.js');
+        // Use server.ssrLoadModule() to ensure adapter registration is visible.
+        // Direct import() creates a separate module graph where
+        // installLitAdapter()'s registerAdapter() call is not visible.
+        const renderDsdMod = await server.ssrLoadModule(
+          '@lessjs/core/render-dsd',
+        ) as Record<string, unknown>;
+        const ssrHandlerMod = await server.ssrLoadModule(
+          '@lessjs/core/less-runtime',
+        ) as Record<string, unknown>;
+        const renderDSDFn = renderDsdMod.renderDSD as typeof import('../render-dsd.js').renderDSD;
+        const wrapInDocumentFn = ssrHandlerMod
+          .wrapInDocument as typeof import('../ssr-handler.js').wrapInDocument;
+
+        // Initialize @lessjs/blog data store if present.
+        // The blog plugin's buildStart() ran in Phase 1's Vite instance,
+        // but Phase 3 creates a fresh SSR server with its own module graph.
+        // We need to re-initialize so getPosts() returns data.
+        let blogOptions: { contentDir?: string; basePath?: string } | undefined;
+        try {
+          const blogOptsPath = join(root, '.less', 'blog-options.json');
+          if (existsSync(blogOptsPath)) {
+            const raw = readFileSync(blogOptsPath, 'utf-8');
+            blogOptions = JSON.parse(raw);
+          }
+        } catch {
+          // Non-fatal
+        }
+
+        try {
+          const blogModule = await server.ssrLoadModule('@lessjs/blog') as Record<string, unknown>;
+          if (typeof blogModule.initBlogData === 'function') {
+            await (blogModule.initBlogData as (opts?: unknown) => Promise<unknown>)(blogOptions);
+            const postCount = (blogModule.getPosts as () => unknown[])().length;
+            log.info(`Blog data store initialized: ${postCount} post(s) for SSG dynamic routes`);
+          }
+        } catch {
+          // @lessjs/blog not available — non-fatal, dynamic routes may not use it
+          log.debug('@lessjs/blog not found — skipping blog data initialization');
+        }
 
         for (const route of dynamicRoutes) {
           const paramNames = [...route.path.matchAll(/:([^/]+)/g)].map((m) => m[1]);
@@ -328,12 +371,12 @@ async function buildSSG(options: BuildSSGOptions = {}): Promise<void> {
 
             try {
               // Render the component with route params as props
-              const html = await renderDSD(tagName, ComponentClass, params, {
+              const html = await renderDSDFn(tagName, ComponentClass, params, {
                 route: resolvedPath,
                 source: route.filePath,
               });
 
-              const fullHtml = wrapInDocument(html, {
+              const fullHtml = wrapInDocumentFn(html, {
                 title: options.html?.title || 'LessJS',
                 lang: options.html?.lang || 'en',
                 headExtras: options.headExtras || '',

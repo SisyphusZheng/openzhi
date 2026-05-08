@@ -11,6 +11,7 @@ import type { Plugin } from 'vite';
 import type { LessBlogOptions } from './types.ts';
 import { initBlogData } from './blog-data.ts';
 import { createLogger } from '@lessjs/core/logger';
+import process from 'node:process';
 
 const log = createLogger('blog');
 
@@ -57,6 +58,25 @@ export function lessBlog(options?: LessBlogOptions): Plugin {
       log.info(
         `${postCount} post(s) found in ${contentDir}, base path: ${basePath}`,
       );
+
+      // Write blog options to .less/ so Phase 3 (build-ssg) can re-initialize
+      // the blog data store in its own Vite SSR server instance.
+      // Phase 1 and Phase 3 use different Vite instances with separate module graphs,
+      // so the blog data store populated here is not visible in Phase 3.
+      try {
+        const { mkdirSync, writeFileSync } = await import('node:fs');
+        const { join } = await import('node:path');
+        const root = process.cwd();
+        const lessDir = join(root, '.less');
+        mkdirSync(lessDir, { recursive: true });
+        writeFileSync(
+          join(lessDir, 'blog-options.json'),
+          JSON.stringify({ contentDir, basePath }),
+          'utf-8',
+        );
+      } catch {
+        // Non-fatal — dynamic route expansion will be skipped if options missing
+      }
     },
 
     config() {

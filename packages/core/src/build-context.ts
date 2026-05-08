@@ -42,6 +42,9 @@ export class LessBuildContext {
    */
   userResolveAlias: Record<string, string> | Alias[] | null = null;
 
+  /** Blog plugin options (contentDir, basePath) for SSG dynamic route expansion */
+  blogOptions: { contentDir?: string; basePath?: string } | null = null;
+
   /** Resolved framework options with defaults applied */
   readonly options: FrameworkOptions;
 
