@@ -5,9 +5,9 @@
  * Exports registerAdapter so adapters (e.g., @lessjs/adapter-lit) can
  * register from the same module scope as renderDSD — no globalThis bridge.
  */
-import { createLogger } from './logger.js';
+import { createLogger, type LessLogger } from './logger.js';
 
-const log = createLogger('core');
+const log: LessLogger = createLogger('core');
 
 export { log };
 export { registerAdapter, renderDSD, renderDSDByName } from './render-dsd.js';
