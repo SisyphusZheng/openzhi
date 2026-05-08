@@ -22,6 +22,18 @@
  * @module @lessjs/signal
  */
 
+// ─── Internal Logger ────────────────────────────────────────────
+// Lightweight scoped logger — no @lessjs/core dependency needed.
+// Prefix: [LessJS/Signal] — matches createLogger('signal') convention.
+const _log = {
+  warn: (...args: unknown[]) => {
+    console.warn('[LessJS/Signal]', ...args);
+  },
+  error: (...args: unknown[]) => {
+    console.error('[LessJS/Signal]', ...args);
+  },
+};
+
 // ─── Engine Layer: TC39 Signal Primitives ────────────────────────
 // Use native Signal if available, otherwise polyfill.
 // deno-lint-ignore-file no-explicit-any
@@ -54,12 +66,13 @@ interface SignalOptions<T> {
   [key: symbol]: (() => void) | undefined;
 }
 
-const _engine: SignalEngineNamespace = _createPolyfill();
-
-// ─── Polyfill Implementation ─────────────────────────────────────
-
+// Symbols must be defined before _createPolyfill() references them
 const _SIGNAL = Symbol('SIGNAL');
 const NODE = Symbol('node');
+
+const _engine: SignalEngineNamespace = (globalThis as any).Signal ?? _createPolyfill();
+
+// ─── Polyfill Implementation ─────────────────────────────────────
 
 interface ReactiveNode {
   version: number;
@@ -519,8 +532,11 @@ export function signal<T>(initialValue: T): WritableSignal<T> {
       state.set(newValue);
     },
     subscribe(fn: (value: T) => void): Unsubscribe {
-      // Use effect to track and notify
-      const dispose = effect(() => fn(state.get()));
+      // Use effect to track and notify.
+      // Wrap in braces to avoid returning fn's return value as a cleanup function.
+      const dispose = effect(() => {
+        fn(state.get());
+      });
       return dispose;
     },
   };
@@ -538,7 +554,9 @@ export function computed<T>(fn: () => T): ReadonlySignal<T> {
       return c.get();
     },
     subscribe(fn2: (value: T) => void): Unsubscribe {
-      const dispose = effect(() => fn2(c.get()));
+      const dispose = effect(() => {
+        fn2(c.get());
+      });
       return dispose;
     },
   };
@@ -569,7 +587,7 @@ export function effect(fn: () => void | (() => void)): Unsubscribe {
           try {
             (s as any).get();
           } catch (err) {
-            console.warn('[LessJS Effect] Error:', err);
+            _log.warn('Effect error:', err);
           }
         }
         watcher.watch(c);
@@ -582,7 +600,7 @@ export function effect(fn: () => void | (() => void)): Unsubscribe {
   try {
     c.get();
   } catch (err) {
-    console.warn('[LessJS Effect] Initial error:', err);
+    _log.warn('Effect initial error:', err);
   }
 
   return () => {
@@ -674,8 +692,8 @@ const _channelTarget = typeof document !== 'undefined' ? document.body : null;
  */
 export function channel<T = unknown>(name: string): Channel<T> {
   if (!_channelTarget) {
-    console.warn(
-      '[LessJS Channel] No DOM available — events will be no-ops (expected in SSR/SSG).',
+    _log.warn(
+      'No DOM available — channel events will be no-ops (expected in SSR/SSG).',
     );
   }
 
@@ -744,6 +762,21 @@ function createThemeSignal(): WritableSignal<string> {
   return s;
 }
 
+/** Returns true if using browser-native Signal implementation */
+export function isNativeSignal(): boolean {
+  return typeof (globalThis as any).Signal !== 'undefined';
+}
+
 // ─── Default Export ──────────────────────────────────────────────
 
-export default { signal, computed, effect, islandEffect, batch, untracked, channel, themeSignal };
+export default {
+  signal,
+  computed,
+  effect,
+  islandEffect,
+  batch,
+  untracked,
+  channel,
+  themeSignal,
+  isNativeSignal,
+};

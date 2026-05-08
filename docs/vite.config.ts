@@ -1,4 +1,5 @@
 import { less } from '../packages/core/src/index.js';
+import { lessBlog } from '../packages/blog/src/index.ts';
 import { lessRootColorCSS } from '../packages/ui/src/tokens/colors.js';
 import { defineConfig } from 'vite';
 import { dirname, resolve } from 'node:path';
@@ -73,12 +74,21 @@ export default defineConfig({
         ],
       },
     }),
+    // @lessjs/blog: Dogfooding — scan content/blog/*.md for blog posts
+    lessBlog({
+      contentDir: resolve(__dir, 'content/blog'),
+      basePath: '/blog',
+    }),
   ],
   resolve: {
     alias: [
       {
         find: '@lessjs/core/render-dsd',
         replacement: resolve(__dir, '../packages/core/src/render-dsd.ts'),
+      },
+      {
+        find: '@lessjs/core/logger',
+        replacement: resolve(__dir, '../packages/core/src/logger.ts'),
       },
       { find: '@lessjs/core/less-runtime', replacement: runtimeShim },
       {
@@ -112,6 +122,7 @@ export default defineConfig({
         replacement: resolve(uiSrcDir, 'tokens/color-values.ts'),
       },
       { find: '@lessjs/ui', replacement: resolve(uiSrcDir, 'index.ts') },
+      { find: '@lessjs/blog', replacement: resolve(__dir, '../packages/blog/src/index.ts') },
     ],
   },
 });

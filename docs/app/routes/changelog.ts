@@ -119,6 +119,135 @@ export class ChangelogPage extends LitElement {
 
           <div class="version-section">
             <div class="version-header">
+              <span class="version-number">0.8.0</span>
+              <span class="version-date">2026-05-08</span>
+            </div>
+            <div class="change-category added">
+              <h4>新增</h4>
+              <ul class="change-list">
+                <li>
+                  <strong>Signal 原生切换</strong>：
+                  <span class="inline-code">@lessjs/signal</span>
+                  新增 <span class="inline-code">isNativeSignal()</span> 检测函数，优先使用浏览器原生
+                  <span class="inline-code">globalThis.Signal</span>，不可用时自动回退 polyfill。
+                  Native Signal 测试 2 个用例。
+                </li>
+                <li>
+                  <strong>Island Upgrade Manifest</strong>：
+                  <span class="inline-code">@lessjs/core/island-manifest</span> 新模块（130 行），
+                  包含 <span class="inline-code">extractCustomElementTags()</span> 正则提取、
+                  <span class="inline-code">generateIslandManifests()</span> 页面级清单生成、
+                  <span class="inline-code">writeIslandManifests()</span> JSON 落盘。
+                  替代全局 island 入口，实现按需加载。
+                  7 个测试用例覆盖标签提取、清单生成、策略/层级映射、JSON 写入。
+                </li>
+                <li>
+                  <strong>@lessjs/blog 包</strong>（v0.8.0）：
+                  <span class="inline-code">lessBlog()</span> Vite 插件，
+                  <span class="inline-code">parseMarkdownFile()</span>（gray-matter + marked）、
+                  <span class="inline-code">slugFromFilename()</span> 日期前缀剥离、
+                  <span class="inline-code">scanPosts()</span> + <span class="inline-code">generateBlogRoutes()</span>
+                  路由生成。支持 frontmatter、draft 过滤、自定义 basePath 和 markdown 渲染器。
+                  10 个测试用例（markdown 6 + routes 4）。
+                </li>
+                <li>
+                  <strong>Signals 测试套件</strong>：19 个测试用例覆盖 signal/computed/effect/islandEffect
+                  四大 API，包含依赖追踪、批量更新、island 生命周期绑定、原生 Signal 回退。
+                </li>
+                <li>
+                  <strong>dsd-hydration 单元测试</strong>：13 个测试用例覆盖 DsdLitElement Mixin 的
+                  constructor 拦截、createRenderRoot 覆写、_dsdHydrated 标记、DSD options 透传。
+                </li>
+                <li>
+                  <strong>结构化日志 createLogger</strong>：
+                  <span class="inline-code">@lessjs/core/logger</span> 新模块，
+                  提供 <span class="inline-code">createLogger(scope)</span> 工厂函数，
+                  统一 <span class="inline-code">[LessJS]</span> / <span class="inline-code">[LessJS/SSG]</span>
+                  / <span class="inline-code">[LessJS/Blog]</span> 前缀。
+                  支持 debug/info/warn/error 四级，SILENT 级别可静默所有输出。
+                  全框架内部模块已从原始 <span class="inline-code">console.*</span> 迁移至结构化日志。
+                </li>
+                <li>
+                  <strong>Runtime Shim 自动生成</strong>：
+                  <span class="inline-code">packages/core/scripts/generate-runtime-shim.ts</span>
+                  使用 TypeScript AST 从源文件提取函数，自动生成
+                  <span class="inline-code">runtime-shim.ts</span>，消除手工同步风险。
+                </li>
+                <li>
+                  <strong>parse5 嵌套 DSD 优化</strong>：将嵌套自定义元素渲染从正则 O(n²) 替换为
+                  parse5 AST O(n×d) 方案，支持复杂嵌套场景。
+                </li>
+                <li>
+                  <strong>Playwright E2E 测试</strong>：10 个端到端测试覆盖 DSD layers
+                  和嵌套自定义元素，验证 SSG 产物在真实浏览器中的行为。
+                </li>
+              </ul>
+            </div>
+            <div class="change-category changed">
+              <h4>变更</h4>
+              <ul class="change-list">
+                <li>
+                  <strong>render-dsd.ts 拆分</strong>：770 行单文件拆为 4 个模块 —
+                  <span class="inline-code">render-dsd-core.ts</span>（主渲染器）、
+                  <span class="inline-code">render-dsd-escape.ts</span>（XSS 安全）、
+                  <span class="inline-code">render-dsd-nested.ts</span>（L2 嵌套）、
+                  <span class="inline-code">render-dsd.ts</span>（统一导出 + 向后兼容）。
+                </li>
+                <li>
+                  <strong>UI 统一到 DsdLitElement</strong>：
+                  LessButton、LessInput、LessThemeToggle 三个组件迁移到
+                  <span class="inline-code">DsdLitElement</span> Mixin，消除手工
+                  <span class="inline-code">_dsdHydrated</span> + <span class="inline-code">createRenderRoot()</span>
+                  重复代码。
+                </li>
+                <li>
+                  <strong>insertAfterHead 去重</strong>：
+                  从 <span class="inline-code">@lessjs/ui</span> 移至
+                  <span class="inline-code">@lessjs/core</span>，消除跨包重复实现。
+                </li>
+                <li>
+                  <strong>框架定位重写</strong>：LessJS 重新定位为"静态站点框架"，以 SSG + DSD + Island
+                  为核心，未来演进方向为混合框架 + .less Compiler。
+                  README 和文档站同步更新。
+                </li>
+                <li>
+                  <strong>包版本统一</strong>：@lessjs/core 0.8.0、@lessjs/blog 0.8.0，
+                  其余包未变更。
+                </li>
+              </ul>
+            </div>
+            <div class="change-category fixed">
+              <h4>修复</h4>
+              <ul class="change-list">
+                <li>
+                  <strong>island-effect cleanup 泄漏</strong>：
+                  <span class="inline-code">islandEffect()</span> 在 disconnectedCallback 中未正确清理
+                  Signal effect，导致组件移除后 effect 仍执行。
+                </li>
+                <li>
+                  <strong>buildIslandChunkMap 重复前缀</strong>：
+                  <span class="inline-code">buildIslandChunkMap</span> 在已包含
+                  <span class="inline-code">islands/</span> 前缀的路径上再次拼接，导致 SSG HTML
+                  中 island 脚本 URL 404（回归修复）。
+                </li>
+                <li>
+                  <strong>Runtime shim log 未定义</strong>：生成的 runtime-shim 代码引用
+                  <span class="inline-code">log</span> 变量但未定义，导致运行时
+                  <span class="inline-code">ReferenceError</span>。在 SHIM_BOILERPLATE 中添加
+                  <span class="inline-code">var log = {...}</span> 桩函数。
+                </li>
+                <li>
+                  <strong>全量 console.* 迁移</strong>：框架内部所有原始
+                  <span class="inline-code">console.warn/error/debug</span> 调用替换为
+                  <span class="inline-code">createLogger</span> 结构化日志（core、adapter-lit、signals）。
+                  仅 CLI 工具和日志实现本身保留 <span class="inline-code">console.*</span>。
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="version-section">
+            <div class="version-header">
               <span class="version-number">0.7.0</span>
               <span class="version-date">2026-05-07</span>
             </div>
