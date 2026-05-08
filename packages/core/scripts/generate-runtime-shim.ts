@@ -77,6 +77,8 @@ var log = {
   debug: function() { var a = ['[LessJS]']; a.push.apply(a, arguments); console.debug.apply(console, a); },
   info: function() { var a = ['[LessJS]']; a.push.apply(a, arguments); console.log.apply(console, a); },
 };
+
+export { log };
 `;
 
 // ─── File Header ────────────────────────────────────────────────
