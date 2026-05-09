@@ -43,7 +43,11 @@ function filePathToRoutePath(filePath: string): string {
 
   // Handle index
   if (p === 'index') return '/';
-  if (p.endsWith('/index')) p = p.slice(0, -6); // Remove trailing /index
+  if (p.endsWith('/index')) {
+    p = p.slice(0, -6); // Remove trailing /index
+    // After stripping /index, check if the result is the root index
+    if (p === 'index' || p === '') return '/';
+  }
 
   // Ensure leading slash
   if (!p.startsWith('/')) p = '/' + p;

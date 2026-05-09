@@ -41,7 +41,7 @@ export default class DocsHome extends LitElement {
 
   private _renderZh() {
     return html`
-      <less-layout locale="${this.locale || 'zh'}" .locales="${['en', 'zh']}" home>
+      <less-layout locale="${this.locale || 'zh'}" .locales="${['en', 'zh']}" current-path="/" home>
         <section class="hero">
           <div class="hero-inner">
             <div>
@@ -95,7 +95,7 @@ export default class DocsHome extends LitElement {
 
   private _renderEn() {
     return html`
-      <less-layout locale="${this.locale || 'en'}" .locales="${['en', 'zh']}" home>
+      <less-layout locale="${this.locale || 'en'}" .locales="${['en', 'zh']}" current-path="/en/" home>
         <section class="hero">
           <div class="hero-inner">
             <div>
