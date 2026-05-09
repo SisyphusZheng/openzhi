@@ -4,7 +4,7 @@
 
 import { headerNav, navSections } from 'virtual:less-nav';
 import { css, html, LitElement } from 'lit';
-import { pageStyles } from '../components/page-styles.js';
+import { pageStyles } from '../../components/page-styles.js';
 import '@lessjs/ui/less-layout';
 
 export const tagName = 'api-core-page';
