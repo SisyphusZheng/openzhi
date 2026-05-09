@@ -14,8 +14,8 @@ const log = createLogger('content:nav');
 
 /**
  * Extract `meta` export from a route file's source code.
- * Uses Function constructor for safe evaluation — meta objects are plain data.
- * Falls back to regex if Function() fails.
+ * Expects: `export const meta = { section: "...", label: "...", order: 1 }`
+ * Parsed via JSON after normalizing JS object literal syntax (no eval / Function()).
  */
 export function extractMeta(source: string): RouteMeta | null {
   const fnMatch = source.match(
@@ -25,26 +25,18 @@ export function extractMeta(source: string): RouteMeta | null {
 
   const metaStr = fnMatch[1];
   try {
-    // Function constructor is safer than eval — no access to local scope
-    const fn = new Function(`return (${metaStr})`);
-    const result = fn() as RouteMeta;
+    // Convert JS object literal to JSON: unquoted keys, single quotes, trailing commas
+    const json = metaStr
+      .replace(/'/g, '"') // single quotes → double quotes
+      .replace(/(\w+)\s*:/g, '"$1":') // unquoted keys → quoted keys
+      .replace(/,\s*}/g, '}') // trailing commas
+      .replace(/,\s*]/g, ']'); // trailing commas in arrays
+    const result = JSON.parse(json) as RouteMeta;
     if (result && typeof result === 'object' && result.section && result.label) {
       return result;
     }
     return null;
   } catch {
-    // Fallback: JSON-like parse for simple { section: "Foo", label: "Bar" }
-    try {
-      const jsonLike = metaStr
-        .replace(/(\w+)\s*:/g, '"$1":')
-        .replace(/'/g, '"');
-      const result = JSON.parse(jsonLike) as RouteMeta;
-      if (result && result.section && result.label) {
-        return result;
-      }
-    } catch {
-      // Give up — meta syntax not parseable
-    }
     return null;
   }
 }

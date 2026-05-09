@@ -90,13 +90,14 @@ Deno.test('create-less: deno.json maps Lit and package imports explicitly', () =
   assertEquals(denoJson.imports.vite, 'npm:vite@8.0.10');
   // @lit-labs/ssr-dom-shim required by @lit/reactive-element in Vite SSR
   assertEquals(denoJson.imports['@lit-labs/ssr-dom-shim'], 'npm:@lit-labs/ssr-dom-shim@^1.5.0');
-  assertExists(denoJson.imports['@lessjs/adapter-lit'].includes('0.3.0'));
-  assertExists(denoJson.imports['@lessjs/core'].includes('0.6.0'));
-  assertExists(denoJson.imports['@lessjs/core/less-runtime'].includes('0.6.0'));
-  assertExists(denoJson.imports['@lessjs/ui'].includes('0.6.0'));
-  assertExists(denoJson.imports['@lessjs/ui/tokens/colors'].includes('0.6.0'));
-  assertExists(denoJson.imports['@lessjs/ui/tokens/color-values'].includes('0.6.0'));
-  assertExists(denoJson.imports['@lessjs/ui/'].includes('0.6.0/'));
+  assertExists(denoJson.imports['@lessjs/adapter-lit'].includes('0.7.0'));
+  assertExists(denoJson.imports['@lessjs/core'].includes('0.9.0'));
+  assertExists(denoJson.imports['@lessjs/core/less-runtime'].includes('0.9.0'));
+  assertExists(denoJson.imports['@lessjs/core/navigation'].includes('0.9.0'));
+  assertExists(denoJson.imports['@lessjs/ui'].includes('0.6.2'));
+  assertExists(denoJson.imports['@lessjs/ui/tokens/colors'].includes('0.6.2'));
+  assertExists(denoJson.imports['@lessjs/ui/tokens/color-values'].includes('0.6.2'));
+  assertExists(denoJson.imports['@lessjs/ui/'].includes('0.6.2/'));
   assertEquals(denoJson.nodeModulesDir, 'auto');
 });
 
@@ -128,7 +129,7 @@ Deno.test('create-less: vite.config.ts includes packageIslands config', () => {
   const viteConfig = extractTemplate('vite.config.ts');
   assertExists(viteConfig.includes('@lessjs/ui'));
   assertExists(viteConfig.includes('lessUiAliases'));
-  assertExists(viteConfig.includes('https://jsr.io/@lessjs/ui/0.5.2/src/less-button.ts'));
+  assertExists(viteConfig.includes('https://jsr.io/@lessjs/ui/0.6.2/src/less-button.ts'));
 });
 
 Deno.test('create-less: route index imports Lit directly', () => {

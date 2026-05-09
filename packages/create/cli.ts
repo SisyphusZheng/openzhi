@@ -9,6 +9,30 @@
 
 import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
 
+// ─── Package versions ──────────────────────────────────────────
+// Read from workspace deno.json at dev time; fallback at JSR publish time.
+function loadWorkspaceVersion(pkg: string): string {
+  try {
+    const selfPath = new URL('.', import.meta.url).pathname;
+    const wsPath = resolve(selfPath, '..', '..', pkg, 'deno.json');
+    return JSON.parse(Deno.readTextFileSync(wsPath)).version;
+  } catch {
+    // Fallback versions (embedded at JSR publish time)
+    const FALLBACKS: Record<string, string> = {
+      core: '0.9.0',
+      'adapter-lit': '0.7.0',
+      ui: '0.6.2',
+    };
+    return FALLBACKS[pkg] || '0.0.0';
+  }
+}
+
+const _v = {
+  core: loadWorkspaceVersion('core'),
+  adapterLit: loadWorkspaceVersion('adapter-lit'),
+  ui: loadWorkspaceVersion('ui'),
+};
+
 const TPL = {
   '.gitignore': `.less/
 dist/
@@ -22,14 +46,14 @@ node_modules/
     "lit-html": "npm:lit-html@^3",
     "@lit-labs/ssr-dom-shim": "npm:@lit-labs/ssr-dom-shim@^1.5.0",
     "vite": "npm:vite@8.0.10",
-    "@lessjs/adapter-lit": "jsr:@lessjs/adapter-lit@^0.7.0",
-    "@lessjs/core": "jsr:@lessjs/core@^0.9.0",
-    "@lessjs/core/less-runtime": "jsr:@lessjs/core@^0.9.0/less-runtime",
-    "@lessjs/core/navigation": "jsr:@lessjs/core@^0.9.0/navigation",
-    "@lessjs/ui": "jsr:@lessjs/ui@^0.6.0",
-    "@lessjs/ui/tokens/colors": "jsr:@lessjs/ui@^0.6.0/tokens/colors",
-    "@lessjs/ui/tokens/color-values": "jsr:@lessjs/ui@^0.6.0/tokens/color-values",
-    "@lessjs/ui/": "jsr:@lessjs/ui@^0.6.0/"
+    "@lessjs/adapter-lit": "jsr:@lessjs/adapter-lit@^${_v.adapterLit}",
+    "@lessjs/core": "jsr:@lessjs/core@^${_v.core}",
+    "@lessjs/core/less-runtime": "jsr:@lessjs/core@^${_v.core}/less-runtime",
+    "@lessjs/core/navigation": "jsr:@lessjs/core@^${_v.core}/navigation",
+    "@lessjs/ui": "jsr:@lessjs/ui@^${_v.ui}",
+    "@lessjs/ui/tokens/colors": "jsr:@lessjs/ui@^${_v.ui}/tokens/colors",
+    "@lessjs/ui/tokens/color-values": "jsr:@lessjs/ui@^${_v.ui}/tokens/color-values",
+    "@lessjs/ui/": "jsr:@lessjs/ui@^${_v.ui}/"
   },
   "nodeModulesDir": "auto",
   "tasks": {
@@ -52,18 +76,18 @@ import { defineConfig } from 'vite';
 const colorTokensStyle = '<style>' + lessRootColorCSS + 'body{margin:0;background:var(--less-bg-base);color:var(--less-text-primary);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}</style>';
 
 const lessUiAliases = {
-  '@lessjs/ui': 'https://jsr.io/@lessjs/ui/0.6.2/src/index.ts',
-  '@lessjs/ui/design-tokens': 'https://jsr.io/@lessjs/ui/0.6.2/src/design-tokens.ts',
-  '@lessjs/ui/less-button': 'https://jsr.io/@lessjs/ui/0.6.2/src/less-button.ts',
-  '@lessjs/ui/less-card': 'https://jsr.io/@lessjs/ui/0.6.2/src/less-card.ts',
-  '@lessjs/ui/less-code-block': 'https://jsr.io/@lessjs/ui/0.6.2/src/less-code-block.ts',
-  '@lessjs/ui/less-dialog': 'https://jsr.io/@lessjs/ui/0.6.2/src/less-dialog.ts',
-  '@lessjs/ui/less-hero-ping': 'https://jsr.io/@lessjs/ui/0.6.2/src/less-hero-ping.ts',
-  '@lessjs/ui/less-input': 'https://jsr.io/@lessjs/ui/0.6.2/src/less-input.ts',
-  '@lessjs/ui/less-layout': 'https://jsr.io/@lessjs/ui/0.6.2/src/less-layout.ts',
-  '@lessjs/ui/less-theme-toggle': 'https://jsr.io/@lessjs/ui/0.6.2/src/less-theme-toggle.ts',
-  '@lessjs/ui/tokens/colors': 'https://jsr.io/@lessjs/ui/0.6.2/src/tokens/colors.ts',
-  '@lessjs/ui/tokens/color-values': 'https://jsr.io/@lessjs/ui/0.6.2/src/tokens/color-values.ts',
+  '@lessjs/ui': 'https://jsr.io/@lessjs/ui/${_v.ui}/src/index.ts',
+  '@lessjs/ui/design-tokens': 'https://jsr.io/@lessjs/ui/${_v.ui}/src/design-tokens.ts',
+  '@lessjs/ui/less-button': 'https://jsr.io/@lessjs/ui/${_v.ui}/src/less-button.ts',
+  '@lessjs/ui/less-card': 'https://jsr.io/@lessjs/ui/${_v.ui}/src/less-card.ts',
+  '@lessjs/ui/less-code-block': 'https://jsr.io/@lessjs/ui/${_v.ui}/src/less-code-block.ts',
+  '@lessjs/ui/less-dialog': 'https://jsr.io/@lessjs/ui/${_v.ui}/src/less-dialog.ts',
+  '@lessjs/ui/less-hero-ping': 'https://jsr.io/@lessjs/ui/${_v.ui}/src/less-hero-ping.ts',
+  '@lessjs/ui/less-input': 'https://jsr.io/@lessjs/ui/${_v.ui}/src/less-input.ts',
+  '@lessjs/ui/less-layout': 'https://jsr.io/@lessjs/ui/${_v.ui}/src/less-layout.ts',
+  '@lessjs/ui/less-theme-toggle': 'https://jsr.io/@lessjs/ui/${_v.ui}/src/less-theme-toggle.ts',
+  '@lessjs/ui/tokens/colors': 'https://jsr.io/@lessjs/ui/${_v.ui}/src/tokens/colors.ts',
+  '@lessjs/ui/tokens/color-values': 'https://jsr.io/@lessjs/ui/${_v.ui}/src/tokens/color-values.ts',
 };
 
 export default defineConfig({
