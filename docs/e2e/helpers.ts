@@ -5,7 +5,7 @@
  * custom element rendering, and island script loading.
  */
 
-import type { Page, Locator } from '@playwright/test';
+import type { Locator, Page } from '@playwright/test';
 
 /**
  * Check if an element has a DSD template with the expected shadowrootmode.

@@ -285,6 +285,31 @@ export class LessLayout extends DsdLitElement {
           flex-shrink: 0;
         }
 
+        /* === Language Switcher === */
+        .lang-switch {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          min-width: 32px;
+          height: 24px;
+          padding: 0 var(--less-size-2);
+          font-size: var(--less-font-size-xs);
+          font-weight: var(--less-font-weight-medium);
+          color: var(--less-text-muted);
+          border: 0.5px solid var(--less-border);
+          border-radius: var(--less-radius-md);
+          background: transparent;
+          cursor: pointer;
+          text-decoration: none;
+          letter-spacing: var(--less-letter-spacing-wide);
+          transition: color var(--less-transition-normal), border-color var(--less-transition-normal);
+        }
+
+        .lang-switch:hover {
+          color: var(--less-text-secondary);
+          border-color: var(--less-border-hover);
+        }
+
         /* === Sidebar: unified desktop/mobile (v0.6) ===
         *
         * v0.6: SINGLE .docs-sidebar for both desktop and mobile.
@@ -579,6 +604,8 @@ export class LessLayout extends DsdLitElement {
       logoSub: { type: String, attribute: 'logo-sub' },
       githubUrl: { type: String, attribute: 'github-url' },
       editUrl: { type: String, attribute: 'edit-url' },
+      locale: { type: String },
+      locales: { type: Array },
     };
 
     /** Whether to show the home layout (no sidebar, full-width) */
@@ -597,6 +624,10 @@ export class LessLayout extends DsdLitElement {
     declare githubUrl: string;
     /** "Edit this page" URL (shown in footer when set) */
     declare editUrl: string | undefined;
+    /** Current locale code (e.g. 'en', 'zh') */
+    declare locale: string;
+    /** Available locales (e.g. ['en', 'zh']) */
+    declare locales: string[];
 
     constructor() {
       super();
@@ -607,6 +638,8 @@ export class LessLayout extends DsdLitElement {
       this.logoText = 'LessJS';
       this.logoSub = '';
       this.githubUrl = 'https://github.com/lessjs-run/LessJS';
+      this.locale = 'en';
+      this.locales = ['en'];
     }
 
     /** When DSD hydrated, return nothing — the shadow DOM already has content. */
@@ -645,6 +678,12 @@ export class LessLayout extends DsdLitElement {
                   </summary>
                 </details>
                 <less-theme-toggle></less-theme-toggle>
+                ${this.locales.length > 1
+                  ? html`
+                    <a class="lang-switch" href="${this._otherLocalePath()}">${this
+                      ._otherLocaleLabel()}</a>
+                  `
+                  : nothing}
                 <a class="github-link" href="${this.githubUrl}" aria-label="GitHub repository">
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
                     <path
@@ -686,6 +725,16 @@ export class LessLayout extends DsdLitElement {
 
     override connectedCallback() {
       super.connectedCallback(); // Mixin handles _hydrateEvents()
+
+      // Auto-detect locale from currentPath if locale prefix is present
+      if (this.locales.length > 1 && this.currentPath) {
+        for (const loc of this.locales) {
+          if (this.currentPath === `/${loc}` || this.currentPath.startsWith(`/${loc}/`)) {
+            this.locale = loc;
+            break;
+          }
+        }
+      }
 
       // Layout-specific: set up native <details> toggle for mobile menu
       if (this._dsdHydrated) {
@@ -763,6 +812,40 @@ export class LessLayout extends DsdLitElement {
     /** Cleanup for onNavigate listener */
     private _navUnlisten?: () => void;
 
+    // ─── i18n helpers ─────────────────────────────────────────────
+
+    /** Return the URL for the other locale (language switcher link) */
+    private _otherLocalePath(): string {
+      const others = this.locales.filter((l) => l !== this.locale);
+      const target = others[0] || this.locales[0];
+      // Replace current locale prefix in path, or prepend if at root
+      const path = this.currentPath;
+      for (const loc of this.locales) {
+        if (path === `/${loc}` || path.startsWith(`/${loc}/`)) {
+          return `/${target}${path.slice(loc.length + 1) || '/'}`;
+        }
+      }
+      return `/${target}${path}`;
+    }
+
+    /** Return display label for the other locale */
+    private _otherLocaleLabel(): string {
+      const others = this.locales.filter((l) => l !== this.locale);
+      const target = others[0] || this.locales[0];
+      return target === 'zh' ? '中文' : 'EN';
+    }
+
+    /** Prepend current locale to an internal path (if i18n is active) */
+    private _localizePath(path: string): string {
+      if (this.locales.length <= 1) return path;
+      if (path.startsWith('http')) return path;
+      // Already has locale prefix? Skip.
+      for (const loc of this.locales) {
+        if (path === `/${loc}` || path.startsWith(`/${loc}/`)) return path;
+      }
+      return `/${this.locale}${path}`;
+    }
+
     // ─── SPA Navigation ───────────────────────────────────────────
 
     /**
@@ -827,16 +910,17 @@ export class LessLayout extends DsdLitElement {
     }
 
     private _navLink(path: string, text: string) {
+      const localized = this._localizePath(path);
       const isExternal = path.startsWith('http');
-      const isActive = !isExternal && this.currentPath === path;
+      const isActive = !isExternal && this.currentPath === localized;
       return html`
         <a
-          href="${path}"
+          href="${localized}"
           class="${isActive ? 'active' : ''}"
           aria-current="${isActive ? 'page' : undefined}"
           target="${isExternal ? '_blank' : nothing}"
           rel="${isExternal ? 'noopener noreferrer' : nothing}"
-          data-nav="${isExternal ? '' : path}"
+          data-nav="${isExternal ? '' : localized}"
         >${text}</a>
       `;
     }
@@ -874,9 +958,10 @@ export class LessLayout extends DsdLitElement {
           ${links.map(
             (link) =>
               html`
-                <a href="${link.href}" data-nav="${link.href.startsWith('http')
-                  ? ''
-                  : link.href}">${link.label}</a>
+                <a
+                  href="${this._localizePath(link.href)}"
+                  data-nav="${link.href.startsWith('http') ? '' : this._localizePath(link.href)}"
+                >${link.label}</a>
               `,
           )}
         </nav>

@@ -102,6 +102,10 @@ export default defineConfig({
         contentDir: resolve(__dir, 'content/blog'),
         basePath: '/blog',
       },
+      i18n: {
+        locales: ['en', 'zh'],
+        defaultLocale: 'en',
+      },
       nav: {
         routesDir: resolve(__dir, 'app/routes'),
         headerNav: [

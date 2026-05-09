@@ -9,7 +9,13 @@ export class PositioningPage extends LitElement {
 
   override render() {
     return html`
-      <less-layout .navItems="${navSections}" .headerNav="${headerNav}" currentPath="/guide/positioning">
+      <less-layout
+        .navItems="${navSections}"
+        .headerNav="${headerNav}"
+        current-path="/en/guide/positioning"
+        locale="en"
+        .locales="${['en', 'zh']}"
+      >
         <div class="container">
           <h1>框架定位</h1>
           <p class="subtitle">

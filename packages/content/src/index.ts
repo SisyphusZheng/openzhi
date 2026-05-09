@@ -25,6 +25,7 @@ import type { Plugin } from 'vite';
 import type { HeaderNavLink, LessContentOptions, NavSection } from './types.ts';
 import { initBlogData } from './blog/blog-data.ts';
 import { scanNavData } from './nav/scanner.ts';
+import { initI18nData } from './i18n/i18n-data.ts';
 import { createLogger } from '@lessjs/core/logger';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -53,6 +54,11 @@ export {
 } from './sitemap/generator.ts';
 export type { SitemapOptions, SitemapUrl } from './types.ts';
 
+// i18n
+export { i18nStaticPaths, switchLocale } from './i18n/index.ts';
+export { getDefaultLocale, getI18nLocales } from './i18n/i18n-data.ts';
+export type { LessI18nOptions } from './i18n/types.ts';
+
 // ─── Virtual module IDs ─────────────────────────────────────────
 
 const VIRTUAL_NAV_ID = 'virtual:less-nav';
@@ -73,6 +79,7 @@ export function lessContent(options: LessContentOptions = {}): Plugin[] {
   const blogOpts = options.blog === false ? null : (options.blog || null);
   const navOpts = options.nav || null;
   const sitemapOpts = options.sitemap || null;
+  const i18nOpts = options.i18n === false ? null : (options.i18n || null);
 
   const contentPlugin: Plugin = {
     name: 'less:content',
@@ -147,6 +154,24 @@ export function lessContent(options: LessContentOptions = {}): Plugin[] {
           log.info(`Sitemap: configured for ${sitemapOpts.hostname}`);
         } catch (e) {
           log.warn(`Failed to write sitemap-options.json: ${e}`);
+        }
+      }
+
+      // ─── i18n module ─────────────────────────────────────
+      if (i18nOpts) {
+        initI18nData(i18nOpts);
+        try {
+          const root = process.cwd();
+          const lessDir = join(root, '.less');
+          mkdirSync(lessDir, { recursive: true });
+          writeFileSync(
+            join(lessDir, 'i18n-options.json'),
+            JSON.stringify(i18nOpts),
+            'utf-8',
+          );
+          log.info(`i18n: ${i18nOpts.locales.join(', ')} (default: ${i18nOpts.defaultLocale})`);
+        } catch (e) {
+          log.warn(`Failed to write i18n-options.json: ${e}`);
         }
       }
     },

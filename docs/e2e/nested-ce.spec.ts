@@ -8,7 +8,7 @@
  *   - LessJS UI components are present
  */
 
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 import { getCustomElementTags } from './helpers.js';
 
 test.describe('Nested Custom Elements', () => {

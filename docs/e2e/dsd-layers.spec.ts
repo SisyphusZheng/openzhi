@@ -12,7 +12,7 @@
  * rather than template elements.
  */
 
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 import { getCustomElementTags } from './helpers.js';
 
 test.describe('DSD Layers', () => {

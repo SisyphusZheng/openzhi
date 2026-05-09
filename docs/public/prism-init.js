@@ -15,7 +15,10 @@
     document.querySelectorAll('pre code').forEach(function (el) {
       var hasLang = false;
       for (var i = 0; i < el.classList.length; i++) {
-        if (el.classList[i].indexOf('language-') === 0) { hasLang = true; break; }
+        if (el.classList[i].indexOf('language-') === 0) {
+          hasLang = true;
+          break;
+        }
       }
       if (!hasLang) el.classList.add('language-typescript');
     });
