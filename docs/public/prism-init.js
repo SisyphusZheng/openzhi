@@ -1,87 +1,25 @@
 /**
- * Prism initialization — deferred script, runs after Prism core loads.
+ * Prism initialization — deferred script.
  *
- * Strategy: simple recursive DOM walk, no createNodeIterator.
- * Handles both light DOM and shadow roots reliably.
- * MutationObserver catches dynamically added content (SPA nav).
+ * Primary highlighting is handled by <less-code-block> components via
+ * connectedCallback. This script is a fallback that handles any bare
+ * <pre><code> in the light DOM that isn't inside a <less-code-block>.
  */
 (function () {
-  var HIGHLIGHTED = 'data-prism-highlighted';
-
   function init() {
     if (typeof Prism === 'undefined') {
       setTimeout(init, 50);
       return;
     }
-    highlightAll();
-    // Retry after DSD polyfill / Lit upgrade settles
-    setTimeout(highlightAll, 500);
-    // Watch for new content (SPA navigation, dynamic islands)
-    var obs = new MutationObserver(function () {
-      highlightAll();
-    });
-    if (document.body) {
-      obs.observe(document.body, { childList: true, subtree: true });
-    }
-  }
-
-  /** Walk the entire DOM tree, descend into shadow roots, highlight any <pre><code>. */
-  function highlightAll() {
-    walkAndHighlight(document.body);
-  }
-
-  /**
-   * Recursively walk a subtree.
-   * For each element: if it has a shadow root, query the shadow root directly.
-   * Then recurse into both shadow root children AND regular DOM children.
-   */
-  function walkAndHighlight(node) {
-    if (!node || node.nodeType !== 1) return;
-    var el = node;
-
-    // Check this element's shadow root
-    if (el.shadowRoot) {
-      highlightScope(el.shadowRoot);
-      // Recurse into shadow roots
-      var shadowKids = el.shadowRoot.children;
-      for (var i = 0; i < shadowKids.length; i++) {
-        walkAndHighlight(shadowKids[i]);
-      }
-    }
-
-    // Check direct <pre><code> children in light DOM
-    highlightScope(el);
-
-    // Recurse into regular DOM children
-    var kids = el.children;
-    for (var i = 0; i < kids.length; i++) {
-      walkAndHighlight(kids[i]);
-    }
-  }
-
-  /**
-   * Find all <pre><code> in the given scope (Document, ShadowRoot, or Element),
-   * add default language class, and call Prism.highlightElement().
-   */
-  function highlightScope(scope) {
-    var codes = scope.querySelectorAll('pre code');
-    codes.forEach(function (el) {
-      if (el.hasAttribute(HIGHLIGHTED)) return;
+    // Add default language class + highlight bare <pre><code> in light DOM
+    document.querySelectorAll('pre code').forEach(function (el) {
       var hasLang = false;
-      var classes = el.classList;
-      for (var j = 0; j < classes.length; j++) {
-        if (classes[j].indexOf('language-') === 0) { hasLang = true; break; }
+      for (var i = 0; i < el.classList.length; i++) {
+        if (el.classList[i].indexOf('language-') === 0) { hasLang = true; break; }
       }
-      if (!hasLang) {
-        el.classList.add('language-typescript');
-      }
-      try {
-        Prism.highlightElement(el);
-        el.setAttribute(HIGHLIGHTED, '');
-      } catch (e) {
-        // Prism may fail on some elements; skip
-      }
+      if (!hasLang) el.classList.add('language-typescript');
     });
+    Prism.highlightAll();
   }
 
   if (document.readyState === 'loading') {

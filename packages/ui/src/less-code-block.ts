@@ -2,18 +2,17 @@
  * @lessjs/ui - less-code-block
  *
  * Code block with copy button AND syntax highlighting via Prism.
- * v0.9.0: Self-contained Prism highlighting — each <code-block>
- *   highlights its own <pre><code> on upgrade. This is more reliable
- *   than external shadow DOM traversal because the component owns
- *   its own DOM structure.
+ *
+ * v0.9.0+: Self-contained Prism highlighting. On upgrade, the component
+ * reads raw code from light DOM, tokenizes with Prism, and MOVES the
+ * highlighted HTML into its own shadow root. This way the component's
+ * CSS (including `.token.*` rules) can style the tokens — no reliance
+ * on external CSS penetrating Shadow DOM.
+ *
+ * SSR (no JS): raw <pre><code> visible via <slot>
+ * Client JS:  highlighted code rendered inside shadow root
  *
  * DSD makes content visible without JavaScript.
- *
- * v0.6.2: Fixed DSD hydration — copy button now works after DSD upgrade.
- *   - Uses WithDsdHydration Mixin for DSD detection + event binding
- *   - Added _updateCopyButtonDOM() for direct DOM updates
- *     (Lit won't re-render when _dsdHydrated is true)
- *   - _copyState is tracked internally but DOM is updated directly
  *
  * Usage:
  * ```html
@@ -29,14 +28,6 @@ import { DsdLitElement } from '@lessjs/adapter-lit';
 
 export const tagName = 'less-code-block';
 
-/**
- * Code block with copy button and DSD hydration.
- *
- * Uses WithDsdHydration Mixin for the common DSD pattern:
- *   - Detects pre-populated shadow root from DSD
- *   - Binds events declared in `static hydrateEvents`
- *   - Cleans up listeners on disconnect
- */
 export class LessCodeBlock extends DsdLitElement {
   /** Declarative event bindings for DSD hydration */
   static hydrateEvents = [
@@ -51,6 +42,26 @@ export class LessCodeBlock extends DsdLitElement {
         position: relative;
       }
 
+      /* Shared pre/code styles (used by both SSR slot and client-rendered HTML) */
+      pre {
+        margin: 0;
+        padding: var(--less-size-5);
+        background: var(--less-code-bg);
+        border: 0.5px solid var(--less-code-border);
+        border-radius: var(--less-radius-sm);
+        overflow-x: auto;
+        font-family: var(--less-font-mono);
+        font-size: var(--less-font-size-sm);
+        line-height: var(--less-line-height-normal);
+        color: var(--less-text-secondary);
+        scrollbar-width: thin;
+        scrollbar-color: var(--less-border) transparent;
+        /* Allow long strings to wrap so they don't overflow */
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+
+      /* SSR slot-only: style slotted <pre> */
       ::slotted(pre) {
         margin: 0;
         padding: var(--less-size-5);
@@ -96,30 +107,101 @@ export class LessCodeBlock extends DsdLitElement {
         color: var(--less-error, #e55);
         border-color: var(--less-error, #e55);
       }
+
+      /* ── Prism.js token colors ──────────────────────────────────
+      * Inlined here because these rules need to be inside the
+      * component's shadow root to style the highlighted tokens.
+      */
+      .token.cdata,
+      .token.comment,
+      .token.doctype,
+      .token.prolog {
+        color: #708090;
+      }
+      .token.punctuation {
+        color: #999;
+      }
+      .token.namespace {
+        opacity: 0.7;
+      }
+      .token.boolean,
+      .token.constant,
+      .token.deleted,
+      .token.number,
+      .token.property,
+      .token.symbol,
+      .token.tag {
+        color: #905;
+      }
+      .token.attr-name,
+      .token.builtin,
+      .token.char,
+      .token.inserted,
+      .token.selector,
+      .token.string {
+        color: #690;
+      }
+      .token.entity,
+      .token.operator,
+      .token.url,
+      .language-css .token.string,
+      .style .token.string {
+        color: #9a6e3a;
+      }
+      .token.atrule,
+      .token.attr-value,
+      .token.keyword {
+        color: #07a;
+      }
+      .token.class-name,
+      .token.function {
+        color: #dd4a68;
+      }
+      .token.important,
+      .token.regex,
+      .token.variable {
+        color: #e90;
+      }
+      .token.bold,
+      .token.important {
+        font-weight: 700;
+      }
+      .token.italic {
+        font-style: italic;
+      }
+      .token.entity {
+        cursor: help;
+      }
     `,
   ];
 
   static override properties = {
     _copyState: { state: true },
+    _langClass: { state: true },
   };
 
   declare private _copyState: 'idle' | 'copied' | 'failed';
+  /** Language class detected from the light DOM <code> (e.g. 'language-typescript') */
+  declare private _langClass: string;
   private _copyTimer: ReturnType<typeof globalThis.setTimeout> | undefined;
+  private _highlightTimer: ReturnType<typeof globalThis.setTimeout> | undefined;
+  /** Whether we have already injected highlighted HTML into the shadow root */
+  private _highlightedInShadow = false;
 
   constructor() {
     super();
     this._copyState = 'idle';
+    this._langClass = '';
   }
 
   override connectedCallback() {
     super.connectedCallback();
-    // Trigger Prism highlighting for code inside this block.
-    // This runs after CE upgrade, whether from DSD or client render.
+    // Trigger Prism highlighting after CE upgrade.
     this._tryHighlight();
   }
 
   override disconnectedCallback() {
-    super.disconnectedCallback(); // Mixin handles _hydrateAbortController
+    super.disconnectedCallback();
     if (this._copyTimer !== undefined) {
       clearTimeout(this._copyTimer);
       this._copyTimer = undefined;
@@ -131,35 +213,83 @@ export class LessCodeBlock extends DsdLitElement {
   }
 
   /**
-   * After upgrade (DSD or client render), highlight the embedded code.
-   * Uses a retry loop because Prism might not be loaded yet
-   * (defer scripts may not have executed before CE upgrade).
+   * Read raw code from light DOM, tokenize with Prism, then inject the
+   * highlighted HTML directly into the shadow root (replacing the <slot>).
+   *
+   * Retries if Prism hasn't loaded yet.
    */
   private _tryHighlight(): void {
     const p = (globalThis as any).Prism;
     if (typeof p === 'undefined') {
-      // Prism hasn't loaded yet — retry
       this._highlightTimer = globalThis.setTimeout(() => this._tryHighlight(), 50);
       return;
     }
-    // Find the <pre><code> in light DOM.
-    // Using :scope > pre is more explicit than querySelector('pre code')
-    // for shadow hosts — guarantees we search light DOM, not shadow tree.
+
+    // Find <pre><code> in this component's light DOM
     const pre = this.querySelector(':scope > pre') || Array.from(this.children).find(function (c) {
-      return c.tagName === 'PRE';
+      return (c as Element).tagName === 'PRE';
     });
     if (!pre) return;
-    const code = pre.querySelector('code');
-    if (!code) return;
-    // Add default language class if missing
-    if (!Array.from(code.classList).some((c: string) => c.startsWith('language-'))) {
-      code.classList.add('language-typescript');
+    const codeEl = pre.querySelector('code');
+    if (!codeEl) return;
+
+    // Detect language class
+    let lang = 'typescript';
+    const classes = codeEl.classList;
+    for (let i = 0; i < classes.length; i++) {
+      if (classes[i].startsWith('language-')) {
+        lang = classes[i].slice(9); // e.g. 'language-typescript' → 'typescript'
+        break;
+      }
     }
-    // Highlight this element
-    p.highlightElement(code);
+    if (!lang) lang = 'typescript';
+    this._langClass = 'language-' + lang;
+
+    // Read raw code
+    const raw = codeEl.textContent || '';
+
+    // Tokenize
+    const grammar = p.languages[lang];
+    if (!grammar) {
+      // Grammar not loaded — try again (the defer-loaded grammars may not be ready yet)
+      this._highlightTimer = globalThis.setTimeout(() => this._tryHighlight(), 100);
+      return;
+    }
+    const highlightedHtml = p.highlight(raw, grammar, lang);
+
+    // Inject highlighted HTML into shadow root (replaces <slot>)
+    this._injectHighlighted(highlightedHtml);
   }
 
-  private _highlightTimer: ReturnType<typeof globalThis.setTimeout> | undefined;
+  /**
+   * Replace the <slot> element in the shadow root with a <pre><code>
+   * containing the Prism-highlighted HTML, plus keep the copy button.
+   *
+   * After this, the highlighted <span class="token ..."> elements are
+   * INSIDE the shadow root, so the component's CSS (with inline token
+   * colors) can style them.
+   */
+  private _injectHighlighted(html: string): void {
+    if (!this.shadowRoot || this._highlightedInShadow) return;
+    this._highlightedInShadow = true;
+
+    const slot = this.shadowRoot.querySelector('slot');
+    if (!slot) return;
+
+    // Build the highlighted <pre><code>
+    const highlightedPre = document.createElement('pre');
+    const highlightedCode = document.createElement('code');
+    highlightedCode.className = this._langClass || 'language-typescript';
+    highlightedCode.innerHTML = html;
+    highlightedPre.appendChild(highlightedCode);
+
+    // Replace <slot> with the highlighted pre
+    slot.replaceWith(highlightedPre);
+
+    // Hide the light DOM <pre><code> so it doesn't show through
+    const lightPre = this.querySelector('pre');
+    if (lightPre) lightPre.style.display = 'none';
+  }
 
   /** When DSD hydrated, return nothing — the shadow DOM already has content. */
   override render(): TemplateResult | typeof nothing {
@@ -181,9 +311,18 @@ export class LessCodeBlock extends DsdLitElement {
     `;
   }
 
+  /** Read highlighted code from either shadow root (client) or light DOM (SSR) */
+  private _getCodeText(): string {
+    if (this.shadowRoot) {
+      const shadowCode = this.shadowRoot.querySelector('pre code');
+      if (shadowCode) return shadowCode.textContent || '';
+    }
+    return this.textContent || '';
+  }
+
   private async _copy() {
     try {
-      const text = this.textContent || '';
+      const text = this._getCodeText();
       await navigator.clipboard.writeText(text);
       this._copyState = 'copied';
       this._updateCopyButtonDOM();
@@ -214,11 +353,9 @@ export class LessCodeBlock extends DsdLitElement {
     const btn = this.shadowRoot.querySelector('button.copy-btn');
     if (!btn) return;
 
-    // Update class list
     btn.classList.toggle('copied', this._copyState === 'copied');
     btn.classList.toggle('failed', this._copyState === 'failed');
 
-    // Update text content
     if (this._copyState === 'copied') {
       btn.textContent = 'Copied!';
     } else if (this._copyState === 'failed') {
