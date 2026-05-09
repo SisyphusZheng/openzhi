@@ -82,6 +82,45 @@ export default class CodeBlock extends LitElement {
     this._copyState = 'idle';
   }
 
+  override connectedCallback() {
+    super.connectedCallback();
+    this._tryHighlight();
+  }
+
+  override disconnectedCallback() {
+    super.disconnectedCallback();
+    if (this._highlightTimer !== undefined) {
+      clearTimeout(this._highlightTimer);
+      this._highlightTimer = undefined;
+    }
+  }
+
+  /**
+   * Trigger Prism syntax highlighting for the code block after upgrade.
+   * Retries if Prism hasn't loaded yet.
+   */
+  private _tryHighlight(): void {
+    const p = (globalThis as any).Prism;
+    if (typeof p === 'undefined') {
+      this._highlightTimer = globalThis.setTimeout(() => this._tryHighlight(), 50);
+      return;
+    }
+    // Find <pre><code> in light DOM — :scope > pre is explicit for shadow hosts
+    const pre = this.querySelector(':scope > pre') || Array.from(this.children).find(function (c) {
+      return c.tagName === 'PRE';
+    });
+    if (!pre) return;
+    const code = pre.querySelector('code');
+    if (!code) return;
+    // Add default language class if missing
+    if (!Array.from(code.classList).some((c: string) => c.startsWith('language-'))) {
+      code.classList.add('language-typescript');
+    }
+    p.highlightElement(code);
+  }
+
+  private _highlightTimer: ReturnType<typeof globalThis.setTimeout> | undefined;
+
   override render() {
     return html`
       <slot></slot>
