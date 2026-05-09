@@ -4,7 +4,14 @@
  * Tests the SSG post-processing functions using temp directories.
  */
 import { assertEquals, assertExists, assertFalse } from 'jsr:@std/assert@^1.0.0';
-import { buildIslandChunkMap, injectClientScript, injectCspMeta } from '../src/ssg-postprocess.ts';
+import {
+  buildIslandChunkMap,
+  buildSpeculationRulesJson,
+  injectClientScript,
+  injectCspMeta,
+  injectSpeculationRules,
+  injectViewTransitionMeta,
+} from '../src/ssg-postprocess.ts';
 
 import { join } from 'node:path';
 import { mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
@@ -372,6 +379,273 @@ Deno.test('injectClientScript skips non-HTML files', () => {
 
     const jsContent = readFileSync(jsPath, 'utf-8');
     assertEquals(jsContent, 'console.log("hi")', 'JS files should not be modified');
+  } finally {
+    cleanup(tmp);
+  }
+});
+
+// ─── injectViewTransitionMeta ─────────────────────────────────
+
+Deno.test('injectViewTransitionMeta adds meta tag to HTML files', () => {
+  const tmp = makeTempDir();
+  try {
+    const htmlPath = join(tmp, 'index.html');
+    writeFileSync(htmlPath, '<html><head></head><body><p>Hello</p></body></html>', 'utf-8');
+
+    injectViewTransitionMeta(tmp);
+
+    const content = readFileSync(htmlPath, 'utf-8');
+    assertExists(content.includes('view-transition'));
+    assertExists(content.includes('same-origin'));
+  } finally {
+    cleanup(tmp);
+  }
+});
+
+Deno.test('injectViewTransitionMeta does not duplicate on repeated calls', () => {
+  const tmp = makeTempDir();
+  try {
+    const htmlPath = join(tmp, 'index.html');
+    writeFileSync(htmlPath, '<html><head></head><body></body></html>', 'utf-8');
+
+    injectViewTransitionMeta(tmp);
+    injectViewTransitionMeta(tmp);
+
+    const content = readFileSync(htmlPath, 'utf-8');
+    const count = (content.match(/view-transition/g) || []).length;
+    assertEquals(count, 1);
+  } finally {
+    cleanup(tmp);
+  }
+});
+
+Deno.test('injectViewTransitionMeta recurses into subdirectories', () => {
+  const tmp = makeTempDir();
+  try {
+    mkdirSync(join(tmp, 'guide'));
+    writeFileSync(join(tmp, 'index.html'), '<html><head></head><body></body></html>', 'utf-8');
+    writeFileSync(
+      join(tmp, 'guide', 'page.html'),
+      '<html><head></head><body></body></html>',
+      'utf-8',
+    );
+
+    injectViewTransitionMeta(tmp);
+
+    assertExists(readFileSync(join(tmp, 'index.html'), 'utf-8').includes('view-transition'));
+    assertExists(
+      readFileSync(join(tmp, 'guide', 'page.html'), 'utf-8').includes('view-transition'),
+    );
+  } finally {
+    cleanup(tmp);
+  }
+});
+
+Deno.test('injectViewTransitionMeta skips non-HTML files', () => {
+  const tmp = makeTempDir();
+  try {
+    const htmlPath = join(tmp, 'index.html');
+    const txtPath = join(tmp, 'readme.txt');
+    writeFileSync(htmlPath, '<html><head></head><body></body></html>', 'utf-8');
+    writeFileSync(txtPath, 'Not HTML', 'utf-8');
+
+    injectViewTransitionMeta(tmp);
+
+    const txtContent = readFileSync(txtPath, 'utf-8');
+    assertEquals(txtContent, 'Not HTML');
+  } finally {
+    cleanup(tmp);
+  }
+});
+
+Deno.test('injectViewTransitionMeta handles HTML without <head> tag', () => {
+  const tmp = makeTempDir();
+  try {
+    const htmlPath = join(tmp, 'no-head.html');
+    writeFileSync(htmlPath, '<html><body><p>No head</p></body></html>', 'utf-8');
+
+    injectViewTransitionMeta(tmp);
+
+    const content = readFileSync(htmlPath, 'utf-8');
+    assertExists(content.includes('view-transition'));
+  } finally {
+    cleanup(tmp);
+  }
+});
+
+// ─── buildSpeculationRulesJson ────────────────────────────────
+
+Deno.test('buildSpeculationRulesJson returns empty string for no options and no routes', () => {
+  const result = buildSpeculationRulesJson({});
+  assertEquals(result, '');
+});
+
+Deno.test('buildSpeculationRulesJson generates heuristic prefetch rules from routes', () => {
+  const result = buildSpeculationRulesJson({}, [
+    { path: '/', type: 'page' },
+    { path: '/about', type: 'page' },
+    { path: '/api/data', type: 'api' },
+    { path: '/blog/:slug', type: 'page' },
+  ]);
+
+  const parsed = JSON.parse(result);
+  assertExists(parsed.prefetch);
+  // Static pages should be included
+  assertExists(
+    parsed.prefetch.some((r: { where: { href_matches: string } }) => r.where.href_matches === '/'),
+  );
+  assertExists(
+    parsed.prefetch.some((r: { where: { href_matches: string } }) =>
+      r.where.href_matches === '/about/*'
+    ),
+  );
+  // Dynamic routes (with :) should be excluded
+  assertFalse(result.includes('/blog/:slug'));
+});
+
+Deno.test('buildSpeculationRulesJson generates user-provided prerender rules', () => {
+  const result = buildSpeculationRulesJson({
+    prerender: ['/guide/*'],
+  });
+
+  const parsed = JSON.parse(result);
+  assertExists(parsed.prerender);
+  assertEquals(parsed.prerender[0].where.href_matches, '/guide/*');
+});
+
+Deno.test('buildSpeculationRulesJson generates user-provided prefetch rules', () => {
+  const result = buildSpeculationRulesJson({
+    prefetch: ['/about', '/blog/*'],
+  });
+
+  const parsed = JSON.parse(result);
+  assertExists(parsed.prefetch);
+  assertEquals(parsed.prefetch.length, 2);
+});
+
+Deno.test('buildSpeculationRulesJson applies exclusion to user rules', () => {
+  const result = buildSpeculationRulesJson({
+    prerender: ['/guide/*'],
+    exclude: ['/api/*'],
+  });
+
+  const parsed = JSON.parse(result);
+  assertExists(parsed.prerender[0].where.not);
+});
+
+Deno.test('buildSpeculationRulesJson sets eagerness when not moderate', () => {
+  const result = buildSpeculationRulesJson({
+    prerender: ['/guide/*'],
+    eagerness: 'immediate',
+  });
+
+  const parsed = JSON.parse(result);
+  assertEquals(parsed.prerender[0].eagerness, 'immediate');
+});
+
+Deno.test('buildSpeculationRulesJson omits eagerness when moderate (default)', () => {
+  const result = buildSpeculationRulesJson({
+    prerender: ['/guide/*'],
+    eagerness: 'moderate',
+  });
+
+  const parsed = JSON.parse(result);
+  assertEquals(parsed.prerender[0].eagerness, undefined);
+});
+
+Deno.test('buildSpeculationRulesJson excludes API routes in heuristic mode', () => {
+  const result = buildSpeculationRulesJson({}, [
+    { path: '/', type: 'page' },
+    { path: '/api/data', type: 'api' },
+  ]);
+
+  const parsed = JSON.parse(result);
+  assertExists(parsed.prefetch[0].where.not);
+});
+
+Deno.test('buildSpeculationRulesJson returns empty string when no static pages', () => {
+  const result = buildSpeculationRulesJson({}, [
+    { path: '/api/data', type: 'api' },
+    { path: '/blog/:slug', type: 'page' },
+  ]);
+
+  assertEquals(result, '');
+});
+
+// ─── injectSpeculationRules ───────────────────────────────────
+
+Deno.test('injectSpeculationRules adds script tag to HTML files', () => {
+  const tmp = makeTempDir();
+  try {
+    const htmlPath = join(tmp, 'index.html');
+    writeFileSync(htmlPath, '<html><head></head><body></body></html>', 'utf-8');
+
+    const rulesJson = JSON.stringify(
+      { prefetch: [{ where: { href_matches: '/about/*' } }] },
+      null,
+      2,
+    );
+    injectSpeculationRules(tmp, rulesJson);
+
+    const content = readFileSync(htmlPath, 'utf-8');
+    assertExists(content.includes('speculationrules'));
+    assertExists(content.includes('/about/*'));
+  } finally {
+    cleanup(tmp);
+  }
+});
+
+Deno.test('injectSpeculationRules does nothing with empty rules', () => {
+  const tmp = makeTempDir();
+  try {
+    const htmlPath = join(tmp, 'index.html');
+    writeFileSync(htmlPath, '<html><head></head><body></body></html>', 'utf-8');
+
+    injectSpeculationRules(tmp, '');
+
+    const content = readFileSync(htmlPath, 'utf-8');
+    assertFalse(content.includes('speculationrules'));
+  } finally {
+    cleanup(tmp);
+  }
+});
+
+Deno.test('injectSpeculationRules does not duplicate on repeated calls', () => {
+  const tmp = makeTempDir();
+  try {
+    const htmlPath = join(tmp, 'index.html');
+    writeFileSync(htmlPath, '<html><head></head><body></body></html>', 'utf-8');
+
+    const rulesJson = JSON.stringify({ prefetch: [{ where: { href_matches: '/' } }] }, null, 2);
+    injectSpeculationRules(tmp, rulesJson);
+    injectSpeculationRules(tmp, rulesJson);
+
+    const content = readFileSync(htmlPath, 'utf-8');
+    const count = (content.match(/speculationrules/g) || []).length;
+    assertEquals(count, 1);
+  } finally {
+    cleanup(tmp);
+  }
+});
+
+Deno.test('injectSpeculationRules recurses into subdirectories', () => {
+  const tmp = makeTempDir();
+  try {
+    mkdirSync(join(tmp, 'blog'));
+    writeFileSync(join(tmp, 'index.html'), '<html><head></head><body></body></html>', 'utf-8');
+    writeFileSync(
+      join(tmp, 'blog', 'post.html'),
+      '<html><head></head><body></body></html>',
+      'utf-8',
+    );
+
+    const rulesJson = JSON.stringify({ prefetch: [{ where: { href_matches: '/*' } }] }, null, 2);
+    injectSpeculationRules(tmp, rulesJson);
+
+    assertExists(readFileSync(join(tmp, 'index.html'), 'utf-8').includes('speculationrules'));
+    assertExists(
+      readFileSync(join(tmp, 'blog', 'post.html'), 'utf-8').includes('speculationrules'),
+    );
   } finally {
     cleanup(tmp);
   }

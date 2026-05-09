@@ -22,6 +22,7 @@ import { join } from 'node:path';
 import process from 'node:process';
 import { existsSync, readdirSync, readFileSync, unlinkSync } from 'node:fs';
 import type { FrameworkOptions, PackageIslandMeta } from '../types.js';
+import type { SpeculationRulesOptions } from '../ssg-postprocess.js';
 import { SsrRenderError } from '../errors.js';
 import { createLogger } from '../logger.js';
 
@@ -47,6 +48,20 @@ interface BuildSSGOptions {
   resolveAlias?: Record<string, string> | import('vite').Alias[];
   base?: string;
   pwa?: { name?: string; shortName?: string; themeColor?: string; backgroundColor?: string };
+  /**
+   * View Transitions API configuration.
+   * When true (default), injects <meta name="view-transition" content="same-origin">
+   * into all HTML files for smooth cross-page animations in MPA navigation.
+   * Set to false to disable.
+   * @default true
+   */
+  viewTransition?: boolean;
+  /**
+   * Speculation Rules API configuration.
+   * Enables browser prefetch/prerender of pages before the user navigates.
+   * Can be a boolean (true = auto-generate from routes) or explicit rules.
+   */
+  speculation?: boolean | import('../ssg-postprocess.js').SpeculationRulesOptions;
 }
 
 /** Recursively find all .html files in a directory (excluding client/, server/, hidden dirs). */
@@ -111,6 +126,12 @@ async function buildSSG(options: BuildSSGOptions = {}): Promise<void> {
     }
     if (!options.base && metadata.base) {
       options.base = metadata.base as string;
+    }
+    if (options.viewTransition === undefined && metadata.viewTransition !== undefined) {
+      options.viewTransition = metadata.viewTransition as boolean;
+    }
+    if (!options.speculation && metadata.speculation) {
+      options.speculation = metadata.speculation as boolean | SpeculationRulesOptions;
     }
     // v0.5.0 note: upgradeStrategy controls island module import timing.
     // It is not a client render runtime.
@@ -680,10 +701,42 @@ async function buildSSG(options: BuildSSGOptions = {}): Promise<void> {
       }
 
       // Post-process: build island chunk map for speculative links
-      const { buildIslandChunkMap, injectCspMeta, injectDsdPolyfill } = await import(
-        '../ssg-postprocess.js'
-      );
+      const {
+        buildIslandChunkMap,
+        injectCspMeta,
+        injectDsdPolyfill,
+        injectViewTransitionMeta,
+        injectSpeculationRules,
+        buildSpeculationRulesJson,
+      } = await import('../ssg-postprocess.js');
       const _islandChunkMap = buildIslandChunkMap(root, outDir, islandTagNames, basePath);
+
+      // Post-process: inject View Transitions meta tag.
+      // Enables smooth cross-page animations for MPA navigation.
+      // Supported: Chrome 111+, Safari 18+, Firefox 129+.
+      // Unsupported browsers silently ignore the meta tag.
+      const enableViewTransition = options.viewTransition !== false;
+      if (enableViewTransition) {
+        injectViewTransitionMeta(outputDir);
+        log.info('View Transitions meta tag injected into static HTML');
+      }
+
+      // Post-process: inject Speculation Rules for prefetch/prerender.
+      // Enables the browser to prefetch or prerender pages before navigation,
+      // making page loads feel instant for SSG sites.
+      // Supported: Chrome 121+, Edge 121+. Safari/Firefox gracefully ignore.
+      if (options.speculation) {
+        const specOpts = typeof options.speculation === 'boolean'
+          ? {} // boolean true → use heuristic defaults
+          : options.speculation;
+        const rulesJson = buildSpeculationRulesJson(specOpts, routes);
+        if (rulesJson) {
+          injectSpeculationRules(outputDir, rulesJson);
+          log.info('Speculation Rules injected into static HTML');
+        } else {
+          log.info('Speculation Rules: no rules generated (no matching routes)');
+        }
+      }
 
       // Post-process: inject CSP <meta> tag into static HTML files.
       // SSG outputs static files — CSP nonces are not possible here,

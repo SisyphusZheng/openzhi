@@ -5,6 +5,13 @@
  * No Vite dependency — these functions only read/write files.
  *
  * URLPattern is used for route matching per WHATWG §7.2.
+ *
+ * Post-processing pipeline (called after SSG rendering):
+ * 1. injectClientScript() — add island client entry
+ * 2. injectViewTransitionMeta() — enable cross-page View Transitions
+ * 3. injectSpeculationRules() — prefetch/prerender for navigation performance
+ * 4. injectCspMeta() — Content-Security-Policy meta tag
+ * 5. injectDsdPolyfill() — DSD polyfill for Firefox
  */
 
 import { join, resolve } from 'node:path';
@@ -200,6 +207,201 @@ export function injectDsdPolyfill(dir: string): void {
       let content = readFileSync(fullPath, 'utf-8');
       if (!content.includes('DSD Polyfill')) {
         content = insertAfterHead(content, DSD_POLYFILL);
+        writeFileSync(fullPath, content, 'utf-8');
+      }
+    }
+  }
+}
+
+// ─── View Transitions API ─────────────────────────────────────────────
+
+/**
+ * Inject View Transitions meta tag into all HTML files.
+ *
+ * The View Transitions API (Chrome 111+, Safari 18+, Firefox 129+) enables
+ * smooth cross-page animations for MPA (Multi-Page App) navigation.
+ * For SSG sites, this is a single meta tag — zero JavaScript required.
+ *
+ * When a user clicks a link, the browser automatically creates a cross-fade
+ * transition between the old and new page. No SPA routing needed.
+ *
+ * Supported browsers: Chrome 111+, Edge 111+, Safari 18+, Firefox 129+.
+ * Unsupported browsers silently ignore the meta tag (graceful degradation).
+ *
+ * @see https://developer.mozilla.org/en-US/docs/Web/API/View_Transitions_API
+ * @see https://chromestatus.com/feature/5190686707568640
+ */
+export function injectViewTransitionMeta(dir: string): void {
+  const metaTag = '  <meta name="view-transition" content="same-origin">';
+
+  const entries = readdirSync(dir, { withFileTypes: true });
+  for (const entry of entries) {
+    const fullPath = join(dir, entry.name);
+    if (entry.isDirectory()) {
+      injectViewTransitionMeta(fullPath);
+    } else if (entry.name.endsWith('.html')) {
+      let content = readFileSync(fullPath, 'utf-8');
+      if (!content.includes('view-transition')) {
+        content = insertAfterHead(content, metaTag);
+        writeFileSync(fullPath, content, 'utf-8');
+      }
+    }
+  }
+}
+
+// ─── Speculation Rules API ────────────────────────────────────────────
+
+/** Speculation Rules configuration for SSG post-processing */
+export interface SpeculationRulesOptions {
+  /**
+   * URL patterns to prerender (fully render in background before navigation).
+   * Prerender gives instant page loads but uses more bandwidth/memory.
+   * Best for high-probability navigation targets (e.g. /guide/*).
+   */
+  prerender?: string[];
+
+  /**
+   * URL patterns to prefetch (fetch HTML + resources without rendering).
+   * Lighter than prerender, good for medium-probability links.
+   */
+  prefetch?: string[];
+
+  /**
+   * URL patterns to exclude from both prefetch and prerender.
+   * Typically API routes and dynamic pages that shouldn't be speculatively loaded.
+   */
+  exclude?: string[];
+
+  /**
+   * Eagerness level for prerender rules.
+   * - 'immediate': prerender as soon as the rule is parsed (aggressive)
+   * - 'moderate': prerender on hover (default, recommended)
+   * - 'conservative': prerender on pointerdown or click
+   * @default 'moderate'
+   */
+  eagerness?: 'immediate' | 'moderate' | 'conservative';
+}
+
+/**
+ * Build Speculation Rules JSON from configuration and known routes.
+ *
+ * If user-provided rules exist, they are used directly.
+ * Otherwise, heuristics are applied based on the route list:
+ * - Static page routes → prefetch
+ * - Dynamic routes (containing :) → excluded (content depends on params)
+ * - API routes → excluded
+ *
+ * @param options - User-provided speculation rules configuration
+ * @param routes - Known route entries from route scanner (for heuristic rules)
+ * @returns Speculation Rules JSON string, or empty string if no rules apply
+ */
+export function buildSpeculationRulesJson(
+  options: SpeculationRulesOptions,
+  routes?: Array<{ path: string; type: string }>,
+): string {
+  // If user provided explicit rules, use them
+  if (options.prerender?.length || options.prefetch?.length) {
+    const rules: Record<string, unknown[]> = {};
+
+    if (options.prerender && options.prerender.length > 0) {
+      rules.prerender = options.prerender.map((pattern) => ({
+        where: { href_matches: pattern },
+        ...(options.eagerness && options.eagerness !== 'moderate'
+          ? { eagerness: options.eagerness }
+          : {}),
+      }));
+    }
+
+    if (options.prefetch && options.prefetch.length > 0) {
+      rules.prefetch = options.prefetch.map((pattern) => ({
+        where: { href_matches: pattern },
+      }));
+    }
+
+    // Add exclusion if provided
+    if (options.exclude && options.exclude.length > 0) {
+      const excludeWhere = options.exclude.map((pattern) => ({
+        href_matches: pattern,
+      }));
+      // Apply exclusions to both prerender and prefetch
+      for (const key of ['prerender', 'prefetch'] as const) {
+        if (rules[key]) {
+          for (const rule of rules[key] as Record<string, unknown>[]) {
+            (rule.where as Record<string, unknown>).not = { or_matches: excludeWhere };
+          }
+        }
+      }
+    }
+
+    return JSON.stringify(rules, null, 2);
+  }
+
+  // Heuristic mode: generate rules from route list
+  if (!routes || routes.length === 0) return '';
+
+  const staticPagePaths = routes
+    .filter((r) => r.type === 'page' && !r.path.includes(':'))
+    .map((r) => r.path);
+
+  if (staticPagePaths.length === 0) return '';
+
+  // Generate prefetch rules for all static pages
+  const rules = {
+    prefetch: staticPagePaths.map((path) => {
+      // For root path, use exact match; for others, use prefix match
+      const pattern = path === '/' ? '/' : `${path}/*`;
+      return {
+        where: { href_matches: pattern },
+      };
+    }),
+  };
+
+  // Exclude API routes if any exist
+  const apiPaths = routes
+    .filter((r) => r.type === 'api')
+    .map((r) => `${r.path}/*`);
+
+  if (apiPaths.length > 0) {
+    for (const rule of rules.prefetch) {
+      (rule.where as Record<string, unknown>).not = {
+        or_matches: apiPaths.map((p) => ({ href_matches: p })),
+      };
+    }
+  }
+
+  return JSON.stringify(rules, null, 2);
+}
+
+/**
+ * Inject Speculation Rules into all HTML files.
+ *
+ * The Speculation Rules API (Chrome 121+) enables the browser to
+ * prefetch or prerender pages before the user navigates to them.
+ * This makes navigation feel instant for SSG sites.
+ *
+ * Speculation Rules are declarative JSON in a <script type="speculationrules"> tag.
+ * They have zero JavaScript runtime cost — the browser handles everything natively.
+ *
+ * Only Chromium-based browsers (Chrome, Edge) support this as of 2026.
+ * Safari and Firefox silently ignore the script tag (graceful degradation).
+ *
+ * @param dir - Output directory containing HTML files
+ * @param rulesJson - Pre-built speculation rules JSON string
+ */
+export function injectSpeculationRules(dir: string, rulesJson: string): void {
+  if (!rulesJson.trim()) return;
+
+  const scriptTag = `  <script type="speculationrules">\n  ${rulesJson}\n  </script>`;
+
+  const entries = readdirSync(dir, { withFileTypes: true });
+  for (const entry of entries) {
+    const fullPath = join(dir, entry.name);
+    if (entry.isDirectory()) {
+      injectSpeculationRules(fullPath, rulesJson);
+    } else if (entry.name.endsWith('.html')) {
+      let content = readFileSync(fullPath, 'utf-8');
+      if (!content.includes('speculationrules')) {
+        content = insertAfterHead(content, scriptTag);
         writeFileSync(fullPath, content, 'utf-8');
       }
     }

@@ -45,10 +45,14 @@ export { createSsrContext, extractParams, parseQuery } from './context.js';
 export { renderSsrError, wrapInDocument } from './ssr-handler.js';
 export {
   buildIslandChunkMap,
+  buildSpeculationRulesJson,
   injectClientScript,
   injectCspMeta,
   injectDsdPolyfill,
+  injectSpeculationRules,
+  injectViewTransitionMeta,
   insertAfterHead,
+  type SpeculationRulesOptions,
 } from './ssg-postprocess.js';
 export {
   extractCustomElementTags,

@@ -111,6 +111,35 @@ export interface FrameworkOptions {
     backgroundColor?: string;
   };
 
+  /**
+   * View Transitions API configuration.
+   * When true (default), injects <meta name="view-transition" content="same-origin">
+   * into all SSG HTML files for smooth cross-page animations.
+   * Set to false to disable.
+   * @default true
+   */
+  viewTransition?: boolean;
+
+  /**
+   * Speculation Rules API configuration.
+   * Enables browser prefetch/prerender of pages before the user navigates.
+   * - true: auto-generate rules from route list (heuristic mode)
+   * - Object: explicit rules with prerender/prefetch/exclude patterns
+   *
+   * Only Chromium-based browsers (Chrome 121+, Edge 121+) support this.
+   * Safari and Firefox silently ignore the speculationrules script tag.
+   */
+  speculation?: boolean | {
+    /** URL patterns to prerender (full background render) */
+    prerender?: string[];
+    /** URL patterns to prefetch (fetch resources without rendering) */
+    prefetch?: string[];
+    /** URL patterns to exclude from speculative loading */
+    exclude?: string[];
+    /** Eagerness: 'immediate' | 'moderate' (default) | 'conservative' */
+    eagerness?: 'immediate' | 'moderate' | 'conservative';
+  };
+
   /** Middleware configuration (build-time Hono + dev server only) */
   middleware?: {
     /** Enable CORS (default: true) */

@@ -176,30 +176,34 @@ async function cleanupFixtures() {
 
 // ─── scanPackageIslands Tests ──────────────────────────
 
-Deno.test('route-scanner - scanPackageIslands', async (t) => {
-  await t.step('returns empty array for empty package list', async () => {
-    const { scanPackageIslands } = await import('../src/route-scanner.ts');
-    const result = await scanPackageIslands([]);
-    assertEquals(result, []);
-  });
+Deno.test({
+  name: 'route-scanner - scanPackageIslands',
+  sanitizeResources: false,
+  sanitizeOps: false,
+  async fn(t) {
+    await t.step('returns empty array for empty package list', async () => {
+      const { scanPackageIslands } = await import('../src/route-scanner.ts');
+      const result = await scanPackageIslands([]);
+      assertEquals(result, []);
+    });
 
-  await t.step('throws LessError for non-existent package', async () => {
-    const { scanPackageIslands } = await import('../src/route-scanner.ts');
-    const { LessError } = await import('../src/errors.ts');
-    // Non-existent package should throw — misconfigured packages must break the build
-    try {
-      await scanPackageIslands(['@nonexistent/package']);
-      // Should not reach here
-      assertEquals(true, false, 'Expected LessError to be thrown');
-    } catch (e) {
-      assertEquals(e instanceof LessError, true);
-      assertEquals((e as Error).message.includes('@nonexistent/package'), true);
-    }
-  });
+    await t.step('throws LessError for non-existent package', async () => {
+      const { scanPackageIslands } = await import('../src/route-scanner.ts');
+      const { LessError } = await import('../src/errors.ts');
+      // Non-existent package should throw — misconfigured packages must break the build
+      try {
+        await scanPackageIslands(['@nonexistent/package']);
+        // Should not reach here
+        assertEquals(true, false, 'Expected LessError to be thrown');
+      } catch (e) {
+        assertEquals(e instanceof LessError, true);
+        assertEquals((e as Error).message.includes('@nonexistent/package'), true);
+      }
+    });
 
-  // Test skipped: requires @lessjs/ui/dist to be built first.
-  // Run `cd packages/ui && deno task build` then uncomment to run.
-  /* await t.step('scans @lessjs/ui for islands', async () => {
+    // Test skipped: requires @lessjs/ui/dist to be built first.
+    // Run `cd packages/ui && deno task build` then uncomment to run.
+    /* await t.step('scans @lessjs/ui for islands', async () => {
     const { scanPackageIslands } = await import('../src/route-scanner.ts');
     const result = await scanPackageIslands(['@lessjs/ui']);
     assertEquals(Array.isArray(result), true);
@@ -209,19 +213,20 @@ Deno.test('route-scanner - scanPackageIslands', async (t) => {
     }
   }); */
 
-  await t.step('throws LessError for package with import errors', async () => {
-    const { scanPackageIslands } = await import('../src/route-scanner.ts');
-    const { LessError } = await import('../src/errors.ts');
-    // A package that exists but fails to import should throw
-    try {
-      await scanPackageIslands(['vite']);
-      // If vite imports successfully but has no islands, that's OK
-      // But on this system it fails due to native binary deps
-    } catch (e) {
-      assertEquals(e instanceof LessError, true);
-      assertEquals((e as Error).message.includes('vite'), true);
-    }
-  });
+    await t.step('throws LessError for package with import errors', async () => {
+      const { scanPackageIslands } = await import('../src/route-scanner.ts');
+      const { LessError } = await import('../src/errors.ts');
+      // A package that exists but fails to import should throw
+      try {
+        await scanPackageIslands(['vite']);
+        // If vite imports successfully but has no islands, that's OK
+        // But on this system it fails due to native binary deps
+      } catch (e) {
+        assertEquals(e instanceof LessError, true);
+        assertEquals((e as Error).message.includes('vite'), true);
+      }
+    });
+  },
 });
 
 // ─── scanIslands edge cases ──────────────────────────
