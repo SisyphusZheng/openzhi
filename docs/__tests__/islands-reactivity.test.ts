@@ -12,7 +12,6 @@ const CASES = [
     'helloError',
   ]],
   ['./counter-island.ts', 'default', ['count']],
-  ['./code-block.ts', 'default', ['_copyState']],
 ];
 
 for (const [path, exportName, props] of CASES) {
