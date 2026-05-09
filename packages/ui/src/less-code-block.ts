@@ -142,7 +142,14 @@ export class LessCodeBlock extends DsdLitElement {
       this._highlightTimer = globalThis.setTimeout(() => this._tryHighlight(), 50);
       return;
     }
-    const code = this.querySelector('pre code');
+    // Find the <pre><code> in light DOM.
+    // Using :scope > pre is more explicit than querySelector('pre code')
+    // for shadow hosts — guarantees we search light DOM, not shadow tree.
+    const pre = this.querySelector(':scope > pre') || Array.from(this.children).find(function (c) {
+      return c.tagName === 'PRE';
+    });
+    if (!pre) return;
+    const code = pre.querySelector('code');
     if (!code) return;
     // Add default language class if missing
     if (!Array.from(code.classList).some((c: string) => c.startsWith('language-'))) {
