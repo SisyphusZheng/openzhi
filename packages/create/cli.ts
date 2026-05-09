@@ -19,7 +19,7 @@ function loadWorkspaceVersion(pkg: string): string {
   } catch {
     // Fallback versions (embedded at JSR publish time)
     const FALLBACKS: Record<string, string> = {
-      core: '0.9.0',
+      core: '0.9.1',
       'adapter-lit': '0.7.1',
       ui: '0.7.0',
     };
