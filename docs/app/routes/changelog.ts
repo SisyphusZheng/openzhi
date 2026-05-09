@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Changelog Page — LessJS Framework Version History
  */
 export const meta = { section: 'History', label: 'Changelog', order: 20 };
@@ -103,7 +103,7 @@ export class ChangelogPage extends LitElement {
 
   override render() {
     return html`
-      <less-layout .navItems="${navSections}" .headerNav="${headerNav}" currentPath="/changelog">
+      <less-layout locale="zh" .locales="${['en', 'zh']}" .navItems="${navSections}" .headerNav="${headerNav}" current-path="/changelog">
         <div class="container">
           <h1>更新日志</h1>
           <p class="subtitle">

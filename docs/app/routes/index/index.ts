@@ -1,4 +1,4 @@
-import { headerNav, navSections } from 'virtual:less-nav';
+﻿import { headerNav, navSections } from 'virtual:less-nav';
 import { css, html, LitElement } from 'lit';
 import '@lessjs/ui/less-layout';
 
@@ -211,7 +211,7 @@ export default class DocsHome extends LitElement {
 
   override render() {
     return html`
-      <less-layout home>
+      <less-layout locale="zh" .locales="${['en', 'zh']}" home>
         <section class="hero">
           <div class="hero-inner">
             <div>

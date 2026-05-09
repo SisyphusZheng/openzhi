@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @lessjs/docs - Comparison: LessJS vs Alternatives
  */
 
@@ -107,7 +107,7 @@ export default class ComparisonPage extends LitElement {
 
   override render() {
     return html`
-      <less-layout .navItems="${navSections}" .headerNav="${headerNav}">
+      <less-layout locale="zh" .locales="${['en', 'zh']}" .navItems="${navSections}" .headerNav="${headerNav}">
         <div class="container">
           <h1>LessJS vs Alternatives</h1>
           <p class="subtitle">

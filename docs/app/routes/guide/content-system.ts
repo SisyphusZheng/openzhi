@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Content System — @lessjs/content feature guide
  */
 export const meta = { section: 'Strategy', label: 'Content System', order: 40 };
@@ -13,7 +13,7 @@ export class ContentSystemPage extends LitElement {
 
   override render() {
     return html`
-      <less-layout .navItems="${navSections}" .headerNav="${headerNav}" currentPath="/guide/content-system">
+      <less-layout locale="zh" .locales="${['en', 'zh']}" .navItems="${navSections}" .headerNav="${headerNav}" current-path="/guide/content-system">
         <div class="container">
           <h1>Content System</h1>
           <p class="subtitle">

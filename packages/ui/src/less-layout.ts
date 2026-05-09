@@ -650,6 +650,11 @@ export class LessLayout extends DsdLitElement {
 
     /** Extract the full layout template so render() can skip it for DSD. */
     private _renderLayout(): TemplateResult {
+      // SSR fallback: read currentPath from attribute if Lit property reflection
+      // didn't fire (HTML attribute `currentpath` vs camelCase `currentPath`).
+      if (!this.currentPath && this.hasAttribute?.('currentpath')) {
+        this.currentPath = this.getAttribute('currentpath') || '';
+      }
       return html`
         <div class="app-layout" ?home="${this.home}">
           <header class="app-header">

@@ -50,7 +50,7 @@ export abstract class DecisionDocumentPage extends LitElement {
   override render() {
     const decision = this.decision;
     return html`
-      <less-layout currentPath="${decision.path}">
+      <less-layout current-path="${decision.path}" locale="zh" .locales="${['en', 'zh']}">
         <div class="container">
           <h1>${decision.id}: ${decision.title}</h1>
           <p class="subtitle">${decision.summary}</p>

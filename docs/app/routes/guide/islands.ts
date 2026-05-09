@@ -1,4 +1,4 @@
-export const meta = { section: 'Core Model', label: 'Island Upgrade', order: 40 };
+﻿export const meta = { section: 'Core Model', label: 'Island Upgrade', order: 40 };
 import { headerNav, navSections } from 'virtual:less-nav';
 import { css, html, LitElement } from 'lit';
 import { pageStyles } from '../../components/page-styles.js';
@@ -36,7 +36,7 @@ export class IslandsGuidePage extends LitElement {
 
   override render() {
     return html`
-      <less-layout .navItems="${navSections}" .headerNav="${headerNav}" currentPath="/guide/islands">
+      <less-layout locale="zh" .locales="${['en', 'zh']}" .navItems="${navSections}" .headerNav="${headerNav}" current-path="/guide/islands">
         <div class="container">
           <h1>Island Upgrade</h1>
           <p class="subtitle">

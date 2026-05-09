@@ -1,4 +1,4 @@
-export const meta = { section: 'Start Here', label: 'Getting Started', order: 20 };
+﻿export const meta = { section: 'Start Here', label: 'Getting Started', order: 20 };
 import { headerNav, navSections } from 'virtual:less-nav';
 import { css, html, LitElement } from 'lit';
 import { pageStyles } from '../../components/page-styles.js';
@@ -33,7 +33,7 @@ export class GettingStartedPage extends LitElement {
 
   override render() {
     return html`
-      <less-layout .navItems="${navSections}" .headerNav="${headerNav}" currentPath="/guide/getting-started">
+      <less-layout locale="zh" .locales="${['en', 'zh']}" .navItems="${navSections}" .headerNav="${headerNav}" current-path="/guide/getting-started">
         <div class="container">
           <h1>快速开始</h1>
           <p class="subtitle">

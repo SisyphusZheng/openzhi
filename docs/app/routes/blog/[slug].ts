@@ -162,7 +162,7 @@ export default class BlogPostPage extends LitElement {
 
     if (!post) {
       return html`
-        <less-layout .navItems="${navSections}" .headerNav="${headerNav}" currentPath="/blog">
+        <less-layout locale="zh" .locales="${['en', 'zh']}" .navItems="${navSections}" .headerNav="${headerNav}" current-path="/blog">
           <div class="container">
             <div class="not-found">
               <h1>404</h1>
@@ -177,7 +177,7 @@ export default class BlogPostPage extends LitElement {
     const tags = post.frontmatter.tags ?? [];
 
     return html`
-      <less-layout .navItems="${navSections}" .headerNav="${headerNav}" currentPath="/blog">
+      <less-layout locale="zh" .locales="${['en', 'zh']}" .navItems="${navSections}" .headerNav="${headerNav}" current-path="/blog">
         <div class="container">
           <a href="/blog" class="blog-back">&larr; 博客</a>
           <h1>${post.frontmatter.title}</h1>

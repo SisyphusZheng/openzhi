@@ -1,4 +1,4 @@
-export const meta = { section: 'Core Model', label: 'DSD Rendering', order: 30 };
+﻿export const meta = { section: 'Core Model', label: 'DSD Rendering', order: 30 };
 import { navSections, headerNav } from 'virtual:less-nav';
 import { css, html, LitElement } from 'lit';
 import { pageStyles } from '../../components/page-styles.js';
@@ -33,7 +33,7 @@ export class DsdGuidePage extends LitElement {
 
   override render() {
     return html`
-      <less-layout .navItems="${navSections}" .headerNav="${headerNav}" currentPath="/guide/dsd">
+      <less-layout locale="zh" .locales="${['en', 'zh']}" .navItems="${navSections}" .headerNav="${headerNav}" current-path="/guide/dsd">
         <div class="container">
           <h1>DSD 渲染架构</h1>
           <p class="subtitle">

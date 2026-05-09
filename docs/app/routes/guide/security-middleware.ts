@@ -1,4 +1,4 @@
-export const meta = { section: 'Production', label: 'Security & Middleware', order: 20 };
+﻿export const meta = { section: 'Production', label: 'Security & Middleware', order: 20 };
 import { navSections, headerNav } from 'virtual:less-nav';
 import { css, html, LitElement } from 'lit';
 import { pageStyles } from '../../components/page-styles.js';
@@ -26,7 +26,7 @@ export class SecurityMiddlewarePage extends LitElement {
 
   override render() {
     return html`
-      <less-layout .navItems="${navSections}" .headerNav="${headerNav}" currentPath="/guide/security-middleware">
+      <less-layout locale="zh" .locales="${['en', 'zh']}" .navItems="${navSections}" .headerNav="${headerNav}" current-path="/guide/security-middleware">
         <div class="container">
           <h1>安全与 Middleware</h1>
           <p class="subtitle">

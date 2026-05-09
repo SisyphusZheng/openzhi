@@ -1,4 +1,4 @@
-export const meta = { section: 'Core Model', label: 'RPC', order: 70 };
+﻿export const meta = { section: 'Core Model', label: 'RPC', order: 70 };
 import { navSections, headerNav } from 'virtual:less-nav';
 import { css, html, LitElement } from 'lit';
 import { pageStyles } from '../../components/page-styles.js';
@@ -45,7 +45,7 @@ export class RpcGuidePage extends LitElement {
 
   override render() {
     return html`
-      <less-layout .navItems="${navSections}" .headerNav="${headerNav}" currentPath="/guide/rpc">
+      <less-layout locale="zh" .locales="${['en', 'zh']}" .navItems="${navSections}" .headerNav="${headerNav}" current-path="/guide/rpc">
         <div class="container">
           <h1>RPC 远程调用</h1>
           <p class="subtitle">

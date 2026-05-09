@@ -1,4 +1,4 @@
-export const meta = { section: 'Core Model', label: 'API Routes', order: 60 };
+﻿export const meta = { section: 'Core Model', label: 'API Routes', order: 60 };
 import { navSections, headerNav } from 'virtual:less-nav';
 import { css, html, LitElement } from 'lit';
 import { pageStyles } from '../../components/page-styles.js';
@@ -21,7 +21,7 @@ export class ApiPage extends LitElement {
 
   override render() {
     return html`
-      <less-layout .navItems="${navSections}" .headerNav="${headerNav}" currentPath="/guide/api">
+      <less-layout locale="zh" .locales="${['en', 'zh']}" .navItems="${navSections}" .headerNav="${headerNav}" current-path="/guide/api">
         <div class="container">
           <h1>API Routes</h1>
           <p class="subtitle">

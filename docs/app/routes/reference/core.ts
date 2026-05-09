@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @lessjs/docs - API Reference: @lessjs/core
  */
 
@@ -42,7 +42,7 @@ export default class ApiCorePage extends LitElement {
 
   override render() {
     return html`
-      <less-layout .navItems="${navSections}" .headerNav="${headerNav}">
+      <less-layout locale="zh" .locales="${['en', 'zh']}" .navItems="${navSections}" .headerNav="${headerNav}">
         <div class="container">
           <h1>API Reference: @lessjs/core</h1>
           <p class="subtitle">Public API exports from the core LessJS package.</p>

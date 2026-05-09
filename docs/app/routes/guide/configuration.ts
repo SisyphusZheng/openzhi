@@ -1,4 +1,4 @@
-export const meta = { section: 'Production', label: 'Configuration', order: 10 };
+﻿export const meta = { section: 'Production', label: 'Configuration', order: 10 };
 import { navSections, headerNav } from 'virtual:less-nav';
 import { html, LitElement } from 'lit';
 import { pageStyles } from '../../components/page-styles.js';
@@ -10,7 +10,7 @@ export class ConfigurationPage extends LitElement {
 
   override render() {
     return html`
-      <less-layout .navItems="${navSections}" .headerNav="${headerNav}" currentPath="/guide/configuration">
+      <less-layout locale="zh" .locales="${['en', 'zh']}" .navItems="${navSections}" .headerNav="${headerNav}" current-path="/guide/configuration">
         <div class="container">
           <h1>配置</h1>
           <p class="subtitle">

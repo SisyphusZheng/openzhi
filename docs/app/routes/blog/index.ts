@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Blog Index Page — Data-driven rendering via @lessjs/content
  */
 export const meta = { section: 'History', label: 'Blog', order: 10 };
@@ -77,7 +77,7 @@ export class BlogIndexPage extends LitElement {
     const newestSlug = posts.length > 0 ? posts[0].slug : '';
 
     return html`
-      <less-layout .navItems="${navSections}" .headerNav="${headerNav}" currentPath="/blog">
+      <less-layout locale="zh" .locales="${['en', 'zh']}" .navItems="${navSections}" .headerNav="${headerNav}" current-path="/blog">
         <div class="container">
           <h1>博客</h1>
           <p class="subtitle">LessJS 框架的设计思考、架构决策和发展路线。</p>

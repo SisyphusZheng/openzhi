@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @lessjs/ui —— 设计系统
  * 双色板。零噪音。
  *
@@ -299,7 +299,7 @@ export class UIShowcase extends LitElement {
 
   override render() {
     return html`
-      <less-layout .navItems="${navSections}" .headerNav="${headerNav}" currentPath="/ui">
+      <less-layout locale="zh" .locales="${['en', 'zh']}" .navItems="${navSections}" .headerNav="${headerNav}" current-path="/ui">
         <div class="container">
           <h1>设计系统</h1>
           <p class="subtitle">

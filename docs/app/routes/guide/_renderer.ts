@@ -1,4 +1,4 @@
-/**
+﻿/**
  * _renderer.ts — Layout renderer for the guide section.
  *
  * Injects search button and "Edit this page" in the layout footer.
@@ -22,7 +22,7 @@ const renderer: LessRenderer = {
     const editUrl = `${GITHUB_EDIT_BASE}/${routeToSourcePath(ctx.req.path)}`;
 
     // Inject search button into header slot
-    const layoutOpen = html.indexOf('<less-layout');
+    const layoutOpen = html.indexOf('<less-layout locale="zh" .locales="${[\'en\', \'zh\']}"');
     if (layoutOpen >= 0) {
       const closeGt = html.indexOf('>', layoutOpen);
       if (closeGt > 0) {
@@ -34,7 +34,7 @@ const renderer: LessRenderer = {
 
     // Inject "Edit this page" in the layout footer
     // This is needed because the layout's DSD template was already rendered without editUrl.
-    // We inject directly into the <less-layout> footer in the SSR HTML output.
+    // We inject directly into the <less-layout locale="zh" .locales="${['en', 'zh']}"> footer in the SSR HTML output.
     html = html.replace(
       'LESS IS MORE',
       `LESS IS MORE</p><p style="font-size:0.75rem;margin-top:0.5rem;opacity:0.6"><a href="${
