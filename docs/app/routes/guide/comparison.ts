@@ -15,23 +15,91 @@ export default class ComparisonPage extends LitElement {
   static override styles = [
     pageStyles,
     css`
-      table {
-        font-size: 0.8125rem;
+      .table-wrap {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        margin: 1.5rem 0 2.5rem;
+        border: 0.5px solid var(--less-border);
+        border-radius: 8px;
       }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.8125rem;
+        min-width: 640px;
+      }
+
+      thead {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+      }
+
       th {
+        background: var(--less-bg-surface, #f8f8f8);
+        font-weight: 500;
+        color: var(--less-text-primary);
+        text-align: left;
+        padding: 0.75rem 1rem;
+        border-bottom: 0.5px solid var(--less-border);
         white-space: nowrap;
       }
-      .y {
+
+      td {
+        padding: 0.625rem 1rem;
+        border-bottom: 0.5px solid var(--less-border);
+        color: var(--less-text-secondary);
+        line-height: 1.5;
+      }
+
+      tbody tr {
+        transition: background 0.12s;
+      }
+
+      tbody tr:hover {
+        background: var(--less-bg-surface, #f5f5f5);
+      }
+
+      tbody tr:last-child td {
+        border-bottom: none;
+      }
+
+      td:first-child {
+        font-weight: 500;
+        color: var(--less-text-primary);
+        white-space: nowrap;
+      }
+
+      td:not(:first-child) {
+        font-variant-numeric: tabular-nums;
+      }
+
+      .tag-yes {
         color: var(--less-text-primary);
       }
-      .n {
+
+      .tag-no {
         color: var(--less-text-tertiary);
       }
-      .partial {
+
+      .tag-partial {
         color: var(--less-text-tertiary);
         font-style: italic;
       }
-      td strong {
+
+      /* Prose lists */
+      ul {
+        padding-left: 1.25rem;
+        color: var(--less-text-secondary);
+        line-height: 1.7;
+        font-size: 0.875rem;
+      }
+      li {
+        margin: 0.5rem 0;
+      }
+      li strong {
+        color: var(--less-text-primary);
         font-weight: 500;
       }
     `,
@@ -47,103 +115,105 @@ export default class ComparisonPage extends LitElement {
             trade-offs.
           </p>
 
-          <table>
-            <thead>
-              <tr>
-                <th>Dimension</th>
-                <th>LessJS</th>
-                <th>Astro</th>
-                <th>Fresh (Deno)</th>
-                <th>Next.js</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><strong>Runtime</strong></td>
-                <td>Deno</td>
-                <td>Node.js</td>
-                <td>Deno</td>
-                <td>Node.js</td>
-              </tr>
-              <tr>
-                <td><strong>Rendering</strong></td>
-                <td>SSG + DSD + Islands</td>
-                <td>SSG + SSR + Islands</td>
-                <td>SSR + Islands</td>
-                <td>SSR + RSC + SSG</td>
-              </tr>
-              <tr>
-                <td><strong>Minimum JS</strong></td>
-                <td><span class="y">0 KB</span></td>
-                <td><span class="y">0 KB</span></td>
-                <td><span class="n">~23 KB</span></td>
-                <td><span class="n">~70 KB</span></td>
-              </tr>
-              <tr>
-                <td><strong>Web Standards</strong></td>
-                <td><span class="y">DSD, CE, WA</span></td>
-                <td><span class="n">.astro syntax</span></td>
-                <td><span class="n">JSX + Preact</span></td>
-                <td><span class="n">React-specific</span></td>
-              </tr>
-              <tr>
-                <td><strong>Component Model</strong></td>
-                <td>3-layer (DSD/Island)</td>
-                <td>Islands only</td>
-                <td>Islands only</td>
-                <td>Full hydration</td>
-              </tr>
-              <tr>
-                <td><strong>Server</strong></td>
-                <td>Hono (optional)</td>
-                <td>Built-in + adapters</td>
-                <td>Oak (optional)</td>
-                <td>Next.js server</td>
-              </tr>
-              <tr>
-                <td><strong>Ecosystem</strong></td>
-                <td><span class="partial">Emerging</span></td>
-                <td>Mature</td>
-                <td><span class="partial">Small</span></td>
-                <td>Massive</td>
-              </tr>
-              <tr>
-                <td><strong>Learning Curve</strong></td>
-                <td><span class="y">Low (Web Standards)</span></td>
-                <td>Medium (.astro syntax)</td>
-                <td>Low (JSX)</td>
-                <td>High (React + concepts)</td>
-              </tr>
-              <tr>
-                <td><strong>UI Framework</strong></td>
-                <td>Lit (pluggable)</td>
-                <td>Any (React, Vue, Svelte)</td>
-                <td>Preact</td>
-                <td>React only</td>
-              </tr>
-              <tr>
-                <td><strong>Package Registry</strong></td>
-                <td>JSR only</td>
-                <td>npm</td>
-                <td>JSR + npm</td>
-                <td>npm</td>
-              </tr>
-              <tr>
-                <td><strong>SSR (request-time)</strong></td>
-                <td><span class="n">No (by design)</span></td>
-                <td>Yes</td>
-                <td>Yes</td>
-                <td>Yes</td>
-              </tr>
-              <tr>
-                <td><strong>Tailwind / CSS</strong></td>
-                <td>Lit CSS + tokens</td>
-                <td>Any</td>
-                <td>Twind + any</td>
-                <td>Any (CSS Modules)</td>
-              </tr>
-            </tbody>
-          </table>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Dimension</th>
+                  <th>LessJS</th>
+                  <th>Astro</th>
+                  <th>Fresh (Deno)</th>
+                  <th>Next.js</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Runtime</td>
+                  <td>Deno</td>
+                  <td>Node.js</td>
+                  <td>Deno</td>
+                  <td>Node.js</td>
+                </tr>
+                <tr>
+                  <td>Rendering</td>
+                  <td>SSG + DSD + Islands</td>
+                  <td>SSG + SSR + Islands</td>
+                  <td>SSR + Islands</td>
+                  <td>SSR + RSC + SSG</td>
+                </tr>
+                <tr>
+                  <td>Minimum JS</td>
+                  <td><span class="tag-yes">0 KB</span></td>
+                  <td><span class="tag-yes">0 KB</span></td>
+                  <td><span class="tag-no">~23 KB</span></td>
+                  <td><span class="tag-no">~70 KB</span></td>
+                </tr>
+                <tr>
+                  <td>Web Standards</td>
+                  <td><span class="tag-yes">DSD, CE, WA</span></td>
+                  <td><span class="tag-no">.astro syntax</span></td>
+                  <td><span class="tag-no">JSX + Preact</span></td>
+                  <td><span class="tag-no">React-specific</span></td>
+                </tr>
+                <tr>
+                  <td>Component Model</td>
+                  <td>3-layer (DSD/Island)</td>
+                  <td>Islands only</td>
+                  <td>Islands only</td>
+                  <td>Full hydration</td>
+                </tr>
+                <tr>
+                  <td>Server</td>
+                  <td>Hono (optional)</td>
+                  <td>Built-in + adapters</td>
+                  <td>Oak (optional)</td>
+                  <td>Next.js server</td>
+                </tr>
+                <tr>
+                  <td>Ecosystem</td>
+                  <td><span class="tag-partial">Emerging</span></td>
+                  <td>Mature</td>
+                  <td><span class="tag-partial">Small</span></td>
+                  <td>Massive</td>
+                </tr>
+                <tr>
+                  <td>Learning Curve</td>
+                  <td><span class="tag-yes">Low (Web Standards)</span></td>
+                  <td>Medium (.astro syntax)</td>
+                  <td>Low (JSX)</td>
+                  <td>High (React + concepts)</td>
+                </tr>
+                <tr>
+                  <td>UI Framework</td>
+                  <td>Lit (pluggable)</td>
+                  <td>Any (React, Vue, Svelte)</td>
+                  <td>Preact</td>
+                  <td>React only</td>
+                </tr>
+                <tr>
+                  <td>Package Registry</td>
+                  <td>JSR only</td>
+                  <td>npm</td>
+                  <td>JSR + npm</td>
+                  <td>npm</td>
+                </tr>
+                <tr>
+                  <td>SSR (request-time)</td>
+                  <td><span class="tag-no">No (by design)</span></td>
+                  <td>Yes</td>
+                  <td>Yes</td>
+                  <td>Yes</td>
+                </tr>
+                <tr>
+                  <td>Tailwind / CSS</td>
+                  <td>Lit CSS + tokens</td>
+                  <td>Any</td>
+                  <td>Twind + any</td>
+                  <td>Any (CSS Modules)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
 
           <h2>What LessJS Optimizes For</h2>
           <ul>
