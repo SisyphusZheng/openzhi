@@ -103,7 +103,7 @@ export class ChangelogPage extends LitElement {
 
   override render() {
     return html`
-      <less-layout locale="zh" .locales="${['en', 'zh']}" .navItems="${navSections}" .headerNav="${headerNav}" current-path="/changelog">
+      <less-layout locale="${this.locale || 'zh'}" .locales="${['en', 'zh']}" .navItems="${navSections}" .headerNav="${headerNav}" current-path="/changelog">
         <div class="container">
           <h1>更新日志</h1>
           <p class="subtitle">

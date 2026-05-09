@@ -797,6 +797,11 @@
           "npm:vite@8.0.10"
         ]
       },
+      "packages/i18n": {
+        "dependencies": [
+          "npm:vite@8.0.10"
+        ]
+      },
       "packages/ui": {
         "dependencies": [
           "npm:lit@^3.2.0"

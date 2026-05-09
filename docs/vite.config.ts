@@ -1,5 +1,6 @@
 import { less } from '../packages/core/src/index.js';
 import { lessContent } from '../packages/content/src/index.ts';
+import { lessI18n } from '../packages/i18n/src/index.ts';
 import { lessRootColorCSS } from '../packages/ui/src/tokens/colors.js';
 import { defineConfig } from 'vite';
 import { dirname, resolve } from 'node:path';
@@ -102,10 +103,6 @@ export default defineConfig({
         contentDir: resolve(__dir, 'content/blog'),
         basePath: '/blog',
       },
-      i18n: {
-        locales: ['en', 'zh'],
-        defaultLocale: 'en',
-      },
       nav: {
         routesDir: resolve(__dir, 'app/routes'),
         headerNav: [
@@ -121,6 +118,12 @@ export default defineConfig({
       sitemap: {
         hostname: 'https://lessjs.org',
       },
+    }),
+    // @lessjs/i18n: Internationalization (locales, path helpers)
+    // Separate plugin — i18n is a cross-cutting concern, not content management.
+    lessI18n({
+      locales: ['en', 'zh'],
+      defaultLocale: 'en',
     }),
   ],
   resolve: {
@@ -168,6 +171,10 @@ export default defineConfig({
         replacement: resolve(__dir, '../packages/content/src/sitemap/index.ts'),
       },
       { find: '@lessjs/content', replacement: resolve(__dir, '../packages/content/src/index.ts') },
+      {
+        find: '@lessjs/i18n',
+        replacement: resolve(__dir, '../packages/i18n/src/index.ts'),
+      },
     ],
   },
 });

@@ -53,7 +53,7 @@ export default class CommunityPage extends LitElement {
 
   override render() {
     return html`
-      <less-layout locale="zh" .locales="${['en', 'zh']}" .navItems="${navSections}" .headerNav="${headerNav}">
+      <less-layout locale="${this.locale || 'zh'}" .locales="${['en', 'zh']}" .navItems="${navSections}" .headerNav="${headerNav}">
         <div class="container">
           <h1>Community</h1>
           <p class="subtitle">

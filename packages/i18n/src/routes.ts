@@ -1,5 +1,5 @@
 /**
- * @lessjs/content/i18n - Route helpers for i18n
+ * @lessjs/i18n - Route helpers for i18n
  *
  * Helpers for creating locale-aware routes in LessJS.
  */
@@ -8,11 +8,11 @@ import { getI18nLocales } from './i18n-data.ts';
 /**
  * Generate getStaticPaths() return for locale-aware routes.
  *
- * Auto-picks up configured locales from lessContent({ i18n: { locales } }).
+ * Auto-picks up configured locales from lessI18n({ locales }).
  *
  * Usage in route file:
  * ```ts
- * import { i18nStaticPaths } from '@lessjs/content';
+ * import { i18nStaticPaths } from '@lessjs/i18n';
  *
  * export function getStaticPaths() {
  *   return i18nStaticPaths(); // → [{ locale: 'en' }, { locale: 'zh' }]

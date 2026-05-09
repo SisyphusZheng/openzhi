@@ -6,7 +6,6 @@
  */
 
 import type { BlogPost, BlogPostFrontmatter, LessBlogOptions } from './blog/types.ts';
-import type { LessI18nOptions } from './i18n/types.ts';
 
 // ─── Blog Module Types ──────────────────────────────────────────
 
@@ -98,6 +97,4 @@ export interface LessContentOptions {
   nav?: NavOptions;
   /** Sitemap module config. Pass options to enable, falsy to disable */
   sitemap?: SitemapOptions;
-  /** i18n module config. Pass options to enable, falsy to disable */
-  i18n?: LessI18nOptions | false;
 }

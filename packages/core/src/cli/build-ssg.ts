@@ -489,6 +489,150 @@ async function buildSSG(options: BuildSSGOptions = {}): Promise<void> {
         log.info('404 page → dist/404.html (GitHub Pages)');
       }
 
+      // ── i18n locale expansion ──────────────────────────────
+      // After toSSG() renders all static routes, expand each route for every
+      // configured locale and write to locale-prefixed paths so the language
+      // switcher can navigate to /en/guide/architecture, /zh/guide/architecture.
+      // The locale is passed as a renderDSD prop so route templates can read
+      // this.locale (falling back to 'zh' when unset).
+      const i18nOptsPath = join(root, '.less', 'i18n-options.json');
+      if (existsSync(i18nOptsPath)) {
+        const i18nOpts = JSON.parse(readFileSync(i18nOptsPath, 'utf-8'));
+        const locales: string[] = i18nOpts.locales || [];
+
+        if (locales.length > 1) {
+          log.info(`i18n: expanding ${routes.length} route(s) for locales: ${locales.join(', ')}`);
+
+          // Load renderDSD and wrapInDocument for manual rendering
+          const renderDsdMod = await server.ssrLoadModule(
+            '@lessjs/core/render-dsd',
+          ) as Record<string, unknown>;
+          const ssrHandlerMod = await server.ssrLoadModule(
+            '@lessjs/core/less-runtime',
+          ) as Record<string, unknown>;
+          const renderDSDFn = renderDsdMod.renderDSD as (
+            tag: string,
+            cls: CustomElementConstructor,
+            props: Record<string, unknown>,
+            info?: { route?: string; source?: string },
+          ) => Promise<string>;
+          const wrapInDocumentFn = ssrHandlerMod.wrapInDocument as (
+            html: string,
+            opts: Record<string, unknown>,
+          ) => string;
+
+          // Initialize @lessjs/i18n data store so route-level helpers
+          // (i18nStaticPaths, switchLocale) return correct values.
+          try {
+            const i18nModule = await server.ssrLoadModule('@lessjs/i18n') as Record<
+              string,
+              unknown
+            >;
+            if (typeof i18nModule.initI18nData === 'function') {
+              i18nModule.initI18nData(i18nOpts);
+            }
+          } catch {
+            // @lessjs/i18n not available — non-fatal
+            log.debug('@lessjs/i18n not found — continuing with inline locale expansion');
+          }
+
+          for (const locale of locales) {
+            for (const route of routes) {
+              if (route.type !== 'page' || route.special) continue;
+
+              let routeMod: Record<string, unknown>;
+              const routeModulePath = `/${routesDir}/${route.filePath}`;
+              try {
+                routeMod = await server.ssrLoadModule(routeModulePath) as Record<string, unknown>;
+              } catch (e) {
+                log.debug(
+                  `Cannot load route module ${routeModulePath}: ${
+                    e instanceof Error ? e.message : String(e)
+                  }`,
+                );
+                continue;
+              }
+
+              const ComponentClass = routeMod.default as CustomElementConstructor | undefined;
+              const tagName = (routeMod.tagName as string) || fileToTagName(route.filePath);
+
+              if (!ComponentClass) {
+                log.debug(
+                  `Route ${route.path} has no default export — skipping locale expansion`,
+                );
+                continue;
+              }
+
+              // Register component if not already registered
+              if (!globalThis.customElements.get(tagName)) {
+                try {
+                  globalThis.customElements.define(tagName, ComponentClass);
+                } catch {
+                  // Already defined — safe to skip
+                }
+              }
+
+              // Get param values for dynamic routes
+              let paramsList: Array<Record<string, string>> = [{}];
+              if (route.path.includes(':')) {
+                if (typeof routeMod.getStaticPaths === 'function') {
+                  paramsList = await (routeMod.getStaticPaths as () => Promise<
+                    Array<Record<string, string>>
+                  >)();
+                } else {
+                  log.info(
+                    `Dynamic route ${route.path} has no getStaticPaths — skipping locale expansion`,
+                  );
+                  continue;
+                }
+              }
+
+              const paramNames = [...route.path.matchAll(/:([^/]+)/g)].map((m) => m[1]);
+
+              for (const params of paramsList) {
+                // Resolve concrete path
+                let resolvedPath = route.path;
+                for (const name of paramNames) {
+                  resolvedPath = resolvedPath.replace(`:${name}`, params[name] || name);
+                }
+
+                const localePath = `/${locale}${resolvedPath}`;
+
+                try {
+                  const html = await renderDSDFn(tagName, ComponentClass, {
+                    ...params,
+                    locale,
+                  }, {
+                    route: localePath,
+                    source: route.filePath,
+                  });
+
+                  const fullHtml = wrapInDocumentFn(html, {
+                    title: options.html?.title || 'LessJS',
+                    lang: locale,
+                    headExtras: options.headExtras || '',
+                  });
+
+                  // Write to dist/en/guide/architecture/index.html
+                  const pageDir = join(outputDir, localePath);
+                  const { mkdirSync: mkDir, writeFileSync: writeFile } = await import('node:fs');
+                  mkDir(pageDir, { recursive: true });
+                  writeFile(join(pageDir, 'index.html'), fullHtml, 'utf-8');
+
+                  log.info(`i18n: ${localePath}/index.html`);
+                } catch (e) {
+                  log.warn(
+                    `i18n: failed to render locale ${locale} for ${resolvedPath}: ${
+                      e instanceof Error ? e.message : String(e)
+                    }`,
+                  );
+                }
+              }
+            }
+          }
+        }
+      }
+
       // Convert flat HTML files to clean URLs: about.html → about/index.html
       const allHtmlFiles = findHtmlFiles(outputDir);
       for (const filePath of allHtmlFiles) {

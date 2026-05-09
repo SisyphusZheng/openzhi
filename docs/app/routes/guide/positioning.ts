@@ -8,12 +8,16 @@ export class PositioningPage extends LitElement {
   static override styles = [pageStyles];
 
   override render() {
+    return (this.locale || 'zh') === 'en' ? this._renderEn() : this._renderZh();
+  }
+
+  private _renderZh() {
     return html`
       <less-layout
         .navItems="${navSections}"
         .headerNav="${headerNav}"
-        current-path="/en/guide/positioning"
-        locale="en"
+        current-path="/guide/positioning"
+        locale="zh"
         .locales="${['en', 'zh']}"
       >
         <div class="container">
@@ -115,9 +119,7 @@ export class PositioningPage extends LitElement {
           </table>
 
           <h2>暂时不主打的场景</h2>
-          <p>
-            LessJS 可以演进到更复杂的全栈应用，但当前文档不应把下列能力描述成成熟卖点：
-          </p>
+          <p>LessJS 可以演进到更复杂的全栈应用，但当前文档不应把下列能力描述成成熟卖点：</p>
           <ul>
             <li>高频数据后台、CRM、复杂权限系统。</li>
             <li>生产级 ISR、分布式 cache lock、revalidate queue。</li>
@@ -177,6 +179,196 @@ export class PositioningPage extends LitElement {
                 <td>Next / Nuxt</td>
                 <td>不以大型全栈平台为默认复杂度。</td>
                 <td>路由约定、构建产物、部署适配器的工程纪律。</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="nav-row">
+            <a href="/guide/getting-started" class="nav-link">Getting Started &rarr;</a>
+            <a href="/guide/architecture" class="nav-link">Architecture &rarr;</a>
+          </div>
+        </div>
+      </less-layout>
+    `;
+  }
+
+  private _renderEn() {
+    return html`
+      <less-layout
+        .navItems="${navSections}"
+        .headerNav="${headerNav}"
+        current-path="/en/guide/positioning"
+        locale="en"
+        .locales="${['en', 'zh']}"
+      >
+        <div class="container">
+          <h1>Framework Positioning</h1>
+          <p class="subtitle">
+            LessJS is a Deno-first, Web Standards-first, static-first web framework.
+            Its goal is not to be the biggest framework for every scenario, but to organize
+            content-first, progressive enhancement, and Serverless API into a trustworthy
+            engineering path.
+          </p>
+
+          <h2>One-Line Positioning</h2>
+          <p>
+            LessJS uses <strong>DSD-rendered Web Components</strong> for first-paint HTML,
+            <strong>Island Upgrade</strong> for targeted interactivity,
+            <strong>Hono + Fetch API</strong> for server-side capability,
+            <strong>SSG</strong> as the default delivery model, and
+            <strong>Serverless/Edge</strong> for dynamic deployment.
+          </p>
+
+          <div class="callout">
+            <p>
+              This is not "another hydration framework." More accurately, LessJS is an application
+              skeleton that wires together Web Components, Declarative Shadow DOM, ESM, Fetch API,
+              and static deployment.
+            </p>
+          </div>
+
+          <h2>Design Principles</h2>
+
+          <div class="pillar">
+            <div class="num">Principle 01</div>
+            <h3>Web Standards First</h3>
+            <p>
+              HTTP uses Fetch API, UI uses Custom Elements and Shadow DOM, modules use ESM,
+              server uses Hono aligned with Web standards. What users learn should be transferable
+              beyond LessJS.
+            </p>
+          </div>
+
+          <div class="pillar">
+            <div class="num">Principle 02</div>
+            <h3>Static First, Dynamic When Explicit</h3>
+            <p>
+              The default output should be static HTML, CSS, and only necessary island JavaScript.
+              Opt into serverless/edge mode explicitly when API, auth, writes, or revalidation
+              are needed.
+            </p>
+          </div>
+
+          <div class="pillar">
+            <div class="num">Principle 03</div>
+            <h3>Islands Are Upgrades, Not Hydration</h3>
+            <p>
+              Pages are first readable, cacheable, crawlable HTML. Interactive components become
+              alive later through Custom Element upgrade. The framework does not treat full-page
+              state restoration as a default cost.
+            </p>
+          </div>
+
+          <div class="pillar">
+            <div class="num">Principle 04</div>
+            <h3>Adapters Extend, They Do Not Define</h3>
+            <p>
+              Lit is the most practical authoring experience today; a future
+              <span class="inline-code">.less</span> compiler is an optimization path,
+              not a prerequisite for the framework. Runtime, build, and docs should all
+              keep adapter boundaries clear.
+            </p>
+          </div>
+
+          <div class="pillar">
+            <div class="num">Principle 05</div>
+            <h3>Docs Must Be Falsifiable</h3>
+            <p>
+              Docs should describe current behavior, not aspirational vision. Runnable features
+              go into guides; not-yet-stable items go into the Roadmap; risks and limitations
+              belong in architecture pages, not discovered after users hit problems.
+            </p>
+          </div>
+
+          <h2>Best-Fit Scenarios</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Scenario</th>
+                <th>Why It Fits</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Docs &amp; product sites</td>
+                <td>SSG output is simple, first-paint HTML is stable, interactivity is limited to a few islands.</td>
+              </tr>
+              <tr>
+                <td>Blogs &amp; content sites</td>
+                <td>Content-first, crawlable, cacheable. PWA and incremental builds can be added later.</td>
+              </tr>
+              <tr>
+                <td>Lightweight Serverless apps</td>
+                <td>Hono API routes and the Fetch model make deployment to Deno Deploy, Workers, etc. natural.</td>
+              </tr>
+              <tr>
+                <td>Componentized design system showcases</td>
+                <td>Web Components are a platform capability. Package-level islands can be reused across projects.</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h2>Not-Yet-Primary Scenarios</h2>
+          <p>LessJS can evolve toward more complex full-stack apps, but current docs should not describe these as mature selling points:</p>
+          <ul>
+            <li>High-frequency data dashboards, CRM, complex permission systems.</li>
+            <li>Production-grade ISR, distributed cache lock, revalidate queue.</li>
+            <li>Full-page client state frameworks and traditional SPA routing.</li>
+            <li>A production-grade compiler that fully eliminates Lit.</li>
+          </ul>
+
+          <h2>Engineering Trade-Offs</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Choice</th>
+                <th>Why</th>
+                <th>Cost</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Lit authoring</td>
+                <td>Web Components ecosystem is mature, SSR is viable, API is stable.</td>
+                <td>Must manage safe rendering boundaries; compiler optimization is future work.</td>
+              </tr>
+              <tr>
+                <td>Hono runtime</td>
+                <td>Small enough, close to Fetch, low cost to migrate across runtimes.</td>
+                <td>Deploy adapters and platform capabilities still need incremental filling.</td>
+              </tr>
+              <tr>
+                <td>SSG default</td>
+                <td>Simple deployment, cache-friendly, maximal benefit for docs/content sites.</td>
+                <td>Dynamic data and ISR require additional runtime conventions.</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h2>Relationship With Common Frameworks</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Framework</th>
+                <th>What LessJS Does Not Follow</th>
+                <th>What LessJS Borrows</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Astro</td>
+                <td>Multi-UI-framework integration is not a near-term goal.</td>
+                <td>Content-first, island interactivity, static delivery.</td>
+              </tr>
+              <tr>
+                <td>Fresh</td>
+                <td>Not bound to Preact, does not use JSX as the core DSL.</td>
+                <td>Deno-first, Fetch-first, island-first.</td>
+              </tr>
+              <tr>
+                <td>Next / Nuxt</td>
+                <td>Does not default to large-scale full-stack complexity.</td>
+                <td>Route conventions, build output, deployment adapter engineering discipline.</td>
               </tr>
             </tbody>
           </table>

@@ -1,8 +1,8 @@
 /**
- * @lessjs/content/i18n - Runtime i18n data store
+ * @lessjs/i18n - Runtime i18n data store
  *
- * Stores locale configuration set by lessContent() plugin.
- * Used by SSG Phase 3 and route-level helpers.
+ * Stores locale configuration set by lessI18n() plugin.
+ * Used during SSG build and route-level helpers.
  */
 import type { LessI18nOptions } from './types.ts';
 

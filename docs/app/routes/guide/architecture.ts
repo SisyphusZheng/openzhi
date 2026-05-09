@@ -9,8 +9,12 @@ export class ArchitecturePage extends LitElement {
   static override styles = [pageStyles];
 
   override render() {
+    return (this.locale || 'zh') === 'en' ? this._renderEn() : this._renderZh();
+  }
+
+  private _renderZh() {
     return html`
-      <less-layout locale="zh" .locales="${['en', 'zh']}" .navItems="${navSections}" .headerNav="${headerNav}" current-path="/guide/architecture">
+      <less-layout locale="${this.locale || 'zh'}" .locales="${['en', 'zh']}" .navItems="${navSections}" .headerNav="${headerNav}" current-path="/guide/architecture">
         <div class="container">
           <h1>Architecture</h1>
           <p class="subtitle">
@@ -164,6 +168,175 @@ Phase 3: SSG
           <div class="nav-row">
             <a href="/guide/design-philosophy" class="nav-link">&larr; 设计哲学</a>
             <a href="/guide/routing" class="nav-link">路由 &rarr;</a>
+          </div>
+        </div>
+      </less-layout>
+    `;
+  }
+
+  private _renderEn() {
+    return html`
+      <less-layout locale="${this.locale || 'en'}" .locales="${['en', 'zh']}" .navItems="${navSections}" .headerNav="${headerNav}" current-path="/en/guide/architecture">
+        <div class="container">
+          <h1>Architecture</h1>
+          <p class="subtitle">
+            The core of LessJS architecture connects routing, rendering, islands, API, and static output
+            into an observable build chain. This page describes the current model and identifies
+            boundaries that are still being hardened.
+          </p>
+
+          <h2>System Shape</h2>
+          <p>
+            A LessJS application consists of <span class="inline-code">app/routes</span>,
+            <span class="inline-code">app/islands</span>, optional API routes, optional middleware,
+            and build metadata. The builder scans these conventions to generate a Hono entry,
+            client island entry, and final static HTML.
+          </p>
+
+          <less-code-block><pre><code>app/
+  routes/
+    index.ts              # page component for /
+    guide/[slug].ts       # dynamic page route
+    api/status.ts         # API route
+    _middleware.ts        # route-tree middleware
+  islands/
+    counter.ts            # client-upgraded component
+  _renderer.ts            # optional layout wrapper</code></pre></less-code-block>
+
+          <h2>Build Pipeline</h2>
+          <p>
+            The user command stays simple: <span class="inline-code">deno task build</span>.
+            Internally it's divided into three phases, because each has different failure modes
+            and verifiable artifacts.
+          </p>
+
+          <less-code-block><pre><code>Phase 1: SSR bundle
+  - scan routes, API routes, middleware and islands
+  - generate virtual Hono entry
+  - emit .less/build-metadata.json
+
+Phase 2: client islands
+  - read metadata
+  - generate .less-client-entry.ts
+  - build island chunks into dist/client
+
+Phase 3: SSG
+  - load generated Hono app through Vite SSR
+  - render route HTML with Declarative Shadow DOM
+  - inject island entry, PWA assets and static post-processing</code></pre></less-code-block>
+
+          <h2>Rendering Model</h2>
+          <p>
+            LessJS does not move the browser's full component tree to the client and then hydrate.
+            The SSR phase instantiates page components, retrieves their template and styles,
+            and writes the result into Declarative Shadow DOM.
+          </p>
+
+          <less-code-block><pre><code>&lt;page-home&gt;
+  &lt;template shadowrootmode="open"&gt;
+    &lt;style&gt;/* component styles */&lt;/style&gt;
+    &lt;main&gt;Content is visible before JavaScript runs.&lt;/main&gt;
+  &lt;/template&gt;
+&lt;/page-home&gt;</code></pre></less-code-block>
+
+          <p>
+            The current renderer's risk is that the safe/unsafe HTML boundary must be clearer.
+            A future DSD Renderer 2 should preserve Lit's escape semantics, isolate unsafe HTML,
+            cover CSP nonce/meta injection, and lock down these security contracts with tests.
+          </p>
+
+          <h2>Island Upgrade</h2>
+          <p>
+            An island is a Custom Element that already exists in the HTML. After the client entry
+            loads its module, the browser upgrades it via <span class="inline-code">customElements.define()</span>,
+            and event listeners, local state, and API calls begin to work.
+          </p>
+
+          <p>
+            The current implementation supports both local islands and package islands, but the
+            build metadata still needs tightening: page-level island manifests, loading strategies,
+            local island paths in nested routes, and package island policies should be priorities
+            before v0.7.
+          </p>
+
+          <h2>Server Runtime</h2>
+          <p>
+            Both SSR and API entry points are organized by Hono. LessJS chose Hono not to create
+            a proprietary server model, but to align with the Fetch API, Web Request/Response,
+            and multi-runtime deployment.
+          </p>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Layer</th>
+                <th>Current Responsibility</th>
+                <th>Next Steps</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Routes</td>
+                <td>Page components, dynamic params, layout renderers.</td>
+                <td>Better route manifests and failure diagnostics.</td>
+              </tr>
+              <tr>
+                <td>Middleware</td>
+                <td>Hono middleware mounted on the route tree.</td>
+                <td>Fix root middleware scope, complete static build security handling.</td>
+              </tr>
+              <tr>
+                <td>API</td>
+                <td>Hono handlers targeting serverless runtimes.</td>
+                <td>Typed actions, env/secrets, adapter documentation.</td>
+              </tr>
+              <tr>
+                <td>SSG</td>
+                <td>Default static HTML and client assets output.</td>
+                <td>Align CSP/PWA/postprocess with Hono entry.</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h2>Package Boundaries</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Package</th>
+                <th>Responsibility</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="inline-code">@lessjs/core</span></td>
+                <td>Route scanning, entry generation, DSD SSR, SSG, CLI.</td>
+              </tr>
+              <tr>
+                <td><span class="inline-code">@lessjs/ui</span></td>
+                <td>Reusable Web Components for docs and demos.</td>
+              </tr>
+              <tr>
+                <td><span class="inline-code">@lessjs/rpc</span></td>
+                <td>Type-safe API/RPC capabilities, experimentation and hardening.</td>
+              </tr>
+              <tr>
+                <td><span class="inline-code">@lessjs/adapter-lit</span></td>
+                <td>Lit adapter boundary — room for compiler / multi-adapter in the future.</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h2>Trust Boundaries</h2>
+          <p>
+            The most important architectural work right now is not adding features, but making
+            already-promised capabilities trustworthy: middleware scope must be accurate,
+            SSG and Hono entry CSP behavior must be consistent, nested island paths must be
+            stable, and loading strategies must not be lost during builds.
+          </p>
+
+          <div class="nav-row">
+            <a href="/guide/design-philosophy" class="nav-link">&larr; Design Philosophy</a>
+            <a href="/guide/routing" class="nav-link">Routing &rarr;</a>
           </div>
         </div>
       </less-layout>
