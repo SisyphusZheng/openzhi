@@ -63,7 +63,7 @@ const log = createLogger('core');
  * Without this conversion, currentPath would render as "currentpath"
  * (lowercased by the browser) and never match "current-path".
  */
-function camelToKebab(str: string): string {
+export function camelToKebab(str: string): string {
   return str.replace(/([A-Z])/g, '-$1').toLowerCase();
 }
 

@@ -33,17 +33,13 @@ export class LessBuildContext {
   /** Vite resolved config (set in configResolved hook) */
   resolvedConfig: ResolvedConfig | null = null;
 
-  /**
-   * User-provided resolve.alias in its original format.
+  /** User-provided resolve.alias in its original format.
    * Vite accepts both Record<string, string> and Alias[].
    * Saved during the config() hook so SSG can pass it to the internal Vite SSR server.
    * (config.resolve.alias is Vite's internal Alias[] after resolution, which is
    * NOT compatible with createServer's resolve.alias input format.)
    */
   userResolveAlias: Record<string, string> | Alias[] | null = null;
-
-  /** Blog plugin options (contentDir, basePath) for SSG dynamic route expansion */
-  blogOptions: { contentDir?: string; basePath?: string } | null = null;
 
   /** Resolved framework options with defaults applied */
   readonly options: FrameworkOptions;

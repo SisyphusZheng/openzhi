@@ -71,20 +71,21 @@ export {
 } from './island-manifest.js';
 export { printBuildManifest, scanClientBuild, scanSSGOutput } from './build-manifest.js';
 export type { ArtifactInfo, BuildManifest } from './build-manifest.js';
+export { renderDSD, renderDSDByName } from './render-dsd.js';
 export {
   type ComponentLayer,
   type DsdOptions,
-  escapeAttr,
-  escapeAttrValue,
-  escapeHtml,
   type HydrateEventDescriptor,
   registerAdapter,
   type RenderAdapter,
-  renderDSD,
-  renderDSDByName,
+} from './types.js';
+export {
+  escapeAttr,
+  escapeAttrValue,
+  escapeHtml,
   type SafeHtml,
   type UnsafeHtml,
-} from './render-dsd.js';
+} from './html-escape.js';
 export { createLogger, LessLogger, LogLevel } from './logger.js';
 export { getSSRProps, island, type IslandOptions, lessBind } from './island.js';
 export { hasNavigationApi, matchRoute, navigate, onNavigate } from './navigation.js';

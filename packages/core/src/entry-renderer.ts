@@ -20,7 +20,6 @@ import type {
   EntryDescriptor,
   ImportDecl,
   MiddlewareDecl,
-  // MiddlewareScopeDecl,
   PageRouteDecl,
   RendererDecl,
 } from './entry-descriptor.js';

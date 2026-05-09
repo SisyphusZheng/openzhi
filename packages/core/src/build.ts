@@ -110,8 +110,6 @@ export function buildPlugin(options: FrameworkOptions = {}, ctx?: LessBuildConte
         // upgradeStrategy controls when island modules are imported.
         // It is an upgrade timing hint, not a client render runtime.
         upgradeStrategy: options.island?.upgradeStrategy || 'lazy',
-        // Blog plugin options for Phase 3 dynamic route expansion
-        blogOptions: ctx?.blogOptions || null,
       };
       const metadataPath = join(lessTmpDir, 'build-metadata.json');
       writeFileSync(metadataPath, JSON.stringify(metadata, null, 2), 'utf-8');

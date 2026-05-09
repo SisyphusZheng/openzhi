@@ -68,17 +68,6 @@ interface TemplateResultLike {
 
 type BindingType = 'content' | 'attribute' | 'boolean' | 'event' | 'property';
 
-/**
- * Convert camelCase to kebab-case for HTML attribute names.
- * e.g. navItems → nav-items, headerNav → header-nav
- *
- * Used when converting Lit property bindings (.prop="${val}") to
- * HTML attributes (attr="${val}") for SSR rendering.
- */
-function camelToKebab(str: string): string {
-  return str.replace(/([A-Z])/g, '-$1').toLowerCase();
-}
-
 // ─── Template Interpolation ────────────────────────────────────
 
 /**
@@ -122,8 +111,8 @@ function isNothing(value: unknown): boolean {
 // like '../../core/src/render-dsd.js' won't resolve once published.
 // NOTE: Use @lessjs/core/render-dsd (not @lessjs/core) to avoid pulling in the
 // entire core dependency graph (Hono, Vite, etc.) when Vite SSR loads this module.
-export { escapeAttr, escapeHtml } from '@lessjs/core/render-dsd';
-import { escapeAttr, escapeHtml, type RenderAdapter } from '@lessjs/core/render-dsd';
+export { camelToKebab, escapeAttr, escapeHtml } from '@lessjs/core/render-dsd';
+import { camelToKebab, escapeAttr, escapeHtml, type RenderAdapter } from '@lessjs/core/render-dsd';
 // Import registerAdapter from @lessjs/core/less-runtime so it shares the same
 // module scope as renderDSD when loaded through Vite SSR — no globalThis bridge needed.
 import { registerAdapter } from '@lessjs/core/less-runtime';
