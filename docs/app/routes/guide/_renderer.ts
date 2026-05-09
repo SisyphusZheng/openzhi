@@ -29,34 +29,34 @@ const renderer: LessRenderer = {
     const sourcePath = routeToSourcePath(ctx.req.path);
     const editUrl = `${GITHUB_EDIT_BASE}/${sourcePath}`;
 
-    // 1. Inject search into header slot
+    // 1. Inject search into header slot (must be direct child of <less-layout> for slot projection)
     html = injectAfterTag(
       html,
       'less-layout',
       '<less-search slot="header-actions"></less-search>',
     );
 
-    // 2. Add the main content wrapper with TOC inside
-    // Wrap content so TOC can float to the right
-    // Find the main slot content (everything between <less-layout...> and </less-layout>)
-    const contentStart = html.indexOf('<less-search slot="header-actions">');
+    // 2. Wrap content + TOC in flex layout, keeping slot children as direct layout children.
+    //    The search button is a slot child ─ must remain a direct child.
+    //    Everything else after it goes into the flex wrapper.
+    const searchTag = '<less-search slot="header-actions">';
+    const searchEnd = html.indexOf('</less-search>');
     const closeTag = '</less-layout>';
     const closeIdx = html.lastIndexOf(closeTag);
-    if (contentStart > 0 && closeIdx > contentStart) {
-      const inner = html.slice(contentStart, closeIdx);
-      const wrapped = `<div style="display:flex;gap:2rem;position:relative;">
-  <div style="flex:1;min-width:0">${inner}</div>
+
+    if (searchEnd > 0 && closeIdx > searchEnd) {
+      const inner = html.slice(searchEnd + '</less-search>'.length, closeIdx);
+      const flexWrapper = `<div style="display:flex;gap:2rem;position:relative;">
+  <div style="flex:1;min-width:0">${inner}
+  <div style="margin-top:3rem;padding-top:1.5rem;border-top:0.5px solid var(--less-border);font-size:0.8125rem;">
+    <a href="${editUrl}" target="_blank" rel="noopener" style="color:var(--less-text-tertiary);text-decoration:none;">Edit this page on GitHub →</a>
+  </div>
+</div>
   <less-toc style="flex-shrink:0;width:200px;display:none"></less-toc>
 </div>`;
-      html = html.slice(0, contentStart) + wrapped + html.slice(closeIdx);
+      html = html.slice(0, searchEnd + '</less-search>'.length) + flexWrapper +
+        html.slice(closeIdx);
     }
-
-    // 3. Add "Edit this page" footer before closing </less-layout>
-    const footer =
-      `<div style="margin-top:3rem;padding-top:1.5rem;border-top:0.5px solid var(--less-border);font-size:0.8125rem;">
-  <a href="${editUrl}" target="_blank" rel="noopener" style="color:var(--less-text-tertiary);text-decoration:none;">Edit this page on GitHub →</a>
-</div>`;
-    html = html.replace(closeTag, `${footer}\n${closeTag}`);
 
     return html;
   },
