@@ -40,17 +40,7 @@ export type {
   SpecialFileType,
   SsrContext,
 } from './types.js';
-export {
-  ConflictError,
-  ForbiddenError,
-  IslandUpgradeError,
-  LessError,
-  NotFoundError,
-  RateLimitError,
-  SsrRenderError,
-  UnauthorizedError,
-  ValidationError,
-} from './errors.js';
+export { LessError, SsrRenderError } from './errors.js';
 export { createSsrContext, extractParams, parseQuery } from './context.js';
 export { renderSsrError, wrapInDocument } from './ssr-handler.js';
 export {

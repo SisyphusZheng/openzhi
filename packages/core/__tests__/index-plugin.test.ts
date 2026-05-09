@@ -15,17 +15,7 @@ import { join } from 'node:path';
 import { less } from '../src/index.ts';
 
 // Verify re-exports exist (compile-time)
-import {
-  ConflictError,
-  ForbiddenError,
-  IslandUpgradeError,
-  LessError,
-  NotFoundError,
-  RateLimitError,
-  SsrRenderError,
-  UnauthorizedError,
-  ValidationError,
-} from '../src/errors.ts';
+import { LessError, SsrRenderError } from '../src/errors.ts';
 
 import { createSsrContext, extractParams, parseQuery } from '../src/context.ts';
 

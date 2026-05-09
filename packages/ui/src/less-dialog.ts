@@ -222,13 +222,13 @@ export class LessDialog extends DsdLitElement {
     if (!this.parentNode) return;
     const parent = this.parentNode as Element;
     if (this.open) {
-      for (const child of Array.from(parent.children)) {
+      for (const child of [...parent.children]) {
         if (child !== this) {
           child.setAttribute('inert', '');
         }
       }
     } else {
-      for (const child of Array.from(parent.children)) {
+      for (const child of [...parent.children]) {
         if (child !== this) {
           child.removeAttribute('inert');
         }
