@@ -121,6 +121,81 @@ export class ChangelogPage extends LitElement {
 
           <div class="version-section">
             <div class="version-header">
+              <span class="version-number">0.9.2</span>
+              <span class="version-date">2026-05-09</span>
+            </div>
+            <div class="change-category added">
+              <h4>新增</h4>
+              <ul class="change-list">
+                <li>
+                  <strong>View Transitions API</strong>：
+                  SSG 后处理管线新增 <span class="inline-code">injectViewTransitionMeta()</span>，
+                  在每个 HTML 页面注入 <span class="inline-code">&lt;meta name="view-transition" content="same-origin"&gt;</span>，
+                  启用跨页面 MPA 动画（Chrome 111+, Safari 18+, Firefox 129+）。
+                  配置项 <span class="inline-code">viewTransition: true</span>，默认开启。
+                  18 个新增测试覆盖 meta 注入、多页面渲染、配置传递。
+                </li>
+                <li>
+                  <strong>Speculation Rules API</strong>：
+                  SSG 后处理管线新增 <span class="inline-code">injectSpeculationRules()</span>，
+                  在 HTML 页面注入 <span class="inline-code">&lt;script type="speculationrules"&gt;</span> JSON，
+                  浏览器自动 prefetch/prerender 链接目标页面（Chrome 121+）。
+                  配置项 <span class="inline-code">speculation: true</span>，默认关闭，需显式启用。
+                  支持 <span class="inline-code">eagerness</span>（conservative/moderate/eager）和
+                  <span class="inline-code">prerender</span> 选项。
+                </li>
+                <li>
+                  <strong>SSG Post-process 管线重构</strong>：
+                  <span class="inline-code">ssg-postprocess.ts</span> 从单一函数拆分为 5 步管线：
+                  injectClientScript → injectViewTransitionMeta → injectSpeculationRules → injectCspMeta → injectDsdPolyfill。
+                  每步独立、可测试、可配置。39 个测试。
+                </li>
+              </ul>
+            </div>
+            <div class="change-category changed">
+              <h4>变更</h4>
+              <ul class="change-list">
+                <li>
+                  <strong>Phase 1→3 配置传递补全</strong>：
+                  <span class="inline-code">viewTransition</span> 和 <span class="inline-code">speculation</span>
+                  配置项从 Phase 1 写入 <span class="inline-code">build-metadata.json</span>，
+                  Phase 3 读取并传递给 SSG 后处理管线。所有 11 项配置现在完整传递。
+                </li>
+                <li>
+                  <strong>View Transitions 默认开启</strong>：
+                  单 <span class="inline-code">&lt;meta&gt;</span> 标签零成本，
+                  不支持浏览器静默降级。用户可通过 <span class="inline-code">viewTransition: false</span> 关闭。
+                </li>
+                <li>
+                  <strong>Speculation Rules 默认关闭</strong>：
+                  需用户显式启用 <span class="inline-code">speculation: true</span>，
+                  避免不必要的带宽消耗。属于性能优化，非核心渲染功能。
+                </li>
+                <li>
+                  <strong>包版本变更</strong>：
+                  @lessjs/core 0.9.0-alpha-1 → 0.9.2；
+                  其余包未变更。
+                </li>
+              </ul>
+            </div>
+            <div class="change-category fixed">
+              <h4>修复</h4>
+              <ul class="change-list">
+                <li>
+                  <strong>route-scanner 测试格式修复</strong>：
+                  <span class="inline-code">route-scanner.test.ts</span> 缩进不一致导致
+                  <span class="inline-code">deno fmt --check</span> 失败，已格式化对齐。
+                </li>
+                <li>
+                  <strong>ssg-postprocess 测试格式修复</strong>：
+                  <span class="inline-code">ssg-postprocess.test.ts</span> 同上，已格式化对齐。
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="version-section">
+            <div class="version-header">
               <span class="version-number">0.9.0-alpha-1</span>
               <span class="version-date">2026-05-09</span>
             </div>
@@ -1598,6 +1673,11 @@ export class ChangelogPage extends LitElement {
                 </tr>
               </thead>
               <tbody>
+                <tr>
+                  <td>0.9.2</td>
+                  <td>2026-05-09</td>
+                  <td>View Transitions API + Speculation Rules API + SSG Post-process 管线重构</td>
+                </tr>
                 <tr>
                   <td>0.9.0-alpha-1</td>
                   <td>2026-05-09</td>

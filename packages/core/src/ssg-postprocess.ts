@@ -241,7 +241,7 @@ export function injectViewTransitionMeta(dir: string): void {
       injectViewTransitionMeta(fullPath);
     } else if (entry.name.endsWith('.html')) {
       let content = readFileSync(fullPath, 'utf-8');
-      if (!content.includes('view-transition')) {
+      if (!content.includes('<meta name="view-transition"')) {
         content = insertAfterHead(content, metaTag);
         writeFileSync(fullPath, content, 'utf-8');
       }
@@ -400,7 +400,7 @@ export function injectSpeculationRules(dir: string, rulesJson: string): void {
       injectSpeculationRules(fullPath, rulesJson);
     } else if (entry.name.endsWith('.html')) {
       let content = readFileSync(fullPath, 'utf-8');
-      if (!content.includes('speculationrules')) {
+      if (!content.includes('<script type="speculationrules"')) {
         content = insertAfterHead(content, scriptTag);
         writeFileSync(fullPath, content, 'utf-8');
       }

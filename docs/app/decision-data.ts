@@ -4,6 +4,7 @@ import adr0003 from '../decisions/0003-pwa-support.md?raw';
 import adr0004 from '../decisions/0004-blog-system.md?raw';
 import adr0005 from '../decisions/0005-with-dsd-hydration-mixin.md?raw';
 import adr0006 from '../decisions/0006-version-strategy.md?raw';
+import adr0007 from '../decisions/0007-view-transitions-speculation-rules.md?raw';
 
 export interface DecisionDoc {
   id: string;
@@ -67,5 +68,14 @@ export const DECISIONS: DecisionDoc[] = [
     summary:
       'v0.7–0.11 progressive stabilization → v1.0 API stability promise → v1.x incremental → v2.0 only if needed.',
     source: adr0006,
+  },
+  {
+    id: '0007',
+    title: 'View Transitions + Speculation Rules',
+    status: 'Adopted',
+    path: '/decisions/0007-view-transitions-speculation-rules',
+    summary:
+      'Native cross-page animations (View Transitions) and browser prefetch/prerender (Speculation Rules) in SSG post-process pipeline. Zero runtime cost.',
+    source: adr0007,
   },
 ];

@@ -1,0 +1,128 @@
+/**
+ * E2E: SEO & Meta Tags
+ *
+ * Verifies that SSG-built pages have correct SEO meta tags:
+ *   - Open Graph tags (og:title, og:description, og:image, og:url)
+ *   - Twitter Card tags
+ *   - Description meta tag
+ *   - HTML lang attribute
+ *   - Viewport meta tag
+ */
+
+import { expect, test } from '@playwright/test';
+
+test.describe('SEO Meta Tags', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/');
+    await page.waitForLoadState('networkidle');
+  });
+
+  test('has Open Graph site name', async ({ page }) => {
+    const content = await page.locator('meta[property="og:site_name"]').getAttribute('content');
+    expect(content).toBe('LessJS');
+  });
+
+  test('has Open Graph type', async ({ page }) => {
+    const content = await page.locator('meta[property="og:type"]').getAttribute('content');
+    expect(content).toBe('website');
+  });
+
+  test('has Open Graph title', async ({ page }) => {
+    const content = await page.locator('meta[property="og:title"]').getAttribute('content');
+    expect(content).toContain('LessJS');
+  });
+
+  test('has Open Graph description', async ({ page }) => {
+    const content = await page.locator('meta[property="og:description"]').getAttribute('content');
+    expect(content).toBeTruthy();
+    expect(content!.length).toBeGreaterThan(10);
+  });
+
+  test('has Open Graph URL', async ({ page }) => {
+    const content = await page.locator('meta[property="og:url"]').getAttribute('content');
+    expect(content).toContain('lessjs.org');
+  });
+
+  test('has Open Graph image', async ({ page }) => {
+    const content = await page.locator('meta[property="og:image"]').getAttribute('content');
+    expect(content).toBeTruthy();
+    expect(content).toContain('og-image');
+  });
+
+  test('has Twitter Card', async ({ page }) => {
+    const content = await page.locator('meta[name="twitter:card"]').getAttribute('content');
+    expect(content).toBe('summary_large_image');
+  });
+
+  test('has description meta tag', async ({ page }) => {
+    const content = await page.locator('meta[name="description"]').getAttribute('content');
+    expect(content).toBeTruthy();
+    expect(content).toContain('LessJS');
+  });
+});
+
+test.describe('HTML Structure', () => {
+  test('homepage has correct lang attribute', async ({ page }) => {
+    await page.goto('/');
+    await page.waitForLoadState('networkidle');
+
+    const lang = await page.getAttribute('html', 'lang');
+    // Default locale should be 'en' or 'zh' depending on route
+    expect(lang).toMatch(/^(en|zh)$/);
+  });
+
+  test('zh locale page has lang="zh"', async ({ page }) => {
+    await page.goto('/zh/');
+    await page.waitForLoadState('networkidle');
+
+    const lang = await page.getAttribute('html', 'lang');
+    expect(lang).toBe('zh');
+  });
+
+  test('en locale page has lang="en"', async ({ page }) => {
+    await page.goto('/en/');
+    await page.waitForLoadState('networkidle');
+
+    const lang = await page.getAttribute('html', 'lang');
+    expect(lang).toBe('en');
+  });
+
+  test('has viewport meta tag', async ({ page }) => {
+    await page.goto('/');
+    await page.waitForLoadState('networkidle');
+
+    const viewport = await page.locator('meta[name="viewport"]').getAttribute('content');
+    expect(viewport).toContain('width=device-width');
+  });
+
+  test('has favicon', async ({ page }) => {
+    await page.goto('/');
+    await page.waitForLoadState('networkidle');
+
+    const favicon = page.locator('link[rel="icon"]');
+    expect(await favicon.count()).toBeGreaterThan(0);
+  });
+
+  test('has charset meta', async ({ page }) => {
+    await page.goto('/');
+    await page.waitForLoadState('networkidle');
+
+    const charset = await page.locator('meta[charset]').getAttribute('charset');
+    expect(charset?.toLowerCase()).toBe('utf-8');
+  });
+});
+
+test.describe('Sitemap & Robots', () => {
+  test('sitemap.xml is accessible', async ({ page }) => {
+    const response = await page.goto('/sitemap.xml');
+    expect(response?.ok()).toBe(true);
+
+    const content = await page.textContent('body');
+    expect(content).toContain('lessjs.org');
+  });
+
+  test('robots.txt is accessible', async ({ page }) => {
+    const response = await page.goto('/robots.txt');
+    expect(response?.ok()).toBe(true);
+  });
+});

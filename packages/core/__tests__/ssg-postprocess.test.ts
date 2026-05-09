@@ -473,6 +473,30 @@ Deno.test('injectViewTransitionMeta handles HTML without <head> tag', () => {
   }
 });
 
+Deno.test('injectViewTransitionMeta still injects when body text mentions view-transition', () => {
+  // Regression: changelog page content contains "view-transition" as text,
+  // which previously caused the injection to be skipped.
+  // Fix: check for '<meta name="view-transition"' instead of 'view-transition'.
+  const tmp = makeTempDir();
+  try {
+    const htmlPath = join(tmp, 'changelog.html');
+    writeFileSync(
+      htmlPath,
+      '<html><head></head><body><p>We added view-transition support in v0.9.2</p></body></html>',
+      'utf-8',
+    );
+
+    injectViewTransitionMeta(tmp);
+
+    const content = readFileSync(htmlPath, 'utf-8');
+    // Should have the meta tag injected (not skipped because of body text)
+    const matchCount = (content.match(/<meta name="view-transition"/g) || []).length;
+    assertEquals(matchCount, 1);
+  } finally {
+    cleanup(tmp);
+  }
+});
+
 // ─── buildSpeculationRulesJson ────────────────────────────────
 
 Deno.test('buildSpeculationRulesJson returns empty string for no options and no routes', () => {
@@ -646,6 +670,31 @@ Deno.test('injectSpeculationRules recurses into subdirectories', () => {
     assertExists(
       readFileSync(join(tmp, 'blog', 'post.html'), 'utf-8').includes('speculationrules'),
     );
+  } finally {
+    cleanup(tmp);
+  }
+});
+
+Deno.test('injectSpeculationRules still injects when body text mentions speculationrules', () => {
+  // Regression: changelog page content contains "speculationrules" as text,
+  // which previously caused the injection to be skipped.
+  // Fix: check for '<script type="speculationrules"' instead of 'speculationrules'.
+  const tmp = makeTempDir();
+  try {
+    const htmlPath = join(tmp, 'changelog.html');
+    writeFileSync(
+      htmlPath,
+      '<html><head></head><body><p>We added speculationrules support in v0.9.2</p></body></html>',
+      'utf-8',
+    );
+
+    const rulesJson = JSON.stringify({ prefetch: [{ where: { href_matches: '/*' } }] }, null, 2);
+    injectSpeculationRules(tmp, rulesJson);
+
+    const content = readFileSync(htmlPath, 'utf-8');
+    // Should have the script tag injected (not skipped because of body text)
+    const matchCount = (content.match(/<script type="speculationrules"/g) || []).length;
+    assertEquals(matchCount, 1);
   } finally {
     cleanup(tmp);
   }

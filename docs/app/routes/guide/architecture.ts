@@ -141,7 +141,7 @@ Phase 3: SSG
             <tbody>
               <tr>
                 <td><span class="inline-code">@lessjs/core</span></td>
-                <td>路由扫描、entry 生成、DSD SSR、SSG、CLI。</td>
+                <td>路由扫描、entry 生成、DSD SSR、SSG、CLI、View Transitions、Speculation Rules。</td>
               </tr>
               <tr>
                 <td><span class="inline-code">@lessjs/ui</span></td>
@@ -154,6 +154,22 @@ Phase 3: SSG
               <tr>
                 <td><span class="inline-code">@lessjs/adapter-lit</span></td>
                 <td>Lit 适配边界，未来为 compiler/多 adapter 留出空间。</td>
+              </tr>
+              <tr>
+                <td><span class="inline-code">@lessjs/content</span></td>
+                <td>统一内容插件（Blog + Nav + Sitemap），SSG 内容管线。</td>
+              </tr>
+              <tr>
+                <td><span class="inline-code">@lessjs/i18n</span></td>
+                <td>国际化插件，locale 展开、路径辅助、语言切换。</td>
+              </tr>
+              <tr>
+                <td><span class="inline-code">@lessjs/signal</span></td>
+                <td>TC39 Signals polyfill + islandEffect，浏览器原生 Signal 条件回退。</td>
+              </tr>
+              <tr>
+                <td><span class="inline-code">@lessjs/create</span></td>
+                <td>项目脚手架 CLI，<span class="inline-code">deno run -A jsr:@lessjs/create</span>。</td>
               </tr>
             </tbody>
           </table>
@@ -309,7 +325,7 @@ Phase 3: SSG
             <tbody>
               <tr>
                 <td><span class="inline-code">@lessjs/core</span></td>
-                <td>Route scanning, entry generation, DSD SSR, SSG, CLI.</td>
+                <td>Route scanning, entry generation, DSD SSR, SSG, CLI, View Transitions, Speculation Rules.</td>
               </tr>
               <tr>
                 <td><span class="inline-code">@lessjs/ui</span></td>
@@ -322,6 +338,22 @@ Phase 3: SSG
               <tr>
                 <td><span class="inline-code">@lessjs/adapter-lit</span></td>
                 <td>Lit adapter boundary — room for compiler / multi-adapter in the future.</td>
+              </tr>
+              <tr>
+                <td><span class="inline-code">@lessjs/content</span></td>
+                <td>Unified content plugin (Blog + Nav + Sitemap), SSG content pipeline.</td>
+              </tr>
+              <tr>
+                <td><span class="inline-code">@lessjs/i18n</span></td>
+                <td>Internationalization plugin, locale expansion, path helpers, language switching.</td>
+              </tr>
+              <tr>
+                <td><span class="inline-code">@lessjs/signal</span></td>
+                <td>TC39 Signals polyfill + islandEffect, native Signal conditional fallback.</td>
+              </tr>
+              <tr>
+                <td><span class="inline-code">@lessjs/create</span></td>
+                <td>Project scaffolding CLI, <span class="inline-code">deno run -A jsr:@lessjs/create</span>.</td>
               </tr>
             </tbody>
           </table>

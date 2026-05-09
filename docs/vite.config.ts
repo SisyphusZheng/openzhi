@@ -46,6 +46,8 @@ export default defineConfig({
         themeColor: '#000000',
         backgroundColor: '#ffffff',
       },
+      viewTransition: true,
+      speculation: true,
       inject: {
         stylesheets: [],
         scripts: [],

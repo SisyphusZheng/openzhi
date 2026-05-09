@@ -80,6 +80,46 @@ export async function getCustomElementTags(page: Page): Promise<string[]> {
 }
 
 /**
+ * Get the resolved theme ('light' | 'dark' | null) from document.documentElement.
+ */
+export async function getDocumentTheme(page: Page): Promise<string | null> {
+  return page.evaluate(() => {
+    return document.documentElement.getAttribute('data-theme');
+  });
+}
+
+/**
+ * Get all meta tag content by name or property.
+ */
+export async function getMetaContent(
+  page: Page,
+  attr: 'name' | 'property',
+  value: string,
+): Promise<string | null> {
+  return page.evaluate(
+    ({ attr, value }) => {
+      const meta = document.querySelector(`meta[${attr}="${value}"]`);
+      return meta?.getAttribute('content') ?? null;
+    },
+    { attr, value },
+  );
+}
+
+/**
+ * Count shadow roots in the page (all custom elements with shadow DOM).
+ */
+export async function countShadowRoots(page: Page): Promise<number> {
+  return page.evaluate(() => {
+    let count = 0;
+    const all = document.querySelectorAll('*');
+    for (const el of all) {
+      if (el.shadowRoot) count++;
+    }
+    return count;
+  });
+}
+
+/**
  * Re-export common assertions for convenience.
  */
 export { expect } from '@playwright/test';
