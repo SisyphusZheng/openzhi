@@ -14,8 +14,7 @@
 import type { Plugin } from 'vite';
 import type { FrameworkOptions, PackageIslandMeta, RouteEntry } from './types.js';
 
-import { mkdirSync, writeFileSync } from 'node:fs';
-import { join, resolve } from 'node:path';
+import { join } from 'node:path';
 import process from 'node:process';
 import { LessError } from './errors.js';
 import { createLogger } from './logger.js';
@@ -157,6 +156,8 @@ export function less(options: FrameworkOptions = {}): Plugin[] {
 
   const VIRTUAL_ENTRY_ID = 'virtual:less-hono-entry';
   const RESOLVED_ENTRY_ID = '\0' + VIRTUAL_ENTRY_ID;
+  const VIRTUAL_RUNTIME_ID = 'virtual:less-runtime';
+  const RESOLVED_RUNTIME_ID = '\0' + VIRTUAL_RUNTIME_ID;
 
   function generateEntry(
     routes: RouteEntry[],
@@ -188,45 +189,28 @@ export function less(options: FrameworkOptions = {}): Plugin[] {
           | import('vite').Alias[];
       }
 
-      const userAlias = userConfig.resolve?.alias as
-        | Record<string, string>
-        | import('vite').Alias[]
-        | undefined;
-      const hasRuntimeAlias = Array.isArray(userAlias)
-        ? userAlias.some((alias) => alias.find === '@lessjs/core/less-runtime')
-        : Boolean(userAlias?.['@lessjs/core/less-runtime']);
-
-      const buildConfig = {
+      return {
+        resolve: {
+          alias: {
+            '@lessjs/core/less-runtime': VIRTUAL_RUNTIME_ID,
+          },
+        },
         build: {
           rollupOptions: {
             input: [VIRTUAL_ENTRY_ID],
           },
         },
       };
+    },
 
-      if (hasRuntimeAlias) {
-        return buildConfig;
+    resolveId(id) {
+      if (id === VIRTUAL_RUNTIME_ID) return RESOLVED_RUNTIME_ID;
+    },
+
+    load(id) {
+      if (id === RESOLVED_RUNTIME_ID) {
+        return createRuntimeShimCode();
       }
-
-      const lessTmpDir = resolve(process.cwd(), '.less');
-      mkdirSync(lessTmpDir, { recursive: true });
-      const runtimePath = join(lessTmpDir, '.less-runtime.ts');
-      writeFileSync(runtimePath, createRuntimeShimCode(), 'utf-8');
-      ctx.userResolveAlias = Array.isArray(userAlias)
-        ? [{ find: '@lessjs/core/less-runtime', replacement: runtimePath }, ...userAlias]
-        : {
-          ...(userAlias || {}),
-          '@lessjs/core/less-runtime': runtimePath,
-        };
-
-      return {
-        resolve: {
-          alias: {
-            '@lessjs/core/less-runtime': runtimePath,
-          },
-        },
-        ...buildConfig,
-      };
     },
 
     configResolved(resolvedConfig) {
