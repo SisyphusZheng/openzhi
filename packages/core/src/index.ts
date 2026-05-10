@@ -93,69 +93,158 @@ export { getSSRProps, island, type IslandOptions, lessBind } from './island.js';
 export { hasNavigationApi, matchRoute, navigate, onNavigate } from './navigation.js';
 export type { NavigationCallback } from './navigation.js';
 
+// ─── Subpath resolution (ADR 0016) ─────────────────────────────────
+//
+// Problem: The virtual:less-hono-entry module imports from subpaths like
+// @lessjs/core/ssr-handler and @lessjs/core/logger. Vite's SSR runner
+// cannot resolve these bare specifiers because:
+//   - JSR packages are NOT in node_modules (Deno uses content-addressable cache)
+//   - The Deno import map (deno.json) is not used by Vite's SSR runner
+//   - Node.js ESM loader only supports file:// and data: URLs
+//
+// This bug has recurred 4 times (b6a6b41, f223bef, 6c5a992, v0.10.2 https:// aliases).
+//
+// Solution: Two-pronged approach depending on execution context:
+//
+//   A) Local (file:// import.meta.url): resolve.alias with local file paths
+//      - Fast, supports HMR, no virtual module overhead
+//
+//   B) Remote (https:// import.meta.url — JSR execution):
+//      - resolveId + load virtual module pattern
+//      - resolveId intercepts @lessjs/core/* → virtual IDs (\0lessjs:core/src/*)
+//      - load fetches source from JSR, returns as string
+//      - Relative imports within virtual modules are also intercepted
+//      - Virtual IDs (\0 prefix) bypass Node.js ESM loader entirely
+
+/** Virtual module ID prefix for JSR remote resolution */
+const VIRTUAL_CORE_PREFIX = '\0lessjs:core/src/';
+
+/** Mapping of @lessjs/core/* subpath specifiers to source files */
+const CORE_SUBPATHS: Record<string, string> = {
+  'html-escape': 'html-escape.ts',
+  'render-dsd': 'render-dsd.ts',
+  'render-nested': 'render-nested.ts',
+  'island-manifest': 'island-manifest.ts',
+  'adapter-registry': 'adapter-registry.ts',
+  'ssr-handler': 'ssr-handler.ts',
+  'logger': 'logger.ts',
+  'build-context': 'build-context.ts',
+  'navigation': 'navigation.ts',
+};
+
 /**
- * Build Vite resolve aliases for @lessjs/core subpath imports.
+ * Build Vite resolve aliases for @lessjs/core subpath imports (local mode).
  *
- * The generated virtual:less-hono-entry module imports from subpaths like
- * @lessjs/core/ssr-handler and @lessjs/core/logger. Vite cannot resolve
- * these bare specifiers without aliases — JSR packages are not in
- * node_modules, and the Deno import map is not used by Vite's SSR runner.
+ * Only used when import.meta.url is file:// (local development).
+ * For remote (JSR) execution, the coreResolvePlugin handles resolution.
  *
  * IMPORTANT: Subpath aliases MUST come before the parent @lessjs/core alias.
- * Vite alias matching is first-hit (not longest-prefix). If @lessjs/core
- * is listed before @lessjs/core/ssr-handler, Vite resolves the parent first
- * and appends "/ssr-handler" to the index.ts file path → "Not a directory".
- *
- * This bug has recurred 3 times (b6a6b41, f223bef, 6c5a992).
- *
- * ADR 0016: Must handle both file:// (local) and https:// (JSR remote) schemes.
- * When Deno runs @lessjs/core from JSR, import.meta.url is https://jsr.io/...
- * and fileURLToPath() throws ERR_INVALID_URL_SCHEME. We detect the scheme and
- * construct replacement URLs/paths accordingly.
+ * Vite alias matching is first-hit (not longest-prefix).
  */
 function buildCoreSubpathAliases(): import('vite').Alias[] {
-  const metaUrl = import.meta.url;
-  const isRemote = metaUrl.startsWith('https://') || metaUrl.startsWith('http://');
-
-  // Base reference: absolute dir path (local) or URL prefix (remote)
-  let baseRef: string;
-  if (isRemote) {
-    // https://jsr.io/@lessjs/core@0.10.1/src/index.ts → https://jsr.io/@lessjs/core@0.10.1/src/
-    baseRef = metaUrl.replace(/\/src\/index\.ts$/, '/src/');
-  } else {
-    const coreSrcDir = dirname(fileURLToPath(metaUrl));
-    baseRef = join(coreSrcDir);
-  }
-
-  const subpaths: Record<string, string> = {
-    'html-escape': 'html-escape.ts',
-    'render-dsd': 'render-dsd.ts',
-    'render-nested': 'render-nested.ts',
-    'island-manifest': 'island-manifest.ts',
-    'adapter-registry': 'adapter-registry.ts',
-    'ssr-handler': 'ssr-handler.ts',
-    'logger': 'logger.ts',
-    'build-context': 'build-context.ts',
-    'navigation': 'navigation.ts',
-  };
+  const coreSrcDir = dirname(fileURLToPath(import.meta.url));
 
   const aliases: import('vite').Alias[] = [];
 
-  // Subpath aliases MUST come first (before parent)
-  for (const [subpath, file] of Object.entries(subpaths)) {
+  for (const [subpath, file] of Object.entries(CORE_SUBPATHS)) {
     aliases.push({
       find: `@lessjs/core/${subpath}`,
-      replacement: isRemote ? baseRef + file : join(baseRef, file),
+      replacement: join(coreSrcDir, file),
     });
   }
 
   // Parent alias last
   aliases.push({
     find: '@lessjs/core',
-    replacement: isRemote ? baseRef + 'index.ts' : join(baseRef, 'index.ts'),
+    replacement: join(coreSrcDir, 'index.ts'),
   });
 
   return aliases;
+}
+
+/** Source cache for JSR-fetched modules (avoids redundant network requests) */
+const jsrSourceCache = new Map<string, string>();
+
+/**
+ * Create the core subpath resolution plugin for JSR remote execution.
+ *
+ * When @lessjs/core is loaded from JSR (https:// import.meta.url),
+ * Vite's SSR runner cannot load https:// URLs via Node.js ESM loader.
+ * This plugin intercepts @lessjs/core/* imports and loads source code
+ * through virtual modules, bypassing Node.js ESM loader entirely.
+ */
+function createCoreResolvePlugin(metaUrl: string): Plugin {
+  const isRemote = metaUrl.startsWith('https://') || metaUrl.startsWith('http://');
+
+  // Compute JSR base URL for source fetching
+  // e.g. https://jsr.io/@lessjs/core@0.10.2/src/index.ts → https://jsr.io/@lessjs/core@0.10.2/src/
+  const jsrSrcBase = isRemote ? metaUrl.replace(/\/src\/index\.ts$/, '/src/') : '';
+
+  return {
+    name: 'less:core-resolve',
+    enforce: 'pre',
+
+    resolveId(source, importer) {
+      if (!isRemote) return;
+
+      // Case 1: Bare specifier @lessjs/core or @lessjs/core/*
+      if (source === '@lessjs/core' || source.startsWith('@lessjs/core/')) {
+        const subpath = source === '@lessjs/core'
+          ? 'index.ts'
+          : (CORE_SUBPATHS[source.slice('@lessjs/core/'.length)] ||
+            `${source.slice('@lessjs/core/'.length)}.ts`);
+        return `${VIRTUAL_CORE_PREFIX}${subpath}`;
+      }
+
+      // Case 2: Relative imports from within our virtual modules
+      // e.g. './errors.js' from '\0lessjs:core/src/ssr-handler.ts'
+      if (importer?.startsWith(VIRTUAL_CORE_PREFIX) && source.startsWith('./')) {
+        const importerDir = importer.replace(/[/\\][^/\\]+$/, '');
+        return `${importerDir}/${source.slice(2)}`;
+      }
+
+      // Case 3: Already-resolved virtual IDs (re-resolve safeguard)
+      if (source.startsWith(VIRTUAL_CORE_PREFIX)) {
+        return source;
+      }
+    },
+
+    async load(id) {
+      if (!isRemote) return;
+      if (!id.startsWith(VIRTUAL_CORE_PREFIX)) return;
+
+      // Check cache
+      if (jsrSourceCache.has(id)) return jsrSourceCache.get(id);
+
+      // Normalize .js → .ts (Deno convention: imports use .js, files are .ts)
+      let filePath = id.slice(VIRTUAL_CORE_PREFIX.length);
+      if (filePath.endsWith('.js') && !filePath.endsWith('.ts')) {
+        filePath = filePath.slice(0, -3) + '.ts';
+      }
+
+      // Fetch from JSR
+      const url = `${jsrSrcBase}${filePath}`;
+      try {
+        const resp = await fetch(url);
+        if (!resp.ok) {
+          throw new Error(
+            `[less:core-resolve] Failed to fetch ${url}: HTTP ${resp.status}`,
+          );
+        }
+        const code = await resp.text();
+        jsrSourceCache.set(id, code);
+        return code;
+      } catch (err) {
+        throw new LessError(
+          `Failed to load @lessjs/core module from JSR: ${filePath}. ` +
+            `URL: ${url}. Error: ${err instanceof Error ? err.message : String(err)}`,
+          'JSR_FETCH_ERROR',
+          500,
+          false,
+        );
+      }
+    },
+  };
 }
 
 /**
@@ -168,6 +257,9 @@ function buildCoreSubpathAliases(): import('vite').Alias[] {
  * @param externalCtx - Optional shared LessBuildContext (used by lessjs() umbrella)
  */
 export function less(options: FrameworkOptions = {}, externalCtx?: LessBuildContext): Plugin[] {
+  const metaUrl = import.meta.url;
+  const isRemote = metaUrl.startsWith('https://') || metaUrl.startsWith('http://');
+
   let headExtras = options.headExtras;
 
   const validateSafeUrl = (url: string, context: string): string => {
@@ -252,13 +344,13 @@ export function less(options: FrameworkOptions = {}, externalCtx?: LessBuildCont
           | import('vite').Alias[];
       }
 
-      // ADR 0015: Auto-inject @lessjs/core subpath aliases.
-      // The generated virtual:less-hono-entry imports from @lessjs/core/ssr-handler,
-      // @lessjs/core/logger, etc. Vite can't resolve these bare specifiers
-      // without aliases (JSR packages aren't in node_modules).
-      // Previously, consumers had to manually add 8+ aliases — now the plugin
-      // injects them automatically.
-      const coreSubpathAliases = buildCoreSubpathAliases();
+      // ADR 0015+0016: Auto-inject @lessjs/core subpath aliases (local mode).
+      // For local execution (file:// import.meta.url), resolve.alias with local
+      // file paths works perfectly — fast, HMR-compatible, no virtual module overhead.
+      // For JSR remote execution (https:// import.meta.url), aliases would need
+      // to point to https:// URLs which Node.js ESM loader rejects. Instead, the
+      // coreResolvePlugin handles resolution via resolveId+load virtual modules.
+      const coreSubpathAliases = isRemote ? [] : buildCoreSubpathAliases();
 
       return {
         build: {
@@ -350,6 +442,7 @@ export function less(options: FrameworkOptions = {}, externalCtx?: LessBuildCont
 
   return [
     corePlugin,
+    createCoreResolvePlugin(metaUrl),
     virtualEntryPlugin,
     devServerPlugin,
     islandTransformPlugin(resolvedOptions.islandsDir!),

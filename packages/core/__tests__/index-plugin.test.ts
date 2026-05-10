@@ -32,7 +32,7 @@ Deno.test('less() returns an array of plugins', () => {
   assertExists(plugins);
   assertEquals(Array.isArray(plugins), true);
   // v0.3.1: 5 plugins (html-template removed — was a no-op)
-  assertEquals(plugins.length, 5);
+  assertEquals(plugins.length, 6);
 });
 
 Deno.test('less() plugins have names starting with less:', () => {
@@ -54,8 +54,9 @@ Deno.test('less() includes required plugin types', () => {
   const plugins = less();
   const names = plugins.map((p) => p.name);
 
-  // Must include these plugins (html-template removed in v0.3.1)
+  // Must include these plugins (html-template removed in v0.3.1, core-resolve added v0.10.3)
   assertArrayIncludes(names, ['less:core']);
+  assertArrayIncludes(names, ['less:core-resolve']);
   assertArrayIncludes(names, ['less:virtual-entry']);
   assertArrayIncludes(names, ['less:island-transform']);
   assertArrayIncludes(names, ['less:build']);
@@ -75,7 +76,7 @@ Deno.test('less() accepts options without error', () => {
     middleware: { corsOrigin: '*' },
   });
 
-  assertEquals(plugins.length, 5);
+  assertEquals(plugins.length, 6);
 });
 
 Deno.test('less() core plugin has config hook defined', () => {
@@ -96,7 +97,7 @@ Deno.test('less() inject.stylesheets → headExtras', () => {
   const plugins = less({
     inject: { stylesheets: ['https://cdn.example.com/app.css'] },
   });
-  assertEquals(plugins.length, 5);
+  assertEquals(plugins.length, 6);
   // headExtras computed internally from inject.stylesheets
   // Verification: plugin construction succeeds for inject-only config
 });
@@ -105,14 +106,14 @@ Deno.test('less() inject.scripts → headExtras', () => {
   const plugins = less({
     inject: { scripts: ['https://cdn.example.com/app.js'] },
   });
-  assertEquals(plugins.length, 5);
+  assertEquals(plugins.length, 6);
 });
 
 Deno.test('less() inject.headFragments → headExtras', () => {
   const plugins = less({
     inject: { headFragments: ['<meta name="theme-color" content="#000">'] },
   });
-  assertEquals(plugins.length, 5);
+  assertEquals(plugins.length, 6);
 });
 
 Deno.test('less() inject all combined', () => {
@@ -123,7 +124,7 @@ Deno.test('less() inject all combined', () => {
       headFragments: ['<meta charset="utf-8">'],
     },
   });
-  assertEquals(plugins.length, 5);
+  assertEquals(plugins.length, 6);
 });
 
 Deno.test('less() headExtras takes precedence over inject', () => {
@@ -131,7 +132,7 @@ Deno.test('less() headExtras takes precedence over inject', () => {
     headExtras: '<meta name="override" />',
     inject: { stylesheets: ['https://example.com/style.css'] },
   });
-  assertEquals(plugins.length, 5);
+  assertEquals(plugins.length, 6);
 });
 
 // ─── less() config hook (captures userConfig.resolve.alias) ───
@@ -206,14 +207,14 @@ Deno.test('less() virtualEntryPlugin.load returns code for resolved ID', () => {
 Deno.test('less() with packageIslands option (empty array)', () => {
   const plugins = less({ packageIslands: [] });
   // v0.3.1: 5 plugins (html-template removed — was a no-op)
-  assertEquals(plugins.length, 5);
+  assertEquals(plugins.length, 6);
 });
 
 // ─── less() default dirs ────────────────────────────────────
 
 Deno.test('less() applies default routesDir and islandsDir', () => {
   const plugins = less();
-  assertEquals(plugins.length, 5);
+  assertEquals(plugins.length, 6);
   // Defaults applied internally via resolvedOptions
 });
 
@@ -244,35 +245,35 @@ Deno.test('less() with all options branches covered', () => {
       headFragments: ['<meta name="x" content="y">'],
     },
   });
-  assertEquals(plugins.length, 5);
+  assertEquals(plugins.length, 6);
 });
 
 Deno.test('less() with middleware.corsOrigin as string', () => {
   const plugins = less({
     middleware: { corsOrigin: '*' },
   });
-  assertEquals(plugins.length, 5);
+  assertEquals(plugins.length, 6);
 });
 
 Deno.test('less() with middleware.corsOrigin as array', () => {
   const plugins = less({
     middleware: { corsOrigin: ['http://localhost:3000', 'http://localhost:3001'] },
   });
-  assertEquals(plugins.length, 5);
+  assertEquals(plugins.length, 6);
 });
 
 Deno.test('less() with island.upgradeStrategy=eager', () => {
   const plugins = less({
     island: { upgradeStrategy: 'eager' },
   });
-  assertEquals(plugins.length, 5);
+  assertEquals(plugins.length, 6);
 });
 
 Deno.test('less() with island.upgradeStrategy=eager', () => {
   const plugins = less({
     island: { upgradeStrategy: 'eager' },
   });
-  assertEquals(plugins.length, 5);
+  assertEquals(plugins.length, 6);
 });
 
 // ─── less() buildStart hook (actual execution) ──────────
@@ -410,14 +411,14 @@ Deno.test('less() inject.stylesheets escapes special chars in URLs', () => {
   const plugins = less({
     inject: { stylesheets: ['https://cdn.example.com/app.css?v=1&x<"test">'] },
   });
-  assertEquals(plugins.length, 5);
+  assertEquals(plugins.length, 6);
 });
 
 Deno.test('less() inject.scripts escapes special chars in URLs', () => {
   const plugins = less({
     inject: { scripts: ['https://cdn.example.com/app.js?v=1&x<"test">'] },
   });
-  assertEquals(plugins.length, 5);
+  assertEquals(plugins.length, 6);
 });
 
 // ─── less() config hook without resolve ──────────
