@@ -14,5 +14,6 @@ import { createLogger, type LessLogger } from './logger.js';
 const log: LessLogger = createLogger('core');
 
 export { log };
-export { registerAdapter, renderDSD, renderDSDByName } from './render-dsd.js';
+export { registerAdapter } from './adapter-registry.js';
+export { renderDSD, renderDSDByName } from './render-dsd.js';
 export { wrapInDocument } from './ssr-handler.js';

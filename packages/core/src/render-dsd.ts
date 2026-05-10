@@ -44,14 +44,15 @@ export {
   type DsdComponent,
   type DsdOptions,
   type HydrateEventDescriptor,
-  registerAdapter,
   type RenderAdapter,
 } from './types.js';
+export { registerAdapter } from './adapter-registry.js';
 export { renderNestedCustomElements } from './render-nested.js';
 
 // ─── Internal imports ──────────────────────────────────────────
 import { escapeAttr, escapeAttrValue, escapeHtml } from './html-escape.js';
-import { type DsdComponent, type DsdOptions, getAdapter } from './types.js';
+import { type DsdComponent, type DsdOptions } from './types.js';
+import { getAdapter } from './adapter-registry.js';
 import { renderNestedCustomElements } from './render-nested.js';
 import { createLogger } from './logger.js';
 

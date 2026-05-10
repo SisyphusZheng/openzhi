@@ -296,23 +296,10 @@ export interface RenderAdapter {
 /**
  * Module-level adapter storage.
  *
- * With viteBuild(ssr:true, noExternal) producing a self-contained ESM bundle,
- * all virtual modules resolve at compile time and there is only one module
- * instance — so a plain module variable replaces the former globalThis bridge.
- *
- * The public API (registerAdapter / getAdapter) is unchanged.
+ * Moved to adapter-registry.ts — types.ts should only contain type definitions.
+ * Re-exported here for backward compatibility.
  */
-let _adapter: RenderAdapter | undefined;
-
-/** Register a render adapter explicitly. */
-export function registerAdapter(adapter: RenderAdapter | undefined): void {
-  _adapter = adapter;
-}
-
-/** Get the currently registered adapter. */
-export function getAdapter(): RenderAdapter | undefined {
-  return _adapter;
-}
+export { getAdapter, registerAdapter } from './adapter-registry.js';
 
 /**
  * Interface that components must implement to be DSD-renderable.
