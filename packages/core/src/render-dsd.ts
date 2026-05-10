@@ -27,6 +27,8 @@
  */
 
 // ─── Re-exports for backward compatibility ─────────────────────
+// @deprecated Import from '@lessjs/core/html-escape' instead.
+// These re-exports will be removed in the next major version.
 export {
   escapeAttr,
   escapeAttrValue,
@@ -34,6 +36,9 @@ export {
   type SafeHtml,
   type UnsafeHtml,
 } from './html-escape.js';
+// @deprecated Import types from '@lessjs/core' and registerAdapter from
+// '@lessjs/core/less-runtime' instead.
+// These re-exports will be removed in the next major version.
 export {
   type ComponentLayer,
   type DsdComponent,
