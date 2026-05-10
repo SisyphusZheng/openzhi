@@ -545,42 +545,54 @@ async function buildSSG(options: BuildSSGOptions = {}, ctx: LessBuildContext): P
           for (const route of routes) {
             if (route.type !== 'page' || route.special) continue;
 
-            let routeMod: Record<string, unknown>;
-            const routeImportPath = resolve(root, routesDir, route.filePath);
-            try {
-              routeMod = await import(routeImportPath) as Record<string, unknown>;
-            } catch (e) {
-              log.debug(
-                `Cannot load route module ${routeImportPath}: ${
-                  e instanceof Error ? e.message : String(e)
-                }`,
-              );
-              continue;
+            // ADR 0010/0011: The SSR bundle has already registered all route
+            // components via customElements.define(). Use the registry instead of
+            // re-importing route files — native import() cannot resolve Vite
+            // virtual modules (virtual:less-nav, virtual:less-client-entry, etc.)
+            //
+            // Route files export `tagName` (e.g. 'page-dsd-guide'), but we can't
+            // import them natively. Extract it from the source file via regex,
+            // falling back to fileToTagName() for routes without an explicit export.
+            let tagName = fileToTagName(route.filePath);
+            const routeSourcePath = resolve(root, routesDir, route.filePath);
+            if (existsSync(routeSourcePath)) {
+              try {
+                const src = readFileSync(routeSourcePath, 'utf-8');
+                const tagMatch = src.match(/export\s+const\s+tagName\s*=\s*['"]([^'"]+)['"]/);
+                if (tagMatch) tagName = tagMatch[1];
+              } catch {
+                // Source not readable — use fileToTagName fallback
+              }
             }
-
-            const ComponentClass = routeMod.default as CustomElementConstructor | undefined;
-            const tagName = (routeMod.tagName as string) || fileToTagName(route.filePath);
+            const ComponentClass = globalThis.customElements.get(tagName) as
+              | CustomElementConstructor
+              | undefined;
 
             if (!ComponentClass) {
               log.debug(
-                `Route ${route.path} has no default export — skipping locale expansion`,
+                `Route ${route.path} (${tagName}) not in customElements — skipping locale expansion`,
               );
               continue;
-            }
-
-            // Register component if not already registered
-            if (!globalThis.customElements.get(tagName)) {
-              try {
-                globalThis.customElements.define(tagName, ComponentClass);
-              } catch {
-                // Already defined — safe to skip
-              }
             }
 
             // Get param values for dynamic routes
             let paramsList: Array<Record<string, string>> = [{}];
             if (route.path.includes(':')) {
-              if (typeof routeMod.getStaticPaths === 'function') {
+              // Dynamic routes need getStaticPaths — try native import as
+              // fallback (may fail for routes with virtual module deps)
+              let routeMod: Record<string, unknown> | null = null;
+              const routeImportPath = resolve(root, routesDir, route.filePath);
+              try {
+                routeMod = await import(routeImportPath) as Record<string, unknown>;
+              } catch (e) {
+                log.debug(
+                  `Cannot load dynamic route module ${routeImportPath}: ${
+                    e instanceof Error ? e.message : String(e)
+                  }`,
+                );
+              }
+
+              if (routeMod && typeof routeMod.getStaticPaths === 'function') {
                 paramsList = await (routeMod.getStaticPaths as () => Promise<
                   Array<Record<string, string>>
                 >)();
