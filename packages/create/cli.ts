@@ -11,11 +11,42 @@ import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 // ─── Package versions ──────────────────────────────────────────
-// Read from workspace deno.json at dev time.
-// No fallback: LessJS 0.x does not guarantee backward compatibility.
-// If workspace version can't be read, fail fast with a clear error.
+// ADR 0016: Handle both local (file://) and JSR remote (https://) execution.
+// When running from JSR, import.meta.url is https://jsr.io/... and
+// fileURLToPath() throws ERR_INVALID_URL_SCHEME. We detect the scheme
+// and use hardcoded fallback versions for remote execution.
+//
+// IMPORTANT: When bumping package versions for release, update BOTH
+// the deno.json files AND the REMOTE_VERSIONS map below.
+
+/** Hardcoded versions for JSR remote execution — must be updated at release time. */
+const REMOTE_VERSIONS: Record<string, string> = {
+  core: '0.10.2',
+  adapterLit: '0.8.0',
+  app: '0.2.1',
+  content: '0.3.0',
+  i18n: '0.1.0',
+  ui: '0.7.0',
+  signal: '0.6.2',
+};
+
 function loadWorkspaceVersion(pkg: string): string {
-  const selfPath = fileURLToPath(new URL('.', import.meta.url));
+  const metaUrl = import.meta.url;
+  const isRemote = metaUrl.startsWith('https://') || metaUrl.startsWith('http://');
+
+  if (isRemote) {
+    // Running from JSR — workspace files are not accessible.
+    const version = REMOTE_VERSIONS[pkg];
+    if (!version) {
+      throw new Error(
+        `No hardcoded version for @lessjs/${pkg}. Update REMOTE_VERSIONS in cli.ts.`,
+      );
+    }
+    return version;
+  }
+
+  // Running locally from workspace — read version from deno.json.
+  const selfPath = fileURLToPath(new URL('.', metaUrl));
   const wsPath = resolve(selfPath, '..', '..', 'packages', pkg, 'deno.json');
   try {
     const version = JSON.parse(Deno.readTextFileSync(wsPath)).version;

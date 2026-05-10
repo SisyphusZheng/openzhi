@@ -107,11 +107,25 @@ export type { NavigationCallback } from './navigation.js';
  * and appends "/ssr-handler" to the index.ts file path → "Not a directory".
  *
  * This bug has recurred 3 times (b6a6b41, f223bef, 6c5a992).
+ *
+ * ADR 0016: Must handle both file:// (local) and https:// (JSR remote) schemes.
+ * When Deno runs @lessjs/core from JSR, import.meta.url is https://jsr.io/...
+ * and fileURLToPath() throws ERR_INVALID_URL_SCHEME. We detect the scheme and
+ * construct replacement URLs/paths accordingly.
  */
 function buildCoreSubpathAliases(): import('vite').Alias[] {
-  // Resolve the core package source directory relative to this file.
-  // Uses import.meta.url so it works regardless of CWD.
-  const coreSrcDir = join(dirname(fileURLToPath(import.meta.url)));
+  const metaUrl = import.meta.url;
+  const isRemote = metaUrl.startsWith('https://') || metaUrl.startsWith('http://');
+
+  // Base reference: absolute dir path (local) or URL prefix (remote)
+  let baseRef: string;
+  if (isRemote) {
+    // https://jsr.io/@lessjs/core@0.10.1/src/index.ts → https://jsr.io/@lessjs/core@0.10.1/src/
+    baseRef = metaUrl.replace(/\/src\/index\.ts$/, '/src/');
+  } else {
+    const coreSrcDir = dirname(fileURLToPath(metaUrl));
+    baseRef = join(coreSrcDir);
+  }
 
   const subpaths: Record<string, string> = {
     'html-escape': 'html-escape.ts',
@@ -131,14 +145,14 @@ function buildCoreSubpathAliases(): import('vite').Alias[] {
   for (const [subpath, file] of Object.entries(subpaths)) {
     aliases.push({
       find: `@lessjs/core/${subpath}`,
-      replacement: join(coreSrcDir, file),
+      replacement: isRemote ? baseRef + file : join(baseRef, file),
     });
   }
 
   // Parent alias last
   aliases.push({
     find: '@lessjs/core',
-    replacement: join(coreSrcDir, 'index.ts'),
+    replacement: isRemote ? baseRef + 'index.ts' : join(baseRef, 'index.ts'),
   });
 
   return aliases;
