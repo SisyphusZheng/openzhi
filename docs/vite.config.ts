@@ -131,6 +131,10 @@ export default defineConfig({
   resolve: {
     alias: [
       {
+        find: '@lessjs/core/html-escape',
+        replacement: resolve(__dir, '../packages/core/src/html-escape.ts'),
+      },
+      {
         find: '@lessjs/core/render-dsd',
         replacement: resolve(__dir, '../packages/core/src/render-dsd.ts'),
       },

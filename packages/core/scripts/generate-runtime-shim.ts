@@ -200,6 +200,13 @@ function generate(): void {
     shimParts.push(section);
   }
 
+  // Export all functions that the generated entry code imports
+  // from '@lessjs/core/less-runtime'. The shim inlines their implementations
+  // but must also export them for Rollup's export analysis.
+  shimParts.push(
+    'export { getAdapter, renderDSD, renderDSDByName, wrapInDocument };',
+  );
+
   const shimContent = shimParts.join('\n\n');
 
   // ─── Wrap in createRuntimeShimCode() ──────────────────────────

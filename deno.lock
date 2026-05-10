@@ -764,6 +764,10 @@
       "bin": true
     }
   },
+  "remote": {
+    "https://esm.sh/flexsearch@0.8.212": "c75e944b65b3f5034ee5872837eaffecc36dabfb67dd78c7c987316b0d098e80",
+    "https://esm.sh/flexsearch@0.8.212/denonext/flexsearch.mjs": "4bbc6e85f33caa918605bc7e7de9fe4264f38758ed0b9857df7f829a3310d89b"
+  },
   "workspace": {
     "dependencies": [
       "npm:@hono/vite-dev-server@~0.25.3",

@@ -157,6 +157,16 @@ export function less(options: FrameworkOptions = {}, externalCtx?: LessBuildCont
 
   const ctx = externalCtx || new LessBuildContext(resolvedOptions);
 
+  // Expose ctx on globalThis so the CLI build orchestrator (cli/build.ts)
+  // can access the same ctx that the Vite plugins use. This bridges the
+  // gap between the user's vite.config.ts (which calls less()) and the
+  // CLI (which creates its own ctx). The CLI checks for this first.
+  // Cleaned up in closeBundle to avoid leaking across builds.
+  const CTX_KEY = Symbol.for('lessjs:build-context');
+  if (!(globalThis as Record<symbol, unknown>)[CTX_KEY]) {
+    (globalThis as Record<symbol, unknown>)[CTX_KEY] = ctx;
+  }
+
   const VIRTUAL_ENTRY_ID = 'virtual:less-hono-entry';
   const RESOLVED_ENTRY_ID = '\0' + VIRTUAL_ENTRY_ID;
   const VIRTUAL_RUNTIME_ID = 'virtual:less-runtime';
@@ -181,6 +191,8 @@ export function less(options: FrameworkOptions = {}, externalCtx?: LessBuildCont
       upgradeStrategy: resolvedOptions.island?.upgradeStrategy || 'lazy',
     });
   }
+
+  let resolvedConfig: import('vite').ResolvedConfig | undefined;
 
   const corePlugin: Plugin = {
     name: 'less:core',
@@ -212,13 +224,27 @@ export function less(options: FrameworkOptions = {}, externalCtx?: LessBuildCont
 
     load(id) {
       if (id === RESOLVED_RUNTIME_ID) {
+        // SSR build needs real implementations (renderDSD, wrapInDocument, etc.)
+        // because it renders pages server-side. Client build uses the lightweight
+        // runtime shim (createRuntimeShimCode) which inlines minimal versions.
+        if (resolvedConfig?.build?.ssr) {
+          // In SSR mode, re-export from @lessjs/core. Use import+export pattern
+          // (not `export ... from`) because Vite's SSR export analysis may not
+          // resolve re-export chains for virtual modules.
+          return [
+            "import { registerAdapter, renderDSD, renderDSDByName, wrapInDocument, createLogger } from '@lessjs/core';",
+            "const log = createLogger('core');",
+            'export { registerAdapter, renderDSD, renderDSDByName, wrapInDocument, log };',
+          ].join('\n');
+        }
         return createRuntimeShimCode();
       }
     },
 
-    configResolved(resolvedConfig) {
-      if (resolvedConfig.resolve?.alias && !ctx.userResolveAlias) {
-        ctx.userResolveAlias = resolvedConfig.resolve.alias;
+    configResolved(cfg) {
+      resolvedConfig = cfg;
+      if (cfg.resolve?.alias && !ctx.userResolveAlias) {
+        ctx.userResolveAlias = cfg.resolve.alias;
       }
       ctx.honoEntryCode = generateEntry(
         [],

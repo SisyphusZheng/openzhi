@@ -138,7 +138,9 @@ export class LessBuildContext {
     this.packageIslands = [];
     this.buildCompleted = false;
     this.resolvedConfig = null;
-    this.userResolveAlias = null;
+    // NOTE: userResolveAlias is NOT reset — it's user configuration, not
+    // build state. It's set in config()/configResolved() and must persist
+    // through buildStart() for Phase 2 and 3 to use.
     this.root = '';
     this.outDir = 'dist';
     this.base = '/';

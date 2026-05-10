@@ -21,7 +21,6 @@ import type { FrameworkOptions, PackageIslandMeta } from '../types.js';
 import type { LessBuildContext } from '../build-context.js';
 import { SsrRenderError } from '../errors.js';
 import { createLogger } from '../logger.js';
-import { createRuntimeShimCode } from '../runtime-shim.js';
 
 const log = createLogger('ssg');
 
@@ -221,9 +220,10 @@ async function buildSSG(options: BuildSSGOptions = {}, ctx: LessBuildContext): P
       configFile: false,
       root,
       build: {
-        ssr: VIRTUAL_SSG_ENTRY_ID,
+        ssr: true,
         outDir: ssrOutDir,
         rollupOptions: {
+          input: { entry: VIRTUAL_SSG_ENTRY_ID },
           output: { format: 'esm' },
         },
       },
@@ -263,15 +263,26 @@ async function buildSSG(options: BuildSSGOptions = {}, ctx: LessBuildContext): P
         // ADR 0008 Phase D: Resolve virtual:less-runtime
         // The generated entry code imports @lessjs/core/less-runtime which
         // is now a virtual module. This plugin resolves it at SSR build time.
+        // SSR needs full implementations (renderDSD, wrapInDocument, etc.),
+        // NOT the client-side runtime shim (createRuntimeShimCode).
         {
           name: 'less:ssg-virtual-runtime',
+          enforce: 'pre',
           resolveId(id) {
             if (id === 'virtual:less-runtime') return '\0virtual:less-runtime';
             if (id === '@lessjs/core/less-runtime') return '\0virtual:less-runtime';
           },
           load(id) {
             if (id === '\0virtual:less-runtime') {
-              return createRuntimeShimCode();
+              // SSR needs real implementations, not the client runtime shim.
+              // Use import+export pattern (not `export ... from`) because
+              // Vite's SSR export analysis may not resolve re-export chains
+              // for virtual modules.
+              return [
+                "import { registerAdapter, renderDSD, renderDSDByName, wrapInDocument, createLogger } from '@lessjs/core';",
+                "const log = createLogger('core');",
+                'export { registerAdapter, renderDSD, renderDSDByName, wrapInDocument, log };',
+              ].join('\n');
             }
           },
         },
@@ -300,9 +311,12 @@ async function buildSSG(options: BuildSSGOptions = {}, ctx: LessBuildContext): P
     log.info('SSR bundle built successfully');
 
     // Load the SSR bundle
-    // Use resolve() to generate an absolute path for import()
+    // Use file:// URL for import() — Deno doesn't accept Windows paths (c:\)
     const ssrBundlePath = resolve(ssrOutDir, 'entry.js');
-    const module = await import(ssrBundlePath);
+    const ssrBundleUrl = Deno.build.os === 'windows'
+      ? 'file:///' + ssrBundlePath.replace(/\\/g, '/')
+      : 'file://' + ssrBundlePath;
+    const module = await import(ssrBundleUrl);
     const app = module.default;
 
     if (!app) {

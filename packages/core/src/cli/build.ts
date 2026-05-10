@@ -41,22 +41,40 @@ async function runPhase(phase: BuildPhase): Promise<void> {
 }
 
 export async function build(): Promise<void> {
-  // Shared build context — replaces .less/ file IPC between phases
-  // ADR 0010: ctx is required for all phases, no fallback to filesystem
-  const ctx = new LessBuildContext({});
+  // Shared build context — replaces .less/ file IPC between phases.
+  // After Phase 1 (viteBuild), the ctx created by less() in the user's
+  // vite.config.ts is available on globalThis. Use it instead of creating
+  // a new empty one, so Phase 2 and 3 can read metadata from Phase 1.
+  const CTX_KEY = Symbol.for('lessjs:build-context');
+  const existingCtx = (globalThis as Record<symbol, unknown>)[CTX_KEY] as
+    | LessBuildContext
+    | undefined;
+  const ctx = existingCtx || new LessBuildContext({});
 
   await runPhase({
     name: 'Phase 1/3 - Vite SSR build',
     run: () => viteBuild(),
   });
+
+  // After Phase 1, the ctx should be populated by less:core's hooks.
+  // Read it again in case it wasn't available before viteBuild().
+  const populatedCtx = (globalThis as Record<symbol, unknown>)[CTX_KEY] as
+    | LessBuildContext
+    | undefined;
+  const effectiveCtx = populatedCtx || ctx;
+
   await runPhase({
     name: 'Phase 2/3 - client island build',
-    run: () => buildClient(ctx),
+    run: () => buildClient(effectiveCtx),
   });
   await runPhase({
     name: 'Phase 3/3 - static site generation',
-    run: () => buildSSG({}, ctx),
+    run: () => buildSSG({}, effectiveCtx),
   });
+
+  // Clean up globalThis reference
+  delete (globalThis as Record<symbol, unknown>)[CTX_KEY];
+
   log.info('Build complete.');
 }
 
