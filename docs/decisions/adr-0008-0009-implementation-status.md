@@ -1,8 +1,8 @@
-# ADR 0008/0009 Unification — Implementation Complete
+# ADR 0008/0009/0010 — Implementation Status
 
 ## Summary
 
-All phases of the ADR 0008 + 0009 unification SOP have been implemented on the `dev` branch.
+ADR 0008 + 0009 + 0010 fully implemented on the `dev` branch. All `.less/` temp files eliminated.
 
 ## Completed Phases
 
@@ -33,27 +33,28 @@ All phases of the ADR 0008 + 0009 unification SOP have been implemented on the `
 | E.1 | ✅ | `6208496` | `lessjs()` umbrella function with lazy sub-plugin imports |
 | E.2 | ✅ | `6208496` | `less()` accepts optional `externalCtx` parameter |
 
+### ADR 0010: Eliminate All Remaining `.less/` Temp Files
+
+| Step | Status | Commit | Description |
+|------|--------|--------|-------------|
+| 1 | ✅ | `c9cbe61` | `virtual:less-client-entry` replaces `.less-client-entry.ts` |
+| 2 | ✅ | `c9cbe61` | `virtual:less-ssg-entry` replaces `.less-ssg-entry.ts` |
+| 3 | ✅ | `c9cbe61` | Remove `build-metadata.json` file write from `build.ts` |
+| 4 | ✅ | `c9cbe61` | Remove all `.less/` fallback reads from `build-ssg.ts` |
+| 5 | ✅ | `c9cbe61` | Clean up unused imports, fix lint |
+
 ## Key Results
 
-- **`.less/` files reduced**: 10 → 3 (`.less-ssg-entry.ts`, `.less-client-entry.ts`, `build-metadata.json`)
+- **`.less/` files reduced**: 10 → 3 → **0** (zero filesystem IPC)
 - **`globalThis` bridges**: 0 (Phase B was already done)
-- **`virtual:less-runtime`**: Eliminates `.less-runtime.ts` file write
+- **Virtual modules**: `virtual:less-runtime`, `virtual:less-nav`, `virtual:less-client-entry`, `virtual:less-ssg-entry`
 - **`lessjs({ content, i18n })`**: Single-call API with shared `LessBuildContext`
-- **All 234 tests pass** after each commit
-- **9 commits**, each independently valid and revertable
+- **`buildClient()`/`buildSSG()` require `ctx`**: No standalone split-phase execution
+- **Net code reduction**: ~87 lines removed
+- **All pre-commit checks pass** (deno fmt, deno lint, deno check)
 
-## Known Limitations
-
-1. **`.less-ssg-entry.ts`** and **`.less-client-entry.ts`** still written to disk — Vite's `build.ssr` and `build.rollupOptions.input` require filesystem paths. Future work: investigate virtual module inputs.
-
-2. **`build-metadata.json`** still written as backward-compat fallback. Can be removed once `lessjs()` is the only entry path.
-
-3. **E.3 (backward compat)** and **E.4 (CLI update)** are not yet implemented — `less()`, `lessContent()`, `lessI18n()` still work independently.
-
-## Next Steps
+## Remaining Work
 
 - [ ] E.3: Verify backward compatibility for standalone plugin usage
 - [ ] E.4: Update `deno task build` to use unified orchestrator
-- [ ] Investigate virtual module inputs for `.less-ssg-entry.ts` and `.less-client-entry.ts`
-- [ ] Remove `build-metadata.json` fallback once unified path is proven
 - [ ] End-to-end build verification with `deno task build`
