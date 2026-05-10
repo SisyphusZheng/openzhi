@@ -20,6 +20,32 @@ import { createLogger } from './logger.js';
 
 const log = createLogger('core');
 
+// ─── Shared Directory Walker ──────────────────────────────────────────
+
+/**
+ * Walk a directory tree and apply a visitor to each HTML file.
+ * If the visitor returns a string, the file is overwritten with that content.
+ * If it returns null, the file is left unchanged.
+ */
+function walkHtmlFiles(
+  dir: string,
+  visitor: (content: string, fullPath: string) => string | null,
+): void {
+  const entries = readdirSync(dir, { withFileTypes: true });
+  for (const entry of entries) {
+    const fullPath = join(dir, entry.name);
+    if (entry.isDirectory()) {
+      walkHtmlFiles(fullPath, visitor);
+    } else if (entry.name.endsWith('.html')) {
+      const content = readFileSync(fullPath, 'utf-8');
+      const result = visitor(content, fullPath);
+      if (result !== null) {
+        writeFileSync(fullPath, result, 'utf-8');
+      }
+    }
+  }
+}
+
 // ─── HTML Insertion Helpers ────────────────────────────────────────────
 
 /** Insert content immediately after <head> opening tag (handles attributes) */
@@ -97,20 +123,11 @@ export function buildIslandChunkMap(
  * Inject client script tag into all HTML files.
  */
 export function injectClientScript(dir: string, scriptSrc: string): void {
-  const entries = readdirSync(dir, { withFileTypes: true });
-  for (const entry of entries) {
-    const fullPath = join(dir, entry.name);
-    if (entry.isDirectory()) {
-      injectClientScript(fullPath, scriptSrc);
-    } else if (entry.name.endsWith('.html')) {
-      let content = readFileSync(fullPath, 'utf-8');
-      const scriptTag = `  <script type="module" src="${scriptSrc}"></script>`;
-      if (!content.includes(scriptSrc)) {
-        content = insertBeforeBodyClose(content, scriptTag);
-        writeFileSync(fullPath, content, 'utf-8');
-      }
-    }
-  }
+  const scriptTag = `  <script type="module" src="${scriptSrc}"></script>`;
+  walkHtmlFiles(dir, (content) => {
+    if (content.includes(scriptSrc)) return null;
+    return insertBeforeBodyClose(content, scriptTag);
+  });
 }
 
 /**
@@ -138,19 +155,10 @@ export function injectCspMeta(
   const escapedPolicy = cspPolicy.replace(/"/g, '&quot;');
   const metaTag = `  <meta http-equiv="${headerName}" content="${escapedPolicy}">`;
 
-  const entries = readdirSync(dir, { withFileTypes: true });
-  for (const entry of entries) {
-    const fullPath = join(dir, entry.name);
-    if (entry.isDirectory()) {
-      injectCspMeta(fullPath, cspPolicy, reportOnly, nonce);
-    } else if (entry.name.endsWith('.html')) {
-      let content = readFileSync(fullPath, 'utf-8');
-      if (!content.includes(`http-equiv="${headerName}"`)) {
-        content = insertAfterHead(content, metaTag);
-        writeFileSync(fullPath, content, 'utf-8');
-      }
-    }
-  }
+  walkHtmlFiles(dir, (content) => {
+    if (content.includes(`http-equiv="${headerName}"`)) return null;
+    return insertAfterHead(content, metaTag);
+  });
 }
 
 /**
@@ -198,19 +206,10 @@ const DSD_POLYFILL = `
  * Handles browsers that don't natively support Declarative Shadow DOM.
  */
 export function injectDsdPolyfill(dir: string): void {
-  const entries = readdirSync(dir, { withFileTypes: true });
-  for (const entry of entries) {
-    const fullPath = join(dir, entry.name);
-    if (entry.isDirectory()) {
-      injectDsdPolyfill(fullPath);
-    } else if (entry.name.endsWith('.html')) {
-      let content = readFileSync(fullPath, 'utf-8');
-      if (!content.includes('DSD Polyfill')) {
-        content = insertAfterHead(content, DSD_POLYFILL);
-        writeFileSync(fullPath, content, 'utf-8');
-      }
-    }
-  }
+  walkHtmlFiles(dir, (content) => {
+    if (content.includes('DSD Polyfill')) return null;
+    return insertAfterHead(content, DSD_POLYFILL);
+  });
 }
 
 // ─── View Transitions API ─────────────────────────────────────────────
@@ -234,19 +233,10 @@ export function injectDsdPolyfill(dir: string): void {
 export function injectViewTransitionMeta(dir: string): void {
   const metaTag = '  <meta name="view-transition" content="same-origin">';
 
-  const entries = readdirSync(dir, { withFileTypes: true });
-  for (const entry of entries) {
-    const fullPath = join(dir, entry.name);
-    if (entry.isDirectory()) {
-      injectViewTransitionMeta(fullPath);
-    } else if (entry.name.endsWith('.html')) {
-      let content = readFileSync(fullPath, 'utf-8');
-      if (!content.includes('<meta name="view-transition"')) {
-        content = insertAfterHead(content, metaTag);
-        writeFileSync(fullPath, content, 'utf-8');
-      }
-    }
-  }
+  walkHtmlFiles(dir, (content) => {
+    if (content.includes('<meta name="view-transition"')) return null;
+    return insertAfterHead(content, metaTag);
+  });
 }
 
 // ─── Speculation Rules API ────────────────────────────────────────────
@@ -393,17 +383,8 @@ export function injectSpeculationRules(dir: string, rulesJson: string): void {
 
   const scriptTag = `  <script type="speculationrules">\n  ${rulesJson}\n  </script>`;
 
-  const entries = readdirSync(dir, { withFileTypes: true });
-  for (const entry of entries) {
-    const fullPath = join(dir, entry.name);
-    if (entry.isDirectory()) {
-      injectSpeculationRules(fullPath, rulesJson);
-    } else if (entry.name.endsWith('.html')) {
-      let content = readFileSync(fullPath, 'utf-8');
-      if (!content.includes('<script type="speculationrules"')) {
-        content = insertAfterHead(content, scriptTag);
-        writeFileSync(fullPath, content, 'utf-8');
-      }
-    }
-  }
+  walkHtmlFiles(dir, (content) => {
+    if (content.includes('<script type="speculationrules"')) return null;
+    return insertAfterHead(content, scriptTag);
+  });
 }
