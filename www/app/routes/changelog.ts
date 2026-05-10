@@ -121,6 +121,97 @@ export class ChangelogPage extends LitElement {
 
           <div class="version-section">
             <div class="version-header">
+              <span class="version-number">0.10.0</span>
+              <span class="version-date">2026-05-10</span>
+            </div>
+            <div class="change-category added">
+              <h4>新增</h4>
+              <ul class="change-list">
+                <li>
+                  <strong>SSR Bundle 公共 API</strong>（ADR 0014）：
+                  SSR bundle 新增 <span class="inline-code">renderRoute(path, opts)→HTML</span>、
+                  <span class="inline-code">getStaticPaths(path)→params[]</span>、
+                  <span class="inline-code">routeInfo[]</span> 三个导出。
+                  <span class="inline-code">build-ssg.ts</span> 不再直接访问 customElements、
+                  不再用正则解析源文件提取 tagName、不再直接调用 renderDSD/wrapInDocument，
+                  仅负责路径枚举和文件写入。
+                </li>
+                <li>
+                  <strong>@lessjs/app 独立包</strong>（ADR 0012）：
+                  从 core 中提取 umbrella 函数
+                  <span class="inline-code">lessApp()</span>、<span class="inline-code">lessContent()</span>、
+                  <span class="inline-code">lessI18n()</span> 到 <span class="inline-code">@lessjs/app</span>，
+                  core 不再承担应用层组装职责。
+                </li>
+                <li>
+                  <strong>内联 Shim 替代 less-runtime barrel</strong>（ADR 0013）：
+                  <span class="inline-code">less-runtime.ts</span> barrel 重导出被消除，
+                  改为各适配器文件内联 shim（DOMStringMap、customElements.define 幂等补丁）。
+                  减少了不必要的模块加载和依赖耦合。
+                </li>
+              </ul>
+            </div>
+            <div class="change-category changed">
+              <h4>变更</h4>
+              <ul class="change-list">
+                <li>
+                  <strong>消除 globalThis 桥接</strong>（ADR 0008）：
+                  消除 <span class="inline-code">createServer()</span> 和全部 globalThis 桥接
+                  (<span class="inline-code">__lessDevServer</span>、
+                  <span class="inline-code">__lessIslands</span>、
+                  <span class="inline-code">__lessRoutes</span>、
+                  <span class="inline-code">__lessPluginCtx</span>、
+                  <span class="inline-code">__lessBuildMetadata</span>)，
+                  改为 Vite 插件 ctx 显式传递。
+                </li>
+                <li>
+                  <strong>消除 .less/ 临时文件</strong>（ADR 0010）：
+                  构建 ctx 替代文件系统中间态，消除
+                  <span class="inline-code">.less/routes.json</span>、
+                  <span class="inline-code">.less/nav.json</span>、
+                  <span class="inline-code">.less/islands.json</span> 等临时文件。
+                </li>
+                <li>
+                  <strong>消除 last globalThis</strong>（ADR 0011）：
+                  <span class="inline-code">closeBundle</span> 钩子替代 globalThis
+                  <span class="inline-code">__lessBuildMetadata</span> 数据传递。
+                </li>
+                <li>
+                  <strong>包版本变更</strong>：
+                  @lessjs/core 0.9.2 → 0.10.0；
+                  @lessjs/app 0.1.0 → 0.2.0；
+                  @lessjs/content 0.2.0 → 0.3.0；
+                  @lessjs/adapter-lit 0.7.1 → 0.8.0；
+                  @lessjs/create 0.6.2 → 0.7.0。
+                </li>
+              </ul>
+            </div>
+            <div class="change-category fixed">
+              <h4>修复</h4>
+              <ul class="change-list">
+                <li>
+                  <strong>SSG i18n locale 展开恢复</strong>：
+                  ADR 0010/0011 重构后 locale 展开逻辑遗漏，已恢复 en/zh 双语路径生成。
+                </li>
+                <li>
+                  <strong>SSG 嵌套路由 URL 清理</strong>：
+                  嵌套路由路径含多余斜杠，已修正。
+                </li>
+                <li>
+                  <strong>create 模板 subpath 别名补全</strong>：
+                  <span class="inline-code">@lessjs/core</span> 的 html-escape 和 ssr-handler
+                  子路径导出在 create 模板中缺失，已补全。
+                </li>
+                <li>
+                  <strong>sidebar 导航空数据修复</strong>：
+                  ADR 0011 后 active build context 共享机制变更导致 sidebar 为空，已修复。
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="version-section">
+            <div class="version-header">
               <span class="version-number">0.9.2</span>
               <span class="version-date">2026-05-09</span>
             </div>
