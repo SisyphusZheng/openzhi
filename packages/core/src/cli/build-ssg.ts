@@ -728,9 +728,13 @@ async function networkFirst(req) {
 
     // ─── Sitemap generation ────────────────────────────────────
     // ADR 0010: read from ctx directly — no .less/ fallback
+    // JSR: use a variable specifier so deno publish cannot analyze this import.
+    // @lessjs/content is an optional peer — the consumer's import map resolves it.
+    // This avoids a circular publish dependency (core↔content) on JSR.
     try {
       if (ctx.sitemapOptions) {
-        const sitemapModule = await import('@lessjs/content/sitemap') as Record<
+        const sitemapPkg = '@lessjs/content/sitemap';
+        const sitemapModule = await import(sitemapPkg) as Record<
           string,
           unknown
         >;
