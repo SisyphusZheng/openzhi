@@ -107,7 +107,7 @@ export class LessBuildContext {
   headerNav: unknown[] = [];
 
   /** Sitemap options from @lessjs/content plugin */
-  sitemapOptions: { hostname: string; [key: string]: unknown } | null = null;
+  sitemapOptions: Record<string, unknown> | null = null;
 
   // ─── From lessI18n buildStart (replaces .less/i18n-options.json) ──
 

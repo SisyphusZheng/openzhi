@@ -23,12 +23,10 @@
 
 import type { Plugin } from 'vite';
 import type { HeaderNavLink, LessContentOptions, NavSection } from './types.ts';
+import type { LessBuildContext } from '@lessjs/core/build-context';
 import { initBlogData } from './blog/blog-data.ts';
 import { scanNavData } from './nav/scanner.ts';
 import { createLogger } from '@lessjs/core/logger';
-import { mkdirSync, writeFileSync } from 'node:fs';
-import { join } from 'node:path';
-import process from 'node:process';
 
 const log = createLogger('content');
 
@@ -69,10 +67,13 @@ let _headerNav: HeaderNavLink[] = [];
  * Unified entry for blog, nav, and sitemap modules.
  * Each module is opt-in.
  */
-export function lessContent(options: LessContentOptions = {}): Plugin[] {
+export function lessContent(
+  options: LessContentOptions & { ctx?: LessBuildContext } = {},
+): Plugin[] {
   const blogOpts = options.blog === false ? null : (options.blog || null);
   const navOpts = options.nav || null;
   const sitemapOpts = options.sitemap || null;
+  const ctx = options.ctx;
 
   const contentPlugin: Plugin = {
     name: 'less:content',
@@ -90,18 +91,9 @@ export function lessContent(options: LessContentOptions = {}): Plugin[] {
 
         log.info(`Blog: ${postCount} post(s) found in ${contentDir}, base path: ${basePath}`);
 
-        // Write blog options to .less/ for SSG Phase 3
-        try {
-          const root = process.cwd();
-          const lessDir = join(root, '.less');
-          mkdirSync(lessDir, { recursive: true });
-          writeFileSync(
-            join(lessDir, 'blog-options.json'),
-            JSON.stringify({ contentDir, basePath }),
-            'utf-8',
-          );
-        } catch {
-          // Non-fatal — dynamic route expansion will be skipped if options missing
+        // Write blog options to ctx (or fallback to .less/ for backward compat)
+        if (ctx) {
+          ctx.blogOptions = { contentDir, basePath };
         }
       }
 
@@ -110,44 +102,21 @@ export function lessContent(options: LessContentOptions = {}): Plugin[] {
         _navSections = scanNavData(navOpts);
         _headerNav = navOpts.headerNav || [];
 
-        // Write nav data to .less/ for SSG Phase 3 and other consumers
-        try {
-          const root = process.cwd();
-          const lessDir = join(root, '.less');
-          mkdirSync(lessDir, { recursive: true });
-          writeFileSync(
-            join(lessDir, 'nav-data.json'),
-            JSON.stringify(_navSections, null, 2),
-            'utf-8',
-          );
-          // Write headerNav separately for Phase 3 virtual module resolution
-          writeFileSync(
-            join(lessDir, 'header-nav.json'),
-            JSON.stringify(_headerNav),
-            'utf-8',
-          );
-          log.info(`Nav: ${_navSections.length} section(s) written to .less/nav-data.json`);
-        } catch (e) {
-          log.warn(`Failed to write nav-data.json: ${e}`);
+        // Write nav data to ctx (or fallback to virtual module resolution)
+        if (ctx) {
+          ctx.navSections = _navSections;
+          ctx.headerNav = _headerNav;
         }
+
+        log.info(`Nav: ${_navSections.length} section(s) configured`);
       }
 
       // ─── Sitemap module ──────────────────────────────────
-      // Write sitemap options to .less/ for build-ssg to pick up
       if (sitemapOpts) {
-        try {
-          const root = process.cwd();
-          const lessDir = join(root, '.less');
-          mkdirSync(lessDir, { recursive: true });
-          writeFileSync(
-            join(lessDir, 'sitemap-options.json'),
-            JSON.stringify(sitemapOpts),
-            'utf-8',
-          );
-          log.info(`Sitemap: configured for ${sitemapOpts.hostname}`);
-        } catch (e) {
-          log.warn(`Failed to write sitemap-options.json: ${e}`);
+        if (ctx) {
+          ctx.sitemapOptions = sitemapOpts as unknown as Record<string, unknown>;
         }
+        log.info(`Sitemap: configured for ${sitemapOpts.hostname}`);
       }
     },
 
