@@ -101,8 +101,11 @@ export type { NavigationCallback } from './navigation.js';
  * Jamstack: M=SSG+DSD, A=API Routes, J=Islands.
  *
  * less() handles dev mode plus Phase 1 metadata for production builds.
+ *
+ * @param options - Framework options
+ * @param externalCtx - Optional shared LessBuildContext (used by lessjs() umbrella)
  */
-export function less(options: FrameworkOptions = {}): Plugin[] {
+export function less(options: FrameworkOptions = {}, externalCtx?: LessBuildContext): Plugin[] {
   let headExtras = options.headExtras;
 
   const validateSafeUrl = (url: string, context: string): string => {
@@ -152,7 +155,7 @@ export function less(options: FrameworkOptions = {}): Plugin[] {
     headExtras,
   };
 
-  const ctx = new LessBuildContext(resolvedOptions);
+  const ctx = externalCtx || new LessBuildContext(resolvedOptions);
 
   const VIRTUAL_ENTRY_ID = 'virtual:less-hono-entry';
   const RESOLVED_ENTRY_ID = '\0' + VIRTUAL_ENTRY_ID;
@@ -299,3 +302,68 @@ export function less(options: FrameworkOptions = {}): Plugin[] {
 }
 
 export default less;
+
+/**
+ * Unified LessJS Vite plugin — single entry point for all LessJS features.
+ *
+ * Combines less() + lessContent() + lessI18n() under one call with a
+ * shared LessBuildContext. This is the recommended way to use LessJS.
+ *
+ * ```ts
+ * export default defineConfig({
+ *   plugins: [lessjs({
+ *     routesDir: 'app/routes',
+ *     content: { blog: { contentDir: 'posts' }, nav: { routesDir: 'app/routes' } },
+ *     i18n: { locales: ['en', 'zh'], defaultLocale: 'en' },
+ *   })]
+ * })
+ * ```
+ */
+export async function lessjs(
+  options: FrameworkOptions & {
+    content?: Record<string, unknown>;
+    i18n?: Record<string, unknown>;
+  } = {},
+): Promise<Plugin[]> {
+  const { content: contentOpts, i18n: i18nOpts, ...coreOpts } = options;
+  const ctx = new LessBuildContext({
+    ...coreOpts,
+    routesDir: coreOpts.routesDir || 'app/routes',
+    islandsDir: coreOpts.islandsDir || 'app/islands',
+    componentsDir: coreOpts.componentsDir || 'app/components',
+  });
+
+  const plugins: Plugin[] = [...less(coreOpts, ctx)];
+
+  // Lazy-import sub-plugins to avoid hard deps when not used
+  if (contentOpts) {
+    try {
+      const contentMod = await import('@lessjs/content') as Record<string, unknown>;
+      if (typeof contentMod.lessContent === 'function') {
+        plugins.push(
+          ...(contentMod.lessContent as (opts: Record<string, unknown>) => Plugin[])({
+            ...contentOpts,
+            ctx,
+          }),
+        );
+      }
+    } catch {
+      log.warn('@lessjs/content not installed — content features disabled');
+    }
+  }
+
+  if (i18nOpts) {
+    try {
+      const i18nMod = await import('@lessjs/i18n') as Record<string, unknown>;
+      if (typeof i18nMod.lessI18n === 'function') {
+        plugins.push(
+          (i18nMod.lessI18n as (opts: Record<string, unknown>) => Plugin)({ ...i18nOpts, ctx }),
+        );
+      }
+    } catch {
+      log.warn('@lessjs/i18n not installed — i18n features disabled');
+    }
+  }
+
+  return plugins;
+}
