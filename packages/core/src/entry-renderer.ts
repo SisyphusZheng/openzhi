@@ -24,23 +24,6 @@ import type {
   RendererDecl,
 } from './entry-descriptor.js';
 
-// ─── Code builder helper ───────────────────────────────────────
-
-class CodeBuilder {
-  private lines: string[] = [];
-
-  push(line: string): void {
-    this.lines.push(line);
-  }
-  blank(): void {
-    this.lines.push('');
-  }
-
-  toString(): string {
-    return this.lines.join('\n');
-  }
-}
-
 // ─── Import rendering ──────────────────────────────────────────
 
 function renderImport(imp: ImportDecl): string {
@@ -66,42 +49,42 @@ const CORS_ALLOW =
 
 // ─── Middleware rendering ───────────────────────────────────────
 
-function renderMiddleware(b: CodeBuilder, mw: MiddlewareDecl): void {
+function renderMiddleware(lines: string[], mw: MiddlewareDecl): void {
   if (mw.comment) {
-    b.push(`// ${mw.comment}`);
+    lines.push(`// ${mw.comment}`);
   }
 
   switch (mw.kind) {
     case 'requestId':
-      b.push("app.use('*', requestId())");
+      lines.push("app.use('*', requestId())");
       break;
 
     case 'logger':
-      b.push("app.use('*', honoLogger())");
+      lines.push("app.use('*', honoLogger())");
       break;
 
     case 'cors': {
       const corsOrigin = mw.config?.corsOrigin;
       if (corsOrigin !== undefined) {
         const originStr = renderCorsOrigin(corsOrigin);
-        b.push(`app.use('*', cors({ origin: ${originStr}, ${CORS_ALLOW} }))`);
+        lines.push(`app.use('*', cors({ origin: ${originStr}, ${CORS_ALLOW} }))`);
       } else {
         // v0.3.0: Tightened default — only allow localhost.
         // Production deployments MUST explicitly configure corsOrigin.
         // Returning '*' with credentials:true violates the Fetch spec.
-        b.push("app.use('*', cors({ origin: (origin) => {");
-        b.push(
+        lines.push("app.use('*', cors({ origin: (origin) => {");
+        lines.push(
           '  if (origin && /^https?:\\/\\/(localhost|127\\.0\\.0\\.1)(:\\d+)?$/.test(origin)) return origin',
         );
-        b.push('  // In production, set middleware.corsOrigin explicitly');
-        b.push('  return undefined');
-        b.push(`}, ${CORS_ALLOW} }))`);
+        lines.push('  // In production, set middleware.corsOrigin explicitly');
+        lines.push('  return undefined');
+        lines.push(`}, ${CORS_ALLOW} }))`);
       }
       break;
     }
 
     case 'securityHeaders':
-      b.push("app.use('*', secureHeaders())");
+      lines.push("app.use('*', secureHeaders())");
       break;
 
     case 'csp': {
@@ -125,32 +108,32 @@ function renderMiddleware(b: CodeBuilder, mw: MiddlewareDecl): void {
               "script-src 'nonce-NONCE_PLACEHOLDER' $1",
             )
             : basePolicy + "; script-src 'nonce-NONCE_PLACEHOLDER'";
-          b.push(
+          lines.push(
             `// CSP with auto-nonce: generates a per-request nonce and adds it to script tags`,
           );
-          b.push(`app.use('*', async (c, next) => {`);
-          b.push(`  const nonce = crypto.randomUUID().replace(/-/g, '')`);
-          b.push(`  c.set('cspNonce', nonce)`);
-          b.push(
+          lines.push(`app.use('*', async (c, next) => {`);
+          lines.push(`  const nonce = crypto.randomUUID().replace(/-/g, '')`);
+          lines.push(`  c.set('cspNonce', nonce)`);
+          lines.push(
             `  const policy = ${
               JSON.stringify(policyTemplate)
             }.replace('NONCE_PLACEHOLDER', nonce)`,
           );
-          b.push(`  await next()`);
-          b.push(`  c.header('${headerName}', policy)`);
-          b.push(`})`);
+          lines.push(`  await next()`);
+          lines.push(`  c.header('${headerName}', policy)`);
+          lines.push(`})`);
         } else {
-          b.push(`app.use('*', async (c, next) => {`);
-          b.push(`  await next()`);
-          b.push(`  c.header('${headerName}', ${JSON.stringify(cspConfig.policy)})`);
-          b.push(`})`);
+          lines.push(`app.use('*', async (c, next) => {`);
+          lines.push(`  await next()`);
+          lines.push(`  c.header('${headerName}', ${JSON.stringify(cspConfig.policy)})`);
+          lines.push(`})`);
         }
       }
       break;
     }
   }
 
-  b.blank();
+  lines.push('');
 }
 
 // ─── API route rendering ───────────────────────────────────────
@@ -164,16 +147,16 @@ function renderMiddleware(b: CodeBuilder, mw: MiddlewareDecl): void {
  * Convention: API files default-export a Hono sub-app.
  * Framework mounts: app.route('/api/posts', subApp)
  */
-function renderApiRoute(b: CodeBuilder, route: ApiRouteDecl): void {
-  b.push(`// API: ${route.path} (${route.filePath})`);
-  b.push(`app.route('${route.path}', ${route.varName}.default)`);
-  b.blank();
+function renderApiRoute(lines: string[], route: ApiRouteDecl): void {
+  lines.push(`// API: ${route.path} (${route.filePath})`);
+  lines.push(`app.route('${route.path}', ${route.varName}.default)`);
+  lines.push('');
 }
 
 // ─── Page route rendering ──────────────────────────────────────
 
 function renderPageRoute(
-  b: CodeBuilder,
+  lines: string[],
   route: PageRouteDecl,
   renderers: RendererDecl[],
   docConfig: { title: string; lang: string; headExtras: string },
@@ -185,19 +168,19 @@ function renderPageRoute(
     return route.path === r.scope || route.path.startsWith(r.scope + '/');
   });
 
-  b.push(`// Page: ${route.path} (${route.filePath})`);
-  b.push(`app.get('${route.path}', async (c) => {`);
-  b.push(`  try {`);
-  b.push(`    const tag = ${route.varName}.tagName || '${route.defaultTagName}'`);
+  lines.push(`// Page: ${route.path} (${route.filePath})`);
+  lines.push(`app.get('${route.path}', async (c) => {`);
+  lines.push(`  try {`);
+  lines.push(`    const tag = ${route.varName}.tagName || '${route.defaultTagName}'`);
   // v0.5.0: DSD renderer - no <!--lit-part--> markers, no old upgrade marker.
   // __ssr() uses renderDSD() which outputs standard DSD HTML.
   // Components receive route params as props for SSR-time data access.
   // v0.6: Pass route/source context for error visibility.
-  b.push(
+  lines.push(
     `    const raw = await __ssr(tag, c.req.param(), { route: '${route.path}', source: '${route.filePath}' })`,
   );
-  b.push(`    const html = raw`);
-  b.blank();
+  lines.push(`    const html = raw`);
+  lines.push('');
 
   // Wrap with renderers from outer to inner (v0.3.0)
   // SSG mode: headExtras is read from .less/head-extras.html at runtime
@@ -207,42 +190,42 @@ function renderPageRoute(
   const headExtrasExpr = isSSG ? '__headExtras' : JSON.stringify(docConfig.headExtras);
 
   if (matchingRenderers.length > 0) {
-    b.push(`    // Renderer wrapping (outer → inner)`);
-    b.push(`    let wrapped = html`);
+    lines.push(`    // Renderer wrapping (outer → inner)`);
+    lines.push(`    let wrapped = html`);
     for (const renderer of matchingRenderers) {
-      b.push(`    wrapped = ${renderer.varName}.default.wrap(wrapped, c)`);
+      lines.push(`    wrapped = ${renderer.varName}.default.wrap(wrapped, c)`);
     }
-    b.push(`    return c.html(wrapInDocument(wrapped, {`);
-    b.push(`      title: ${JSON.stringify(docConfig.title)},`);
-    b.push(`      lang: ${JSON.stringify(docConfig.lang)},`);
-    b.push(`      headExtras: ${headExtrasExpr},`);
-    b.push(`      cspNonce: c.get('cspNonce'),`);
-    b.push(`    }))`);
+    lines.push(`    return c.html(wrapInDocument(wrapped, {`);
+    lines.push(`      title: ${JSON.stringify(docConfig.title)},`);
+    lines.push(`      lang: ${JSON.stringify(docConfig.lang)},`);
+    lines.push(`      headExtras: ${headExtrasExpr},`);
+    lines.push(`      cspNonce: c.get('cspNonce'),`);
+    lines.push(`    }))`);
   } else {
-    b.push(`    return c.html(wrapInDocument(html, {`);
-    b.push(`      title: ${JSON.stringify(docConfig.title)},`);
-    b.push(`      lang: ${JSON.stringify(docConfig.lang)},`);
-    b.push(`      headExtras: ${headExtrasExpr},`);
-    b.push(`      cspNonce: c.get('cspNonce'),`);
-    b.push(`    }))`);
+    lines.push(`    return c.html(wrapInDocument(html, {`);
+    lines.push(`      title: ${JSON.stringify(docConfig.title)},`);
+    lines.push(`      lang: ${JSON.stringify(docConfig.lang)},`);
+    lines.push(`      headExtras: ${headExtrasExpr},`);
+    lines.push(`      cspNonce: c.get('cspNonce'),`);
+    lines.push(`    }))`);
   }
 
-  b.push(`  } catch (err) {`);
+  lines.push(`  } catch (err) {`);
   // Use import.meta.env.PROD for runtime environment detection.
   // process.env.NODE_ENV was previously evaluated at code-generation time
   // (build machine), which meant CI without NODE_ENV=production would leak
   // stack traces in production.
-  b.push(`    if (import.meta.env.PROD) {`);
-  b.push(`      return c.html('<h1>500 Internal Server Error</h1>', 500)`);
-  b.push(`    } else {`);
-  b.push(
+  lines.push(`    if (import.meta.env.PROD) {`);
+  lines.push(`      return c.html('<h1>500 Internal Server Error</h1>', 500)`);
+  lines.push(`    } else {`);
+  lines.push(
     `      const safeErr = String(err.stack || err).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')`,
   );
-  b.push(`      return c.html('<h1>500</h1><pre>' + safeErr + '</pre>', 500)`);
-  b.push(`    }`);
-  b.push(`  }`);
-  b.push(`})`);
-  b.blank();
+  lines.push(`      return c.html('<h1>500</h1><pre>' + safeErr + '</pre>', 500)`);
+  lines.push(`    }`);
+  lines.push(`  }`);
+  lines.push(`})`);
+  lines.push('');
 }
 
 // ─── Main renderer ─────────────────────────────────────────────
@@ -263,7 +246,7 @@ function renderPageRoute(
  * after reading the Vite client build manifest.
  */
 export function renderEntry(desc: EntryDescriptor): string {
-  const b = new CodeBuilder();
+  const lines: string[] = [];
 
   // --- SSG: DSD renderer doesn't need DOM shim ---
   // v0.5.0: render-dsd.ts uses pure string concatenation — no DOM shim needed
@@ -271,7 +254,7 @@ export function renderEntry(desc: EntryDescriptor): string {
 
   // --- Imports ---
   for (const imp of desc.imports) {
-    b.push(renderImport(imp));
+    lines.push(renderImport(imp));
   }
 
   // --- Island lookup (build-time known list) ---
@@ -283,29 +266,29 @@ export function renderEntry(desc: EntryDescriptor): string {
     islandLookup[island.tagName] = island.modulePath;
   }
 
-  b.push(`// Known islands (determined at build time by scanning islandsDir)`);
-  b.push(`const __islandMap = ${JSON.stringify(islandLookup)}`);
-  b.blank();
+  lines.push(`// Known islands (determined at build time by scanning islandsDir)`);
+  lines.push(`const __islandMap = ${JSON.stringify(islandLookup)}`);
+  lines.push('');
 
   // --- Document wrapper ---
   // Uses wrapInDocument from ssr-handler.ts (single source of truth).
   // Import via the lightweight runtime export so SSR does not load the
   // Vite plugin or dev-server dependency graph.
-  b.push(`import { log, wrapInDocument } from '@lessjs/core/less-runtime';`);
-  b.blank();
+  lines.push(`import { log, wrapInDocument } from '@lessjs/core/less-runtime';`);
+  lines.push('');
 
   // --- Route module imports ---
   for (const route of [...desc.apiRoutes, ...desc.pageRoutes]) {
-    b.push(`import * as ${route.varName} from '${route.importPath}'`);
+    lines.push(`import * as ${route.varName} from '${route.importPath}'`);
   }
   // Import special file modules (v0.3.0)
   for (const renderer of desc.renderers) {
-    b.push(`import * as ${renderer.varName} from '${renderer.importPath}'`);
+    lines.push(`import * as ${renderer.varName} from '${renderer.importPath}'`);
   }
   for (const mwScope of desc.middlewareScopes) {
-    b.push(`import * as ${mwScope.varName} from '${mwScope.importPath}'`);
+    lines.push(`import * as ${mwScope.varName} from '${mwScope.importPath}'`);
   }
-  b.blank();
+  lines.push('');
 
   // --- SSG: Auto-install Lit adapter if available ---
   // With viteBuild(ssr:true, noExternal), @lessjs/adapter-lit is inlined
@@ -313,25 +296,25 @@ export function renderEntry(desc: EntryDescriptor): string {
   // ensures registerAdapter() runs before any renderDSD() call.
   // The try/catch makes this a no-op when @lessjs/adapter-lit is absent.
   if (desc.isSSG) {
-    b.push('// SSG: auto-install Lit adapter (inlined in SSR bundle)');
-    b.push('try {');
-    b.push("  const { installLitAdapter } = await import('@lessjs/adapter-lit');");
-    b.push('  installLitAdapter();');
-    b.push('} catch { /* @lessjs/adapter-lit not available */ }');
-    b.blank();
+    lines.push('// SSG: auto-install Lit adapter (inlined in SSR bundle)');
+    lines.push('try {');
+    lines.push("  const { installLitAdapter } = await import('@lessjs/adapter-lit');");
+    lines.push('  installLitAdapter();');
+    lines.push('} catch { /* @lessjs/adapter-lit not available */ }');
+    lines.push('');
   }
 
   // --- Register page components in SSR customElements registry ---
   // This is essential for renderDSD() to find and render Shadow DOM.
   // Each SSR route module exports { default: ComponentClass, tagName: string }.
   for (const route of desc.pageRoutes) {
-    b.push(`if (!customElements.get(${route.varName}.tagName || '${route.defaultTagName}')) {`);
-    b.push(
+    lines.push(`if (!customElements.get(${route.varName}.tagName || '${route.defaultTagName}')) {`);
+    lines.push(
       `  customElements.define(${route.varName}.tagName || '${route.defaultTagName}', ${route.varName}.default)`,
     );
-    b.push(`}`);
+    lines.push(`}`);
   }
-  b.blank();
+  lines.push('');
 
   // --- Register island components in SSR customElements registry ---
   // Islands need to be registered so renderDSD() can produce DSD.
@@ -341,21 +324,21 @@ export function renderEntry(desc: EntryDescriptor): string {
   // package-manager-specific JSR specifiers in the server module runner.
   for (const island of desc.islands.filter((island) => !island.isPackage)) {
     const varName = `__island_${island.tagName.replace(/-/g, '_')}`;
-    b.push(`import * as ${varName} from '${island.modulePath}'`);
+    lines.push(`import * as ${varName} from '${island.modulePath}'`);
   }
   const ssrIslands = desc.islands.filter((island) => !island.isPackage);
   if (ssrIslands.length > 0) {
-    b.push(`const __less_get_default_export = (module) => module && module.default`);
+    lines.push(`const __less_get_default_export = (module) => module && module.default`);
   }
   for (const island of ssrIslands) {
     const varName = `__island_${island.tagName.replace(/-/g, '_')}`;
     const componentVar = `__island_component_${island.tagName.replace(/-/g, '_')}`;
-    b.push(`const ${componentVar} = __less_get_default_export(${varName})`);
-    b.push(`if (${componentVar} && !customElements.get('${island.tagName}')) {`);
-    b.push(`  customElements.define('${island.tagName}', ${componentVar})`);
-    b.push(`}`);
+    lines.push(`const ${componentVar} = __less_get_default_export(${varName})`);
+    lines.push(`if (${componentVar} && !customElements.get('${island.tagName}')) {`);
+    lines.push(`  customElements.define('${island.tagName}', ${componentVar})`);
+    lines.push(`}`);
   }
-  b.blank();
+  lines.push('');
 
   // --- SSG: load headExtras from file instead of inlining ---
   // When headExtras is a large CSS/HTML string, inlining it via JSON.stringify
@@ -363,17 +346,17 @@ export function renderEntry(desc: EntryDescriptor): string {
   // The string may contain backticks, ${}, or </script> which corrupt the
   // generated source. Instead, read from .less/head-extras.html at runtime.
   if (desc.isSSG && desc.document.headExtras) {
-    b.push('// SSG: read headExtras from file to avoid Vite SSR AsyncFunction syntax errors');
-    b.push('// (large inline strings with backticks/${} break new AsyncFunction())');
-    b.push('import { readFileSync } from "node:fs";');
-    b.push('import { join } from "node:path";');
-    b.push('let __headExtras = "";');
-    b.push('try {');
-    b.push(
+    lines.push('// SSG: read headExtras from file to avoid Vite SSR AsyncFunction syntax errors');
+    lines.push('// (large inline strings with backticks/${} break new AsyncFunction())');
+    lines.push('import { readFileSync } from "node:fs";');
+    lines.push('import { join } from "node:path";');
+    lines.push('let __headExtras = "";');
+    lines.push('try {');
+    lines.push(
       '  __headExtras = readFileSync(join(process.cwd(), ".less", "head-extras.html"), "utf-8");',
     );
-    b.push('} catch { /* headExtras file not found — use empty string */ }');
-    b.blank();
+    lines.push('} catch { /* headExtras file not found — use empty string */ }');
+    lines.push('');
   }
 
   // --- SSR helper (v0.5.0) ---
@@ -383,44 +366,44 @@ export function renderEntry(desc: EntryDescriptor): string {
   // Each component's render() returns a plain HTML string (no TemplateResult).
   // Output is standard DSD: <tag><template shadowrootmode="open">...</template></tag>
   // No old upgrade marker, no <!--lit-part-->, no client render ceremony needed.
-  b.push('// SSR helper: render a registered custom element to DSD HTML');
-  b.push('// Outputs standard DSD; no client render markers needed');
-  b.push('async function __ssr(tag, props = {}, sourceInfo = {}) {');
-  b.push('  // Validate tag name — must be a valid Custom Element (contains hyphen)');
-  b.push('  if (!tag || !tag.includes("-")) {');
-  b.push(
+  lines.push('// SSR helper: render a registered custom element to DSD HTML');
+  lines.push('// Outputs standard DSD; no client render markers needed');
+  lines.push('async function __ssr(tag, props = {}, sourceInfo = {}) {');
+  lines.push('  // Validate tag name — must be a valid Custom Element (contains hyphen)');
+  lines.push('  if (!tag || !tag.includes("-")) {');
+  lines.push(
     '    throw new Error("[LessJS] Invalid custom element tag: " + String(tag) + ". Must contain a hyphen.")',
   );
-  b.push('  }');
-  b.push('  const Cls = customElements.get(tag)');
-  b.push('  if (!Cls) {');
-  b.push('    log.warn("<" + tag + "> not registered — rendering empty")');
-  b.push('    return "<" + tag + "></" + tag + ">"');
-  b.push('  }');
-  b.push('  return renderDSD(tag, Cls, props, sourceInfo)');
-  b.push('}');
-  b.blank();
+  lines.push('  }');
+  lines.push('  const Cls = customElements.get(tag)');
+  lines.push('  if (!Cls) {');
+  lines.push('    log.warn("<" + tag + "> not registered — rendering empty")');
+  lines.push('    return "<" + tag + "></" + tag + ">"');
+  lines.push('  }');
+  lines.push('  return renderDSD(tag, Cls, props, sourceInfo)');
+  lines.push('}');
+  lines.push('');
 
   // --- App creation + Middleware ---
-  b.push('const app = new Hono()');
-  b.blank();
+  lines.push('const app = new Hono()');
+  lines.push('');
 
   for (const mw of desc.middleware) {
-    renderMiddleware(b, mw);
+    renderMiddleware(lines, mw);
   }
 
   // --- Middleware scopes (v0.3.0: _middleware.ts files) ---
   for (const mwScope of desc.middlewareScopes) {
-    b.push(`// Middleware scope: ${mwScope.scope} (${mwScope.importPath})`);
-    b.push(
+    lines.push(`// Middleware scope: ${mwScope.scope} (${mwScope.importPath})`);
+    lines.push(
       `app.use('${mwScope.scope === '/' ? '' : mwScope.scope}/*', ${mwScope.varName}.default)`,
     );
-    b.blank();
+    lines.push('');
   }
 
   // --- API routes ---
   for (const route of desc.apiRoutes) {
-    renderApiRoute(b, route);
+    renderApiRoute(lines, route);
   }
 
   // --- Page routes ---
@@ -430,11 +413,11 @@ export function renderEntry(desc: EntryDescriptor): string {
     headExtras: desc.document.headExtras,
   };
   for (const route of desc.pageRoutes) {
-    renderPageRoute(b, route, desc.renderers, docConfig, desc.isSSG);
+    renderPageRoute(lines, route, desc.renderers, docConfig, desc.isSSG);
   }
 
   // --- Export ---
-  b.push('export default app');
+  lines.push('export default app');
 
   // ── SSG Utility Re-exports ──────────────────────────────────
   // ADR 0008 Phase C: After viteBuild(ssr:true, noExternal) produces a
@@ -449,24 +432,24 @@ export function renderEntry(desc: EntryDescriptor): string {
   // are resolved by the optionalPackageStubsPlugin in build-ssg.ts, which
   // provides empty stubs when the real package is not installed.
   if (desc.isSSG) {
-    b.blank();
-    b.push('// ── SSG Utility Re-exports (ADR 0008 Phase C) ───────────────');
-    b.push('// Used by build-ssg.ts after importing the SSR bundle.');
-    b.push('// Shared module scope ensures adapter/data state is consistent.');
-    b.blank();
-    b.push('export { renderDSD, renderDSDByName } from "@lessjs/core/render-dsd"');
-    b.push(
+    lines.push('');
+    lines.push('// ── SSG Utility Re-exports (ADR 0008 Phase C) ───────────────');
+    lines.push('// Used by build-ssg.ts after importing the SSR bundle.');
+    lines.push('// Shared module scope ensures adapter/data state is consistent.');
+    lines.push('');
+    lines.push('export { renderDSD, renderDSDByName } from "@lessjs/core/render-dsd"');
+    lines.push(
       'export { wrapInDocument, registerAdapter, getAdapter } from "@lessjs/core/less-runtime"',
     );
-    b.push('export { installLitAdapter, uninstallLitAdapter } from "@lessjs/adapter-lit"');
-    b.push(
+    lines.push('export { installLitAdapter, uninstallLitAdapter } from "@lessjs/adapter-lit"');
+    lines.push(
       'export { initBlogData, getPosts, getPostBySlug, getBlogOptions } from "@lessjs/content"',
     );
-    b.push('export { generateSitemap } from "@lessjs/content/sitemap"');
-    b.push(
+    lines.push('export { generateSitemap } from "@lessjs/content/sitemap"');
+    lines.push(
       'export { initI18nData, getI18nOptions, getI18nLocales, getDefaultLocale } from "@lessjs/i18n"',
     );
   }
 
-  return b.toString();
+  return lines.join('\n');
 }
