@@ -223,14 +223,6 @@ async function buildSSG(options: BuildSSGOptions = {}): Promise<void> {
   const { mkdirSync, writeFileSync } = await import('node:fs');
   mkdirSync(lessTmpDir, { recursive: true });
 
-  // Write headExtras to a separate file so the generated entry code
-  // reads it at runtime instead of inlining a potentially large
-  // CSS/HTML string that breaks Vite SSR's AsyncFunction evaluator.
-  // Fixes Issue #2: backticks and ${} in headExtras corrupt the generated source.
-  if (options.headExtras) {
-    writeFileSync(join(lessTmpDir, 'head-extras.html'), options.headExtras, 'utf-8');
-  }
-
   writeFileSync(tmpEntryPath, ssgEntryCode, 'utf-8');
 
   try {
@@ -284,6 +276,13 @@ async function buildSSG(options: BuildSSGOptions = {}): Promise<void> {
         },
       },
       ssr: { noExternal: allNoExternal },
+      // ADR 0008 Phase A: Inject headExtras via define instead of .less/head-extras.html
+      // The generated entry code uses __LESS_HEAD_EXTRAS__ which gets replaced
+      // at build time. This avoids the Vite SSR AsyncFunction syntax errors
+      // that large inline strings (with backticks/${}) cause.
+      define: options.headExtras
+        ? { __LESS_HEAD_EXTRAS__: JSON.stringify(options.headExtras) }
+        : { __LESS_HEAD_EXTRAS__: '""' },
       esbuild: {
         tsconfigRaw: {
           compilerOptions: {

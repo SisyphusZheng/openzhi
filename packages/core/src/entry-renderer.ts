@@ -328,22 +328,17 @@ export function renderEntry(desc: EntryDescriptor): string {
   }
   lines.push('');
 
-  // --- SSG: load headExtras from file instead of inlining ---
-  // When headExtras is a large CSS/HTML string, inlining it via JSON.stringify
-  // into the generated code breaks Vite SSR's AsyncFunction evaluator.
-  // The string may contain backticks, ${}, or </script> which corrupt the
-  // generated source. Instead, read from .less/head-extras.html at runtime.
+  // --- SSG: headExtras via define injection ---
+  // ADR 0008 Phase A: Instead of reading .less/head-extras.html at runtime,
+  // headExtras is injected via Vite's define option as __LESS_HEAD_EXTRAS__.
+  // This eliminates the .less/head-extras.html temp file and avoids the
+  // Vite SSR AsyncFunction syntax errors that large inline strings cause.
+  // The build-ssg.ts SSR build config includes:
+  //   define: { __LESS_HEAD_EXTRAS__: JSON.stringify(headExtras) }
   if (desc.isSSG && desc.document.headExtras) {
-    lines.push('// SSG: read headExtras from file to avoid Vite SSR AsyncFunction syntax errors');
-    lines.push('// (large inline strings with backticks/${} break new AsyncFunction())');
-    lines.push('import { readFileSync } from "node:fs";');
-    lines.push('import { join } from "node:path";');
-    lines.push('let __headExtras = "";');
-    lines.push('try {');
-    lines.push(
-      '  __headExtras = readFileSync(join(process.cwd(), ".less", "head-extras.html"), "utf-8");',
-    );
-    lines.push('} catch { /* headExtras file not found — use empty string */ }');
+    lines.push('// SSG: headExtras injected via Vite define (ADR 0008 Phase A)');
+    lines.push('// Replaces the old .less/head-extras.html runtime file read');
+    lines.push('const __headExtras = __LESS_HEAD_EXTRAS__ || "";');
     lines.push('');
   }
 
