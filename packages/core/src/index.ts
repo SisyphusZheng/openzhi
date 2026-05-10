@@ -43,6 +43,10 @@ export type {
 export { LessError, SsrRenderError } from './errors.js';
 export { createSsrContext, extractParams, parseQuery } from './context.js';
 export { renderSsrError, wrapInDocument } from './ssr-handler.js';
+/**
+ * @internal SSG post-processing utilities — used by CLI build commands.
+ * Not intended for direct use by application code.
+ */
 export {
   buildIslandChunkMap,
   buildSpeculationRulesJson,
@@ -54,6 +58,10 @@ export {
   insertAfterHead,
   type SpeculationRulesOptions,
 } from './ssg-postprocess.js';
+/**
+ * @internal Island manifest generation — used by CLI build commands.
+ * Not intended for direct use by application code.
+ */
 export {
   extractCustomElementTags,
   generateIslandManifests,
@@ -63,6 +71,10 @@ export {
   type PageIslandManifest,
   writeIslandManifests,
 } from './island-manifest.js';
+/**
+ * @internal Build manifest and observability — used by CLI build commands.
+ * Not intended for direct use by application code.
+ */
 export { printBuildManifest, scanClientBuild, scanSSGOutput } from './build-manifest.js';
 export type { ArtifactInfo, BuildManifest } from './build-manifest.js';
 export { renderDSD, renderDSDByName } from './render-dsd.js';
