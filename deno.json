@@ -34,8 +34,6 @@
     "build": "cd docs && deno run --config ../deno.json -A ../packages/core/src/cli/build.ts",
     "preview": "deno run -A npm:vite preview docs --config docs/vite.config.ts",
     "build:docs": "deno task build",
-    "build:client": "cd docs && deno run --config ../deno.json -A ../packages/core/src/cli/build-client.ts",
-    "build:ssg": "cd docs && deno run --config ../deno.json -A ../packages/core/src/cli/build-ssg.ts",
     "publish:core": "cd packages/core && deno publish --allow-dirty",
     "publish:rpc": "cd packages/rpc && deno publish --allow-dirty",
     "publish:ui": "cd packages/ui && deno publish --allow-dirty",

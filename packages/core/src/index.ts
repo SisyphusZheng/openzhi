@@ -157,15 +157,8 @@ export function less(options: FrameworkOptions = {}, externalCtx?: LessBuildCont
 
   const ctx = externalCtx || new LessBuildContext(resolvedOptions);
 
-  // Expose ctx on globalThis so the CLI build orchestrator (cli/build.ts)
-  // can access the same ctx that the Vite plugins use. This bridges the
-  // gap between the user's vite.config.ts (which calls less()) and the
-  // CLI (which creates its own ctx). The CLI checks for this first.
-  // Cleaned up in closeBundle to avoid leaking across builds.
-  const CTX_KEY = Symbol.for('lessjs:build-context');
-  if (!(globalThis as Record<symbol, unknown>)[CTX_KEY]) {
-    (globalThis as Record<symbol, unknown>)[CTX_KEY] = ctx;
-  }
+  // ADR 0011: No globalThis bridge needed. Phase 2/3 run inside
+  // closeBundle() where ctx is available via closure.
 
   const VIRTUAL_ENTRY_ID = 'virtual:less-hono-entry';
   const RESOLVED_ENTRY_ID = '\0' + VIRTUAL_ENTRY_ID;

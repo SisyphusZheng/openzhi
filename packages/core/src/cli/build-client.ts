@@ -4,12 +4,12 @@
  * Client build for Island components.
  * Produces dist/client/islands/*.js + manifest for SSG post-processing.
  *
- * ADR 0010: Virtual module `virtual:less-client-entry` replaces
- * .less/.less-client-entry.ts file write. All metadata flows through
- * LessBuildContext — no filesystem IPC.
+ * ADR 0011: This module exports buildClient() only — it is called from
+ * closeBundle() in less:build plugin. No longer a standalone CLI entry.
+ * ctx parameter is required (no globalThis fallback).
  *
  * Usage:
- *   deno run -A jsr:@lessjs/core/cli/build  (recommended — unified entry)
+ *   deno task build  (unified entry — runs all 3 phases)
  */
 
 import { build as viteBuild, type InlineConfig } from 'vite';

@@ -6,12 +6,12 @@
  * then imports it to render all pages to static HTML, and post-processes
  * island paths.
  *
- * ADR 0010: Virtual module `virtual:less-ssg-entry` replaces
- * .less/.less-ssg-entry.ts file write. All metadata flows through
- * LessBuildContext — no filesystem IPC, no .less/ fallback reads.
+ * ADR 0011: This module exports buildSSG() only — it is called from
+ * closeBundle() in less:build plugin. No longer a standalone CLI entry.
+ * ctx parameter is required (no globalThis fallback).
  *
  * Usage:
- *   deno run -A jsr:@lessjs/core/cli/build  (recommended — unified entry)
+ *   deno task build  (unified entry — runs all 3 phases)
  */
 
 import { join, resolve } from 'node:path';

@@ -4,8 +4,8 @@
  * Build produces only static files (K+S), Islands are the only JS (I).
  * API Routes (S — Serverless extension) deploy separately.
  *
- * ADR 0010: closeBundle writes metadata to LessBuildContext only.
- * No .less/ file fallback — unified build orchestrator is the only entry point.
+ * ADR 0011: closeBundle writes metadata to ctx, then triggers Phase 2/3.
+ * No globalThis bridge — ctx stays in less() closure scope throughout.
  */
 
 import type { Plugin, ResolvedConfig } from 'vite';
@@ -15,7 +15,7 @@ import { createLogger } from './logger.js';
 
 const log = createLogger('core');
 
-/** Vite plugin: writes build metadata to ctx */
+/** Vite plugin: writes build metadata to ctx, then runs Phase 2 + Phase 3 */
 export function buildPlugin(options: FrameworkOptions = {}, ctx?: LessBuildContext): Plugin {
   const outDir = options.build?.outDir || 'dist';
 
@@ -31,7 +31,6 @@ export function buildPlugin(options: FrameworkOptions = {}, ctx?: LessBuildConte
       if (!base.endsWith('/')) base += '/';
     },
 
-    // deno-lint-ignore require-await
     async closeBundle() {
       // Only run in build mode (not dev)
       if (config.command !== 'build') return;
@@ -69,16 +68,38 @@ export function buildPlugin(options: FrameworkOptions = {}, ctx?: LessBuildConte
 
       const totalIslands = (ctx?.islandTagNames?.length || 0) + (ctx?.packageIslands?.length || 0);
 
-      log.info('Phase 1 complete — SSR bundle + metadata written to ctx');
-      if (totalIslands > 0) {
-        log.info(
-          `${totalIslands} island(s) detected — run the full build command next.`,
-        );
-        log.info('  deno task build          (compile islands + render static HTML)');
+      log.info('Phase 1/3 complete — SSR bundle + metadata written to ctx');
+
+      // ─── Phase 2: Client island build ──────────
+      // ADR 0011: Inline Phase 2/3 in closeBundle instead of
+      // cli/build.ts orchestrator. ctx is already in closure scope
+      // — no globalThis bridge needed.
+      if (ctx && totalIslands > 0) {
+        try {
+          const { buildClient } = await import('./cli/build-client.js');
+          log.info('Phase 2/3 - Client island build...');
+          await buildClient(ctx);
+        } catch (error) {
+          log.error('Client build failed:', error);
+          throw error;
+        }
       } else {
         log.info('No islands — static pages only, zero client JS');
-        log.info('Run: deno task build       (render static HTML)');
       }
+
+      // ─── Phase 3: SSG rendering ──────────
+      if (ctx) {
+        try {
+          const { buildSSG } = await import('./cli/build-ssg.js');
+          log.info('Phase 3/3 - Static site generation...');
+          await buildSSG({}, ctx);
+        } catch (error) {
+          log.error('SSG build failed:', error);
+          throw error;
+        }
+      }
+
+      log.info('Build complete.');
     },
   };
 }
