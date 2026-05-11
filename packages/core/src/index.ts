@@ -19,6 +19,7 @@ import type { FrameworkOptions, PackageIslandMeta, RouteEntry } from './types.js
 import { dirname, join } from 'node:path';
 import process from 'node:process';
 import { fileURLToPath } from 'node:url';
+import { transform as esbuildTransform } from 'esbuild';
 import { LessError } from './errors.js';
 import { createLogger } from './logger.js';
 
@@ -102,7 +103,8 @@ export type { NavigationCallback } from './navigation.js';
 //   - The Deno import map (deno.json) is not used by Vite's SSR runner
 //   - Node.js ESM loader only supports file:// and data: URLs
 //
-// This bug has recurred 4 times (b6a6b41, f223bef, 6c5a992, v0.10.2 https:// aliases).
+// This bug has recurred 5 times (b6a6b41, f223bef, 6c5a992, v0.10.2 https:// aliases,
+// v0.10.3 TS source not compiled).
 //
 // Solution: Two-pronged approach depending on execution context:
 //
@@ -112,9 +114,14 @@ export type { NavigationCallback } from './navigation.js';
 //   B) Remote (https:// import.meta.url — JSR execution):
 //      - resolveId + load virtual module pattern
 //      - resolveId intercepts @lessjs/core/* → virtual IDs (\0lessjs:core/src/*)
-//      - load fetches source from JSR, returns as string
+//      - load fetches TypeScript source from JSR, compiles TS→JS via esbuild
 //      - Relative imports within virtual modules are also intercepted
 //      - Virtual IDs (\0 prefix) bypass Node.js ESM loader entirely
+//
+//   Why esbuild? Virtual modules (\0 prefix) bypass Vite's standard transform
+//   pipeline, so TS syntax like `export type` reaches Rolldown's parser which
+//   only understands JavaScript. esbuild (bundled with Vite) strips types and
+//   produces clean ESM. JSR does NOT serve pre-compiled .js files.
 
 /** Virtual module ID prefix for JSR remote resolution */
 const VIRTUAL_CORE_PREFIX = '\0lessjs:core/src/';
@@ -176,9 +183,17 @@ const jsrSourceCache = new Map<string, string>();
 function createCoreResolvePlugin(metaUrl: string): Plugin {
   const isRemote = metaUrl.startsWith('https://') || metaUrl.startsWith('http://');
 
-  // Compute JSR base URL for source fetching
-  // e.g. https://jsr.io/@lessjs/core@0.10.2/src/index.ts → https://jsr.io/@lessjs/core@0.10.2/src/
-  const jsrSrcBase = isRemote ? metaUrl.replace(/\/src\/index\.ts$/, '/src/') : '';
+  // Compute JSR base URL for source fetching.
+  // JSR URL formats vary: @lessjs/core@0.10.3/src/index.ts or @lessjs/core/0.10.3/src/index.ts
+  // We normalize to the slash-separated format that JSR serves files from:
+  //   https://jsr.io/@lessjs/core/0.10.3/src/
+  let jsrSrcBase = '';
+  if (isRemote) {
+    // Handle both @version and /version URL formats
+    jsrSrcBase = metaUrl
+      .replace(/\/src\/index\.ts$/, '/src/')
+      .replace(/@(\d+\.\d+\.\d+)\/src\/$/, '/$1/src/');
+  }
 
   return {
     name: 'less:core-resolve',
@@ -222,8 +237,9 @@ function createCoreResolvePlugin(metaUrl: string): Plugin {
         filePath = filePath.slice(0, -3) + '.ts';
       }
 
-      // Fetch from JSR
+      // Fetch TypeScript source from JSR
       const url = `${jsrSrcBase}${filePath}`;
+      let tsCode: string;
       try {
         const resp = await fetch(url);
         if (!resp.ok) {
@@ -231,9 +247,7 @@ function createCoreResolvePlugin(metaUrl: string): Plugin {
             `[less:core-resolve] Failed to fetch ${url}: HTTP ${resp.status}`,
           );
         }
-        const code = await resp.text();
-        jsrSourceCache.set(id, code);
-        return code;
+        tsCode = await resp.text();
       } catch (err) {
         throw new LessError(
           `Failed to load @lessjs/core module from JSR: ${filePath}. ` +
@@ -243,6 +257,31 @@ function createCoreResolvePlugin(metaUrl: string): Plugin {
           false,
         );
       }
+
+      // Compile TypeScript → JavaScript via esbuild.
+      // Virtual modules (\0 prefix) bypass Vite's standard transform pipeline,
+      // so TS syntax like `export type` reaches Rolldown's parser which only
+      // understands JavaScript. esbuild strips types and produces clean ESM.
+      let jsCode: string;
+      try {
+        const result = await esbuildTransform(tsCode, {
+          loader: 'ts',
+          target: 'esnext',
+          format: 'esm',
+        });
+        jsCode = result.code;
+      } catch (err) {
+        throw new LessError(
+          `Failed to compile @lessjs/core module from JSR: ${filePath}. ` +
+            `Error: ${err instanceof Error ? err.message : String(err)}`,
+          'JSR_COMPILE_ERROR',
+          500,
+          false,
+        );
+      }
+
+      jsrSourceCache.set(id, jsCode);
+      return jsCode;
     },
   };
 }
