@@ -103,8 +103,8 @@ export type { NavigationCallback } from './navigation.js';
 //   - The Deno import map (deno.json) is not used by Vite's SSR runner
 //   - Node.js ESM loader only supports file:// and data: URLs
 //
-// This bug has recurred 5 times (b6a6b41, f223bef, 6c5a992, v0.10.2 https:// aliases,
-// v0.10.3 TS source not compiled).
+// This bug has recurred 6 times (b6a6b41, f223bef, 6c5a992, v0.10.2 https:// aliases,
+// v0.10.3 TS source not compiled, v0.10.4 npm: specifiers unresolvable).
 //
 // Solution: Two-pronged approach depending on execution context:
 //
@@ -218,7 +218,22 @@ function createCoreResolvePlugin(metaUrl: string): Plugin {
         return `${importerDir}/${source.slice(2)}`;
       }
 
-      // Case 3: Already-resolved virtual IDs (re-resolve safeguard)
+      // Case 3: npm: specifiers from within virtual modules (e.g. 'npm:parse5@7.0.0')
+      // Deno's import map resolves bare specifiers like 'parse5' to 'npm:parse5@7.0.0'
+      // at fetch time. esbuild preserves these in compiled output. But Vite's SSR
+      // runner doesn't understand 'npm:' URLs. We re-map them to plain bare specifiers
+      // so Vite can resolve them through its standard node_modules pipeline.
+      if (importer?.startsWith(VIRTUAL_CORE_PREFIX) && source.startsWith('npm:')) {
+        // Strip 'npm:' prefix and version pin: 'npm:parse5@7.0.0' → 'parse5'
+        // Also handle scoped packages: 'npm:@lit-labs/ssr-dom-shim@1.5.0' → '@lit-labs/ssr-dom-shim'
+        const bare = source.slice(4); // strip 'npm:'
+        const isScoped = bare.startsWith('@');
+        const withoutScope = isScoped ? bare.slice(1) : bare;
+        const namePart = withoutScope.split('@')[0]; // strip version
+        return isScoped ? `@${namePart}` : namePart;
+      }
+
+      // Case 4: Already-resolved virtual IDs (re-resolve safeguard)
       if (source.startsWith(VIRTUAL_CORE_PREFIX)) {
         return source;
       }
