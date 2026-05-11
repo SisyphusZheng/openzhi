@@ -199,7 +199,7 @@ function createCoreResolvePlugin(metaUrl: string): Plugin {
     name: 'less:core-resolve',
     enforce: 'pre',
 
-    resolveId(source, importer) {
+    resolveId(source, importer, options) {
       if (!isRemote) return;
 
       // Case 1: Bare specifier @lessjs/core or @lessjs/core/*
@@ -218,7 +218,20 @@ function createCoreResolvePlugin(metaUrl: string): Plugin {
         return `${importerDir}/${source.slice(2)}`;
       }
 
-      // Case 3: Already-resolved virtual IDs (re-resolve safeguard)
+      // Case 3: Third-party bare specifiers from virtual modules
+      // e.g. 'parse5', 'lit', '@lit-labs/ssr-dom-shim'
+      // After npm:→bare rewrite in load(), the code has standard bare specifiers.
+      // But Vite can't resolve them because the importer is a virtual module
+      // (\0 prefix) with no real filesystem path → no node_modules lookup base.
+      // Delegate to Vite's standard resolver from the project root.
+      if (
+        importer?.startsWith(VIRTUAL_CORE_PREFIX) && !source.startsWith('/') &&
+        !source.startsWith('.') && !source.startsWith('\0')
+      ) {
+        return this.resolve(source, undefined, { ...options, skipSelf: true });
+      }
+
+      // Case 4: Already-resolved virtual IDs (re-resolve safeguard)
       if (source.startsWith(VIRTUAL_CORE_PREFIX)) {
         return source;
       }
