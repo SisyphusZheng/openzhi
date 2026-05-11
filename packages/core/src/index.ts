@@ -218,22 +218,7 @@ function createCoreResolvePlugin(metaUrl: string): Plugin {
         return `${importerDir}/${source.slice(2)}`;
       }
 
-      // Case 3: npm: specifiers from within virtual modules (e.g. 'npm:parse5@7.0.0')
-      // Deno's import map resolves bare specifiers like 'parse5' to 'npm:parse5@7.0.0'
-      // at fetch time. esbuild preserves these in compiled output. But Vite's SSR
-      // runner doesn't understand 'npm:' URLs. We re-map them to plain bare specifiers
-      // so Vite can resolve them through its standard node_modules pipeline.
-      if (importer?.startsWith(VIRTUAL_CORE_PREFIX) && source.startsWith('npm:')) {
-        // Strip 'npm:' prefix and version pin: 'npm:parse5@7.0.0' → 'parse5'
-        // Also handle scoped packages: 'npm:@lit-labs/ssr-dom-shim@1.5.0' → '@lit-labs/ssr-dom-shim'
-        const bare = source.slice(4); // strip 'npm:'
-        const isScoped = bare.startsWith('@');
-        const withoutScope = isScoped ? bare.slice(1) : bare;
-        const namePart = withoutScope.split('@')[0]; // strip version
-        return isScoped ? `@${namePart}` : namePart;
-      }
-
-      // Case 4: Already-resolved virtual IDs (re-resolve safeguard)
+      // Case 3: Already-resolved virtual IDs (re-resolve safeguard)
       if (source.startsWith(VIRTUAL_CORE_PREFIX)) {
         return source;
       }
@@ -294,6 +279,21 @@ function createCoreResolvePlugin(metaUrl: string): Plugin {
           false,
         );
       }
+
+      // Post-process: rewrite npm: specifiers to bare specifiers.
+      // Deno's import map resolves bare specifiers like 'parse5' to 'npm:parse5@7.0.0'
+      // at fetch time. esbuild preserves these in compiled output. But Vite's SSR
+      // runner cannot resolve npm: URLs from virtual module context.
+      // Rewrite: "npm:parse5@7.0.0" → "parse5", "npm:@scope/pkg@1.0.0" → "@scope/pkg"
+      jsCode = jsCode.replace(
+        /(["'])npm:([^"']+)\1/g,
+        (_, quote: string, specifier: string) => {
+          const isScoped = specifier.startsWith('@');
+          const withoutScope = isScoped ? specifier.slice(1) : specifier;
+          const namePart = withoutScope.split('@')[0];
+          return `${quote}${isScoped ? '@' : ''}${namePart}${quote}`;
+        },
+      );
 
       jsrSourceCache.set(id, jsCode);
       return jsCode;
