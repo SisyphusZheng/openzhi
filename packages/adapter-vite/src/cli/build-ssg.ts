@@ -223,8 +223,17 @@ async function buildSSG(options: BuildSSGOptions = {}, ctx: LessBuildContext): P
     // Auto-generate aliases from workspace packages
     const ssgAliases = await (async () => {
       const wsRoot = await findWorkspaceRoot(root);
-      return wsRoot ? await generateWorkspaceAliases(wsRoot) : null;
+      if (!wsRoot) {
+        log.info('SSG: no workspace found — @lessjs/* imports may fail');
+        return null;
+      }
+      const aliases = await generateWorkspaceAliases(wsRoot);
+      log.info(`SSG: auto-generated ${aliases.length} resolve alias(es) from workspace`);
+      return aliases;
     })();
+
+    const effectiveAlias = alias || ssgAliases;
+    log.info(`SSG: using ${effectiveAlias ? (Array.isArray(effectiveAlias) ? effectiveAlias.length + ' alias(es)' : 'alias map') : 'NO aliases'} for resolution`);
 
     await viteBuild({
       configFile: false,
@@ -292,7 +301,7 @@ async function buildSSG(options: BuildSSGOptions = {}, ctx: LessBuildContext): P
       resolve: {
         preserveSymlinks: true,
         extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
-        alias: alias || ssgAliases || undefined,
+        alias: effectiveAlias || undefined,
       },
     });
 
