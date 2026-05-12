@@ -1,9 +1,9 @@
 /**
- * Homepage — redesigned v2
+ * Homepage — v5 design
  *
- * Hero with code comparison (Lit → DSD HTML), feature cards,
- * use cases, architecture diagram, live demo, and CTA.
- * Uses <less-code-block> for syntax highlighting, no hardcoded colors.
+ * @lessjs/app + @lessjs/ui components. less-code-block for syntax.
+ * Mockup v5: dark hero, code comparison, feature cards, benchmark,
+ * dark demo cards, quick start, footer CTA.
  */
 import { headerNav, navSections } from 'virtual:less-nav';
 import { css, html, LitElement } from 'lit';
@@ -12,7 +12,7 @@ import '@lessjs/ui/less-code-block';
 
 export const tagName = 'docs-home';
 
-const COMPONENT_CODE = `// app/routes/index.ts
+const CODE_COMPONENT = `// app/routes/index.ts
 import { html, LitElement } from 'lit';
 
 export class Home extends LitElement {
@@ -24,97 +24,131 @@ export class Home extends LitElement {
 customElements.define('page-home', Home);
 // ...just lit + custom elements`;
 
-const DSD_CODE = `<page-home>
+const CODE_DSD = `<page-home>
   <template shadowrootmode="open">
     <h1>hello world</h1>
     <my-counter>
       <template shadowrootmode="open">
-        <!-- ssg rendered -->
+        <!-- button -, span 0, button + -->
       </template>
     </my-counter>
   </template>
 </page-home>
-<!-- no js needed for initial render -->`;
+<!-- no js needed for first paint -->`;
 
-const COUNTER_HTML = `<my-counter><template shadowrootmode="open"><button>−</button><span>0</span><button>+</button></template></my-counter>`;
+const COUNTER_RAW = `<my-counter><template shadowrootmode="open"><button>−</button><span>0</span><button>+</button></template></my-counter>`;
 
 export default class DocsHome extends LitElement {
   static override styles = css`
     :host { display: block; }
     less-layout { min-height: 100vh; }
 
-    /* ── Full-width hero ── */
+    /* ── Hero ── */
     .hero { background: #09090b; color: #fff; width: 100vw; margin-left: calc(-50vw + 50%); }
     .hero-inner { max-width: 960px; margin: 0 auto; padding: 3rem 1.5rem 2.5rem; }
-    .hero h1 { font-size: clamp(2.5rem, 6vw, 4rem); font-weight: 500; color: #fff; margin: 4px 0 0; line-height: 1.05; letter-spacing: -0.03em; }
-    .hero h1 em { font-style: normal; color: #a1a1aa; }
-    .hero-desc { color: #a1a1aa; font-size: 0.875rem; line-height: 1.7; max-width: 34rem; margin: 10px 0 18px; }
-    .hero-btns { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; }
-    .hero-btns a { display: inline-flex; align-items: center; height: 38px; padding: 0 18px; border-radius: 6px; font-size: 0.8125rem; font-weight: 500; text-decoration: none; }
+    .hero-lockup { display: flex; align-items: center; gap: 12px; margin-bottom: 22px; }
+    .hero-lockup svg { width: 36px; height: 36px; flex-shrink: 0; }
+    .hero-lockup span { font-size: 17px; font-weight: 500; color: #f4f4f5; letter-spacing: -0.01em; }
+    .hero h1 { font-size: clamp(2.6rem, 6vw, 2.875rem); font-weight: 500; color: #fff; line-height: 1.05; letter-spacing: -0.03em; margin: 0 0 10px; }
+    .hero h1 em { font-style: normal; color: #636363; }
+    .hero-desc { color: #a1a1aa; font-size: 14px; line-height: 1.7; max-width: 460px; margin: 0 0 20px; }
+    .hero-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px; }
+    .hero-actions a { display: inline-flex; align-items: center; height: 38px; padding: 0 18px; border-radius: 6px; font-size: 13px; font-weight: 500; text-decoration: none; }
     .hero-pri { background: #fff; color: #09090b; }
-    .hero-sec { border: 0.5px solid #3f3f46; color: #d4d4d8; }
+    .hero-sec { border: 0.5px solid #333; color: #d4d4d8; }
 
     /* ── Code comparison ── */
-    .code-compare { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: #18181b; border-radius: 8px; overflow: hidden; border: 0.5px solid #27272a; margin-bottom: 16px; }
+    .code-compare { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: #18181b; border-radius: 8px; overflow: hidden; border: 0.5px solid #27272a; margin-bottom: 18px; }
     .code-pane { background: #101012; padding: 14px 16px; }
     .code-bar { display: flex; align-items: center; gap: 5px; margin-bottom: 10px; }
-    .code-dot { width: 7px; height: 7px; border-radius: 50%; }
-    .code-dot.r { background: #ef4444; }
-    .code-dot.y { background: #eab308; }
-    .code-dot.g { background: #22c55e; }
-    .code-bar span { color: #52525b; font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.08em; margin-left: 6px; }
+    .code-bar i { width: 7px; height: 7px; border-radius: 50%; }
+    .code-bar .r { background: #ef4444; }
+    .code-bar .y { background: #eab308; }
+    .code-bar .g { background: #22c55e; }
+    .code-bar span { color: #52525b; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; margin-left: 5px; }
     .code-pane less-code-block { --code-bg: transparent; --code-border: none; }
     .code-pane pre { background: transparent !important; border: none !important; padding: 0 !important; margin: 0 !important; }
-    .code-pane code { font-size: 0.75rem !important; line-height: 1.7 !important; color: #a1a1aa !important; }
+    .code-pane code { font-size: 12px !important; line-height: 1.8 !important; color: #a1a1aa !important; }
 
     /* ── Stats ── */
-    .stats { display: flex; gap: 24px; flex-wrap: wrap; }
+    .stats { display: flex; gap: 28px; flex-wrap: wrap; }
     .stat { display: flex; flex-direction: column; }
-    .stat strong { color: #fff; font-size: 1rem; font-weight: 500; }
-    .stat span { color: #71717a; font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.06em; }
+    .stat strong { color: #fff; font-size: 18px; font-weight: 500; }
+    .stat span { color: #71717a; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; }
 
-    /* ── Content sections ── */
-    .content { max-width: 960px; margin: 0 auto; padding: 3rem 1.5rem 0; }
-    .sec-title { font-size: 0.8125rem; font-weight: 500; color: var(--less-text-secondary); text-transform: uppercase; letter-spacing: 0.08em; margin: 0 0 1rem; }
+    /* ── Section titles ── */
+    .sec { padding: 2.5rem 0 0; margin: 0 auto; max-width: 960px; }
+    .sec-lbl { font-size: 11px; font-weight: 600; color: #888780; text-transform: uppercase; letter-spacing: 0.12em; margin: 0 1.5rem 16px; }
+    .sec-bd { padding: 0 1.5rem; }
 
     /* ── Feature cards ── */
-    .cards { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-bottom: 2.5rem; }
-    .card { border: 0.5px solid var(--less-border); border-radius: 6px; padding: 1.25rem; }
-    .card-icon { width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; font-size: 0.8125rem; font-weight: 500; }
-    .card h3 { margin: 0 0 4px; font-size: 0.8125rem; font-weight: 500; color: var(--less-text-primary); }
-    .card p { margin: 0; font-size: 0.75rem; color: var(--less-text-secondary); line-height: 1.7; }
+    .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 2.5rem; }
+    .card { border: 0.5px solid var(--less-border); border-radius: 10px; padding: 1.25rem; }
+    .card:hover { border-color: var(--less-border-hover); }
+    .card-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; margin-bottom: 12px; }
+    .card h3 { margin: 0 0 5px; font-size: 14px; font-weight: 600; color: var(--less-text-primary); }
+    .card p { margin: 0; font-size: 12.5px; color: var(--less-text-secondary); line-height: 1.7; }
 
     /* ── Use cases ── */
-    .uses { display: grid; grid-template-columns: repeat(4,1fr); gap: 0; border-top: 0.5px solid var(--less-border); border-bottom: 0.5px solid var(--less-border); margin-bottom: 2.5rem; }
-    .use { padding: 1.5rem 1.25rem; border-right: 0.5px solid var(--less-border); text-align: center; }
+    .uses { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 0.5px solid var(--less-border); border-bottom: 0.5px solid var(--less-border); margin-bottom: 2.5rem; }
+    .use { padding: 1.5rem 1rem; border-right: 0.5px solid var(--less-border); text-align: center; }
     .use:last-child { border-right: 0; }
-    .use h3 { margin: 0 0 2px; font-size: 0.8125rem; font-weight: 500; color: var(--less-text-primary); }
-    .use p { margin: 0; font-size: 0.75rem; color: var(--less-text-secondary); }
+    .use h3 { margin: 0 0 3px; font-size: 13px; font-weight: 600; color: var(--less-text-primary); }
+    .use p { margin: 0; font-size: 12px; color: var(--less-text-secondary); }
 
-    /* ── Arch diagram ── */
+    /* ── Benchmark table ── */
+    .bench { margin-bottom: 2.5rem; overflow-x: auto; }
+    .bench table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+    .bench th { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--less-border); color: var(--less-text-secondary); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; }
+    .bench td { padding: 11px 14px; border-bottom: 0.5px solid var(--less-bg-surface); color: var(--less-text-secondary); }
+    .bench td:first-child { font-weight: 500; color: var(--less-text-primary); }
+    .bench .win { color: #256e16; font-weight: 500; }
+    .bench .lose { color: #a33; font-weight: 500; }
+    .bench-foot { font-size: 11px; color: #888780; margin-top: 8px; line-height: 1.6; }
+
+    /* ── Architecture SVG ── */
     .arch { margin-bottom: 2.5rem; }
     .arch svg { width: 100%; height: auto; display: block; }
-    .arch text { font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; font-size: 10px; }
+    .arch text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 10px; }
 
-    /* ── Demo ── */
-    .demo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 2.5rem; }
-    .demo-card { background: var(--less-bg-surface); border: 0.5px solid var(--less-border); border-radius: 6px; padding: 1rem; }
-    .demo-card h4 { margin: 0 0 6px; font-size: 0.75rem; font-weight: 500; color: var(--less-text-primary); }
-    .demo-card pre { background: var(--less-bg-base) !important; border: 0.5px solid var(--less-border) !important; border-radius: 4px; padding: 8px 10px !important; margin: 0 !important; font-size: 0.6875rem !important; line-height: 1.7 !important; overflow-x: auto; }
+    /* ── Dark demo cards ── */
+    .demo { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 2.5rem; }
+    .demo-card { background: #18181b; border-radius: 10px; padding: 1.25rem; }
+    .demo-card h4 { margin: 0 0 12px; font-size: 12px; font-weight: 600; color: #d4d4d8; letter-spacing: 0.02em; }
+    .demo-card pre { background: #101012 !important; border: 0.5px solid #27272a !important; border-radius: 6px; padding: 10px 12px !important; margin: 0 !important; font-size: 11px !important; line-height: 1.7 !important; color: #a1a1aa !important; overflow-x: auto; }
+    .demo-card .note { font-size: 11px; color: #71717a; margin-top: 10px; line-height: 1.5; }
+    .counter { display: flex; align-items: center; gap: 10px; }
+    .counter button { width: 34px; height: 34px; border-radius: 6px; border: 0.5px solid #3f3f46; background: #27272a; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #f4f4f5; }
+    .counter button:hover { background: #3f3f46; }
+    .counter span { font-size: 20px; font-weight: 500; color: #f4f4f5; min-width: 24px; text-align: center; }
+
+    /* ── Quick start ── */
+    .qs { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; align-items: center; margin-bottom: 2.5rem; }
+    .qs-card { border: 0.5px solid var(--less-border); border-radius: 10px; padding: 1.25rem; }
+    .qs-step { font-size: 11px; font-weight: 600; color: #888780; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px; }
+    .qs-card code { font-family: "SF Mono", "Fira Code", "Consolas", monospace; font-size: 12.5px; color: var(--less-text-primary); line-height: 1.6; white-space: nowrap; }
+    .qs-arrow { color: #d4d4d8; font-size: 16px; text-align: center; user-select: none; }
 
     /* ── CTA ── */
-    .cta { text-align: center; padding: 2.5rem; background: var(--less-bg-surface); width: 100vw; margin-left: calc(-50vw + 50%); border-top: 0.5px solid var(--less-border); }
-    .cta code { display: inline-block; background: var(--less-bg-base); border: 0.5px solid var(--less-border); border-radius: 6px; padding: 10px 16px; font-family: "SF Mono","Fira Code","Consolas",monospace; font-size: 0.8125rem; color: var(--less-text-primary); margin-bottom: 10px; }
-    .cta p { margin: 0; font-size: 0.75rem; color: var(--less-text-secondary); }
+    .cta { text-align: center; padding: 2.5rem; width: 100vw; margin-left: calc(-50vw + 50%); border-top: 0.5px solid var(--less-border); }
     .cta-inner { max-width: 960px; margin: 0 auto; }
+    .cta code { display: inline-block; background: var(--less-bg-surface); border: 0.5px solid var(--less-border); border-radius: 8px; padding: 10px 20px; font-family: "SF Mono", "Fira Code", "Consolas", monospace; font-size: 13px; color: var(--less-text-primary); margin-bottom: 10px; }
+    .cta p { margin: 0; font-size: 12px; color: var(--less-text-secondary); }
 
-    /* ── Responsive ── */
+    /* ── Counter web component ── */
+    .live-counter { display: flex; align-items: center; gap: 10px; }
+    .live-counter button { width: 34px; height: 34px; border-radius: 6px; border: 0.5px solid #3f3f46; background: #27272a; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #f4f4f5; }
+    .live-counter button:hover { background: #3f3f46; }
+    .live-counter .val { font-size: 22px; font-weight: 500; color: #f4f4f5; min-width: 30px; text-align: center; }
+
     @media (max-width: 760px) {
       .code-compare { grid-template-columns: 1fr; }
       .cards { grid-template-columns: 1fr; }
-      .uses { grid-template-columns: repeat(2,1fr); }
+      .uses { grid-template-columns: repeat(2, 1fr); }
       .use:nth-child(2) { border-right: 0; }
-      .demo-grid { grid-template-columns: 1fr; }
+      .demo { grid-template-columns: 1fr; }
+      .qs { grid-template-columns: 1fr; }
+      .qs-arrow { display: none; }
     }
   `;
 
@@ -122,124 +156,151 @@ export default class DocsHome extends LitElement {
     return (this.locale || 'zh') === 'en' ? this._renderEn() : this._renderZh();
   }
 
+  /* ── counterState helper: used in render to create interactive counter ── */
+  private _counter(initial = 0) {
+    const id = `c_${Math.random().toString(36).slice(2, 6)}`;
+    return html`
+      <div class="live-counter">
+        <button @click="${() => { const el = this.shadowRoot?.querySelector(`#${id}`); if (el) el.textContent = String(Number(el.textContent) - 1); }}">−</button>
+        <span id="${id}" class="val">${initial}</span>
+        <button @click="${() => { const el = this.shadowRoot?.querySelector(`#${id}`); if (el) el.textContent = String(Number(el.textContent) + 1); }}">+</button>
+      </div>`;
+  }
+
   private _renderZh() {
     return html`
       <less-layout locale="${this.locale || 'zh'}" .locales="${['en', 'zh']}" current-path="/" home>
-        <!-- Hero -->
         <section class="hero">
           <div class="hero-inner">
+            <div class="hero-lockup">
+              <svg viewBox="0 0 140 140" width="36" height="36"><g transform="translate(20,17)"><path d="M5 106L95 53 5 0" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="107" cy="53" r="5" fill="#fff"/></g></svg>
+              <span>LessJS</span>
+            </div>
             <h1>html <em>先于</em> javascript 存在。</h1>
-            <p class="hero-desc">SSG 产出的 Declarative Shadow DOM 让首屏内容在 JS 加载前就可见。Island 架构只对交互组件下发 JavaScript。默认交付物是静态文件。</p>
-            <div class="hero-btns">
+            <p class="hero-desc">SSG 产出的 Declarative Shadow DOM。Island 架构只对交互组件下发 JS。默认交付物是静态文件。</p>
+            <div class="hero-actions">
               <a class="hero-pri" href="/guide/getting-started">开始使用 →</a>
               <a class="hero-sec" href="/guide/positioning">理解定位</a>
             </div>
             <div class="code-compare">
               <div class="code-pane">
-                <div class="code-bar"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span><span>你的组件</span></div>
-                <less-code-block><pre><code>${COMPONENT_CODE}</code></pre></less-code-block>
+                <div class="code-bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>你的组件</span></div>
+                <less-code-block><pre><code>${CODE_COMPONENT}</code></pre></less-code-block>
               </div>
               <div class="code-pane">
-                <div class="code-bar"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span><span>SSG 输出 (静态 HTML)</span></div>
-                <less-code-block><pre><code>${DSD_CODE}</code></pre></less-code-block>
+                <div class="code-bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>SSG 输出 (DSD HTML)</span></div>
+                <less-code-block><pre><code>${CODE_DSD}</code></pre></less-code-block>
               </div>
             </div>
             <div class="stats">
               <div class="stat"><strong>v0.13</strong><span>最新版本</span></div>
               <div class="stat"><strong>268</strong><span>测试通过</span></div>
               <div class="stat"><strong>10</strong><span>个包</span></div>
-              <div class="stat"><strong>0</strong><span>运行时依赖 (core)</span></div>
+              <div class="stat"><strong>1</strong><span>运行时依赖 (core)</span></div>
             </div>
           </div>
         </section>
 
-        <main class="content">
-          <!-- Core Model -->
-          <h2 class="sec-title">核心模型</h2>
-          <div class="cards">
-            <div class="card">
-              <div class="card-icon" style="background:#EEEDFE;color:#534AB7;">D</div>
-              <h3>DSD 渲染</h3>
-              <p>Declarative Shadow DOM 是标准 HTML。浏览器原生解析，无需 JS 框架即可渲染首帧。</p>
-            </div>
-            <div class="card">
-              <div class="card-icon" style="background:#E6F1FB;color:#185FA5;">I</div>
-              <h3>Island 升级</h3>
-              <p>只有交互组件下发 JavaScript。四种策略：eager、lazy、idle、visible。静态内容零 JS。</p>
-            </div>
-            <div class="card">
-              <div class="card-icon" style="background:#E1F5EE;color:#0F6E56;">S</div>
-              <h3>静态部署</h3>
-              <p>构建产物是一组 HTML 文件。部署到任意 CDN、S3、Cloudflare Pages、GitHub Pages，无需服务器。</p>
+        <div class="sec">
+          <div class="sec-lbl">核心模型</div>
+          <div class="sec-bd">
+            <div class="cards">
+              <div class="card"><div class="card-icon" style="background:#EEEDFE;color:#534AB7;">D</div><h3>DSD 渲染</h3><p>Declarative Shadow DOM 是标准 HTML。浏览器原生解析，首屏无需 JS 框架参与。</p></div>
+              <div class="card"><div class="card-icon" style="background:#E6F1FB;color:#185FA5;">I</div><h3>Island 升级</h3><p>只有交互组件下发 JS。四种加载策略。静态内容零 JS 开销。</p></div>
+              <div class="card"><div class="card-icon" style="background:#E1F5EE;color:#0F6E56;">S</div><h3>静态部署</h3><p>构建产物为纯 HTML。部署到任意 CDN、S3、Cloudflare Pages、GitHub Pages，无需运行服务器。</p></div>
             </div>
           </div>
+        </div>
 
-          <!-- Use Cases -->
-          <h2 class="sec-title">适用场景</h2>
-          <div class="uses">
-            <div class="use">
-              <h3>📄 文档站点</h3>
-              <p>本网站由 LessJS 构建</p>
-            </div>
-            <div class="use">
-              <h3>✍️ 博客</h3>
-              <p>Markdown + frontmatter，自动 Sitemap</p>
-            </div>
-            <div class="use">
-              <h3>🏢 内容站</h3>
-              <p>多页面、导航、国际化</p>
-            </div>
-            <div class="use">
-              <h3>⚡ 轻量 API</h3>
-              <p>Hono 路由，Serverless 部署</p>
+        <div class="sec">
+          <div class="sec-lbl">适用场景</div>
+          <div class="sec-bd">
+            <div class="uses">
+              <div class="use"><h3>文档站点</h3><p>本网站由 LessJS 构建</p></div>
+              <div class="use"><h3>博客 &amp; 内容</h3><p>Markdown + frontmatter，自动 Sitemap</p></div>
+              <div class="use"><h3>营销页面</h3><p>多语言 + i18n，自动导航</p></div>
+              <div class="use"><h3>轻量 API</h3><p>Hono 路由，Deno / Workers 部署</p></div>
             </div>
           </div>
+        </div>
 
-          <!-- Architecture -->
-          <h2 class="sec-title">包架构</h2>
-          <div class="arch">
-            <svg viewBox="0 0 560 76" fill="none">
-              <rect x="210" y="2" width="120" height="22" rx="4" fill="#EEEDFE" stroke="#CECBF6" stroke-width="0.5"/>
-              <text x="270" y="17" text-anchor="middle" fill="#534AB7" font-size="11" font-weight="500">@lessjs/app</text>
-              <path d="M270 24 L270 30 L130 30 L130 37" stroke="#d4d4d8" stroke-width="0.5"/>
-              <path d="M270 24 L270 30 L270 37" stroke="#d4d4d8" stroke-width="0.5"/>
-              <path d="M270 24 L270 30 L410 30 L410 37" stroke="#d4d4d8" stroke-width="0.5"/>
-              <rect x="70" y="38" width="120" height="22" rx="4" fill="#E6F1FB" stroke="#B5D4F4" stroke-width="0.5"/>
-              <text x="130" y="53" text-anchor="middle" fill="#185FA5" font-size="11" font-weight="500">adapter-vite</text>
-              <rect x="210" y="38" width="120" height="22" rx="4" fill="#FAEEDA" stroke="#FAC775" stroke-width="0.5"/>
-              <text x="270" y="53" text-anchor="middle" fill="#854F0B" font-size="11" font-weight="500">content + i18n</text>
-              <rect x="350" y="38" width="120" height="22" rx="4" fill="#FAECE7" stroke="#F5C4B3" stroke-width="0.5"/>
-              <text x="410" y="53" text-anchor="middle" fill="#993C1D" font-size="11" font-weight="500">adapter-lit / ui</text>
-              <path d="M130 60 L130 65 L270 65 L270 60" stroke="#d4d4d8" stroke-width="0.5"/>
-              <text x="270" y="71" text-anchor="middle" fill="#5F5E5A" font-size="10">@lessjs/core（纯运行时）</text>
-            </svg>
+        <div class="sec">
+          <div class="sec-lbl">对比</div>
+          <div class="sec-bd">
+            <div class="bench">
+              <table>
+                <thead><tr><th style="width:140px;">指标</th><th style="width:100px;">LessJS</th><th>Next.js (App)</th><th>Astro</th></tr></thead>
+                <tbody>
+                  <tr><td>默认输出</td><td class="win">静态 HTML</td><td class="lose">需服务器</td><td class="win">静态 HTML</td></tr>
+                  <tr><td>首屏 JS</td><td class="win">0 KB</td><td class="lose">~90 KB React</td><td class="win">0 KB</td></tr>
+                  <tr><td>组件模型</td><td class="win">Web 标准</td><td>React</td><td>任意框架</td></tr>
+                  <tr><td>服务端运行时</td><td class="win">Deno、Node、Edge</td><td>仅 Node</td><td>仅 Node</td></tr>
+                  <tr><td>SSG 渲染</td><td class="win">Declarative Shadow DOM</td><td>HTML + JSON (RSC)</td><td>HTML (无 DSD)</td></tr>
+                  <tr><td>交互模型</td><td class="win">Island 升级</td><td class="lose">整页 Hydration</td><td class="win">Island</td></tr>
+                </tbody>
+              </table>
+              <div class="bench-foot">LessJS 理念上最接近 Astro，但使用 Lit + DSD 作为组件模型而非元框架模式。关键差异是原生 DSD —— 内容在 JS 运行前就是结构化 HTML。</div>
+            </div>
           </div>
+        </div>
 
-          <!-- Demo -->
-          <h2 class="sec-title">实际效果</h2>
-          <div class="demo-grid">
-            <div class="demo-card">
-              <h4>交互式 Counter — 0KB JS 已加载</h4>
-              <div style="display:flex;align-items:center;gap:10px;margin:8px 0;">
-                <button disabled style="width:30px;height:30px;border-radius:6px;border:0.5px solid var(--less-border);background:var(--less-bg-base);font-size:14px;opacity:0.4;">−</button>
-                <span style="font-size:1.125rem;font-weight:500;color:var(--less-text-primary);">0</span>
-                <button disabled style="width:30px;height:30px;border-radius:6px;border:0.5px solid var(--less-border);background:var(--less-bg-base);font-size:14px;opacity:0.4;">+</button>
+        <div class="sec">
+          <div class="sec-lbl">包架构</div>
+          <div class="sec-bd">
+            <div class="arch">
+              <svg viewBox="0 0 600 74" fill="none">
+                <rect x="230" y="2" width="140" height="22" rx="4" fill="#EEEDFE" stroke="#CECBF6" stroke-width="0.5"/>
+                <text x="300" y="17" text-anchor="middle" fill="#534AB7" font-size="11" font-weight="500">@lessjs/app (统一入口)</text>
+                <path d="M300 24 L300 30 L150 30 L150 38" stroke="#bbb" stroke-width="0.5"/>
+                <path d="M300 24 L300 30 L300 38" stroke="#bbb" stroke-width="0.5"/>
+                <path d="M300 24 L300 30 L450 30 L450 38" stroke="#bbb" stroke-width="0.5"/>
+                <rect x="90" y="39" width="120" height="22" rx="4" fill="#E6F1FB" stroke="#B5D4F4" stroke-width="0.5"/>
+                <text x="150" y="54" text-anchor="middle" fill="#185FA5" font-size="11" font-weight="500">adapter-vite</text>
+                <rect x="230" y="39" width="140" height="22" rx="4" fill="#FAEEDA" stroke="#FAC775" stroke-width="0.5"/>
+                <text x="300" y="54" text-anchor="middle" fill="#854F0B" font-size="11" font-weight="500">content + i18n</text>
+                <rect x="390" y="39" width="120" height="22" rx="4" fill="#FAECE7" stroke="#F5C4B3" stroke-width="0.5"/>
+                <text x="450" y="54" text-anchor="middle" fill="#993C1D" font-size="11" font-weight="500">adapter-lit / ui</text>
+                <text x="300" y="70" text-anchor="middle" fill="#5F5E5A" font-size="10">@lessjs/core — 纯运行时，1 个依赖 (parse5)</text>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="sec">
+          <div class="sec-lbl">实际效果</div>
+          <div class="sec-bd">
+            <div class="demo">
+              <div class="demo-card">
+                <h4>交互式 Counter — 点击按钮</h4>
+                ${this._counter(0)}
+                <div class="note">以原生 Custom Element 运行。零框架 JS 加载。</div>
               </div>
-              <p style="margin:0;font-size:0.6875rem;color:var(--less-text-tertiary);">HTML 已预渲染。JS 仅在交互时加载。</p>
-            </div>
-            <div class="demo-card">
-              <h4>浏览器看到的 HTML</h4>
-              <pre><code>${COUNTER_HTML}</code></pre>
-              <p style="margin:6px 0 0;font-size:0.6875rem;color:var(--less-text-tertiary);">DSD 是浏览器原生能力——无 hydration 开销。</p>
+              <div class="demo-card">
+                <h4>浏览器解析的内容</h4>
+                <pre><code>${COUNTER_RAW}</code></pre>
+                <div class="note">DSD 模板由浏览器原生解析 — 无 hydration 开销。</div>
+              </div>
             </div>
           </div>
-        </main>
+        </div>
 
-        <!-- CTA -->
+        <div class="sec">
+          <div class="sec-lbl">快速开始</div>
+          <div class="sec-bd">
+            <div class="qs">
+              <div class="qs-card"><div class="qs-step">1. 创建</div><code>deno run -A jsr:@lessjs/create my-app</code></div>
+              <div class="qs-arrow">→</div>
+              <div class="qs-card"><div class="qs-step">2. 开发</div><code>cd my-app &amp;&amp; deno task dev</code></div>
+              <div class="qs-arrow">→</div>
+              <div class="qs-card"><div class="qs-step">3. 构建</div><code>deno task build  →  dist/</code></div>
+            </div>
+          </div>
+        </div>
+
         <div class="cta">
           <div class="cta-inner">
             <code>deno run -A jsr:@lessjs/create my-app</code>
-            <p>需要 Deno 2.7+ · macOS / Linux / Windows · MIT 许可</p>
+            <p>需要 Deno 2.7+ — macOS / Linux / Windows — MIT 许可</p>
           </div>
         </div>
       </less-layout>
@@ -251,101 +312,135 @@ export default class DocsHome extends LitElement {
       <less-layout locale="${this.locale || 'en'}" .locales="${['en', 'zh']}" current-path="/en/" home>
         <section class="hero">
           <div class="hero-inner">
+            <div class="hero-lockup">
+              <svg viewBox="0 0 140 140" width="36" height="36"><g transform="translate(20,17)"><path d="M5 106L95 53 5 0" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="107" cy="53" r="5" fill="#fff"/></g></svg>
+              <span>LessJS</span>
+            </div>
             <h1>html <em>before</em> javascript.</h1>
-            <p class="hero-desc">SSG-rendered declarative shadow dom · island-only javascript · hono api routes · zero-runtime core — everything compiles to static html and ships to a cdn.</p>
-            <div class="hero-btns">
+            <p class="hero-desc">SSG-rendered declarative shadow dom. Island-only js. Hono api routes. Everything compiles to static html and ships to a cdn.</p>
+            <div class="hero-actions">
               <a class="hero-pri" href="/guide/getting-started">get started →</a>
               <a class="hero-sec" href="/guide/positioning">why lessjs</a>
             </div>
             <div class="code-compare">
               <div class="code-pane">
-                <div class="code-bar"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span><span>your component</span></div>
-                <less-code-block><pre><code>${COMPONENT_CODE}</code></pre></less-code-block>
+                <div class="code-bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>your component</span></div>
+                <less-code-block><pre><code>${CODE_COMPONENT}</code></pre></less-code-block>
               </div>
               <div class="code-pane">
-                <div class="code-bar"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span><span>ssg output (static html)</span></div>
-                <less-code-block><pre><code>${DSD_CODE}</code></pre></less-code-block>
+                <div class="code-bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>ssg output (dsd html)</span></div>
+                <less-code-block><pre><code>${CODE_DSD}</code></pre></less-code-block>
               </div>
             </div>
             <div class="stats">
               <div class="stat"><strong>v0.13</strong><span>latest release</span></div>
               <div class="stat"><strong>268</strong><span>tests passing</span></div>
               <div class="stat"><strong>10</strong><span>packages</span></div>
-              <div class="stat"><strong>0</strong><span>runtime deps (core)</span></div>
+              <div class="stat"><strong>1</strong><span>runtime dep (core)</span></div>
             </div>
           </div>
         </section>
 
-        <main class="content">
-          <h2 class="sec-title">core model</h2>
-          <div class="cards">
-            <div class="card">
-              <div class="card-icon" style="background:#EEEDFE;color:#534AB7;">D</div>
-              <h3>dsd rendering</h3>
-              <p>Declarative shadow dom is standard html. No js framework needed to render the first frame. Browsers parse it natively.</p>
-            </div>
-            <div class="card">
-              <div class="card-icon" style="background:#E6F1FB;color:#185FA5;">I</div>
-              <h3>island upgrade</h3>
-              <p>Only interactive components ship javascript. Four strategies — eager, lazy, idle, visible. Zero js for static content.</p>
-            </div>
-            <div class="card">
-              <div class="card-icon" style="background:#E1F5EE;color:#0F6E56;">S</div>
-              <h3>static by default</h3>
-              <p>Build produces a directory of plain html files. Deploy to any cdn, s3, cloudflare pages, or github pages — no server needed.</p>
+        <div class="sec">
+          <div class="sec-lbl">core model</div>
+          <div class="sec-bd">
+            <div class="cards">
+              <div class="card"><div class="card-icon" style="background:#EEEDFE;color:#534AB7;">D</div><h3>dsd rendering</h3><p>Declarative shadow dom is standard html. Browsers parse it natively — no js framework needed for first paint.</p></div>
+              <div class="card"><div class="card-icon" style="background:#E6F1FB;color:#185FA5;">I</div><h3>island upgrade</h3><p>Only interactive components ship js. Four loading strategies. Static content is zero-js.</p></div>
+              <div class="card"><div class="card-icon" style="background:#E1F5EE;color:#0F6E56;">S</div><h3>static deploy</h3><p>Build emits plain html. Deploy to any cdn, s3, cloudflare pages, github pages — no server to run.</p></div>
             </div>
           </div>
+        </div>
 
-          <h2 class="sec-title">built for</h2>
-          <div class="uses">
-            <div class="use"><h3>📄 documentation</h3><p>this site runs on lessjs</p></div>
-            <div class="use"><h3>✍️ blogs</h3><p>markdown + frontmatter, auto sitemap</p></div>
-            <div class="use"><h3>🏢 content sites</h3><p>multi-page with nav, i18n</p></div>
-            <div class="use"><h3>⚡ lightweight apis</h3><p>hono routes, serverless deploy</p></div>
+        <div class="sec">
+          <div class="sec-lbl">built for</div>
+          <div class="sec-bd">
+            <div class="uses">
+              <div class="use"><h3>documentation sites</h3><p>this website runs on lessjs</p></div>
+              <div class="use"><h3>blogs &amp; content</h3><p>markdown + frontmatter, auto sitemap</p></div>
+              <div class="use"><h3>marketing pages</h3><p>multi-language with i18n, auto nav</p></div>
+              <div class="use"><h3>lightweight apis</h3><p>hono routes on deno / workers</p></div>
+            </div>
           </div>
+        </div>
 
-          <h2 class="sec-title">package architecture</h2>
-          <div class="arch">
-            <svg viewBox="0 0 560 76" fill="none">
-              <rect x="210" y="2" width="120" height="22" rx="4" fill="#EEEDFE" stroke="#CECBF6" stroke-width="0.5"/>
-              <text x="270" y="17" text-anchor="middle" fill="#534AB7" font-size="11" font-weight="500">@lessjs/app</text>
-              <path d="M270 24 L270 30 L130 30 L130 37" stroke="#d4d4d8" stroke-width="0.5"/>
-              <path d="M270 24 L270 30 L270 37" stroke="#d4d4d8" stroke-width="0.5"/>
-              <path d="M270 24 L270 30 L410 30 L410 37" stroke="#d4d4d8" stroke-width="0.5"/>
-              <rect x="70" y="38" width="120" height="22" rx="4" fill="#E6F1FB" stroke="#B5D4F4" stroke-width="0.5"/>
-              <text x="130" y="53" text-anchor="middle" fill="#185FA5" font-size="11" font-weight="500">adapter-vite</text>
-              <rect x="210" y="38" width="120" height="22" rx="4" fill="#FAEEDA" stroke="#FAC775" stroke-width="0.5"/>
-              <text x="270" y="53" text-anchor="middle" fill="#854F0B" font-size="11" font-weight="500">content + i18n</text>
-              <rect x="350" y="38" width="120" height="22" rx="4" fill="#FAECE7" stroke="#F5C4B3" stroke-width="0.5"/>
-              <text x="410" y="53" text-anchor="middle" fill="#993C1D" font-size="11" font-weight="500">adapter-lit / ui</text>
-              <path d="M130 60 L130 65 L270 65 L270 60" stroke="#d4d4d8" stroke-width="0.5"/>
-              <text x="270" y="71" text-anchor="middle" fill="#5F5E5A" font-size="10">@lessjs/core (pure runtime)</text>
-            </svg>
+        <div class="sec">
+          <div class="sec-lbl">how it compares</div>
+          <div class="sec-bd">
+            <div class="bench">
+              <table>
+                <thead><tr><th style="width:140px;">metric</th><th style="width:100px;">lessjs</th><th>next.js (app)</th><th>astro</th></tr></thead>
+                <tbody>
+                  <tr><td>default output</td><td class="win">static html</td><td class="lose">server required</td><td class="win">static html</td></tr>
+                  <tr><td>js at first paint</td><td class="win">0 kb</td><td class="lose">~90 kb react</td><td class="win">0 kb</td></tr>
+                  <tr><td>component model</td><td class="win">web standards</td><td>react</td><td>any framework</td></tr>
+                  <tr><td>server runtime</td><td class="win">deno, node, edge</td><td>node only</td><td>node only</td></tr>
+                  <tr><td>ssg rendering</td><td class="win">declarative shadow dom</td><td>html + json (rsc)</td><td>html (no dsd)</td></tr>
+                  <tr><td>interactive model</td><td class="win">island upgrade</td><td class="lose">page hydration</td><td class="win">island</td></tr>
+                </tbody>
+              </table>
+              <div class="bench-foot">lessjs is closest to astro in philosophy but uses lit + dsd for components. the key differentiator is native dsd — content is structured html before any js runs.</div>
+            </div>
           </div>
+        </div>
 
-          <h2 class="sec-title">see it in action</h2>
-          <div class="demo-grid">
-            <div class="demo-card">
-              <h4>interactive counter — 0kb js loaded</h4>
-              <div style="display:flex;align-items:center;gap:10px;margin:8px 0;">
-                <button disabled style="width:30px;height:30px;border-radius:6px;border:0.5px solid var(--less-border);background:var(--less-bg-base);font-size:14px;opacity:0.4;">−</button>
-                <span style="font-size:1.125rem;font-weight:500;color:var(--less-text-primary);">0</span>
-                <button disabled style="width:30px;height:30px;border-radius:6px;border:0.5px solid var(--less-border);background:var(--less-bg-base);font-size:14px;opacity:0.4;">+</button>
+        <div class="sec">
+          <div class="sec-lbl">package architecture</div>
+          <div class="sec-bd">
+            <div class="arch">
+              <svg viewBox="0 0 600 74" fill="none">
+                <rect x="230" y="2" width="140" height="22" rx="4" fill="#EEEDFE" stroke="#CECBF6" stroke-width="0.5"/>
+                <text x="300" y="17" text-anchor="middle" fill="#534AB7" font-size="11" font-weight="500">@lessjs/app (umbrella)</text>
+                <path d="M300 24 L300 30 L150 30 L150 38" stroke="#bbb" stroke-width="0.5"/>
+                <path d="M300 24 L300 30 L300 38" stroke="#bbb" stroke-width="0.5"/>
+                <path d="M300 24 L300 30 L450 30 L450 38" stroke="#bbb" stroke-width="0.5"/>
+                <rect x="90" y="39" width="120" height="22" rx="4" fill="#E6F1FB" stroke="#B5D4F4" stroke-width="0.5"/>
+                <text x="150" y="54" text-anchor="middle" fill="#185FA5" font-size="11" font-weight="500">adapter-vite</text>
+                <rect x="230" y="39" width="140" height="22" rx="4" fill="#FAEEDA" stroke="#FAC775" stroke-width="0.5"/>
+                <text x="300" y="54" text-anchor="middle" fill="#854F0B" font-size="11" font-weight="500">content + i18n</text>
+                <rect x="390" y="39" width="120" height="22" rx="4" fill="#FAECE7" stroke="#F5C4B3" stroke-width="0.5"/>
+                <text x="450" y="54" text-anchor="middle" fill="#993C1D" font-size="11" font-weight="500">adapter-lit / ui</text>
+                <text x="300" y="70" text-anchor="middle" fill="#5F5E5A" font-size="10">@lessjs/core — pure runtime, 1 dep (parse5)</text>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="sec">
+          <div class="sec-lbl">see it in action</div>
+          <div class="sec-bd">
+            <div class="demo">
+              <div class="demo-card">
+                <h4>interactive counter — click the buttons</h4>
+                ${this._counter(0)}
+                <div class="note">runs as native custom element. zero framework js loaded.</div>
               </div>
-              <p style="margin:0;font-size:0.6875rem;color:var(--less-text-tertiary);">html is pre-rendered. js loads only on interaction.</p>
-            </div>
-            <div class="demo-card">
-              <h4>what the browser sees</h4>
-              <pre><code>${COUNTER_HTML}</code></pre>
-              <p style="margin:6px 0 0;font-size:0.6875rem;color:var(--less-text-tertiary);">dsd is native — no hydration cost.</p>
+              <div class="demo-card">
+                <h4>what the browser parses</h4>
+                <pre><code>${COUNTER_RAW}</code></pre>
+                <div class="note">dsd template parsed natively — no hydration cost.</div>
+              </div>
             </div>
           </div>
-        </main>
+        </div>
+
+        <div class="sec">
+          <div class="sec-lbl">quick start</div>
+          <div class="sec-bd">
+            <div class="qs">
+              <div class="qs-card"><div class="qs-step">1. scaffold</div><code>deno run -A jsr:@lessjs/create my-app</code></div>
+              <div class="qs-arrow">→</div>
+              <div class="qs-card"><div class="qs-step">2. develop</div><code>cd my-app &amp;&amp; deno task dev</code></div>
+              <div class="qs-arrow">→</div>
+              <div class="qs-card"><div class="qs-step">3. build</div><code>deno task build  →  dist/</code></div>
+            </div>
+          </div>
+        </div>
 
         <div class="cta">
           <div class="cta-inner">
             <code>deno run -A jsr:@lessjs/create my-app</code>
-            <p>requires deno 2.7+ · macos / linux / windows · mit license</p>
+            <p>requires deno 2.7+ — macOS / linux / windows — mit license</p>
           </div>
         </div>
       </less-layout>
