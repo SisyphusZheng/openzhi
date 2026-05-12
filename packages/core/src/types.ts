@@ -394,9 +394,7 @@ export class DsdRenderCollector {
   }
 
   getReport(): DsdReport {
-    const dsdComponents = this._metrics.filter(
-      (m) => m.layer !== 'pure-island' || !m.hasError,
-    );
+    const dsdComponents = this._metrics.filter((m) => m.layer !== 'pure-island');
     const pureIslands = this._metrics.filter((m) => m.layer === 'pure-island');
     const hydrated = this._metrics.filter(
       (m) => !m.hasError && m.layer !== 'pure-island',
