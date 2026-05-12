@@ -18,9 +18,15 @@ draft: false
 ```ts
 class CodeBuilder {
   private lines: string[] = [];
-  push(line: string): void { this.lines.push(line); }
-  blank(): void { this.lines.push(''); }
-  toString(): string { return this.lines.join('\n'); }
+  push(line: string): void {
+    this.lines.push(line);
+  }
+  blank(): void {
+    this.lines.push('');
+  }
+  toString(): string {
+    return this.lines.join('\n');
+  }
 }
 ```
 
@@ -76,8 +82,8 @@ export function generateHonoEntryCode(
 
 ```ts
 // 生成的虚拟模块代码中的一行：
-const safeErr = String(err.stack || err).replace(/&/g,'&amp;').replace(/</g,'&lt;')
-  .replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')
+const safeErr = String(err.stack || err).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+  .replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 ```
 
 **问题**: 这段 160+ 字符的内联 escaping 与 `html-escape.ts:33-38` 的 `escapeHtml()` 函数完全重复。后者是同一包中已经导出的工具函数。
@@ -115,10 +121,11 @@ async function __ssr(tag, props = {}, sourceInfo = {}) {
 此外还有 `__less_get_default_export` 辅助函数（如果有 islands 时生成）：
 
 ```ts
-const __less_get_default_export = (module) => module && module.default
+const __less_get_default_export = (module) => module && module.default;
 ```
 
-**问题**: 
+**问题**:
+
 - 每个页面入口复制粘贴相同逻辑，增加生成的代码体积
 - `__ssr` 依赖于 `renderDSD` 和 `log`（都已从 `@lessjs/core/less-runtime` 导入），所以完全可以放在共享模块中
 - `__less_get_default_export` 是一个非常简单的箭头函数，可以内联到使用处
@@ -140,14 +147,14 @@ if (matchingRenderers.length > 0) {
   for (const renderer of matchingRenderers) {
     b.push(`    wrapped = ${renderer.varName}.default.wrap(wrapped, c)`);
   }
-  b.push(`    return c.html(wrapInDocument(wrapped, {`);  // ← wrapped
+  b.push(`    return c.html(wrapInDocument(wrapped, {`); // ← wrapped
   b.push(`      title: ${JSON.stringify(docConfig.title)},`);
   b.push(`      lang: ${JSON.stringify(docConfig.lang)},`);
   b.push(`      headExtras: ${headExtrasExpr},`);
   b.push(`      cspNonce: c.get('cspNonce'),`);
   b.push(`    }))`);
 } else {
-  b.push(`    return c.html(wrapInDocument(html, {`);      // ← html
+  b.push(`    return c.html(wrapInDocument(html, {`); // ← html
   b.push(`      title: ${JSON.stringify(docConfig.title)},`);
   b.push(`      lang: ${JSON.stringify(docConfig.lang)},`);
   b.push(`      headExtras: ${headExtrasExpr},`);
@@ -186,8 +193,8 @@ b.push(`    }))`);
 
 ```ts
 function renderCorsOrigin(origin: CorsOriginConfig): string {
-  if (typeof origin === 'string') { return JSON.stringify(origin); }
-  if (Array.isArray(origin))   { return JSON.stringify(origin); }
+  if (typeof origin === 'string') return JSON.stringify(origin);
+  if (Array.isArray(origin)) return JSON.stringify(origin);
   return origin.body;
 }
 ```
@@ -247,15 +254,15 @@ export function renderSsrError(...): string {
 
 ## 汇总
 
-| # | 发现 | 位置 | 简化收益 | 风险 | 工作量 |
-|---|------|------|---------|------|-------|
-| 1 | `CodeBuilder` 多余抽象 | entry-renderer.ts | 消除不必要的类抽象 | 低（纯机械替换） | ~10 分钟 |
-| 2 | `hono-entry.ts` 薄外观 | hono-entry.ts | 减少 1 个文件 + 50 行 | 中（测试导入路径需要更新） | ~15 分钟 |
-| 3 | 内联转义重复 | entry-renderer.ts L239 | 消除逻辑重复，缩小生成代码 | 低（需加 import） | ~5 分钟 |
-| 4 | `__ssr` 每次重构生成 | entry-renderer.ts L386-401 | 每入口减 ~200 字节 | 中（改动运行时依赖链） | ~20 分钟 |
-| 5 | `wrapInDocument` 分支重复 | entry-renderer.ts L209-228 | 消除 6 行重复代码 | 低 | ~5 分钟 |
-| 6 | `renderCorsOrigin` 分支合并 | entry-renderer.ts L53-62 | 减少 4 行 | 低 | ~3 分钟 |
-| 7 | `ssr-handler.ts` 内联转义 | ssr-handler.ts | 消除额外重复 | 低 | ~3 分钟 |
+| # | 发现                        | 位置                       | 简化收益                   | 风险                       | 工作量   |
+| - | --------------------------- | -------------------------- | -------------------------- | -------------------------- | -------- |
+| 1 | `CodeBuilder` 多余抽象      | entry-renderer.ts          | 消除不必要的类抽象         | 低（纯机械替换）           | ~10 分钟 |
+| 2 | `hono-entry.ts` 薄外观      | hono-entry.ts              | 减少 1 个文件 + 50 行      | 中（测试导入路径需要更新） | ~15 分钟 |
+| 3 | 内联转义重复                | entry-renderer.ts L239     | 消除逻辑重复，缩小生成代码 | 低（需加 import）          | ~5 分钟  |
+| 4 | `__ssr` 每次重构生成        | entry-renderer.ts L386-401 | 每入口减 ~200 字节         | 中（改动运行时依赖链）     | ~20 分钟 |
+| 5 | `wrapInDocument` 分支重复   | entry-renderer.ts L209-228 | 消除 6 行重复代码          | 低                         | ~5 分钟  |
+| 6 | `renderCorsOrigin` 分支合并 | entry-renderer.ts L53-62   | 减少 4 行                  | 低                         | ~3 分钟  |
+| 7 | `ssr-handler.ts` 内联转义   | ssr-handler.ts             | 消除额外重复               | 低                         | ~3 分钟  |
 
 **推荐优先级**: 1 → 6 → 3 → 5 → 2 → 7 → 4（从低风险高收益到中风险）
 

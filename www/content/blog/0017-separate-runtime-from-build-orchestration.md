@@ -33,13 +33,13 @@ Vite SSR runner 不认识 npm: 协议
 
 ### 补丁清单（截至 v0.10.7）
 
-| # | 补丁 | 存在原因 | 如果 core 不含 Vite 插件 |
-|---|------|---------|------------------------|
-| 1 | `less:core-resolve` resolveId | Vite 不认识 JSR 包的 `@lessjs/core` | 不需要 |
-| 2 | `load()` 从 JSR fetch 源码 | Vite SSR runner 不认识 `https://` URL | 不需要 |
-| 3 | esbuild 编译 TS→JS | 虚拟模块绕过了 Vite 的 transform 管线 | 不需要 |
-| 4 | npm: → bare 正则替换 | Vite 不认识 Deno 的 `npm:` specifier | 不需要 |
-| 5 | resolveId Case 3 委托解析 | 虚拟模块无真实路径，找不到 node_modules | 不需要 |
+| # | 补丁                          | 存在原因                                | 如果 core 不含 Vite 插件 |
+| - | ----------------------------- | --------------------------------------- | ------------------------ |
+| 1 | `less:core-resolve` resolveId | Vite 不认识 JSR 包的 `@lessjs/core`     | 不需要                   |
+| 2 | `load()` 从 JSR fetch 源码    | Vite SSR runner 不认识 `https://` URL   | 不需要                   |
+| 3 | esbuild 编译 TS→JS            | 虚拟模块绕过了 Vite 的 transform 管线   | 不需要                   |
+| 4 | npm: → bare 正则替换          | Vite 不认识 Deno 的 `npm:` specifier    | 不需要                   |
+| 5 | resolveId Case 3 委托解析     | 虚拟模块无真实路径，找不到 node_modules | 不需要                   |
 
 **如果 `@lessjs/core` 只包含纯 Web Standard 运行时代码，这 5 个补丁全部不需要。** 因为运行时代码不会被 Vite 的 SSR runner 当作"源码"加载——它就是一段普通 ESM，Deno / Node / Bun / Edge 都能直接 `import`。
 
@@ -49,12 +49,12 @@ LessJS 已经有 `adapter-lit` 的先例：core 定义 `RenderAdapter` 接口，
 
 ### 与 Fresh 的对比
 
-| 维度 | Fresh | LessJS（现状） | LessJS（解耦后） |
-|------|-------|--------------|----------------|
-| 运行时 | 纯 Deno | 混在 Vite 插件里 | 纯 Web Std ESM |
-| 构建编排 | Deno native | Vite（绑定） | 可插拔 adapter |
-| npm: 问题 | 不存在 | 需要 5 个补丁 | 不存在 |
-| 运行时兼容 | Deno only | Deno + Node（勉强） | Deno / Node / Bun / Edge |
+| 维度       | Fresh       | LessJS（现状）      | LessJS（解耦后）         |
+| ---------- | ----------- | ------------------- | ------------------------ |
+| 运行时     | 纯 Deno     | 混在 Vite 插件里    | 纯 Web Std ESM           |
+| 构建编排   | Deno native | Vite（绑定）        | 可插拔 adapter           |
+| npm: 问题  | 不存在      | 需要 5 个补丁       | 不存在                   |
+| 运行时兼容 | Deno only   | Deno + Node（勉强） | Deno / Node / Bun / Edge |
 
 ## Decision
 
@@ -154,12 +154,12 @@ import { less } from '@lessjs/core';
 import { lessjs } from '@lessjs/app';
 
 // After（方案 A：最小变化）
-import { less } from '@lessjs/adapter-vite';      // 构建编排
-import { renderDSD, island } from '@lessjs/core';  // 运行时（不变）
-import { lessjs } from '@lessjs/app';              // 不变
+import { less } from '@lessjs/adapter-vite'; // 构建编排
+import { island, renderDSD } from '@lessjs/core'; // 运行时（不变）
+import { lessjs } from '@lessjs/app'; // 不变
 
 // After（方案 B：app 内部重导出，用户零改动）
-import { lessjs } from '@lessjs/app';              // app 内部改为 import adapter-vite
+import { lessjs } from '@lessjs/app'; // app 内部改为 import adapter-vite
 ```
 
 **推荐方案 B**：`@lessjs/app` 内部重导出 `less()`，用户代码零改动。只有直接 `import { less } from '@lessjs/core'` 的用户需要改路径。
@@ -169,6 +169,7 @@ import { lessjs } from '@lessjs/app';              // app 内部改为 import ad
 9 个包 → 10 个包。新增 `@lessjs/adapter-vite`。
 
 发布顺序更新：
+
 ```
 rpc → ui → adapter-lit → signal → content → i18n → core → adapter-vite → app → create
 ```

@@ -1,5 +1,5 @@
 /**
- * PWA Support — @lessjs/core PWA feature guide
+ * PWA Support — via less() plugin (from @lessjs/adapter-vite)
  */
 export const meta = { section: 'Production', label: 'PWA Support', order: 60 };
 import { headerNav, navSections } from 'virtual:less-nav';

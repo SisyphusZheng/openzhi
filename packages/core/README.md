@@ -14,12 +14,12 @@ deno add jsr:@lessjs/core
 
 ```json
 {
-  ".": "./src/index.ts",         // 所有运行时导出
+  ".": "./src/index.ts", // 所有运行时导出
   "./errors": "./src/errors.ts", // LessError / SsrRenderError
   "./context": "./src/context.ts", // SSR 上下文
   "./logger": "./src/logger.ts", // createLogger()
   "./navigation": "./src/navigation.ts", // 客户端导航
-  "./constants": "./src/constants.ts"    // 常量
+  "./constants": "./src/constants.ts" // 常量
 }
 ```
 
@@ -29,15 +29,15 @@ deno add jsr:@lessjs/core
 
 ```ts
 // 渲染
-import { renderDSD, renderDSDByName, escapeHtml, escapeAttr, escapeAttrValue } from '@lessjs/core';
-import { renderSsrError, wrapInDocument, camelToKebab } from '@lessjs/core';
+import { escapeAttr, escapeAttrValue, escapeHtml, renderDSD, renderDSDByName } from '@lessjs/core';
+import { camelToKebab, renderSsrError, wrapInDocument } from '@lessjs/core';
 
 // Island
-import { island, lessBind, getSSRProps } from '@lessjs/core';
+import { getSSRProps, island, lessBind } from '@lessjs/core';
 import type { IslandOptions } from '@lessjs/core';
 
 // 适配器
-import { registerAdapter, getAdapter } from '@lessjs/core';
+import { getAdapter, registerAdapter } from '@lessjs/core';
 import type { RenderAdapter } from '@lessjs/core';
 
 // 错误
@@ -45,7 +45,7 @@ import { LessError, SsrRenderError } from '@lessjs/core';
 
 // SSR 上下文
 import { createSsrContext, extractParams, parseQuery } from '@lessjs/core';
-import type { SsrContext, RouteEntry, FrameworkOptions } from '@lessjs/core';
+import type { FrameworkOptions, RouteEntry, SsrContext } from '@lessjs/core';
 
 // 类型
 import type { ComponentLayer, DsdOptions, HydrateEventDescriptor } from '@lessjs/core';
@@ -97,7 +97,7 @@ const query = parseQuery(ctx, ['page', 'tag']);
 ## `./navigation` — 客户端导航
 
 ```ts
-import { navigate, onNavigate, matchRoute, hasNavigationApi } from '@lessjs/core/navigation';
+import { hasNavigationApi, matchRoute, navigate, onNavigate } from '@lessjs/core/navigation';
 import type { NavigationCallback } from '@lessjs/core/navigation';
 
 // 编程式导航

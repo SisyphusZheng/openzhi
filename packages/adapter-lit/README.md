@@ -12,8 +12,8 @@ deno add jsr:@lessjs/adapter-lit
 
 ```json
 {
-  ".": "./src/index.ts",             // 适配器 + DSD Mixin
-  "./ssr": "./src/ssr.ts",           // SSR 转换工具
+  ".": "./src/index.ts", // 适配器 + DSD Mixin
+  "./ssr": "./src/ssr.ts", // SSR 转换工具
   "./dsd-hydration": "./src/dsd-hydration.ts" // DSD Hydration Mixin
 }
 ```
@@ -71,7 +71,9 @@ class MyToggle extends DsdLitElement {
   }
 
   render() {
-    return html`<button class="toggle">Toggle</button>`;
+    return html`
+      <button class="toggle">Toggle</button>
+    `;
   }
 }
 customElements.define('my-toggle', MyToggle);
@@ -80,7 +82,7 @@ customElements.define('my-toggle', MyToggle);
 ### WithDsdHydration Mixin（组合模式）
 
 ```ts
-import { LitElement, html } from 'lit';
+import { html, LitElement } from 'lit';
 import { WithDsdHydration } from '@lessjs/adapter-lit';
 
 class MyComponent extends WithDsdHydration(LitElement) {
@@ -91,7 +93,12 @@ class MyComponent extends WithDsdHydration(LitElement) {
 ## `./ssr` — SSR 工具
 
 ```ts
-import { installLitAdapter, uninstallLitAdapter, isLitTemplateResult, renderLitToString } from '@lessjs/adapter-lit/ssr';
+import {
+  installLitAdapter,
+  isLitTemplateResult,
+  renderLitToString,
+  uninstallLitAdapter,
+} from '@lessjs/adapter-lit/ssr';
 ```
 
 `installLitAdapter()` 会 patch `@lessjs/core` 的渲染管线以识别和处理 Lit `TemplateResult` 值。在 SSR bundle 入口中调用一次即可。

@@ -1,8 +1,8 @@
 # LessJS 系统架构审查报告
 
-> **审查日期**: 2026-05-12  
-> **审查人员**: 架构师-高见远  
-> **项目版本**: v0.13.0  
+> **审查日期**: 2026-05-12\
+> **审查人员**: 架构师-高见远\
+> **项目版本**: v0.13.0\
 > **审查范围**: 全部 10 个核心包
 
 ---
@@ -23,54 +23,55 @@
 
 LessJS 采用 Deno workspace monorepo 架构，由 10 个独立包 + 1 个文档站点构成：
 
-| 包 | 版本 | 职责 | 核心依赖 |
-|---|---|---|---|
-| `@lessjs/core` | 0.13.0 | 运行时核心：DSD 渲染、Island 体系、Navigation API、结构化日志 | parse5（唯一外部依赖） |
-| `@lessjs/adapter-vite` | 0.3.0 | Vite 构建编排：路由扫描、Island Transform、SSG 管线 | vite, hono, esbuild |
-| `@lessjs/app` | 0.3.1 | 统一入口 `lessjs()`，组合 core + content + i18n | 全部上层包 |
-| `@lessjs/adapter-lit` | 0.8.0 | Lit SSR 适配器 + DSD Hydration Mixin | lit |
-| `@lessjs/ui` | 0.7.1 | Web Component 组件库（8 个组件） | lit |
-| `@lessjs/signal` | 0.6.3 | TC39 Signals 实现（polyfill + native） | 无依赖 |
-| `@lessjs/content` | 0.3.3 | Blog + Nav + Sitemap 构建时插件 | marked, gray-matter |
-| `@lessjs/i18n` | 0.1.1 | 国际化插件 | 无直接运行时依赖 |
-| `@lessjs/rpc` | 0.6.1 | 轻量 RPC 控制器（fetch 包装） | 无依赖 |
-| `@lessjs/create` | 0.8.1 | 项目脚手架 CLI | 无依赖 |
+| 包                     | 版本   | 职责                                                          | 核心依赖               |
+| ---------------------- | ------ | ------------------------------------------------------------- | ---------------------- |
+| `@lessjs/core`         | 0.13.0 | 运行时核心：DSD 渲染、Island 体系、Navigation API、结构化日志 | parse5（唯一外部依赖） |
+| `@lessjs/adapter-vite` | 0.3.0  | Vite 构建编排：路由扫描、Island Transform、SSG 管线           | vite, hono, esbuild    |
+| `@lessjs/app`          | 0.3.1  | 统一入口 `lessjs()`，组合 core + content + i18n               | 全部上层包             |
+| `@lessjs/adapter-lit`  | 0.8.0  | Lit SSR 适配器 + DSD Hydration Mixin                          | lit                    |
+| `@lessjs/ui`           | 0.7.1  | Web Component 组件库（8 个组件）                              | lit                    |
+| `@lessjs/signal`       | 0.6.3  | TC39 Signals 实现（polyfill + native）                        | 无依赖                 |
+| `@lessjs/content`      | 0.3.3  | Blog + Nav + Sitemap 构建时插件                               | marked, gray-matter    |
+| `@lessjs/i18n`         | 0.1.1  | 国际化插件                                                    | 无直接运行时依赖       |
+| `@lessjs/rpc`          | 0.6.1  | 轻量 RPC 控制器（fetch 包装）                                 | 无依赖                 |
+| `@lessjs/create`       | 0.8.1  | 项目脚手架 CLI                                                | 无依赖                 |
 
 ### 1.2 包依赖关系图
 
 ```
-                    ┌──────────────────┐
-                    │   @lessjs/app    │  ← 统一入口层
-                    └───────┬──────────┘
-                            │
-          ┌─────────────────┼─────────────────┐
-          ▼                 ▼                 ▼
-  ┌───────────────┐ ┌──────────────┐ ┌──────────────┐
-  │               │ │              │ │              │
-  │ adapter-vite  │ │  @lessjs/   │ │  @lessjs/    │
-  │  (构建编排)    │ │  content     │ │  i18n        │
-  │               │ │  (内容插件)   │ │  (国际化)     │
-  └───────┬───────┘ └──────────────┘ └──────────────┘
-          │
-          ▼
-  ┌───────────────┐     ┌──────────────┐
-  │  @lessjs/core │◄────│ adapter-lit  │
-  │  (运行时核心)  │     │ (Lit 适配器)  │
-  └───────┬───────┘     └──────────────┘
-          │                      │
-          │              ┌───────┴───────┐
-          │              │  @lessjs/ui   │
-          │              │  (组件库)      │
-          │              └───────────────┘
-          │
-  ┌───────┴───────┐  ┌──────────────┐  ┌──────────────┐
-  │  @lessjs/     │  │  @lessjs/    │  │  @lessjs/    │
-  │  signal       │  │  rpc         │  │  create      │
-  │  (响应式信号)  │  │  (RPC工具)    │  │  (脚手架)     │
-  └───────────────┘  └──────────────┘  └──────────────┘
+                  ┌──────────────────┐
+                  │   @lessjs/app    │  ← 统一入口层
+                  └───────┬──────────┘
+                          │
+        ┌─────────────────┼─────────────────┐
+        ▼                 ▼                 ▼
+┌───────────────┐ ┌──────────────┐ ┌──────────────┐
+│               │ │              │ │              │
+│ adapter-vite  │ │  @lessjs/   │ │  @lessjs/    │
+│  (构建编排)    │ │  content     │ │  i18n        │
+│               │ │  (内容插件)   │ │  (国际化)     │
+└───────┬───────┘ └──────────────┘ └──────────────┘
+        │
+        ▼
+┌───────────────┐     ┌──────────────┐
+│  @lessjs/core │◄────│ adapter-lit  │
+│  (运行时核心)  │     │ (Lit 适配器)  │
+└───────┬───────┘     └──────────────┘
+        │                      │
+        │              ┌───────┴───────┐
+        │              │  @lessjs/ui   │
+        │              │  (组件库)      │
+        │              └───────────────┘
+        │
+┌───────┴───────┐  ┌──────────────┐  ┌──────────────┐
+│  @lessjs/     │  │  @lessjs/    │  │  @lessjs/    │
+│  signal       │  │  rpc         │  │  create      │
+│  (响应式信号)  │  │  (RPC工具)    │  │  (脚手架)     │
+└───────────────┘  └──────────────┘  └──────────────┘
 ```
 
 **依赖方向说明**:
+
 - **自上而下**: `app` → `adapter-vite` → `core`（核心渲染管线）
 - **可选适配**: `adapter-lit` ← `core`（通过 `registerAdapter()` 插件接口）
 - **水平层**: `signal`, `rpc`, `create` 为独立工具包，不依赖 core
@@ -237,7 +238,11 @@ Route module (LitElement / Web Component)
 4. **自注册 Islands**: `index.ts` 导出 `islands` 元数据数组，供 `scanPackageIslands()` 自动发现：
    ```typescript
    export const islands: PackageIslandMeta[] = [
-     { tagName: 'less-theme-toggle', modulePath: '@lessjs/ui/less-theme-toggle', strategy: 'eager' }
+     {
+       tagName: 'less-theme-toggle',
+       modulePath: '@lessjs/ui/less-theme-toggle',
+       strategy: 'eager',
+     },
    ];
    ```
 
@@ -305,24 +310,26 @@ Route module (LitElement / Web Component)
 
 项目中观察到一系列 ADR（架构决策记录）引用：
 
-| ADR | 决策内容 | 评估 |
-|-----|---------|------|
-| **ADR 0008** | renderRoute()/getStaticPaths() 公共 API | 好——将渲染知识封装在 SSR bundle 内 |
-| **ADR 0010** | ctx 取代 .less/ 临时文件 | 好——消除了文件系统 IPC，提升构建可靠性 |
-| **ADR 0011** | closeBundle 内联 Phase 2/3 | 好——简化构建管道，但也增加了耦合 |
-| **ADR 0013** | 直接导入 adapter-registry 而非 barrel | 好——避免引入不必要的依赖图 |
-| **ADR 0014** | Hono toSSG + bundle APIs 处理动态路由 | 好——避免了直接正则处理路由模块的脆弱性 |
-| **ADR 0016** | Core 子路径解析 | 好——细粒度导入控制 |
-| **ADR 0018** | 虚拟模块替代模块状态 | **优秀**——纯函数设计，可测试性大幅提升 |
+| ADR          | 决策内容                                | 评估                                   |
+| ------------ | --------------------------------------- | -------------------------------------- |
+| **ADR 0008** | renderRoute()/getStaticPaths() 公共 API | 好——将渲染知识封装在 SSR bundle 内     |
+| **ADR 0010** | ctx 取代 .less/ 临时文件                | 好——消除了文件系统 IPC，提升构建可靠性 |
+| **ADR 0011** | closeBundle 内联 Phase 2/3              | 好——简化构建管道，但也增加了耦合       |
+| **ADR 0013** | 直接导入 adapter-registry 而非 barrel   | 好——避免引入不必要的依赖图             |
+| **ADR 0014** | Hono toSSG + bundle APIs 处理动态路由   | 好——避免了直接正则处理路由模块的脆弱性 |
+| **ADR 0016** | Core 子路径解析                         | 好——细粒度导入控制                     |
+| **ADR 0018** | 虚拟模块替代模块状态                    | **优秀**——纯函数设计，可测试性大幅提升 |
 
 ### 3.2 模块边界合理性
 
 **合理的边界**:
+
 - `core` vs `adapter-vite` 的分离：运行时 vs 构建时，职责清晰
 - `adapter-lit` 作为可选适配器：Lit 框架可变性被隔离在 adapter 层
 - `signal`, `rpc` 作为独立工具：与核心渲染管线正交
 
 **边界模糊之处**:
+
 - `adapter-vite/src/build-manifest.ts` 中的代码被标注为 `@lessjs/core` 但实际在 adapter-vite 包中
 - `adapter-vite/src/hono-entry.ts` 生成的 Hono entry 代码耦合了 SSG 与 Dev Server 的入口逻辑
 - `content` 和 `i18n` 都依赖 `@lessjs/adapter-vite/build-context`，形成了对构建编排包的依赖
@@ -330,12 +337,14 @@ Route module (LitElement / Web Component)
 ### 3.3 扩展性设计
 
 **良好扩展点**:
+
 - `registerAdapter()` 可扩展到其他 Web Component 框架（FAST、Stencil 等）
 - `island()` 的 `strategy` 枚举可扩展新的升级策略
 - Virtual module pattern 可扩展到更多数据源（CMS API、数据库等）
 - `LessRenderer` 接口实现了类似 Next.js layout 的渲染器嵌套
 
 **扩展性限制**:
+
 - 自定义渲染器（`_renderer.ts`）只能包装 HTML 字符串，无法参与属性传递或数据流控制
 - 没有插件生命周期钩子在 SSR 渲染前后执行自定义逻辑
 - Island chunk 的代码分割策略不可自定义（仅支持 tag-based 手动分块）
@@ -346,29 +355,29 @@ Route module (LitElement / Web Component)
 
 ### 4.1 高风险
 
-| # | 风险 | 描述 | 影响 |
-|---|------|------|------|
-| R1 | **LessBuildContext 巨型对象** | 包含 30+ 字段，承载全部 Phase 元数据，无类型安全字段约束 | 修改任一 Phase 的数据流转需理解全部字段，增加维护成本 |
-| R2 | **closeBundle 超载** | Phase 2/3 在 Vite 的 closeBundle 钩子中同步触发，违背单一职责 | 构建失败时难以定位 fault domain；Vite 升级可能改变 closeBundle 语义 |
-| R3 | **Lit 内部 API 依赖** | `_$litType$`、`Symbol.for('lit-nothing')` 等内部 API 被用于模板检测 | Lit 主版本升级可能无声破坏 SSR 渲染 |
-| R4 | **parse5 在 core 中作为强制依赖** | core 的唯一外部依赖，但 core 定位为"零依赖运行时" | 在非 HTML 场景（如 JSON API）中仍然打包了 HTML 解析器 |
+| #  | 风险                              | 描述                                                                | 影响                                                                |
+| -- | --------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| R1 | **LessBuildContext 巨型对象**     | 包含 30+ 字段，承载全部 Phase 元数据，无类型安全字段约束            | 修改任一 Phase 的数据流转需理解全部字段，增加维护成本               |
+| R2 | **closeBundle 超载**              | Phase 2/3 在 Vite 的 closeBundle 钩子中同步触发，违背单一职责       | 构建失败时难以定位 fault domain；Vite 升级可能改变 closeBundle 语义 |
+| R3 | **Lit 内部 API 依赖**             | `_$litType$`、`Symbol.for('lit-nothing')` 等内部 API 被用于模板检测 | Lit 主版本升级可能无声破坏 SSR 渲染                                 |
+| R4 | **parse5 在 core 中作为强制依赖** | core 的唯一外部依赖，但 core 定位为"零依赖运行时"                   | 在非 HTML 场景（如 JSON API）中仍然打包了 HTML 解析器               |
 
 ### 4.2 中风险
 
-| # | 风险 | 描述 | 影响 |
-|---|------|------|------|
-| R5 | **模块级状态泄漏** | JSR 源码缓存（`jsrSourceCache`）、polyfill 引擎状态等使用模块级变量 | Watch 模式下状态残留可能引发未定义行为 |
-| R6 | **DSD 递归无限循环** | `renderNestedCustomElements()` 递归渲染嵌套 CE，若 CE 相互引用可能栈溢出 | 当前通过 `elementAlreadyHasDSD()` 防护，但深层嵌套性能仍不可预测 |
-| R7 | **Hono toSSG 与 bundle API 并存** | 动态路由使用了两种渲染路径（toSSG + renderRoute/getStaticPaths） | 功能重复，增加维护成本；两路径的渲染行为可能产生差异 |
-| R8 | **Island 策略可观测性不足** | Island upgrade 策略（eager/lazy/visible）在运行时无监控机制 | 生产环境下无法验证策略是否按预期生效 |
+| #  | 风险                              | 描述                                                                     | 影响                                                             |
+| -- | --------------------------------- | ------------------------------------------------------------------------ | ---------------------------------------------------------------- |
+| R5 | **模块级状态泄漏**                | JSR 源码缓存（`jsrSourceCache`）、polyfill 引擎状态等使用模块级变量      | Watch 模式下状态残留可能引发未定义行为                           |
+| R6 | **DSD 递归无限循环**              | `renderNestedCustomElements()` 递归渲染嵌套 CE，若 CE 相互引用可能栈溢出 | 当前通过 `elementAlreadyHasDSD()` 防护，但深层嵌套性能仍不可预测 |
+| R7 | **Hono toSSG 与 bundle API 并存** | 动态路由使用了两种渲染路径（toSSG + renderRoute/getStaticPaths）         | 功能重复，增加维护成本；两路径的渲染行为可能产生差异             |
+| R8 | **Island 策略可观测性不足**       | Island upgrade 策略（eager/lazy/visible）在运行时无监控机制              | 生产环境下无法验证策略是否按预期生效                             |
 
 ### 4.3 低风险
 
-| # | 风险 | 描述 |
-|---|------|------|
-| R9 | **包版本号不统一** | core 0.13.0、app 0.3.1、signal 0.6.3 等版本号各自独立演进 |
-| R10 | **debug 日志不可关闭** | `DEBUG` 编译时常量默认为 `true`，生产构建需注意保留 |
-| R11 | **PWA sw.js 硬编码** | Service Worker 代码以字符串模板形式嵌入，不可定制 |
+| #   | 风险                   | 描述                                                      |
+| --- | ---------------------- | --------------------------------------------------------- |
+| R9  | **包版本号不统一**     | core 0.13.0、app 0.3.1、signal 0.6.3 等版本号各自独立演进 |
+| R10 | **debug 日志不可关闭** | `DEBUG` 编译时常量默认为 `true`，生产构建需注意保留       |
+| R11 | **PWA sw.js 硬编码**   | Service Worker 代码以字符串模板形式嵌入，不可定制         |
 
 ---
 
@@ -380,7 +389,8 @@ Route module (LitElement / Web Component)
 
 **问题**: `LessBuildContext` 是扁平的巨型对象，字段赋值散布在多个 Plugin 中。
 
-**建议**: 
+**建议**:
+
 - 将字段按 Phase 分组（`Phase1Meta`、`Phase2Meta`、`Phase3Meta`），Context 作为容器持有子对象
 - 引入类型安全的 getter/setter 或 `Readonly<T>` 投影
 - 考虑使用状态机模式确保 Phase 顺序执行的合法性
@@ -398,6 +408,7 @@ class LessBuildContext {
 **问题**: Phase 2/3 隐藏在 `closeBundle` 钩子中，构建流程不可见。
 
 **建议**:
+
 - 将 Phase 2/3 抽象为独立的 `BuildStep`，实现可观察的构建管道
 - 或保留当前内联模式但增加错误隔离（每个 Phase 有独立 try-catch + 诊断日志）
 
@@ -406,6 +417,7 @@ class LessBuildContext {
 **问题**: 对 `_$litType$` 等私有属性的访问构成了 Lit 版本兼容性风险。
 
 **建议**:
+
 - 与 Lit 团队合作推动官方 TemplateResult 检测 API
 - 或创建适配器兼容性测试套件，在 CI 中针对多个 Lit 版本运行
 
@@ -416,6 +428,7 @@ class LessBuildContext {
 **问题**: parse5 是 core 的唯一外部依赖，打破了"零依赖运行时"承诺。
 
 **建议**:
+
 - 将 `renderNestedCustomElements()` 移至独立包（如 `@lessjs/dsd-renderer`）
 - core 保留接口定义，DSD 渲染器通过 adapter 接口注册
 
@@ -424,6 +437,7 @@ class LessBuildContext {
 **问题**: 动态路由同时使用了 Hono toSSG 和 bundle renderRoute/getStaticPaths API。
 
 **建议**:
+
 - 统一使用 bundle API 路径，将 Hono toSSG 降级为仅处理静态路由
 - 或反之：将 renderRoute/getStaticPaths 功能合并到 Hono toSSG 中
 
@@ -441,12 +455,12 @@ class LessBuildContext {
 
 ### 5.4 技术债务清理
 
-| # | 项 | 位置 | 建议 |
-|---|-----|------|------|
-| T1 | `ssr-handler.ts` 仅重导出（已修复 v0.13） | `core/src/ssr-handler.ts` | ✅ 已删除，消费者直接使用 `@lessjs/core`（ADR 0021） |
-| T2 | `adapter-vite/src/build-manifest.ts` 代码标注与包名不一致 | 文件头部标注 `@lessjs/core` | 修正为 `@lessjs/adapter-vite` |
-| T3 | `render-nested.ts` 循环导入（已修复 v0.13） | 动态 `import('./render-dsd.js')` | ✅ 已重构，`renderDSDByName()` 在模块内部处理 |
-| T4 | `signals/src/index.ts` 单文件过大 | ~800 行 | 拆分为 engine/polyfill/framework 三个模块 |
+| #  | 项                                                        | 位置                             | 建议                                                 |
+| -- | --------------------------------------------------------- | -------------------------------- | ---------------------------------------------------- |
+| T1 | `ssr-handler.ts` 仅重导出（已修复 v0.13）                 | `core/src/ssr-handler.ts`        | ✅ 已删除，消费者直接使用 `@lessjs/core`（ADR 0021） |
+| T2 | `adapter-vite/src/build-manifest.ts` 代码标注与包名不一致 | 文件头部标注 `@lessjs/core`      | 修正为 `@lessjs/adapter-vite`                        |
+| T3 | `render-nested.ts` 循环导入（已修复 v0.13）               | 动态 `import('./render-dsd.js')` | ✅ 已重构，`renderDSDByName()` 在模块内部处理        |
+| T4 | `signals/src/index.ts` 单文件过大                         | ~800 行                          | 拆分为 engine/polyfill/framework 三个模块            |
 
 ---
 

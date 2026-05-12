@@ -36,8 +36,7 @@ test.describe('Accessibility', () => {
         if (el.shadowRoot) {
           const buttons = el.shadowRoot.querySelectorAll('button');
           for (const btn of buttons) {
-            const hasLabel =
-              btn.getAttribute('aria-label') ||
+            const hasLabel = btn.getAttribute('aria-label') ||
               btn.getAttribute('title') ||
               btn.textContent?.trim();
             if (!hasLabel) count++;

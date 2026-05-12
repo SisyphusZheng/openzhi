@@ -57,7 +57,7 @@ test.describe('Link Navigation', () => {
       document.querySelectorAll('*').forEach((el) => {
         if (el.shadowRoot) {
           el.shadowRoot.querySelectorAll('a[href]').forEach((a) =>
-            allLinks.push(a as HTMLAnchorElement),
+            allLinks.push(a as HTMLAnchorElement)
           );
         }
       });
@@ -151,8 +151,7 @@ test.describe('404 Page', () => {
       });
       return text;
     });
-    const has404 =
-      bodyText.includes('404') ||
+    const has404 = bodyText.includes('404') ||
       bodyText.includes('not found') ||
       bodyText.includes('does not exist') ||
       bodyText.includes('Not Found');

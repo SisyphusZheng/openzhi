@@ -60,18 +60,18 @@ export default defineConfig({
 
 `lessjs()` 接受 `LessjsOptions`，它是 `FrameworkOptions` 的超集：
 
-| 选项 | 类型 | 说明 |
-|------|------|------|
-| `routesDir` | `string` | 路由目录（默认 `'app/routes'`） |
-| `islandsDir` | `string` | Island 目录（默认 `'app/islands'`） |
-| `componentsDir` | `string` | 组件目录（默认 `'app/components'`） |
-| `html` | `HtmlConfig?` | HTML 模板配置 |
-| `middleware` | `string[]?` | 全局中间件 |
-| `inject` | `InjectConfig?` | Head 注入 |
-| `packageIslands` | `string[]?` | 三方包 Island |
-| `island` | `IslandConfig?` | Island 配置 |
-| `content` | `LessContentOptions?` | 内容模块配置（blog/nav/sitemap） |
-| `i18n` | `LessI18nOptions?` | 国际化配置 |
+| 选项             | 类型                  | 说明                                |
+| ---------------- | --------------------- | ----------------------------------- |
+| `routesDir`      | `string`              | 路由目录（默认 `'app/routes'`）     |
+| `islandsDir`     | `string`              | Island 目录（默认 `'app/islands'`） |
+| `componentsDir`  | `string`              | 组件目录（默认 `'app/components'`） |
+| `html`           | `HtmlConfig?`         | HTML 模板配置                       |
+| `middleware`     | `string[]?`           | 全局中间件                          |
+| `inject`         | `InjectConfig?`       | Head 注入                           |
+| `packageIslands` | `string[]?`           | 三方包 Island                       |
+| `island`         | `IslandConfig?`       | Island 配置                         |
+| `content`        | `LessContentOptions?` | 内容模块配置（blog/nav/sitemap）    |
+| `i18n`           | `LessI18nOptions?`    | 国际化配置                          |
 
 ## 许可
 

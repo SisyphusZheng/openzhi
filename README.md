@@ -17,36 +17,36 @@ LessJS 是一个 Deno-first 的静态站点框架，以 **Declarative Shadow DOM
 ## 架构
 
 ```
-                   ┌── @lessjs/app (统一入口)
-                   │
-         ┌─────────┼─────────┐
-         ▼         ▼         ▼
-   adapter-vite   content    i18n
-   (构建编排)     (内容插件)  (国际化)
-         │
-         ▼
-    @lessjs/core (纯运行时)
-         │
-    ┌────┼────┬────┬────┐
-    │    │    │    │    │
-  adapter-lit  ui  signals  rpc  create
-  (Lit适配器)  (组件) (响应式)  (RPC)  (脚手架)
+                 ┌── @lessjs/app (统一入口)
+                 │
+       ┌─────────┼─────────┐
+       ▼         ▼         ▼
+ adapter-vite   content    i18n
+ (构建编排)     (内容插件)  (国际化)
+       │
+       ▼
+  @lessjs/core (纯运行时)
+       │
+  ┌────┼────┬────┬────┐
+  │    │    │    │    │
+adapter-lit  ui  signals  rpc  create
+(Lit适配器)  (组件) (响应式)  (RPC)  (脚手架)
 ```
 
 ### 核心包
 
-| 包 | 版本 | 职责 | 外部依赖 |
-|---|------|------|---------|
-| `@lessjs/core` | 0.13.0 | DSD 渲染、Island、Navigation、日志 | parse5（唯一） |
-| `@lessjs/adapter-vite` | 0.3.0 | Vite 构建：路由扫描、Island Transform、SSG 三阶段 | vite, hono, esbuild |
-| `@lessjs/adapter-lit` | 0.8.0 | Lit TemplateResult → DSD HTML | lit |
-| `@lessjs/content` | 0.3.3 | Blog + Nav + Sitemap 构建时插件 | marked, gray-matter |
-| `@lessjs/i18n` | 0.1.1 | 国际化 locale 展开 | 无 |
-| `@lessjs/app` | 0.3.1 | 伞包：lessjs() = less() + content + i18n | — |
-| `@lessjs/ui` | 0.7.1 | 8 个 Web Component（layout, button, input…） | lit |
-| `@lessjs/signals` | 0.6.2 | TC39 Signals polyfill + framework layer | 无 |
-| `@lessjs/rpc` | 0.6.1 | 零依赖 fetch RPC 控制器 | 无 |
-| `@lessjs/create` | 0.7.0 | 脚手架 CLI | 无 |
+| 包                     | 版本   | 职责                                              | 外部依赖            |
+| ---------------------- | ------ | ------------------------------------------------- | ------------------- |
+| `@lessjs/core`         | 0.13.0 | DSD 渲染、Island、Navigation、日志                | parse5（唯一）      |
+| `@lessjs/adapter-vite` | 0.3.0  | Vite 构建：路由扫描、Island Transform、SSG 三阶段 | vite, hono, esbuild |
+| `@lessjs/adapter-lit`  | 0.8.0  | Lit TemplateResult → DSD HTML                     | lit                 |
+| `@lessjs/content`      | 0.3.3  | Blog + Nav + Sitemap 构建时插件                   | marked, gray-matter |
+| `@lessjs/i18n`         | 0.1.1  | 国际化 locale 展开                                | 无                  |
+| `@lessjs/app`          | 0.3.1  | 伞包：lessjs() = less() + content + i18n          | —                   |
+| `@lessjs/ui`           | 0.7.1  | 8 个 Web Component（layout, button, input…）      | lit                 |
+| `@lessjs/signals`      | 0.6.2  | TC39 Signals polyfill + framework layer           | 无                  |
+| `@lessjs/rpc`          | 0.6.1  | 零依赖 fetch RPC 控制器                           | 无                  |
+| `@lessjs/create`       | 0.7.0  | 脚手架 CLI                                        | 无                  |
 
 ### 渲染管线
 
@@ -98,6 +98,7 @@ deno task build
 ```
 
 要求：
+
 - Deno 2.7+
 - 支持 Declarative Shadow DOM 的现代浏览器
 
@@ -107,10 +108,10 @@ deno task build
 
 LessJS 的架构通过 [Architecture Decision Records](/blog/) 驱动。关键决策：
 
-| ADR | 决策 |
-|-----|------|
-| 0017 | core 纯运行时 / adapter-vite 构建编排分离 |
-| 0018 | 虚拟模块替代模块状态（零 bridge） |
+| ADR  | 决策                                                    |
+| ---- | ------------------------------------------------------- |
+| 0017 | core 纯运行时 / adapter-vite 构建编排分离               |
+| 0018 | 虚拟模块替代模块状态（零 bridge）                       |
 | 0019 | @deno/vite-plugin 替代 20 条 resolve.alias + 静态内容页 |
 | 0021 | API 表面收敛 + Phase branded type 校验 + core-Vite 分离 |
 

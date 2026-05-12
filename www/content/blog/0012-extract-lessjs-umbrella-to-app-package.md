@@ -46,17 +46,18 @@ i18n    → core → i18n       ← 同上
 ```
 
 动态 `import()` 虽然避免了运行时循环依赖错误，但：
+
 - **语义不清**：core 不应该知道 content/i18n 的存在
 - **try/catch 降级**：必须用 try/catch 处理"未安装"的情况，而这是一个正常的包管理问题
 - **类型丢失**：动态 import 导致类型断言 `as Record<string, unknown>`，丧失编译时类型安全
 
 ### 替代方案评估
 
-| 方案 | 做法 | 优点 | 缺点 |
-|------|------|------|------|
-| A. 留在 core，保持动态 import | 现状 | 零改动 | 概念倒挂，类型不安全 |
-| B. 拆到 @lessjs/app | 新包依赖 core+content+i18n | 依赖方向干净，静态 import，类型安全 | 多一个包 |
-| C. 留在 core，注册表模式 | core 定义 pluginRegistry | core 不需知道子插件 | 多一层间接，过度设计 |
+| 方案                          | 做法                       | 优点                                | 缺点                 |
+| ----------------------------- | -------------------------- | ----------------------------------- | -------------------- |
+| A. 留在 core，保持动态 import | 现状                       | 零改动                              | 概念倒挂，类型不安全 |
+| B. 拆到 @lessjs/app           | 新包依赖 core+content+i18n | 依赖方向干净，静态 import，类型安全 | 多一个包             |
+| C. 留在 core，注册表模式      | core 定义 pluginRegistry   | core 不需知道子插件                 | 多一层间接，过度设计 |
 
 ## Decision
 
@@ -140,6 +141,7 @@ export default lessjs;
 ```
 
 关键变化：
+
 - **静态 import**：不再需要 `await import()` + `try/catch`
 - **类型安全**：直接 import `lessContent` / `lessI18n`，无需 `as Record<string, unknown>` 断言
 - **安装即用**：如果 `@lessjs/content` 未安装，Deno 会在启动时报错，而非运行时静默降级

@@ -151,7 +151,7 @@ The `.md` parser should support:
 2. `@lessjs/blog` development starts after v0.8.0 — SSG plugin form only
 3. Dogfood on LessJS docs site during v0.9.0 phase
 4. `.less` compiler support is added when v0.11.0 alpha is available
-4. LessJS docs site eats its own dogfood and replaces the current hardcoded blog
+5. LessJS docs site eats its own dogfood and replaces the current hardcoded blog
    routes
 
 ## Open Questions

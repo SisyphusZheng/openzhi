@@ -84,27 +84,28 @@ await fsContentModule.initBlogData(blogOptions);
 ### 根本原因：抽象边界错误
 
 ```
-                    ┌─────────────────────────────────────┐
-                    │        SSR Bundle (entry.js)       │
-                    │  ┌───────────────────────────────┐  │
-                    │  │  customElements registry      │  │
-                    │  │  renderDSD()                   │  │
-                    │  │  wrapInDocument()              │  │
-                    │  │  所有路由模块 + 组件类           │  │
-                    │  └───────────────────────────────┘  │
-                    │         ↑ 被外部越权读取/调用        │
-                    └─────────────────────────────────────┘
-                              ↑
-                    ┌─────────────────────────────────────┐
-                    │       build-ssg.ts (外部)           │
-                    │  globalThis.customElements.get()    │
-                    │  readFileSync + regex (提取 tagName) │
-                    │  renderDSDFn() + wrapInDocumentFn() │
-                    │  customElements.define 幂等补丁     │
-                    └─────────────────────────────────────┘
+┌─────────────────────────────────────┐
+│        SSR Bundle (entry.js)       │
+│  ┌───────────────────────────────┐  │
+│  │  customElements registry      │  │
+│  │  renderDSD()                   │  │
+│  │  wrapInDocument()              │  │
+│  │  所有路由模块 + 组件类           │  │
+│  └───────────────────────────────┘  │
+│         ↑ 被外部越权读取/调用        │
+└─────────────────────────────────────┘
+          ↑
+┌─────────────────────────────────────┐
+│       build-ssg.ts (外部)           │
+│  globalThis.customElements.get()    │
+│  readFileSync + regex (提取 tagName) │
+│  renderDSDFn() + wrapInDocumentFn() │
+│  customElements.define 幂等补丁     │
+└─────────────────────────────────────┘
 ```
 
 `build-ssg.ts` 扮演了两个角色：
+
 1. **编排者**：决定渲染什么路径、写到哪个文件 ✅
 2. **渲染执行者**：查找组件、调用渲染、包装 HTML ❌
 
@@ -117,34 +118,34 @@ await fsContentModule.initBlogData(blogOptions);
 ### 新的抽象边界
 
 ```
-                    ┌─────────────────────────────────────┐
-                    │        SSR Bundle (entry.js)       │
-                    │                                     │
-                    │  内部：                              │
-                    │    customElements registry (Web API)│
-                    │    renderDSD()                       │
-                    │    wrapInDocument()                  │
-                    │    所有路由模块 + 组件类               │
-                    │    getStaticPaths() per route        │
-                    │                                     │
-                    │  导出（显式 API）：                    │
-                    │    renderRoute(path, opts) → HTML   │
-                    │    getStaticPaths(path) → params[]   │
-                    │    routeInfo[]                       │
-                    └─────────────────────────────────────┘
-                              ↓
-                    ┌─────────────────────────────────────┐
-                    │       build-ssg.ts (外部)           │
-                    │                                     │
-                    │  只做编排：                            │
-                    │    1. 哪些路径需要渲染？               │
-                    │    2. 哪些 locale 需要扩展？          │
-                    │    3. 结果写到哪个文件？               │
-                    │                                     │
-                    │  调用 bundle API：                    │
-                    │    ssrBundle.renderRoute(path, opts) │
-                    │    ssrBundle.getStaticPaths(path)    │
-                    └─────────────────────────────────────┘
+┌─────────────────────────────────────┐
+│        SSR Bundle (entry.js)       │
+│                                     │
+│  内部：                              │
+│    customElements registry (Web API)│
+│    renderDSD()                       │
+│    wrapInDocument()                  │
+│    所有路由模块 + 组件类               │
+│    getStaticPaths() per route        │
+│                                     │
+│  导出（显式 API）：                    │
+│    renderRoute(path, opts) → HTML   │
+│    getStaticPaths(path) → params[]   │
+│    routeInfo[]                       │
+└─────────────────────────────────────┘
+          ↓
+┌─────────────────────────────────────┐
+│       build-ssg.ts (外部)           │
+│                                     │
+│  只做编排：                            │
+│    1. 哪些路径需要渲染？               │
+│    2. 哪些 locale 需要扩展？          │
+│    3. 结果写到哪个文件？               │
+│                                     │
+│  调用 bundle API：                    │
+│    ssrBundle.renderRoute(path, opts) │
+│    ssrBundle.getStaticPaths(path)    │
+└─────────────────────────────────────┘
 ```
 
 ### 导出的 API 设计
@@ -226,6 +227,7 @@ export async function getStaticPaths(
 #### 为什么不导出 N 个组件
 
 导出 `routeRegistry = { 'page-dsd-guide': DsdGuidePage, ... }` 的问题是：
+
 - N 随路由增长，接口不稳定
 - 暴露了内部实现（组件类）
 - 调用者仍需自己做 tagName → ComponentClass 映射 + 渲染调用
@@ -295,6 +297,7 @@ export async function getStaticPaths(routePath) {
 #### 2. `build-ssg.ts` — 移除所有越权代码
 
 **删除**：
+
 - 正则提取 tagName（L556-566）
 - `globalThis.customElements.get(tagName)` (L567-569)
 - 直接调用 `renderDSDFn()` + `wrapInDocumentFn()` (L619-631, L433-442)
@@ -304,6 +307,7 @@ export async function getStaticPaths(routePath) {
 - 动态路由的 `await import(routeImportPath)` (L387-388)
 
 **替换为**：
+
 ```ts
 const { renderRoute, getStaticPaths, routeInfo } = module;
 
@@ -333,7 +337,9 @@ for (const locale of locales) {
 const _origDefine = customElements.define.bind(customElements);
 customElements.define = (name, ctor, options) => {
   if (customElements.get(name)) return;
-  try { _origDefine(name, ctor, options); } catch { /* already defined */ }
+  try {
+    _origDefine(name, ctor, options);
+  } catch { /* already defined */ }
 };
 ```
 
@@ -372,23 +378,23 @@ customElements.define = (name, ctor, options) => {
 
 ### 已在本 ADR 中解决
 
-| # | 问题 | 当前位置 | 修复方式 |
-|---|------|---------|---------|
-| 1 | `globalThis.customElements.get()` | build-ssg.ts L567 | → bundle 内部的 renderRoute() |
-| 2 | `readFileSync` + 正则提取 tagName | build-ssg.ts L558-564 | → bundle 导出 routeInfo |
-| 3 | 直接调用 renderDSD + wrapInDocument | build-ssg.ts L619-631 | → bundle 内部的 renderRoute() |
-| 4 | customElements.define 幂等补丁 | build-ssg.ts L304-321 | → 移入 bundle 内部 |
-| 5 | 博客数据双作用域初始化 | build-ssg.ts L346-368 | → bundle 内部的 getStaticPaths() |
-| 6 | `await import('@lessjs/i18n')` 初始化 | build-ssg.ts L535-542 | → bundle 内部处理 |
+| # | 问题                                     | 当前位置              | 修复方式                         |
+| - | ---------------------------------------- | --------------------- | -------------------------------- |
+| 1 | `globalThis.customElements.get()`        | build-ssg.ts L567     | → bundle 内部的 renderRoute()    |
+| 2 | `readFileSync` + 正则提取 tagName        | build-ssg.ts L558-564 | → bundle 导出 routeInfo          |
+| 3 | 直接调用 renderDSD + wrapInDocument      | build-ssg.ts L619-631 | → bundle 内部的 renderRoute()    |
+| 4 | customElements.define 幂等补丁           | build-ssg.ts L304-321 | → 移入 bundle 内部               |
+| 5 | 博客数据双作用域初始化                   | build-ssg.ts L346-368 | → bundle 内部的 getStaticPaths() |
+| 6 | `await import('@lessjs/i18n')` 初始化    | build-ssg.ts L535-542 | → bundle 内部处理                |
 | 7 | 动态路由 `await import(routeImportPath)` | build-ssg.ts L387-388 | → bundle 内部的 getStaticPaths() |
 
 ### 值得关注但不在本 ADR 范围
 
-| # | 问题 | 位置 | 建议 |
-|---|------|------|------|
-| 8 | `await import('@lessjs/content/sitemap')` 独立导入 | build-ssg.ts L851 | 可改为 bundle 导出，与 renderRoute 同源 |
-| 9 | 客户端 manifest 读取 + 脚本注入 | build-ssg.ts L676-698 | 纯文件 I/O，无越权，暂不处理 |
-| 10 | PWA manifest + service worker 生成 | build-ssg.ts L769-845 | 纯文件生成，无越权，暂不处理 |
+| #  | 问题                                               | 位置                  | 建议                                    |
+| -- | -------------------------------------------------- | --------------------- | --------------------------------------- |
+| 8  | `await import('@lessjs/content/sitemap')` 独立导入 | build-ssg.ts L851     | 可改为 bundle 导出，与 renderRoute 同源 |
+| 9  | 客户端 manifest 读取 + 脚本注入                    | build-ssg.ts L676-698 | 纯文件 I/O，无越权，暂不处理            |
+| 10 | PWA manifest + service worker 生成                 | build-ssg.ts L769-845 | 纯文件生成，无越权，暂不处理            |
 
 ## 参考
 

@@ -39,31 +39,31 @@ ADR 0008 + 0009 + 0010 + 0011 + 0012 fully implemented on the `dev` branch.
 
 ### Phase E: Single-Plugin API (`lessjs()`) → Extracted to `@lessjs/app`
 
-| Step | Status | Description                                               |
-| ---- | ------ | --------------------------------------------------------- |
-| E.1  | ✅     | `lessjs()` umbrella function created in `@lessjs/app`    |
-| E.2  | ✅     | `less()` accepts optional `externalCtx` parameter         |
-| E.3  | ✅     | Backward compat: split-call mode works with explicit `ctx`|
-| E.4  | ✅     | Unified `build` command via closeBundle (ADR 0011)       |
+| Step | Status | Description                                                |
+| ---- | ------ | ---------------------------------------------------------- |
+| E.1  | ✅     | `lessjs()` umbrella function created in `@lessjs/app`      |
+| E.2  | ✅     | `less()` accepts optional `externalCtx` parameter          |
+| E.3  | ✅     | Backward compat: split-call mode works with explicit `ctx` |
+| E.4  | ✅     | Unified `build` command via closeBundle (ADR 0011)         |
 
 ### ADR 0011: Eliminate Last globalThis Bridge via closeBundle Inline
 
-| Step | Status | Description                                                    |
-| ---- | ------ | -------------------------------------------------------------- |
-| 1    | ✅     | Phase 2/3 inlined in closeBundle(), cli/build.ts simplified    |
-| 2    | ✅     | globalThis write removed from less() in index.ts               |
-| 3    | ✅     | clearActiveContext() removed from build.ts                      |
+| Step | Status | Description                                                 |
+| ---- | ------ | ----------------------------------------------------------- |
+| 1    | ✅     | Phase 2/3 inlined in closeBundle(), cli/build.ts simplified |
+| 2    | ✅     | globalThis write removed from less() in index.ts            |
+| 3    | ✅     | clearActiveContext() removed from build.ts                  |
 
 ### ADR 0012: Extract lessjs() Umbrella to @lessjs/app
 
-| Step | Status | Description                                                    |
-| ---- | ------ | -------------------------------------------------------------- |
-| 1    | ✅     | New `@lessjs/app` package with static imports                  |
-| 2    | ✅     | `lessjs()` removed from core/index.ts                           |
+| Step | Status | Description                                                                              |
+| ---- | ------ | ---------------------------------------------------------------------------------------- |
+| 1    | ✅     | New `@lessjs/app` package with static imports                                            |
+| 2    | ✅     | `lessjs()` removed from core/index.ts                                                    |
 | 3    | ✅     | `getActiveContext`/`setActiveContext`/`clearActiveContext` deleted from build-context.ts |
-| 4    | ✅     | content/i18n: `options.ctx || getActiveContext()` → `options.ctx` only |
-| 5    | ✅     | docs/vite.config.ts switched to `lessjs()` from `@lessjs/app`  |
-| 6    | ✅     | `LessContentOptions` exported from `@lessjs/content`            |
+| 4    | ✅     | content/i18n: `options.ctx                                                               |
+| 5    | ✅     | docs/vite.config.ts switched to `lessjs()` from `@lessjs/app`                            |
+| 6    | ✅     | `LessContentOptions` exported from `@lessjs/content`                                     |
 
 ### ADR 0010: Eliminate All Remaining `.less/` Temp Files
 

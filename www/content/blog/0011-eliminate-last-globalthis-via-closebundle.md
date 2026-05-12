@@ -96,6 +96,7 @@ async closeBundle() {
 #### 2. `index.ts` — 删除 globalThis 写入
 
 移除：
+
 ```ts
 const CTX_KEY = Symbol.for('lessjs:build-context');
 if (!(globalThis as Record<symbol, unknown>)[CTX_KEY]) {

@@ -16,36 +16,36 @@ HTML exists before JavaScript — not as a runtime artifact.
 ## Architecture
 
 ```
-                   ┌── @lessjs/app (umbrella entry)
-                   │
-         ┌─────────┼─────────┐
-         ▼         ▼         ▼
-   adapter-vite   content    i18n
-   (build)        (content)  (i18n)
-         │
-         ▼
-    @lessjs/core (pure runtime)
-         │
-    ┌────┼────┬────┬────┐
-    │    │    │    │    │
-  adapter-lit  ui  signals  rpc  create
-  (Lit)  (components)  (reactive)  (RPC)  (scaffold)
+                 ┌── @lessjs/app (umbrella entry)
+                 │
+       ┌─────────┼─────────┐
+       ▼         ▼         ▼
+ adapter-vite   content    i18n
+ (build)        (content)  (i18n)
+       │
+       ▼
+  @lessjs/core (pure runtime)
+       │
+  ┌────┼────┬────┬────┐
+  │    │    │    │    │
+adapter-lit  ui  signals  rpc  create
+(Lit)  (components)  (reactive)  (RPC)  (scaffold)
 ```
 
 ### Package Overview
 
-| Package | Version | Role | External Deps |
-|---------|---------|------|--------------|
-| `@lessjs/core` | 0.13.0 | DSD rendering, Islands, Navigation, Logger | parse5 only |
-| `@lessjs/adapter-vite` | 0.3.0 | Vite build: routes, islands, SSG 3-phase | vite, hono, esbuild |
-| `@lessjs/adapter-lit` | 0.8.0 | Lit TemplateResult → DSD HTML bridge | lit |
-| `@lessjs/content` | 0.3.3 | Blog + Nav + Sitemap build-time plugin | marked, gray-matter |
-| `@lessjs/i18n` | 0.1.1 | i18n locale expansion | none |
-| `@lessjs/app` | 0.3.1 | Umbrella: lessjs() = less() + content + i18n | — |
-| `@lessjs/ui` | 0.7.1 | 8 Web Components (layout, button, input…) | lit |
-| `@lessjs/signals` | 0.6.2 | TC39 Signals polyfill + framework layer | none |
-| `@lessjs/rpc` | 0.6.1 | Zero-dep fetch RPC controller | none |
-| `@lessjs/create` | 0.7.0 | CLI scaffold | none |
+| Package                | Version | Role                                         | External Deps       |
+| ---------------------- | ------- | -------------------------------------------- | ------------------- |
+| `@lessjs/core`         | 0.13.0  | DSD rendering, Islands, Navigation, Logger   | parse5 only         |
+| `@lessjs/adapter-vite` | 0.3.0   | Vite build: routes, islands, SSG 3-phase     | vite, hono, esbuild |
+| `@lessjs/adapter-lit`  | 0.8.0   | Lit TemplateResult → DSD HTML bridge         | lit                 |
+| `@lessjs/content`      | 0.3.3   | Blog + Nav + Sitemap build-time plugin       | marked, gray-matter |
+| `@lessjs/i18n`         | 0.1.1   | i18n locale expansion                        | none                |
+| `@lessjs/app`          | 0.3.1   | Umbrella: lessjs() = less() + content + i18n | —                   |
+| `@lessjs/ui`           | 0.7.1   | 8 Web Components (layout, button, input…)    | lit                 |
+| `@lessjs/signals`      | 0.6.2   | TC39 Signals polyfill + framework layer      | none                |
+| `@lessjs/rpc`          | 0.6.1   | Zero-dep fetch RPC controller                | none                |
+| `@lessjs/create`       | 0.7.0   | CLI scaffold                                 | none                |
 
 ### Rendering Pipeline
 
@@ -98,6 +98,7 @@ deno task build
 ```
 
 Requirements:
+
 - Deno 2.7+
 - Modern browser with Declarative Shadow DOM support
 
@@ -107,11 +108,11 @@ Requirements:
 
 All ADRs are in the [blog](/blog/) — search `type: adr` to filter. Key decisions:
 
-| ADR | Decision |
-|-----|----------|
-| 0017 | Runtime/build separation (core vs adapter-vite) |
-| 0018 | Virtual data modules replace module state |
-| 0019 | @deno/vite-plugin replaces 20 resolve.alias entries |
+| ADR  | Decision                                                 |
+| ---- | -------------------------------------------------------- |
+| 0017 | Runtime/build separation (core vs adapter-vite)          |
+| 0018 | Virtual data modules replace module state                |
+| 0019 | @deno/vite-plugin replaces 20 resolve.alias entries      |
 | 0021 | API surface convergence + Phase tokens + core-Vite split |
 
 ---

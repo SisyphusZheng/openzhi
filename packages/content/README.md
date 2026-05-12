@@ -15,10 +15,10 @@ deno add jsr:@lessjs/content
 
 ```json
 {
-  ".": "./src/index.ts",          // lessContent() 插件
-  "./blog-data": "./src/blog/blog-data.ts",   // loadBlogData() 纯函数
-  "./nav": "./src/nav/index.ts",             // Nav 扫描工具
-  "./sitemap": "./src/sitemap/index.ts"       // Sitemap 生成工具
+  ".": "./src/index.ts", // lessContent() 插件
+  "./blog-data": "./src/blog/blog-data.ts", // loadBlogData() 纯函数
+  "./nav": "./src/nav/index.ts", // Nav 扫描工具
+  "./sitemap": "./src/sitemap/index.ts" // Sitemap 生成工具
 }
 ```
 
@@ -66,7 +66,7 @@ export default defineConfig({
     ...less({ routesDir: 'app/routes' }, ctx),
     ...lessContent({
       blog: { contentDir: 'content/blog', basePath: '/blog' },
-      ctx,  // ctx 必须显式传递
+      ctx, // ctx 必须显式传递
     }),
   ],
 });

@@ -204,10 +204,9 @@ export class PositioningPage extends LitElement {
         <div class="container">
           <h1>Framework Positioning</h1>
           <p class="subtitle">
-            LessJS is a Deno-first, Web Standards-first, static-first web framework.
-            Its goal is not to be the biggest framework for every scenario, but to organize
-            content-first, progressive enhancement, and Serverless API into a trustworthy
-            engineering path.
+            LessJS is a Deno-first, Web Standards-first, static-first web framework. Its goal is not to be
+            the biggest framework for every scenario, but to organize content-first, progressive
+            enhancement, and Serverless API into a trustworthy engineering path.
           </p>
 
           <h2>One-Line Positioning</h2>
@@ -222,8 +221,8 @@ export class PositioningPage extends LitElement {
           <div class="callout">
             <p>
               This is not "another hydration framework." More accurately, LessJS is an application
-              skeleton that wires together Web Components, Declarative Shadow DOM, ESM, Fetch API,
-              and static deployment.
+              skeleton that wires together Web Components, Declarative Shadow DOM, ESM, Fetch API, and
+              static deployment.
             </p>
           </div>
 
@@ -233,9 +232,8 @@ export class PositioningPage extends LitElement {
             <div class="num">Principle 01</div>
             <h3>Web Standards First</h3>
             <p>
-              HTTP uses Fetch API, UI uses Custom Elements and Shadow DOM, modules use ESM,
-              server uses Hono aligned with Web standards. What users learn should be transferable
-              beyond LessJS.
+              HTTP uses Fetch API, UI uses Custom Elements and Shadow DOM, modules use ESM, server uses
+              Hono aligned with Web standards. What users learn should be transferable beyond LessJS.
             </p>
           </div>
 
@@ -243,9 +241,8 @@ export class PositioningPage extends LitElement {
             <div class="num">Principle 02</div>
             <h3>Static First, Dynamic When Explicit</h3>
             <p>
-              The default output should be static HTML, CSS, and only necessary island JavaScript.
-              Opt into serverless/edge mode explicitly when API, auth, writes, or revalidation
-              are needed.
+              The default output should be static HTML, CSS, and only necessary island JavaScript. Opt
+              into serverless/edge mode explicitly when API, auth, writes, or revalidation are needed.
             </p>
           </div>
 
@@ -253,9 +250,9 @@ export class PositioningPage extends LitElement {
             <div class="num">Principle 03</div>
             <h3>Islands Are Upgrades, Not Hydration</h3>
             <p>
-              Pages are first readable, cacheable, crawlable HTML. Interactive components become
-              alive later through Custom Element upgrade. The framework does not treat full-page
-              state restoration as a default cost.
+              Pages are first readable, cacheable, crawlable HTML. Interactive components become alive
+              later through Custom Element upgrade. The framework does not treat full-page state
+              restoration as a default cost.
             </p>
           </div>
 
@@ -264,9 +261,8 @@ export class PositioningPage extends LitElement {
             <h3>Adapters Extend, They Do Not Define</h3>
             <p>
               Lit is the most practical authoring experience today; a future
-              <span class="inline-code">.less</span> compiler is an optimization path,
-              not a prerequisite for the framework. Runtime, build, and docs should all
-              keep adapter boundaries clear.
+              <span class="inline-code">.less</span> compiler is an optimization path, not a prerequisite
+              for the framework. Runtime, build, and docs should all keep adapter boundaries clear.
             </p>
           </div>
 
@@ -274,9 +270,9 @@ export class PositioningPage extends LitElement {
             <div class="num">Principle 05</div>
             <h3>Docs Must Be Falsifiable</h3>
             <p>
-              Docs should describe current behavior, not aspirational vision. Runnable features
-              go into guides; not-yet-stable items go into the Roadmap; risks and limitations
-              belong in architecture pages, not discovered after users hit problems.
+              Docs should describe current behavior, not aspirational vision. Runnable features go into
+              guides; not-yet-stable items go into the Roadmap; risks and limitations belong in
+              architecture pages, not discovered after users hit problems.
             </p>
           </div>
 
@@ -291,25 +287,39 @@ export class PositioningPage extends LitElement {
             <tbody>
               <tr>
                 <td>Docs &amp; product sites</td>
-                <td>SSG output is simple, first-paint HTML is stable, interactivity is limited to a few islands.</td>
+                <td>
+                  SSG output is simple, first-paint HTML is stable, interactivity is limited to a few
+                  islands.
+                </td>
               </tr>
               <tr>
                 <td>Blogs &amp; content sites</td>
-                <td>Content-first, crawlable, cacheable. PWA and incremental builds can be added later.</td>
+                <td>
+                  Content-first, crawlable, cacheable. PWA and incremental builds can be added later.
+                </td>
               </tr>
               <tr>
                 <td>Lightweight Serverless apps</td>
-                <td>Hono API routes and the Fetch model make deployment to Deno Deploy, Workers, etc. natural.</td>
+                <td>
+                  Hono API routes and the Fetch model make deployment to Deno Deploy, Workers, etc.
+                  natural.
+                </td>
               </tr>
               <tr>
                 <td>Componentized design system showcases</td>
-                <td>Web Components are a platform capability. Package-level islands can be reused across projects.</td>
+                <td>
+                  Web Components are a platform capability. Package-level islands can be reused across
+                  projects.
+                </td>
               </tr>
             </tbody>
           </table>
 
           <h2>Not-Yet-Primary Scenarios</h2>
-          <p>LessJS can evolve toward more complex full-stack apps, but current docs should not describe these as mature selling points:</p>
+          <p>
+            LessJS can evolve toward more complex full-stack apps, but current docs should not describe
+            these as mature selling points:
+          </p>
           <ul>
             <li>High-frequency data dashboards, CRM, complex permission systems.</li>
             <li>Production-grade ISR, distributed cache lock, revalidate queue.</li>

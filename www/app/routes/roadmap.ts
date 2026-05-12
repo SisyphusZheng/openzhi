@@ -25,67 +25,57 @@ export class RoadmapPage extends LitElement {
   private _renderZh() { return html`<less-layout locale="${this.locale||'zh'}" .locales="${['en','zh']}" .navItems="${navSections}" .headerNav="${headerNav}" current-path="/roadmap"><div class="container">
     <h1>Roadmap</h1>
     <p class="subtitle">LessJS 的路线图围绕一个判断展开：先把 SSG + DSD + Island Upgrade + Hono API 做可信，再扩展 serverless fullstack、ISR、PWA 和 compiler，最终在公共 API 稳定后承诺 1.0。</p>
-    <h2>Now: v0.11 — Runtime/Build Separation</h2>
-    <p>v0.10.0 完成了 SSR 架构净化（448 测试）。v0.11.0 通过 ADR 0017 将 @lessjs/core 拆分为纯运行时 + @lessjs/adapter-vite 构建编排。Core 不再包含 Vite 插件代码，零 node:*、零 npm:、零 Vite 依赖，可在 Deno / Node / Bun / Edge 任意运行。5 个 npm: specifier 补丁不再需要碰到框架本身。</p>
+
+    <h2>Now: v0.13 — API Convergence + Phase Checks</h2>
+    <p>v0.13.0（ADR 0021）是架构硬化的里程碑。Core 公共 API 从 18 个收敛到 6 个，SSG 三阶段引入 branded type 编译期校验，Vite 虚拟模块 ID 从 core 迁出。最终状态：零 globalThis 桥接、零 barrel 文件、CI 覆盖率收集、268 测试通过。</p>
     <table class="version-table"><thead><tr><th>Area</th><th>Status</th><th>Notes</th></tr></thead><tbody>
-      <tr><td>Runtime/Build 分离</td><td>✅ Done</td><td>ADR 0017: core 纯运行时 + adapter-vite 构建编排</td></tr>
-      <tr><td>Core 零 node:* 依赖</td><td>✅ Done</td><td>无 node:path, node:process, node:url, node:fs</td></tr>
-      <tr><td>Core 零 Vite 依赖</td><td>✅ Done</td><td>无 Plugin type, 无 esbuild, 无 @hono/vite-dev-server</td></tr>
-      <tr><td>Core 零 npm: 依赖</td><td>✅ Done</td><td>仅 parse5 作为纯 JS HTML 解析器</td></tr>
-      <tr><td>@lessjs/adapter-vite</td><td>✅ Done</td><td>less() → Plugin[]，路由扫描，HMR，SSG 三阶段，npm:→bare 翻译</td></tr>
-      <tr><td>用户 API 兼容</td><td>✅ Done</td><td>lessjs() 仍从 @lessjs/app 导出，用户代码零改动</td></tr>
-      <tr><td>路由级 revalidation</td><td>📋 Planned</td><td>按需重新生成静态页面</td></tr>
-      <tr><td>Cache lock</td><td>📋 Planned</td><td>并发构建时的缓存锁</td></tr>
-      <tr><td>Stale fallback</td><td>📋 Planned</td><td>新内容构建中返回旧内容</td></tr>
-      <tr><td>Service Worker 策略</td><td>📋 Planned</td><td>NetworkFirst/CacheFirst 可配置</td></tr>
-      <tr><td>CDN recipes</td><td>📋 Planned</td><td>Cloudflare/Netlify 缓存配置模板</td></tr>
-      <tr><td>.less Compiler Alpha</td><td>📋 Planned</td><td>AST runtime-shim 生成，消除 Lit 依赖</td></tr>
+      <tr><td>Core API 收敛</td><td>✅ Done</td><td>18 导出 → 6 子路径，/render-dsd /html-escape 移除</td></tr>
+      <tr><td>ssr-handler.ts 删除</td><td>✅ Done</td><td>纯 re-export facade 彻底消失</td></tr>
+      <tr><td>编译期 Phase 校验</td><td>✅ Done</td><td>Phase1Token/Phase2Token/Phase3Token branded types</td></tr>
+      <tr><td>core-Vite 分离</td><td>✅ Done</td><td>虚拟模块 ID 迁至 @lessjs/adapter-vite/virtual-ids</td></tr>
+      <tr><td>CI coverage</td><td>✅ Done</td><td>所有 test job 加 --coverage</td></tr>
+      <tr><td>零 barrel 文件</td><td>✅ Done</td><td>content/src/nav/index.ts 和 sitemap/types.ts 内联</td></tr>
     </tbody></table>
+
     <h2>Release Phases</h2>
     <div class="phase"><div class="status">✅ Completed</div><h3>v0.7 — 稳定基线</h3><p>审计修复：render-dsd 测试、island 测试、XSS 修复、pre-commit hooks、CI 补全。73 个新增测试。</p></div>
     <div class="phase"><div class="status">✅ Completed</div><h3>v0.8 — 功能完善 + Island Manifest</h3><p>Signals 测试、DSD 拆分、UI 统一到 DsdLitElement、Playwright E2E、Island Manifest。390 测试。</p></div>
     <div class="phase"><div class="status">✅ Completed</div><h3>v0.9 — i18n + View Transitions + Speculation Rules</h3><p>@lessjs/i18n 独立包、SSG locale 展开、双语文档站、View Transitions API、Speculation Rules API、SSG 后处理管线重构。446 测试。</p></div>
-    <div class="phase"><div class="status">✅ Completed</div><h3>v0.10 — SSR Architecture Purification + API Boundary</h3><p>ADR 0008-0014 七条决策：消除 globalThis 桥接、消除 .less/ 临时文件、提取 @lessjs/app、消除 less-runtime barrel、SSR bundle 导出 renderRoute()/getStaticPaths()/routeInfo 公共 API。448 测试。</p></div>
-    <div class="phase"><div class="status">v0.11 Target</div><h3>v0.11 — ISR + PWA + Compiler Alpha</h3><p>增量构建、缓存策略、离线支持、CDN 配置模板、.less Compiler Alpha。详见 <a href="/decisions/0003-pwa-support">ADR 0003</a>、<a href="/decisions/0002-less-compiler-eliminate-lit">ADR 0002</a>。</p></div>
-    <div class="phase"><div class="status">v1.0 Target</div><h3>v1.0 — Public API Stability</h3><p>所有 package 公共 API 稳定、遵循 SemVer、迁移文档完备。判定标准见 <a href="/decisions/0006-version-strategy">ADR 0006</a>。</p></div>
+    <div class="phase"><div class="status">✅ Completed</div><h3>v0.10 — SSR Architecture Purification</h3><p>ADR 0008-0014 七条决策：消除 globalThis 桥接、消除 .less/ 临时文件、提取 @lessjs/app、消除 less-runtime barrel、SSR bundle 导出公共 API。448 测试。</p></div>
+    <div class="phase"><div class="status">✅ Completed</div><h3>v0.11 — Runtime/Build Separation</h3><p>ADR 0017: @lessjs/core 拆为纯运行时 + @lessjs/adapter-vite。Core 零 node:*、零 npm:、零 Vite 依赖。5 个兼容性补丁消除。</p></div>
+    <div class="phase"><div class="status">✅ Completed</div><h3>v0.12 — Virtual Data Modules</h3><p>ADR 0018: 消除所有插件模块状态，纯函数替代 stateful init/getter 模式，虚拟模块成为 SSR 数据唯一桥接。buildCoreSubpathAliases() 删除，@deno/vite-plugin 接管本地解析。20 条 resolve.alias 删除。</p></div>
+    <div class="phase"><div class="status">✅ Completed</div><h3>v0.13 — API Convergence</h3><p>ADR 0021: Core API 收敛 18→6，Phase branded type 编译期校验，ssr-handler.ts 删除，零 barrel。</p></div>
+    <div class="phase"><div class="status">Next Target</div><h3>v0.14 — DSD Engine + Islands Enhancement</h3><p>DSD 渲染引擎增强与 Islands 策略扩展（ADR 0020）。包括 DSD static 层性能优化、Island 加载策略细化、构建 metadata 硬化。暂无确切时间表。</p></div>
+    <div class="phase"><div class="status">v1.0 Target</div><h3>v1.0 — Public API Stability</h3><p>所有 package 公共 API 稳定、遵循 SemVer、迁移文档完备。判定标准见 <a href="/blog/0006-version-strategy">ADR 0006</a>。</p></div>
     <div class="nav-row"><a href="/contributing" class="nav-link">&larr; Contributing</a><a href="/decisions" class="nav-link">Architecture Decisions &rarr;</a></div>
   </div></less-layout>`; }
 
   private _renderEn() { return html`<less-layout locale="${this.locale||'en'}" .locales="${['en','zh']}" .navItems="${navSections}" .headerNav="${headerNav}" current-path="/en/roadmap"><div class="container">
     <h1>Roadmap</h1>
     <p class="subtitle">The LessJS roadmap centers on one judgment: make SSG + DSD + Island Upgrade + Hono API trustworthy first, then expand to serverless fullstack, ISR, PWA, and compiler, and finally commit to 1.0 after public APIs stabilize.</p>
-    <div class="callout"><p>This roadmap is not a marketing page. Future items listed here will only become stable user guides after they enter implementation and testing. See <a href="/decisions/0006-version-strategy">ADR 0006</a> for versioning strategy.</p></div>
-    <h2>Now: v0.11 — Runtime/Build Separation</h2>
-    <p>v0.10.0 completed SSR architecture purification (448 tests). v0.11.0 splits @lessjs/core into pure runtime + @lessjs/adapter-vite build orchestration via ADR 0017. Core no longer contains Vite plugin code — zero node:*, zero npm:, zero Vite dependency. Runs in Deno / Node / Bun / Edge. Five npm: specifier patches no longer need to touch the framework itself.</p>
+    <div class="callout"><p>This roadmap is not a marketing page. Future items listed here will only become stable user guides after they enter implementation and testing. See <a href="/blog/0006-version-strategy">ADR 0006</a> for versioning strategy.</p></div>
+
+    <h2>Now: v0.13 — API Convergence + Phase Checks</h2>
+    <p>v0.13.0 (ADR 0021) is the architecture hardening milestone. Core public API reduced from 18 to 6 exports, SSG 3-phase pipeline gets compile-time branded type validation, Vite virtual module IDs moved out of core. Final state: zero globalThis bridges, zero barrel files, CI coverage collection, 268 tests passing.</p>
     <table class="version-table"><thead><tr><th>Area</th><th>Status</th><th>Notes</th></tr></thead><tbody>
-      <tr><td>Runtime/Build Separation</td><td>✅ Done</td><td>ADR 0017: core pure runtime + adapter-vite build orchestration</td></tr>
-      <tr><td>Core zero node:* deps</td><td>✅ Done</td><td>No node:path, node:process, node:url, node:fs</td></tr>
-      <tr><td>Core zero Vite deps</td><td>✅ Done</td><td>No Plugin type, no esbuild, no @hono/vite-dev-server</td></tr>
-      <tr><td>Core zero npm: deps</td><td>✅ Done</td><td>Only parse5 as pure JS HTML parser</td></tr>
-      <tr><td>@lessjs/adapter-vite</td><td>✅ Done</td><td>less() → Plugin[], route scanning, HMR, SSG 3-phase, npm:→bare rewrite</td></tr>
-      <tr><td>User API Compatibility</td><td>✅ Done</td><td>lessjs() still from @lessjs/app, zero user code changes</td></tr>
-      <tr><td>Route-level revalidation</td><td>📋 Planned</td><td>On-demand static page regeneration</td></tr>
-      <tr><td>Cache lock</td><td>📋 Planned</td><td>Concurrency lock for builds</td></tr>
-      <tr><td>Stale fallback</td><td>📋 Planned</td><td>Serve old content while building new</td></tr>
-      <tr><td>Service Worker strategy</td><td>📋 Planned</td><td>Configurable NetworkFirst/CacheFirst</td></tr>
-      <tr><td>CDN recipes</td><td>📋 Planned</td><td>Cloudflare/Netlify cache config templates</td></tr>
-      <tr><td>.less Compiler Alpha</td><td>📋 Planned</td><td>AST runtime-shim generation, eliminate Lit dependency</td></tr>
+      <tr><td>Core API convergence</td><td>✅ Done</td><td>18 exports → 6 subpaths, /render-dsd /html-escape removed</td></tr>
+      <tr><td>ssr-handler.ts deleted</td><td>✅ Done</td><td>Pure re-export facade eliminated</td></tr>
+      <tr><td>Compile-time phase checks</td><td>✅ Done</td><td>Phase1Token/Phase2Token/Phase3Token branded types</td></tr>
+      <tr><td>Core-Vite separation</td><td>✅ Done</td><td>Virtual module IDs moved to @lessjs/adapter-vite/virtual-ids</td></tr>
+      <tr><td>CI coverage</td><td>✅ Done</td><td>All test jobs collect --coverage</td></tr>
+      <tr><td>Zero barrel files</td><td>✅ Done</td><td>content/src/nav/index.ts and sitemap/types.ts inlined</td></tr>
     </tbody></table>
-    <table class="version-table"><thead><tr><th>Area</th><th>Status</th><th>Notes</th></tr></thead><tbody>
-      <tr><td>Route-level revalidation</td><td>📋 Planned</td><td>On-demand static page regeneration</td></tr>
-      <tr><td>Cache lock</td><td>📋 Planned</td><td>Concurrency lock for builds</td></tr>
-      <tr><td>Stale fallback</td><td>📋 Planned</td><td>Serve old content while building new</td></tr>
-      <tr><td>Service Worker strategy</td><td>📋 Planned</td><td>Configurable NetworkFirst/CacheFirst</td></tr>
-      <tr><td>CDN recipes</td><td>📋 Planned</td><td>Cloudflare/Netlify cache config templates</td></tr>
-      <tr><td>.less Compiler Alpha</td><td>📋 Planned</td><td>AST runtime-shim generation, eliminate Lit dependency</td></tr>
-    </tbody></table>
+
     <h2>Release Phases</h2>
     <div class="phase"><div class="status">✅ Completed</div><h3>v0.7 — Stable Baseline</h3><p>Audit fixes: render-dsd tests, island tests, XSS fixes, pre-commit hooks, CI completion. 73 new tests.</p></div>
     <div class="phase"><div class="status">✅ Completed</div><h3>v0.8 — Feature Completeness + Island Manifest</h3><p>Signals tests, DSD split, UI unified to DsdLitElement, Playwright E2E, Island Manifest. 390 tests.</p></div>
     <div class="phase"><div class="status">✅ Completed</div><h3>v0.9 — i18n + View Transitions + Speculation Rules</h3><p>@lessjs/i18n standalone package, SSG locale expansion, bilingual docs, View Transitions API, Speculation Rules API, SSG post-process pipeline refactor. 446 tests.</p></div>
-    <div class="phase"><div class="status">✅ Completed</div><h3>v0.10 — SSR Architecture Purification + API Boundary</h3><p>ADR 0008-0014 seven decisions: eliminate globalThis bridges, eliminate .less/ temp files, extract @lessjs/app, eliminate less-runtime barrel, SSR bundle exports renderRoute()/getStaticPaths()/routeInfo public APIs. 448 tests.</p></div>
-    <div class="phase"><div class="status">v0.11 Target</div><h3>v0.11 — ISR + PWA + Compiler Alpha</h3><p>Incremental builds, caching strategies, offline support, CDN config templates, .less Compiler Alpha. See <a href="/decisions/0003-pwa-support">ADR 0003</a>, <a href="/decisions/0002-less-compiler-eliminate-lit">ADR 0002</a>.</p></div>
-    <div class="phase"><div class="status">v1.0 Target</div><h3>v1.0 — Public API Stability</h3><p>All package public APIs stable, following SemVer, with complete migration docs. Criteria in <a href="/decisions/0006-version-strategy">ADR 0006</a>.</p></div>
+    <div class="phase"><div class="status">✅ Completed</div><h3>v0.10 — SSR Architecture Purification</h3><p>ADR 0008-0014 seven decisions: eliminate globalThis bridges, eliminate .less/ temp files, extract @lessjs/app, eliminate less-runtime barrel, SSR bundle public APIs. 448 tests.</p></div>
+    <div class="phase"><div class="status">✅ Completed</div><h3>v0.11 — Runtime/Build Separation</h3><p>ADR 0017: @lessjs/core split into pure runtime + @lessjs/adapter-vite. Core: zero node:*, zero npm:, zero Vite deps. Five compatibility patches eliminated.</p></div>
+    <div class="phase"><div class="status">✅ Completed</div><h3>v0.12 — Virtual Data Modules</h3><p>ADR 0018: Eliminated all plugin module state. Pure functions replace stateful init/getter patterns. Virtual modules become the only SSR data bridge. buildCoreSubpathAliases() deleted, @deno/vite-plugin handles local resolution. 20 resolve.alias entries removed.</p></div>
+    <div class="phase"><div class="status">✅ Completed</div><h3>v0.13 — API Convergence</h3><p>ADR 0021: Core API 18→6 convergence, Phase branded type validation, ssr-handler.ts deleted, zero barrel files.</p></div>
+    <div class="phase"><div class="status">Next Target</div><h3>v0.14 — DSD Engine + Islands Enhancement</h3><p>DSD rendering engine and island strategy enhancements (ADR 0020). DSD static layer performance optimization, island loading strategy refinement, build metadata hardening. No fixed timeline.</p></div>
+    <div class="phase"><div class="status">v1.0 Target</div><h3>v1.0 — Public API Stability</h3><p>All package APIs stable, following SemVer, with complete migration docs. Criteria in <a href="/blog/0006-version-strategy">ADR 0006</a>.</p></div>
     <div class="nav-row"><a href="/contributing" class="nav-link">&larr; Contributing</a><a href="/decisions" class="nav-link">Architecture Decisions &rarr;</a></div>
   </div></less-layout>`; }
 }

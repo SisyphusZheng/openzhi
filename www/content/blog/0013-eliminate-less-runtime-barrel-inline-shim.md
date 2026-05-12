@@ -63,6 +63,7 @@ build-ssg.ts 中的 less:ssg-virtual-runtime 插件
 ### 2. 彻底删除 `virtual:less-runtime`
 
 **`packages/core/src/index.ts`**：
+
 - 删除 `'@lessjs/core/less-runtime': VIRTUAL_RUNTIME_ID` 别名
 - 删除 `VIRTUAL_RUNTIME_ID` 和 `RESOLVED_RUNTIME_ID` 常量
 - 删除 `resolveId()` 中对 `VIRTUAL_RUNTIME_ID` 的解析
@@ -70,6 +71,7 @@ build-ssg.ts 中的 less:ssg-virtual-runtime 插件
 - 删除 `readFileSync`、`dirname` 等不再需要的 import
 
 **`packages/core/src/cli/build-ssg.ts`**：
+
 - 删除整个 `less:ssg-virtual-runtime` 插件
 
 ### 3. 删除 `runtime-shim.ts` 和生成器
@@ -86,13 +88,13 @@ build-ssg.ts 中的 less:ssg-virtual-runtime 插件
 - 新增 `"./adapter-registry"` 和 `"./ssr-handler"` subpath exports
 - 更新所有消费者：
 
-| 消费者 | 之前 | 之后 |
-|--------|------|------|
-| `entry-descriptor.ts` | `from '@lessjs/core/less-runtime'` | `from '@lessjs/core/render-dsd'` |
-| `entry-renderer.ts` (log+wrap) | `import { log, wrapInDocument } from '@lessjs/core/less-runtime'` | `import { wrapInDocument } from '@lessjs/core/ssr-handler'` + `import { createLogger } from '@lessjs/core/logger'` + `const log = createLogger('core')` |
-| `entry-renderer.ts` (SSG re-export) | `from "@lessjs/core/less-runtime"` | 拆为 `from "@lessjs/core/ssr-handler"` + `from "@lessjs/core/adapter-registry"` |
-| `adapter-lit/ssr.ts` | `from '@lessjs/core/less-runtime'` | `from '@lessjs/core/adapter-registry'` |
-| `create/cli.ts` | `"@lessjs/core/less-runtime": "jsr:..."` | `"@lessjs/core/adapter-registry": "jsr:..."` |
+| 消费者                              | 之前                                                              | 之后                                                                                                                                                    |
+| ----------------------------------- | ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `entry-descriptor.ts`               | `from '@lessjs/core/less-runtime'`                                | `from '@lessjs/core/render-dsd'`                                                                                                                        |
+| `entry-renderer.ts` (log+wrap)      | `import { log, wrapInDocument } from '@lessjs/core/less-runtime'` | `import { wrapInDocument } from '@lessjs/core/ssr-handler'` + `import { createLogger } from '@lessjs/core/logger'` + `const log = createLogger('core')` |
+| `entry-renderer.ts` (SSG re-export) | `from "@lessjs/core/less-runtime"`                                | 拆为 `from "@lessjs/core/ssr-handler"` + `from "@lessjs/core/adapter-registry"`                                                                         |
+| `adapter-lit/ssr.ts`                | `from '@lessjs/core/less-runtime'`                                | `from '@lessjs/core/adapter-registry'`                                                                                                                  |
+| `create/cli.ts`                     | `"@lessjs/core/less-runtime": "jsr:..."`                          | `"@lessjs/core/adapter-registry": "jsr:..."`                                                                                                            |
 
 ### 5. types.ts 值导出清理（D2，与 ADR 合并执行）
 

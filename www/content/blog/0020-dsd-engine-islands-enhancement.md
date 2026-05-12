@@ -56,16 +56,16 @@ DSD 在浏览器中:  DOM 树上看到一个 <template shadowrootmode="open">
 
 ### 竞品对比：DSD 体验差距
 
-| 能力 | Astro | Fresh | Qwik | LessJS 当前 | LessJS 目标 |
-|------|-------|-------|------|-----------|-----------|
-| DSD DevTools 面板 | ❌ | ❌ | ❌ | ❌ | ✅ **独家** |
-| DSD Tree View | ❌ | ❌ | ❌ | ❌ | ✅ **独家** |
-| DSD Hydration 监控 | ❌ | ❌ | ❌ | ❌ | ✅ **独家** |
-| DSD 渲染报告 | ❌ | ❌ | ❌ | ❌ | ✅ **独家** |
-| Island 策略推荐 | ❌ | ❌ | ❌ | ❌ | ✅ **独家** |
-| Speculative Loading 深度集成 | 基础 | ❌ | ❌ | 基础 | ✅ **领先** |
-| View Transitions 零配置 | ❌ | ❌ | ❌ | 基础 | ✅ **领先** |
-| DSD Streaming | ❌ | ❌ | ❌ | ❌ | ✅ **独家** |
+| 能力                         | Astro | Fresh | Qwik | LessJS 当前 | LessJS 目标 |
+| ---------------------------- | ----- | ----- | ---- | ----------- | ----------- |
+| DSD DevTools 面板            | ❌    | ❌    | ❌   | ❌          | ✅ **独家** |
+| DSD Tree View                | ❌    | ❌    | ❌   | ❌          | ✅ **独家** |
+| DSD Hydration 监控           | ❌    | ❌    | ❌   | ❌          | ✅ **独家** |
+| DSD 渲染报告                 | ❌    | ❌    | ❌   | ❌          | ✅ **独家** |
+| Island 策略推荐              | ❌    | ❌    | ❌   | ❌          | ✅ **独家** |
+| Speculative Loading 深度集成 | 基础  | ❌    | ❌   | 基础        | ✅ **领先** |
+| View Transitions 零配置      | ❌    | ❌    | ❌   | 基础        | ✅ **领先** |
+| DSD Streaming                | ❌    | ❌    | ❌   | ❌          | ✅ **独家** |
 
 **核心结论**：LessJS 站在 DSD 的天然位置，但当前的能力建设程度与这个位置不匹配。DSD-first 不能只是 README 中的一句话——它应该是开发者每一次交互中都能感受到的体验。
 
@@ -109,21 +109,21 @@ Dev 模式 HTML 响应:
 
 ```ts
 interface DsdTreeNode {
-  tagName: string;           // 'less-button', 'home-page', etc.
+  tagName: string; // 'less-button', 'home-page', etc.
   layer: 'dsd-static' | 'dsd-interactive' | 'pure-island';
-  shadowRootAttached: boolean;  // 浏览器是否已附加 DSD
-  hydrationSkipped: boolean;    // Lit 是否跳过了重渲染
-  childNodes: DsdTreeNode[];    // 嵌套的 DSD 子节点
-  renderTime: number;           // SSR 渲染时间 (ms)
-  templateSize: number;         // DSD 模板字节数
+  shadowRootAttached: boolean; // 浏览器是否已附加 DSD
+  hydrationSkipped: boolean; // Lit 是否跳过了重渲染
+  childNodes: DsdTreeNode[]; // 嵌套的 DSD 子节点
+  renderTime: number; // SSR 渲染时间 (ms)
+  templateSize: number; // DSD 模板字节数
 }
 
 interface DsdReport {
   totalComponents: number;
-  dsdComponents: number;       // 有 DSD 模板的
-  hydratedComponents: number;  // 跳过了渲染的
+  dsdComponents: number; // 有 DSD 模板的
+  hydratedComponents: number; // 跳过了渲染的
   pureIslands: number;
-  totalDsdSize: number;        // 所有 DSD 模板的总 KB
+  totalDsdSize: number; // 所有 DSD 模板的总 KB
   maxNestingDepth: number;
 }
 ```
@@ -148,10 +148,10 @@ DevTool Panel 在运行时执行自动检查：
 ```ts
 // 自动检查清单（面板中显示 4 个状态灯）
 const checks = {
-  dsdNestingValid: checkNoShadowDOMInjection(),      // ✅ DSD 嵌套完整
-  ssrClientMatch: compareSSRandClient(),             // ✅ SSR 客户端一致
-  noDuplicateContent: checkBlankBoxes(),              // ✅ 无重复渲染
-  islandStrategiesOptimal: evalIslandStrategies(),    // ✅ Island 策略合理
+  dsdNestingValid: checkNoShadowDOMInjection(), // ✅ DSD 嵌套完整
+  ssrClientMatch: compareSSRandClient(), // ✅ SSR 客户端一致
+  noDuplicateContent: checkBlankBoxes(), // ✅ 无重复渲染
+  islandStrategiesOptimal: evalIslandStrategies(), // ✅ Island 策略合理
 };
 ```
 
@@ -176,18 +176,18 @@ const checks = {
 ```ts
 interface IslandProfile {
   // 交互维度
-  hasEventListeners: boolean;      // 有 click/input 等事件绑定
-  hasDomMutations: boolean;        // 修改了 DOM 结构
-  usesExternalState: boolean;      // 依赖外部信号/状态
-  renderComplexity: 'simple' | 'moderate' | 'complex';  // render() 复杂度判断
+  hasEventListeners: boolean; // 有 click/input 等事件绑定
+  hasDomMutations: boolean; // 修改了 DOM 结构
+  usesExternalState: boolean; // 依赖外部信号/状态
+  renderComplexity: 'simple' | 'moderate' | 'complex'; // render() 复杂度判断
 
   // 可见性维度
-  isAboveFold: boolean;            // 是否在首屏
-  isInViewport: boolean;           // 初始可见（非懒加载区域）
+  isAboveFold: boolean; // 是否在首屏
+  isInViewport: boolean; // 初始可见（非懒加载区域）
 
   // 性能维度
-  estimatedChunkSize: number;      // 估算的 JS chunk 大小
-  dependencyCount: number;         // 依赖图大小
+  estimatedChunkSize: number; // 估算的 JS chunk 大小
+  dependencyCount: number; // 依赖图大小
 }
 
 type RecommendedStrategy = 'eager' | 'lazy' | 'visible' | 'idle';
@@ -287,7 +287,7 @@ L3+ 扩展:
 export async function renderNestedCustomElements(
   html: string,
   ctx: LessBuildContext,
-  maxDepth = 10,              // 防止栈溢出
+  maxDepth = 10, // 防止栈溢出
 ): Promise<string> {
   // ... parse5 AST 遍历 + 递归渲染 ...
 }

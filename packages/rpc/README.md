@@ -26,9 +26,7 @@ class MyElement extends LitElement {
 
   async loadData() {
     try {
-      const data = await this.rpc.call(() =>
-        fetch('/api/posts').then(r => r.json())
-      );
+      const data = await this.rpc.call(() => fetch('/api/posts').then((r) => r.json()));
       this.data = data;
     } catch (err) {
       if (err instanceof RpcError) {

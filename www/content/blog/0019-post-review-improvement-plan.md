@@ -18,12 +18,12 @@ draft: false
 
 2026-05-12，主理人齐活林（Qi）启动团队分工审查，对 LessJS 进行了四个维度的全面评估：
 
-| 维度 | 负责人 | 报告 |
-|------|--------|------|
-| 产品定位与市场 | 许清楚（产品经理） | `deliverables/review-positioning-market.md` |
-| 系统架构 | 高见远（架构师） | `deliverables/review-architecture.md` |
-| 源代码质量 | 寇豆码（工程师） | `deliverables/review-code-quality.md` |
-| 测试质量 | 严过关（QA 工程师） | `deliverables/review-test-quality.md` |
+| 维度           | 负责人              | 报告                                        |
+| -------------- | ------------------- | ------------------------------------------- |
+| 产品定位与市场 | 许清楚（产品经理）  | `deliverables/review-positioning-market.md` |
+| 系统架构       | 高见远（架构师）    | `deliverables/review-architecture.md`       |
+| 源代码质量     | 寇豆码（工程师）    | `deliverables/review-code-quality.md`       |
+| 测试质量       | 严过关（QA 工程师） | `deliverables/review-test-quality.md`       |
 
 四份报告共发现 **4 个 Critical 问题、16 个 Major 问题、30+ Minor/Info 问题**，覆盖了从产品战略到底层实现的完整质量视图。
 
@@ -32,27 +32,27 @@ draft: false
 将四份报告的问题按**紧急度 × 影响力**聚合后，呈现三个层级：
 
 ```
-      高
-       │
- 影    │  P0 (需立即行动)
- 响    │    ├── @lessjs/app 零测试              [测试]
- 力    │    ├── DSD 差异化不突出                 [产品]
-       │    └── 社区生态真空                     [产品]
-       │
- 中    │  P1 (本轮迭代必须解决)
-       │    ├── LessBuildContext 巨型对象重构      [架构]
-       │    ├── closeBundle 职责超载              [架构]
-       │    ├── @lessjs/rpc 测试严重不足          [测试]
-       │    ├── @lessjs/ui 组件测试不足           [测试]
-       │    └── 4 项代码质量 Major 问题           [代码]
-       │
- 低    │  P2 (下轮迭代)
-       │    ├── parse5 分离                       [架构]
-       │    ├── Lit 内部 API 依赖治理             [架构]
-       │    ├── 12 项代码 Minor 问题               [代码]
-       │    └── E2E 浏览器矩阵扩展                [测试]
-       │
-           低 ─────────── 紧急度 ──────────→ 高
+     高
+      │
+影    │  P0 (需立即行动)
+响    │    ├── @lessjs/app 零测试              [测试]
+力    │    ├── DSD 差异化不突出                 [产品]
+      │    └── 社区生态真空                     [产品]
+      │
+中    │  P1 (本轮迭代必须解决)
+      │    ├── LessBuildContext 巨型对象重构      [架构]
+      │    ├── closeBundle 职责超载              [架构]
+      │    ├── @lessjs/rpc 测试严重不足          [测试]
+      │    ├── @lessjs/ui 组件测试不足           [测试]
+      │    └── 4 项代码质量 Major 问题           [代码]
+      │
+低    │  P2 (下轮迭代)
+      │    ├── parse5 分离                       [架构]
+      │    ├── Lit 内部 API 依赖治理             [架构]
+      │    ├── 12 项代码 Minor 问题               [代码]
+      │    └── E2E 浏览器矩阵扩展                [测试]
+      │
+          低 ─────────── 紧急度 ──────────→ 高
 ```
 
 ### 根本问题识别
@@ -70,6 +70,7 @@ draft: false
 **"先固本，后拓疆"** — v0.12.0 阶段的核心任务是巩固工程质量基础，而非追求功能数量的增长。
 
 具体而言：
+
 1. 当前不追求 .less Compiler（远景目标），不做大规模功能扩展
 2. 优先弥补现有的质量缺口，让核心功能"经得起审查"
 3. 在产品叙事上确立 "DSD-first" 的明确标签，而非定位为"又一个 Deno 框架"
@@ -78,15 +79,15 @@ draft: false
 
 解决审查中发现的最迫切质量缺口：
 
-| # | 行动 | 参考来源 | 工作量估计 |
-|---|------|---------|----------|
-| FIX-01 | 补齐 `@lessjs/app` 整合测试（lessjs() 组合 core+content+i18n） | 测试审查-C1 | 1-2 天 |
-| FIX-02 | 修复 `less-layout.ts` innerHTML 使用，改用 `DOMParser.parseFromString()` | 代码审查-C1 | 0.5 天 |
-| FIX-03 | 补充 `@lessjs/rpc` 基本测试（请求/响应/错误处理） | 测试审查-C2 | 1 天 |
-| FIX-04 | 治理 signals 模块 `no-explicit-any`（50+ 处，按模块分治） | 代码审查-M1 | 2 天 |
-| FIX-05 | 删除 `ssr-handler.ts` 冗余重导出层 | 架构审查-T1 | 0.5 天 |
-| FIX-06 | 修复空 catch block 和未使用变量 | 代码审查-M2~M4 | 1 天 |
-| FIX-07 | 补充 `@lessjs/create` CLI 测试 | 测试审查-M1 | 1 天 |
+| #      | 行动                                                                     | 参考来源       | 工作量估计 |
+| ------ | ------------------------------------------------------------------------ | -------------- | ---------- |
+| FIX-01 | 补齐 `@lessjs/app` 整合测试（lessjs() 组合 core+content+i18n）           | 测试审查-C1    | 1-2 天     |
+| FIX-02 | 修复 `less-layout.ts` innerHTML 使用，改用 `DOMParser.parseFromString()` | 代码审查-C1    | 0.5 天     |
+| FIX-03 | 补充 `@lessjs/rpc` 基本测试（请求/响应/错误处理）                        | 测试审查-C2    | 1 天       |
+| FIX-04 | 治理 signals 模块 `no-explicit-any`（50+ 处，按模块分治）                | 代码审查-M1    | 2 天       |
+| FIX-05 | 删除 `ssr-handler.ts` 冗余重导出层                                       | 架构审查-T1    | 0.5 天     |
+| FIX-06 | 修复空 catch block 和未使用变量                                          | 代码审查-M2~M4 | 1 天       |
+| FIX-07 | 补充 `@lessjs/create` CLI 测试                                           | 测试审查-M1    | 1 天       |
 
 **总计工作量：约 7-9 天**（单人全职）
 
@@ -94,12 +95,12 @@ draft: false
 
 解决审查中发现的三项高风险架构问题：
 
-| # | 行动 | 参考来源 | 工作量估计 |
-|---|------|---------|----------|
-| ARCH-01 | LessBuildContext 字段按 Phase 分组为类型安全的子对象 | 架构审查-R1 | 3 天 |
-| ARCH-02 | closeBundle Phase 2/3 引入显式 BuildStep 编排 + try-catch 隔离 | 架构审查-R2 | 2 天 |
-| ARCH-03 | `signals/src/index.ts` 单文件拆分为 engine/polyfill/framework 三层 | 架构审查-T4 | 1 天 |
-| ARCH-04 | 修复 `build-manifest.ts` 包标注不一致 | 架构审查-T2 | 0.5 天 |
+| #       | 行动                                                               | 参考来源    | 工作量估计 |
+| ------- | ------------------------------------------------------------------ | ----------- | ---------- |
+| ARCH-01 | LessBuildContext 字段按 Phase 分组为类型安全的子对象               | 架构审查-R1 | 3 天       |
+| ARCH-02 | closeBundle Phase 2/3 引入显式 BuildStep 编排 + try-catch 隔离     | 架构审查-R2 | 2 天       |
+| ARCH-03 | `signals/src/index.ts` 单文件拆分为 engine/polyfill/framework 三层 | 架构审查-T4 | 1 天       |
+| ARCH-04 | 修复 `build-manifest.ts` 包标注不一致                              | 架构审查-T2 | 0.5 天     |
 
 **总计工作量：约 6-7 天**
 

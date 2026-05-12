@@ -141,31 +141,39 @@ Phase 3: SSG
             <tbody>
               <tr>
                 <td><span class="inline-code">@lessjs/core</span></td>
-                <td>路由扫描、entry 生成、DSD SSR、SSG、CLI、View Transitions、Speculation Rules。</td>
+                <td>纯运行时：DSD SSR、Island 升级、Navigation API、结构化日志。零 Vite/Node 依赖。</td>
               </tr>
               <tr>
-                <td><span class="inline-code">@lessjs/ui</span></td>
-                <td>文档站和示例可复用的 Web Components。</td>
+                <td><span class="inline-code">@lessjs/adapter-vite</span></td>
+                <td>Vite 构建编排：路由扫描、SSG 三阶段管线、Island Transform、HMR。</td>
               </tr>
               <tr>
-                <td><span class="inline-code">@lessjs/rpc</span></td>
-                <td>类型安全 API/RPC 能力的实验和沉淀。</td>
+                <td><span class="inline-code">@lessjs/app</span></td>
+                <td>统一入口：lessjs() 组合 core + content + i18n，推荐项目使用。</td>
               </tr>
               <tr>
                 <td><span class="inline-code">@lessjs/adapter-lit</span></td>
-                <td>Lit 适配边界，未来为 compiler/多 adapter 留出空间。</td>
+                <td>Lit SSR 适配 + WithDsdHydration Mixin。</td>
               </tr>
               <tr>
                 <td><span class="inline-code">@lessjs/content</span></td>
-                <td>统一内容插件（Blog + Nav + Sitemap），SSG 内容管线。</td>
+                <td>内容插件：Blog + Nav + Sitemap，SSG 内容管线。</td>
               </tr>
               <tr>
                 <td><span class="inline-code">@lessjs/i18n</span></td>
-                <td>国际化插件，locale 展开、路径辅助、语言切换。</td>
+                <td>国际化：locale 展开、路径辅助、语言切换。</td>
+              </tr>
+              <tr>
+                <td><span class="inline-code">@lessjs/ui</span></td>
+                <td>8 个 Web Component（less-button、less-layout、less-theme-toggle 等）。</td>
               </tr>
               <tr>
                 <td><span class="inline-code">@lessjs/signal</span></td>
-                <td>TC39 Signals polyfill + islandEffect，浏览器原生 Signal 条件回退。</td>
+                <td>TC39 Signals polyfill + islandEffect。</td>
+              </tr>
+              <tr>
+                <td><span class="inline-code">@lessjs/rpc</span></td>
+                <td>RpcController：类型安全 fetch 封装，自动重试/取消。</td>
               </tr>
               <tr>
                 <td><span class="inline-code">@lessjs/create</span></td>
@@ -324,35 +332,43 @@ Phase 3: SSG
             <tbody>
               <tr>
                 <td><span class="inline-code">@lessjs/core</span></td>
-                <td>Route scanning, entry generation, DSD SSR, SSG, CLI, View Transitions, Speculation Rules.</td>
+                <td>Pure runtime: DSD SSR, Island upgrade, Navigation API, structured logging. Zero Vite/Node deps.</td>
               </tr>
               <tr>
-                <td><span class="inline-code">@lessjs/ui</span></td>
-                <td>Reusable Web Components for docs and demos.</td>
+                <td><span class="inline-code">@lessjs/adapter-vite</span></td>
+                <td>Vite build orchestration: route scanning, SSG 3-phase pipeline, Island transform, HMR.</td>
               </tr>
               <tr>
-                <td><span class="inline-code">@lessjs/rpc</span></td>
-                <td>Type-safe API/RPC capabilities, experimentation and hardening.</td>
+                <td><span class="inline-code">@lessjs/app</span></td>
+                <td>Unified entry: lessjs() combines core + content + i18n. Recommended for all projects.</td>
               </tr>
               <tr>
                 <td><span class="inline-code">@lessjs/adapter-lit</span></td>
-                <td>Lit adapter boundary — room for compiler / multi-adapter in the future.</td>
+                <td>Lit SSR adapter + WithDsdHydration Mixin.</td>
               </tr>
               <tr>
                 <td><span class="inline-code">@lessjs/content</span></td>
-                <td>Unified content plugin (Blog + Nav + Sitemap), SSG content pipeline.</td>
+                <td>Content plugin: Blog + Nav + Sitemap, SSG content pipeline.</td>
               </tr>
               <tr>
                 <td><span class="inline-code">@lessjs/i18n</span></td>
-                <td>Internationalization plugin, locale expansion, path helpers, language switching.</td>
+                <td>i18n: locale expansion, path helpers, language switching.</td>
+              </tr>
+              <tr>
+                <td><span class="inline-code">@lessjs/ui</span></td>
+                <td>8 Web Components (less-button, less-layout, less-theme-toggle, etc.).</td>
               </tr>
               <tr>
                 <td><span class="inline-code">@lessjs/signal</span></td>
-                <td>TC39 Signals polyfill + islandEffect, native Signal conditional fallback.</td>
+                <td>TC39 Signals polyfill + islandEffect.</td>
+              </tr>
+              <tr>
+                <td><span class="inline-code">@lessjs/rpc</span></td>
+                <td>RpcController: type-safe fetch wrapper with auto-retry and cancellation.</td>
               </tr>
               <tr>
                 <td><span class="inline-code">@lessjs/create</span></td>
-                <td>Project scaffolding CLI, <span class="inline-code">deno run -A jsr:@lessjs/create</span>.</td>
+                <td>CLI scaffold, <span class="inline-code">deno run -A jsr:@lessjs/create</span>.</td>
               </tr>
             </tbody>
           </table>

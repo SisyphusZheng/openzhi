@@ -47,18 +47,18 @@ Publish order: rpc → ui → adapter-lit → signal → content → i18n → co
 
 These files are written by Phase 1 plugins and read by Phase 2/3 CLI scripts:
 
-| File | Writer | Reader | Contains |
-|------|--------|--------|----------|
-| `build-metadata.json` | `less:build` closeBundle | `build-client.ts`, `build-ssg.ts` | islandTagNames, islandFiles, packageIslands, resolveAlias, ssrNoExternal, middleware, html, pwa, upgradeStrategy, viewTransition, speculation |
-| `head-extras.html` | `build-ssg.ts` | SSR entry (generated code reads it at runtime) | raw HTML string |
-| `.less-ssg-entry.ts` | `build-ssg.ts` | viteBuild SSR input | generated Hono entry code |
-| `.less-client-entry.ts` | `build-client.ts` | viteBuild client input | generated client island entry |
-| `.less-runtime.ts` | `less:core` config hook | Vite alias resolution | runtime shim code |
-| `blog-options.json` | `less:content` buildStart | `build-ssg.ts` | `{ contentDir, basePath }` |
-| `nav-data.json` | `less:content` buildStart | `build-ssg.ts` virtual:less-nav plugin | NavSection[] |
-| `header-nav.json` | `less:content` buildStart | `build-ssg.ts` virtual:less-nav plugin | HeaderNavLink[] |
-| `i18n-options.json` | `less:i18n` buildStart | `build-ssg.ts` | LessI18nOptions |
-| `sitemap-options.json` | `less:content` buildStart | `build-ssg.ts` | SitemapOptions |
+| File                    | Writer                    | Reader                                         | Contains                                                                                                                                      |
+| ----------------------- | ------------------------- | ---------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| `build-metadata.json`   | `less:build` closeBundle  | `build-client.ts`, `build-ssg.ts`              | islandTagNames, islandFiles, packageIslands, resolveAlias, ssrNoExternal, middleware, html, pwa, upgradeStrategy, viewTransition, speculation |
+| `head-extras.html`      | `build-ssg.ts`            | SSR entry (generated code reads it at runtime) | raw HTML string                                                                                                                               |
+| `.less-ssg-entry.ts`    | `build-ssg.ts`            | viteBuild SSR input                            | generated Hono entry code                                                                                                                     |
+| `.less-client-entry.ts` | `build-client.ts`         | viteBuild client input                         | generated client island entry                                                                                                                 |
+| `.less-runtime.ts`      | `less:core` config hook   | Vite alias resolution                          | runtime shim code                                                                                                                             |
+| `blog-options.json`     | `less:content` buildStart | `build-ssg.ts`                                 | `{ contentDir, basePath }`                                                                                                                    |
+| `nav-data.json`         | `less:content` buildStart | `build-ssg.ts` virtual:less-nav plugin         | NavSection[]                                                                                                                                  |
+| `header-nav.json`       | `less:content` buildStart | `build-ssg.ts` virtual:less-nav plugin         | HeaderNavLink[]                                                                                                                               |
+| `i18n-options.json`     | `less:i18n` buildStart    | `build-ssg.ts`                                 | LessI18nOptions                                                                                                                               |
+| `sitemap-options.json`  | `less:content` buildStart | `build-ssg.ts`                                 | SitemapOptions                                                                                                                                |
 
 **Total: 10 temp files.** Goal: 0.
 
@@ -154,6 +154,7 @@ clientEntryCode: string = '';  // replaces .less-client-entry.ts
 **Problem**: `build-client.ts` is a standalone CLI script (`if (import.meta.main)`). It currently reads metadata from disk because Phase 1 (vite build) and Phase 2/3 are separate processes.
 
 **Solution**: Create a unified `build.ts` orchestrator that:
+
 1. Runs Phase 1 (vite build) → ctx gets populated by plugin hooks
 2. Runs Phase 2 (client build) → reads from ctx
 3. Runs Phase 3 (SSG) → reads from ctx
@@ -165,13 +166,19 @@ This is the **key architectural change**. Instead of 3 separate CLI scripts, one
 // packages/core/src/cli/build.ts (new unified build command)
 export async function build(options: FrameworkOptions) {
   const ctx = new LessBuildContext(options);
-  
+
   // Phase 1: SSR build (vite build) — plugins populate ctx
-  await viteBuild({ plugins: [lessCore(options, ctx), lessContent({ ...options.content, ctx }), lessI18n({ ...options.i18n, ctx })] });
-  
+  await viteBuild({
+    plugins: [
+      lessCore(options, ctx),
+      lessContent({ ...options.content, ctx }),
+      lessI18n({ ...options.i18n, ctx }),
+    ],
+  });
+
   // Phase 2: Client build — reads ctx
   await buildClient(ctx);
-  
+
   // Phase 3: SSG render — reads ctx
   await buildSSG(ctx);
 }
@@ -193,15 +200,19 @@ export async function build(options: FrameworkOptions) {
 **File**: `packages/core/src/entry-renderer.ts`
 
 Currently SSG entry code does:
+
 ```typescript
-import { readFileSync } from "node:fs";
-let __headExtras = readFileSync(join(process.cwd(), ".less", "head-extras.html"), "utf-8");
+import { readFileSync } from 'node:fs';
+let __headExtras = readFileSync(join(process.cwd(), '.less', 'head-extras.html'), 'utf-8');
 ```
 
 Replace with `define` injection:
+
 ```typescript
 // In viteBuild config:
-define: { __LESS_HEAD_EXTRAS__: JSON.stringify(options.headExtras) }
+define: {
+  __LESS_HEAD_EXTRAS__: JSON.stringify(options.headExtras);
+}
 
 // In generated entry code:
 const __headExtras = __LESS_HEAD_EXTRAS__;
@@ -212,6 +223,7 @@ This eliminates the runtime file read AND the `.less/head-extras.html` file.
 #### A.8: Clean up `.less/` directory creation
 
 After A.1–A.7, search for all remaining `.less/` references and remove:
+
 - `mkdirSync(lessTmpDir, ...)` calls
 - `writeFileSync(join(lessTmpDir, ...))` calls
 - Any `.less/` path references in comments/docs
@@ -272,7 +284,7 @@ The function can stay (it generates the code), but it no longer writes to disk.
 ```typescript
 export function lessjs(options: LessjsOptions = {}): Plugin[] {
   const ctx = new LessBuildContext(resolvedCoreOptions);
-  
+
   return [
     ...less(resolvedCoreOptions, ctx),
     ...(options.content ? lessContent({ ...options.content, ctx }) : []),
@@ -282,6 +294,7 @@ export function lessjs(options: LessjsOptions = {}): Plugin[] {
 ```
 
 Where `LessjsOptions`:
+
 ```typescript
 interface LessjsOptions extends FrameworkOptions {
   content?: LessContentOptions;
@@ -296,8 +309,9 @@ Each function gets an optional `ctx` parameter. When called from `lessjs()`, the
 #### E.3: Keep backward compatibility
 
 `less()`, `lessContent()`, `lessI18n()` remain exported and work independently. Users can still do:
+
 ```typescript
-plugins: [less(), lessContent({ blog: true })]
+plugins: [less(), lessContent({ blog: true })];
 ```
 
 But `lessjs({ content: { blog: true } })` is the recommended path.
@@ -305,6 +319,7 @@ But `lessjs({ content: { blog: true } })` is the recommended path.
 #### E.4: Update CLI to use unified `build` command
 
 Replace the 3-script pipeline:
+
 ```bash
 deno task build        # runs: vite build + build:client + build:ssg
 ```

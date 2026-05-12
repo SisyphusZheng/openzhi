@@ -44,6 +44,7 @@ draft: false
 ### 1. core 导出收敛到 6 个公共 API
 
 保留：
+
 - `.`（主入口）
 - `./errors` — 用户需要 `LessError`
 - `./context` — 用户需要 `SsrContext`
@@ -52,6 +53,7 @@ draft: false
 - `./constants` — 公共常量（仅跨包共享的配置常量）
 
 移除（移到 adapter-vite 的 `CORE_SUBPATHS` 映射中）：
+
 - `./render-dsd` — 生成代码导入，非用户 API
 - `./html-escape` — 内部 HTML 转义，非用户 API
 - `./adapter-registry` — 内部适配器注册，非用户 API
