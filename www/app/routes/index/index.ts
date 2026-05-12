@@ -167,18 +167,33 @@ export default class DocsHome extends LitElement {
     .live-counter .val { font-size: 22px; font-weight: 500; color: #f4f4f5; min-width: 30px; text-align: center; }
 
     @media (max-width: 760px) {
+      .hero-inner { padding: 2rem 1.25rem 1.5rem; }
+      .code-strip { padding: 1.5rem 0; }
+      .code-strip-inner { padding: 0 1.25rem; }
       .code-compare { grid-template-columns: 1fr; }
       .cards { grid-template-columns: 1fr; }
       .uses { grid-template-columns: repeat(2, 1fr); }
       .use:nth-child(2) { border-right: 0; }
-      .demo { grid-template-columns: 1fr; }
       .demo-row { grid-template-columns: 1fr; }
       .qs { grid-template-columns: 1fr; }
       .qs-arrow { display: none; }
       .hero h1 { font-size: clamp(2rem, 8vw, 2.6rem); }
       .stats { gap: 16px; }
-      .bench table { font-size: 11px; }
+      .bench { overflow-x: auto; }
+      .bench table { font-size: 11px; min-width: 480px; }
       .bench th, .bench td { padding: 8px 10px; }
+      .sec { padding: 1.5rem 0 0; }
+      .sec-lbl { margin: 0 1.25rem 10px; }
+      .sec-bd { padding: 0 1.25rem; }
+      .doc-link { padding: 0.75rem; }
+    }
+    @media (max-width: 480px) {
+      .hero h1 { font-size: 1.75rem; }
+      .uses { grid-template-columns: 1fr; }
+      .use { border-right: 0; border-bottom: 0.5px solid var(--less-border); }
+      .use:last-child { border-bottom: 0; }
+      .hero-desc { font-size: 13px; }
+      .stat strong { font-size: 14px; }
     }
   `;
 
