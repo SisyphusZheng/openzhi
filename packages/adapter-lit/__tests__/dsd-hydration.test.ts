@@ -5,7 +5,7 @@
  * Uses a MockLitElement class since Deno has no browser DOM.
  */
 import { assertEquals, assertExists } from 'jsr:@std/assert@^1.0.0';
-import type { HydrateEventDescriptor } from '../../core/src/render-dsd.ts';
+import type { HydrateEventDescriptor } from '@lessjs/core';
 
 // ─── Mock DOM ─────────────────────────────────────────────────
 

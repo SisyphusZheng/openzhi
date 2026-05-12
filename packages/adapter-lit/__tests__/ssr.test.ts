@@ -116,7 +116,7 @@ Deno.test('installLitAdapter registers adapter via registerAdapter and uninstall
   installLitAdapter();
 
   // Verify the adapter is functional by testing through the registered adapter
-  const { registerAdapter: _registerAdapter } = await import('../../core/src/render-dsd.ts');
+  const { registerAdapter: _registerAdapter } = await import('@lessjs/core');
   // Adapter is already registered by installLitAdapter
   // Test that Lit TemplateResult is recognized
   const result = html`

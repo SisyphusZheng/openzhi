@@ -72,7 +72,7 @@ Deno.test('lessjs() with i18n adds less:i18n plugin', () => {
 Deno.test('lessjs() with i18n adds i18n-data plugin', () => {
   const names = lessjs({ i18n: { locales: ['en', 'zh'], defaultLocale: 'en' } })
     .map((p) => p.name);
-  assertArrayIncludes(names, ['less:i18n-data']);
+  assertArrayIncludes(names, ['less:data-dispatch']);
 });
 
 // ─── Content + i18n combined ──────────────────────────────────

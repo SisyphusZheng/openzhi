@@ -17,11 +17,12 @@
 import { join, resolve } from 'node:path';
 import process from 'node:process';
 import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
+import type { Plugin } from 'vite';
 import type { FrameworkOptions, PackageIslandMeta } from '@lessjs/core';
 import type { LessBuildContext } from '../build-context.js';
 import { SsrRenderError } from '@lessjs/core/errors';
 import { createLogger } from '@lessjs/core/logger';
-import { RESOLVED_NAV_ID, VIRTUAL_NAV_ID } from '@lessjs/adapter-vite/virtual-ids';
+import { RESOLVED_NAV_ID, VIRTUAL_NAV_ID } from '../virtual-ids.js';
 
 const log = createLogger('ssg');
 
@@ -256,11 +257,43 @@ async function buildSSG(options: BuildSSGOptions = {}, ctx: LessBuildContext): P
         },
         // ADR 0018: Virtual data modules — resolve virtual:less-blog-data
         // and virtual:less-i18n-data in the SSR bundle.
-        // Registered by @lessjs/content and @lessjs/i18n via ctx.plugins.
-        ctx.plugins.blogDataPlugin ??
-          { name: 'less:blog-data-stub', enforce: 'pre' as const, resolveId() {}, load() {} },
-        ctx.plugins.i18nDataPlugin ??
-          { name: 'less:i18n-data-stub', enforce: 'pre' as const, resolveId() {}, load() {} },
+        // Use dispatch plugin (checks ctx.plugins at resolve/load time).
+        // The actual plugin may not be registered yet at SSG build time.
+        // If not registered, the user hasn't configured blog/i18n → resolve as resolved ID
+        // and load() returns empty data.
+        {
+          name: 'less:ssg-data-dispatch',
+          enforce: 'pre',
+          resolveId(id) {
+            if (id === 'virtual:less-blog-data') return '\0virtual:less-blog-data';
+            if (id === 'virtual:less-i18n-data') return '\0virtual:less-i18n-data';
+          },
+          load(id) {
+            // Vite 8 Plugin.load type: function or {handler}
+            function callLoad(p: Plugin | null, moduleId: string): string | null | undefined {
+              if (!p?.load) return undefined;
+              const fn = typeof p.load === 'function'
+                ? p.load
+                : (p.load as Record<string, unknown>).handler;
+              // deno-lint-ignore no-explicit-any
+              return fn ? (fn as any)(moduleId) : undefined;
+            }
+            if (id === '\0virtual:less-blog-data') {
+              return callLoad(ctx.plugins.blogDataPlugin, id) ?? [
+                'export const posts = [];',
+                'export function getPostBySlug() { return undefined; }',
+                'export function getBlogOptions() { return {}; }',
+              ].join('\n');
+            }
+            if (id === '\0virtual:less-i18n-data') {
+              return callLoad(ctx.plugins.i18nDataPlugin, id) ?? [
+                'export const locales = [];',
+                'export function getDefaultLocale() { return "en"; }',
+                'export function getI18nOptions() { return null; }',
+              ].join('\n');
+            }
+          },
+        },
         // ADR 0008 Phase C: Provide stubs for optional packages.
         // The generated entry code statically imports @lessjs/adapter-lit,
         // @lessjs/content, @lessjs/i18n — but these may not be installed.

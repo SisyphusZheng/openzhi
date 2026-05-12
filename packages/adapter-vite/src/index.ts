@@ -409,9 +409,10 @@ export function less(options: FrameworkOptions = {}, externalCtx?: LessBuildCont
   return [
     corePlugin,
     createCoreResolvePlugin(metaUrl),
-    // Virtual data modules registered by @lessjs/content and @lessjs/i18n
-    ctx.plugins.blogDataPlugin ?? noopPlugin('less:blog-data'),
-    ctx.plugins.i18nDataPlugin ?? noopPlugin('less:i18n-data'),
+    // ADR 0021: Blog/i18n data plugins registered lazily by @lessjs/content
+    // and @lessjs/i18n during buildStart(). We dispatch resolve/load to
+    // whatever plugin is registered in ctx.plugins at call time.
+    dispatchDataPlugin(ctx),
     virtualEntryPlugin,
     devServerPlugin,
     islandTransformPlugin(resolvedOptions.islandsDir!),
@@ -420,9 +421,78 @@ export function less(options: FrameworkOptions = {}, externalCtx?: LessBuildCont
   ];
 }
 
-/** No-op plugin for when an optional sub-plugin is not installed */
-function noopPlugin(name: string): Plugin {
-  return { name, enforce: 'pre' as const, resolveId() {}, load() {} } as Plugin;
+/**
+ * Dispatch virtual data module resolve/load to plugins registered by
+ * @lessjs/content / @lessjs/i18n during buildStart().
+ *
+ * At less() construction time, ctx.plugins.blogDataPlugin is null because
+ * buildStart() hasn't run yet. This dispatcher checks ctx at call time,
+ * so the real plugin is used when it's available.
+ */
+function dispatchDataPlugin(ctx: LessBuildContext): Plugin {
+  const ENTRIES: Array<{
+    virtual: string;
+    resolved: string;
+    get: () => Plugin | null;
+    emptyCode: string;
+  }> = [
+    {
+      virtual: 'virtual:less-blog-data',
+      resolved: '\0virtual:less-blog-data',
+      get: () => ctx.plugins.blogDataPlugin,
+      emptyCode: [
+        'export const posts = [];',
+        'export function getPostBySlug() { return undefined; }',
+        'export function getBlogOptions() { return {}; }',
+      ].join('\n'),
+    },
+    {
+      virtual: 'virtual:less-i18n-data',
+      resolved: '\0virtual:less-i18n-data',
+      get: () => ctx.plugins.i18nDataPlugin,
+      emptyCode: [
+        'export const locales = [];',
+        'export function getDefaultLocale() { return "en"; }',
+        'export function getI18nOptions() { return null; }',
+      ].join('\n'),
+    },
+  ];
+
+  return {
+    name: 'less:data-dispatch',
+    enforce: 'pre',
+    resolveId(id) {
+      for (const e of ENTRIES) {
+        if (id === e.virtual) {
+          const real = e.get();
+          if (!real?.resolveId) return e.resolved;
+          // Vite 8 Plugin hook can be function or {handler, order}
+          const fn = typeof real.resolveId === 'function'
+            ? real.resolveId
+            : (real.resolveId as Record<string, unknown>).handler;
+          if (!fn) return e.resolved;
+          // deno-lint-ignore no-explicit-any
+          const result = (fn as any)(id);
+          return result ?? e.resolved;
+        }
+      }
+    },
+    load(id) {
+      for (const e of ENTRIES) {
+        if (id === e.resolved) {
+          const real = e.get();
+          if (!real?.load) return e.emptyCode;
+          // Vite 8 Plugin hook can be function or {handler, order}
+          const fn = typeof real.load === 'function'
+            ? real.load
+            : (real.load as Record<string, unknown>).handler;
+          if (!fn) return e.emptyCode;
+          // deno-lint-ignore no-explicit-any
+          return (fn as any)(id) ?? e.emptyCode;
+        }
+      }
+    },
+  };
 }
 
 // Re-export build utilities for CLI consumers

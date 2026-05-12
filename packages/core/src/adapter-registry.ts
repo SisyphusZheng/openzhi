@@ -12,6 +12,9 @@
 
 import type { RenderAdapter } from './types.js';
 
+// Re-export for consumers who import from @lessjs/core/adapter-registry
+export type { RenderAdapter } from './types.js';
+
 let _adapter: RenderAdapter | undefined;
 
 /** Register a render adapter explicitly. */
