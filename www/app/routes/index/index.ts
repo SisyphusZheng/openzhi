@@ -85,7 +85,7 @@ export default class DocsHome extends LitElement {
 
     /* ── Section titles ── */
     .sec { padding: 2.5rem 0 0; margin: 0 auto; max-width: 960px; }
-    .sec-lbl { font-size: 11px; font-weight: 600; color: #888780; text-transform: uppercase; letter-spacing: 0.12em; margin: 0 1.5rem 16px; }
+    .sec-lbl { font-size: 11px; font-weight: 600; color: var(--less-brand, #534AB7); text-transform: uppercase; letter-spacing: 0.14em; margin: 0 1.5rem 14px; }
     .sec-bd { padding: 0 1.5rem; }
 
     /* ── Feature cards ── */
@@ -124,20 +124,24 @@ export default class DocsHome extends LitElement {
     .demo-card h4 { margin: 0 0 12px; font-size: 12px; font-weight: 600; color: #d4d4d8; letter-spacing: 0.02em; }
     .demo-card pre { background: #101012 !important; border: 0.5px solid #27272a !important; border-radius: 6px; padding: 10px 12px !important; margin: 0 !important; font-size: 11px !important; line-height: 1.7 !important; color: #a1a1aa !important; overflow-x: auto; }
     .demo-card .note { font-size: 11px; color: #71717a; margin-top: 10px; line-height: 1.5; }
+    .demo-card.combined { padding: 1.5rem; margin-bottom: 2rem; border: none; }
+    .demo-card.combined:hover { border-color: transparent; }
+    .demo-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
     .counter { display: flex; align-items: center; gap: 10px; }
     .counter button { width: 34px; height: 34px; border-radius: 6px; border: 0.5px solid #3f3f46; background: #27272a; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #f4f4f5; }
     .counter button:hover { background: #3f3f46; }
     .counter span { font-size: 20px; font-weight: 500; color: #f4f4f5; min-width: 24px; text-align: center; }
 
-    /* ── Bundle size bars ── */
-    .bundle { margin-bottom: 2.5rem; }
-    .bar-row { display: flex; align-items: center; gap: 14px; margin-bottom: 8px; }
-    .bar-lbl { width: 80px; font-size: 12px; font-weight: 500; color: var(--less-text-primary); text-align: right; flex-shrink: 0; }
-    .bar-track { flex: 1; height: 32px; border-radius: 6px; background: var(--less-bg-surface); overflow: hidden; }
-    .bar-fill { height: 100%; border-radius: 6px; display: flex; align-items: center; padding-left: 12px; font-size: 12px; font-weight: 500; }
-    .bar-fill.g { background: #E1F5EE; color: #0F6E56; width: 2%; min-width: 60px; }
-    .bar-fill.r { background: #FCEBEB; color: #A32D2D; width: 100%; }
-    .bundle-note { font-size: 11px; color: var(--less-text-tertiary); margin-top: 6px; padding-left: 94px; line-height: 1.6; }
+    /* ── Bundle size bars (inside demo card) ── */
+    .bundle { margin-top: 16px; padding-top: 16px; border-top: 0.5px solid #27272a; }
+    .bundle h4 { font-size: 12px; font-weight: 600; color: #d4d4d8; margin-bottom: 8px; }
+    .bar-row { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
+    .bar-lbl { width: 70px; font-size: 12px; font-weight: 600; color: #d4d4d8; text-align: right; flex-shrink: 0; }
+    .bar-track { flex: 1; height: 26px; border-radius: 5px; background: #27272a; overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: 5px; display: flex; align-items: center; padding-left: 10px; font-size: 11px; font-weight: 600; }
+    .bar-fill.g { background: #1D9E75; color: #fff; width: 2%; min-width: 50px; }
+    .bar-fill.r { background: #D85A30; color: #fff; width: 100%; }
+    .bundle-note { font-size: 11px; color: #71717a; margin-top: 8px; line-height: 1.5; }
 
     /* ── Terminal (less-term-demo island) ── */
     less-term-demo { display: block; margin-bottom: 2.5rem; }
@@ -152,7 +156,7 @@ export default class DocsHome extends LitElement {
     /* ── CTA ── */
     .cta { text-align: center; padding: 2.5rem; width: 100vw; margin-left: calc(-50vw + 50%); border-top: 0.5px solid var(--less-border); }
     .cta-inner { max-width: 960px; margin: 0 auto; }
-    .cta code { display: inline-block; background: var(--less-bg-surface); border: 0.5px solid var(--less-border); border-radius: 8px; padding: 10px 20px; font-family: "SF Mono", "Fira Code", "Consolas", monospace; font-size: 13px; color: var(--less-text-primary); margin-bottom: 10px; }
+    .cta code { display: inline-block; background: var(--less-brand-subtle, #EEEDFE); border: 0.5px solid #CECBF6; border-radius: 8px; padding: 10px 20px; font-family: "SF Mono", "Fira Code", "Consolas", monospace; font-size: 13px; color: var(--less-brand, #534AB7); font-weight: 500; margin-bottom: 10px; }
     .cta p { margin: 0; font-size: 12px; color: var(--less-text-secondary); }
 
     /* ── Counter web component ── */
@@ -167,6 +171,7 @@ export default class DocsHome extends LitElement {
       .uses { grid-template-columns: repeat(2, 1fr); }
       .use:nth-child(2) { border-right: 0; }
       .demo { grid-template-columns: 1fr; }
+      .demo-row { grid-template-columns: 1fr; }
       .qs { grid-template-columns: 1fr; }
       .qs-arrow { display: none; }
       .hero h1 { font-size: clamp(2rem, 8vw, 2.6rem); }
@@ -225,7 +230,7 @@ export default class DocsHome extends LitElement {
 
         <div class="code-strip">
           <div class="code-strip-inner">
-            <div style="font-size:11px;font-weight:600;color:#888780;text-transform:uppercase;letter-spacing:0.12em;margin-bottom:16px;">你的组件 → SSG 输出</div>
+            <div style="font-size:11px;font-weight:600;color:var(--less-brand,#534AB7);text-transform:uppercase;letter-spacing:0.14em;margin-bottom:12px;">你的组件 → SSG 输出</div>
             <div class="code-compare">
               <div class="code-pane">
                 <div class="code-bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>你的组件</span></div>
@@ -307,35 +312,31 @@ export default class DocsHome extends LitElement {
         <div class="sec">
           <div class="sec-lbl">实际效果</div>
           <div class="sec-bd">
-            <div class="demo">
-              <div class="demo-card">
-                <h4>交互式 Counter — 点击按钮</h4>
-                ${this._counter(0)}
-                <div class="note">以原生 Custom Element 运行。零框架 JS 加载。</div>
+            <div class="demo-card combined">
+              <div class="demo-row">
+                <div class="demo-half">
+                  <h4>交互式 Counter — 点击按钮</h4>
+                  ${this._counter(0)}
+                  <div class="note">以原生 Custom Element 运行。零框架 JS 加载。</div>
+                </div>
+                <div class="demo-half">
+                  <h4>浏览器解析的内容</h4>
+                  <pre><code>${COUNTER_RAW}</code></pre>
+                  <div class="note">DSD 模板由浏览器原生解析 — 无 hydration 开销。</div>
+                </div>
               </div>
-              <div class="demo-card">
-                <h4>浏览器解析的内容</h4>
-                <pre><code>${COUNTER_RAW}</code></pre>
-                <div class="note">DSD 模板由浏览器原生解析 — 无 hydration 开销。</div>
+              <div class="bundle">
+                <h4>首屏 JS 对比</h4>
+                <div class="bar-row">
+                  <div class="bar-lbl">LessJS</div>
+                  <div class="bar-track"><div class="bar-fill g">0 kb</div></div>
+                </div>
+                <div class="bar-row">
+                  <div class="bar-lbl">Next.js</div>
+                  <div class="bar-track"><div class="bar-fill r">~90 kb react</div></div>
+                </div>
+                <div class="bundle-note">Island-only JS: 负载随组件复杂度增长，不随页面数量增长。</div>
               </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Bundle size -->
-        <div class="sec">
-          <div class="sec-lbl">首屏 JS 对比</div>
-          <div class="sec-bd">
-            <div class="bundle">
-              <div class="bar-row">
-                <div class="bar-lbl">LessJS</div>
-                <div class="bar-track"><div class="bar-fill g">0 kb</div></div>
-              </div>
-              <div class="bar-row">
-                <div class="bar-lbl">Next.js</div>
-                <div class="bar-track"><div class="bar-fill r">~90 kb react</div></div>
-              </div>
-              <div class="bundle-note">Island-only JS 意味着负载随组件复杂度增长，不随页面数量增长。50 页的站点和 1 页的站点 JS 大小相同。</div>
             </div>
           </div>
         </div>
@@ -390,7 +391,7 @@ export default class DocsHome extends LitElement {
 
         <div class="code-strip">
           <div class="code-strip-inner">
-            <div style="font-size:11px;font-weight:600;color:#888780;text-transform:uppercase;letter-spacing:0.12em;margin-bottom:16px;">your component → ssg output</div>
+            <div style="font-size:11px;font-weight:600;color:var(--less-brand,#534AB7);text-transform:uppercase;letter-spacing:0.14em;margin-bottom:12px;">your component → ssg output</div>
             <div class="code-compare">
               <div class="code-pane">
                 <div class="code-bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>your component</span></div>
@@ -470,36 +471,33 @@ export default class DocsHome extends LitElement {
         </div>
 
         <div class="sec">
-          <div class="sec-lbl">see it in action</div>
+          <div class="sec-lbl">live demo</div>
           <div class="sec-bd">
-            <div class="demo">
-              <div class="demo-card">
-                <h4>interactive counter — click the buttons</h4>
-                ${this._counter(0)}
-                <div class="note">runs as native custom element. zero framework js loaded.</div>
+            <div class="demo-card combined">
+              <div class="demo-row">
+                <div class="demo-half">
+                  <h4>interactive counter — click the buttons</h4>
+                  ${this._counter(0)}
+                  <div class="note">runs as native custom element. zero framework js loaded.</div>
+                </div>
+                <div class="demo-half">
+                  <h4>what the browser parses</h4>
+                  <pre><code>${COUNTER_RAW}</code></pre>
+                  <div class="note">dsd template parsed natively — no hydration cost.</div>
+                </div>
               </div>
-              <div class="demo-card">
-                <h4>what the browser parses</h4>
-                <pre><code>${COUNTER_RAW}</code></pre>
-                <div class="note">dsd template parsed natively — no hydration cost.</div>
+              <div class="bundle">
+                <h4>js at first paint</h4>
+                <div class="bar-row">
+                  <div class="bar-lbl">LessJS</div>
+                  <div class="bar-track"><div class="bar-fill g">0 kb</div></div>
+                </div>
+                <div class="bar-row">
+                  <div class="bar-lbl">Next.js</div>
+                  <div class="bar-track"><div class="bar-fill r">~90 kb react</div></div>
+                </div>
+                <div class="bundle-note">island-only js: payload scales with component complexity, not page count.</div>
               </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="sec">
-          <div class="sec-lbl">js at first paint</div>
-          <div class="sec-bd">
-            <div class="bundle">
-              <div class="bar-row">
-                <div class="bar-lbl">LessJS</div>
-                <div class="bar-track"><div class="bar-fill g">0 kb</div></div>
-              </div>
-              <div class="bar-row">
-                <div class="bar-lbl">Next.js</div>
-                <div class="bar-track"><div class="bar-fill r">~90 kb react</div></div>
-              </div>
-              <div class="bundle-note">island-only js means payload scales with component complexity, not page count. a 50-page site ships the same js as a 1-page site.</div>
             </div>
           </div>
         </div>
