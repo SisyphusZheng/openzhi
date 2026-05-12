@@ -360,3 +360,55 @@ export interface DsdOptions {
    */
   layer?: ComponentLayer;
 }
+
+/** Per-component DSD rendering metrics collected during SSR */
+export interface DsdRenderMetrics {
+  tagName: string;
+  renderTimeMs: number;
+  templateSize: number;
+  layer: ComponentLayer;
+  hasError: boolean;
+  nestingDepth: number;
+}
+
+/** Aggregate DSD rendering report for a build */
+export interface DsdReport {
+  totalComponents: number;
+  dsdComponents: number;
+  hydratedComponents: number;
+  pureIslands: number;
+  totalDsdSize: number;
+  maxNestingDepth: number;
+}
+
+/** Collects DSD render metrics during SSR for post-build reporting */
+export class DsdRenderCollector {
+  private _metrics: DsdRenderMetrics[] = [];
+
+  add(metrics: DsdRenderMetrics): void {
+    this._metrics.push(metrics);
+  }
+
+  get metrics(): readonly DsdRenderMetrics[] {
+    return this._metrics;
+  }
+
+  getReport(): DsdReport {
+    const dsdComponents = this._metrics.filter(
+      (m) => m.layer !== 'pure-island' || !m.hasError,
+    );
+    const pureIslands = this._metrics.filter((m) => m.layer === 'pure-island');
+    const hydrated = this._metrics.filter(
+      (m) => !m.hasError && m.layer !== 'pure-island',
+    );
+
+    return {
+      totalComponents: this._metrics.length,
+      dsdComponents: dsdComponents.length,
+      hydratedComponents: hydrated.length,
+      pureIslands: pureIslands.length,
+      totalDsdSize: this._metrics.reduce((sum, m) => sum + m.templateSize, 0),
+      maxNestingDepth: Math.max(...this._metrics.map((m) => m.nestingDepth), 0),
+    };
+  }
+}

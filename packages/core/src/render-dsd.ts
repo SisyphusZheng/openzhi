@@ -43,6 +43,7 @@ export {
   type ComponentLayer,
   type DsdComponent,
   type DsdOptions,
+  type DsdRenderCollector,
   type HydrateEventDescriptor,
   type RenderAdapter,
 } from './types.js';
@@ -126,7 +127,9 @@ export async function renderDSD(
   props: Record<string, unknown> = {},
   sourceInfo?: { route?: string; source?: string },
   dsdOptions?: DsdOptions,
+  collector?: DsdRenderCollector,
 ): Promise<string> {
+  const startTime = performance.now();
   const sourceStr = sourceInfo
     ? `${sourceInfo.route ? ` route="${sourceInfo.route}"` : ''}${
       sourceInfo.source ? ` source="${sourceInfo.source}"` : ''
@@ -203,7 +206,8 @@ export async function renderDSD(
   }
 
   // v0.6: L2 Nested DSD — recursively render nested Custom Elements
-  content = await renderNestedCustomElements(content);
+  // v0.12.0: Pass collector through for build-time DSD reporting
+  content = await renderNestedCustomElements(content, collector);
 
   // 5. Extract static styles from component class
   let styleCss = '';
@@ -223,6 +227,19 @@ export async function renderDSD(
   // v0.6.2: Layer 3 (pure-island) components skip DSD entirely.
   // The framework fully owns the shadow root — no pre-rendered template.
   const resolvedLayer = dsdOptions?.layer || instance.layer || 'dsd-static';
+
+  // ─── Collect DSD render metrics (if collector provided) ─────
+  const renderEnd = performance.now();
+  if (collector) {
+    collector.add({
+      tagName,
+      renderTimeMs: renderEnd - startTime,
+      templateSize: content.length,
+      layer: resolvedLayer,
+      hasError: false,
+      nestingDepth: 0,
+    });
+  }
 
   if (resolvedLayer === 'pure-island') {
     // Pure Island: no DSD template, framework will create shadow root on client

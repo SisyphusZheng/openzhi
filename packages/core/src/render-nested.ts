@@ -16,7 +16,7 @@
 
 import * as parse5 from 'parse5';
 import type { DefaultTreeAdapterMap } from 'parse5';
-import { type DsdOptions } from './types.js';
+import { type DsdOptions, type DsdRenderCollector } from './types.js';
 
 type P5Element = DefaultTreeAdapterMap['element'];
 type P5ChildNode = DefaultTreeAdapterMap['childNode'];
@@ -153,10 +153,11 @@ function isInsideDsdTemplate(node: P5Element): boolean {
  * v0.8.1: Fixed two critical bugs:
  *   - Use parseFragment() instead of parse() to avoid <html><head><body> wrapping
  *   - Only insert DSD template children (not full CE wrapper) into existing CE nodes
+ * v0.12.0: Added maxDepth parameter to prevent stack overflow on deeply nested components.
  *
  * Strategy:
  *   - Parse HTML → AST with parse5.parseFragment() (NOT parse() — avoids doc wrapping)
- *   - Collect all custom element nodes in a bottom-up order
+ *   - Collect custom element nodes in bottom-up order with depth tracking
  *   - For each un-rendered CE: render DSD, extract template + attrs, merge into CE
  *   - Serialize AST → HTML with parse5.serialize()
  *
@@ -165,8 +166,17 @@ function isInsideDsdTemplate(node: P5Element): boolean {
  *
  * Only processes tags with hyphens (valid Custom Element names)
  * that are registered in the global customElements registry.
+ *
+ * @param html - HTML string to process
+ * @param collector - Optional collector for DSD render metrics
+ * @param maxDepth - Maximum CE nesting depth. Nodes beyond this are skipped (default 10)
+ * @returns Processed HTML with nested DSD rendered
  */
-export async function renderNestedCustomElements(html: string): Promise<string> {
+export async function renderNestedCustomElements(
+  html: string,
+  collector?: DsdRenderCollector,
+  maxDepth = 10,
+): Promise<string> {
   if (!globalThis.customElements?.get) return html;
 
   // Import renderDSD dynamically to avoid circular dependency
@@ -180,14 +190,14 @@ export async function renderNestedCustomElements(html: string): Promise<string> 
   // Collect custom element nodes in bottom-up (deepest-first) order
   const ceNodes: P5Element[] = [];
 
-  function collectCustomElements(node: P5ChildNode): void {
+  function collectCustomElements(node: P5ChildNode, depth = 0): void {
     if (!('tagName' in node)) return;
     const element = node as P5Element;
 
     // Recurse into children first (bottom-up: children before parent)
     if (element.childNodes) {
       for (const child of element.childNodes) {
-        collectCustomElements(child);
+        collectCustomElements(child, depth + 1);
       }
     }
 
@@ -203,6 +213,9 @@ export async function renderNestedCustomElements(html: string): Promise<string> 
 
     // Skip if already has DSD
     if (elementAlreadyHasDSD(element)) return;
+
+    // Skip if exceeds max depth (prevents stack overflow on pathological nesting)
+    if (depth > maxDepth) return;
 
     ceNodes.push(element);
   }
@@ -222,7 +235,7 @@ export async function renderNestedCustomElements(html: string): Promise<string> 
     const dsdOpts = inferDsdOptions(tagName, Cls);
 
     // Render DSD HTML for this component
-    const dsdHtml = await renderDSD(tagName, Cls, props, undefined, dsdOpts);
+    const dsdHtml = await renderDSD(tagName, Cls, props, undefined, dsdOpts, collector);
 
     // Parse the DSD HTML into a fragment
     const dsdFragment = parse5.parseFragment(dsdHtml);
