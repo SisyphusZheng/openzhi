@@ -30,7 +30,7 @@
  */
 
 import type { Plugin, ViteDevServer } from 'vite';
-import type { HeaderNavLink, LessContentOptions, NavSection } from './types.ts';
+import type { LessContentOptions } from './types.ts';
 import type { LessBuildContext } from '@lessjs/adapter-vite/build-context';
 import { RESOLVED_BLOG_DATA_ID } from '@lessjs/adapter-vite/virtual-data';
 import { loadBlogData } from './blog/blog-data.ts';
@@ -73,10 +73,6 @@ export type { SitemapOptions, SitemapUrl } from './types.ts';
 const VIRTUAL_NAV_ID = 'virtual:less-nav';
 const RESOLVED_NAV_ID = '\0' + VIRTUAL_NAV_ID;
 
-/** Cached nav data (populated in buildStart) */
-let _navSections: NavSection[] = [];
-let _headerNav: HeaderNavLink[] = [];
-
 // ─── Main Plugin ────────────────────────────────────────────────
 
 /**
@@ -110,30 +106,26 @@ export function lessContent(
         );
 
         // Write blog options to ctx (ADR 0010: ctx replaces .less/ temp files)
-        // The virtual:less-blog-data plugin reads ctx.blogOptions in its load() hook
+        // The virtual:less-blog-data plugin reads ctx.plugins.blogOptions in its load() hook
         if (ctx) {
-          ctx.blogOptions = { contentDir, basePath };
+          ctx.plugins.blogOptions = { contentDir, basePath };
         }
       }
 
       // ─── Nav module ─────────────────────────────────────
       if (navOpts) {
-        _navSections = scanNavData(navOpts);
-        _headerNav = navOpts.headerNav || [];
-
-        // Write nav data to ctx (or fallback to virtual module resolution)
         if (ctx) {
-          ctx.navSections = _navSections;
-          ctx.headerNav = _headerNav;
+          ctx.plugins.navSections = scanNavData(navOpts);
+          ctx.plugins.headerNav = navOpts.headerNav || [];
         }
 
-        log.info(`Nav: ${_navSections.length} section(s) configured`);
+        log.info(`Nav: ${ctx?.plugins.navSections.length ?? 0} section(s) configured`);
       }
 
       // ─── Sitemap module ──────────────────────────────────
       if (sitemapOpts) {
         if (ctx) {
-          ctx.sitemapOptions = sitemapOpts as unknown as Record<string, unknown>;
+          ctx.plugins.sitemapOptions = sitemapOpts as unknown as Record<string, unknown>;
         }
         log.info(`Sitemap: configured for ${sitemapOpts.hostname}`);
       }
@@ -190,9 +182,11 @@ export function lessContent(
 
     load(id) {
       if (id === RESOLVED_NAV_ID) {
+        const navSections = ctx?.plugins.navSections ?? [];
+        const headerNav = ctx?.plugins.headerNav ?? [];
         return [
-          `export const navSections = ${JSON.stringify(_navSections)};`,
-          `export const headerNav = ${JSON.stringify(_headerNav)};`,
+          `export const navSections = ${JSON.stringify(navSections)};`,
+          `export const headerNav = ${JSON.stringify(headerNav)};`,
         ].join('\n');
       }
     },
