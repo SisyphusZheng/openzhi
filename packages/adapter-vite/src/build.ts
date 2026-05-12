@@ -12,16 +12,16 @@
 
 import type { Plugin, ResolvedConfig } from 'vite';
 import type { FrameworkOptions } from '@lessjs/core';
-import type { LessBuildContext } from './build-context.js';
+import type { LessBuildContext, Phase1Token, Phase2Token } from './build-context.js';
 import { createLogger } from '@lessjs/core/logger';
 
 const log = createLogger('core');
 
-/** A single build step with name, phase number, and error isolation. */
+/** A single build step with name, phase number, error isolation, and compile-time ordering. */
 export interface BuildStep {
   readonly name: string;
   readonly phase: 1 | 2 | 3;
-  run(ctx: LessBuildContext): Promise<void>;
+  run(ctx: LessBuildContext, token: Phase1Token | Phase2Token): Promise<void>;
 }
 
 /** Phase 2: Client island bundle */
@@ -29,7 +29,8 @@ class ClientBuildStep implements BuildStep {
   readonly name = 'Client island build';
   readonly phase = 2 as const;
 
-  async run(ctx: LessBuildContext): Promise<void> {
+  async run(ctx: LessBuildContext, token: Phase1Token): Promise<void> {
+    ctx.completePhase2(token);
     const { buildClient } = await import('./cli/build-client.js');
     await buildClient(ctx);
   }
@@ -40,7 +41,8 @@ class SSGBuildStep implements BuildStep {
   readonly name = 'Static site generation';
   readonly phase = 3 as const;
 
-  async run(ctx: LessBuildContext): Promise<void> {
+  async run(ctx: LessBuildContext, token: Phase1Token | Phase2Token): Promise<void> {
+    ctx.verifyPhase2(token as Phase2Token);
     const { buildSSG } = await import('./cli/build-ssg.js');
     await buildSSG({}, ctx);
   }
@@ -102,18 +104,23 @@ export function buildPlugin(options: FrameworkOptions = {}, ctx?: LessBuildConte
 
       log.info('Phase 1/3 complete — SSR bundle + metadata written to ctx');
 
-      // ─── Build steps (Phase 2 + Phase 3) ──────────
-      // ADR 0022: Extracted into explicit BuildStep classes.
-      // Steps run sequentially; each has its own try-catch so the
-      // error message identifies which phase failed.
+      // ADR 0021: Compile-time phase ordering via branded tokens.
+      // Phase 1 token is created when Phase 1 completes (above).
+      // Phase 2 steps receive Phase1Token; Phase 3 receives Phase2Token.
+      const phase1Token = ctx!.completePhase1();
       const steps: BuildStep[] = [];
       if (ctx && totalIslands > 0) steps.push(new ClientBuildStep());
       if (ctx) steps.push(new SSGBuildStep());
 
+      let currentToken: Phase1Token | Phase2Token = phase1Token;
       for (const step of steps) {
         try {
           log.info(`[${step.phase}/3] ${step.name}...`);
-          await step.run(ctx!);
+          await step.run(ctx!, currentToken);
+          // After step completes, update token for next phase
+          if (step.phase === 2) {
+            currentToken = ctx!._phaseTokens[2] as Phase2Token;
+          }
           log.info(`[${step.phase}/3] ${step.name} — complete`);
         } catch (error) {
           log.error(`[${step.phase}/3] ${step.name} — FAILED:`, error);

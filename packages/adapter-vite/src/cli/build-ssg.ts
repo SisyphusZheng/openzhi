@@ -21,7 +21,7 @@ import type { FrameworkOptions, PackageIslandMeta } from '@lessjs/core';
 import type { LessBuildContext } from '../build-context.js';
 import { SsrRenderError } from '@lessjs/core/errors';
 import { createLogger } from '@lessjs/core/logger';
-import { RESOLVED_NAV_ID, VIRTUAL_NAV_ID } from '@lessjs/core/constants';
+import { RESOLVED_NAV_ID, VIRTUAL_NAV_ID } from '@lessjs/adapter-vite/virtual-ids';
 
 const log = createLogger('ssg');
 

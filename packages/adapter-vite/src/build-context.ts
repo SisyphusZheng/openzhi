@@ -20,6 +20,14 @@
 import type { Alias, Plugin, ResolvedConfig } from 'vite';
 import type { FrameworkOptions, PackageIslandMeta, RouteEntry } from '@lessjs/core';
 
+// ─── Phase Branded Types (compile-time ordering enforcement) ───
+// These branded types ensure Phase 2 can only run after Phase 1,
+// and Phase 3 can only run after Phase 2. The compiler catches
+// out-of-order phase calls at build time.
+export type Phase1Token = { readonly __phase1: unique symbol };
+export type Phase2Token = { readonly __phase2: unique symbol };
+export type Phase3Token = { readonly __phase3: unique symbol };
+
 // ─── Phase 1: Route scanning & build metadata ───────────────────
 export class Phase1Meta {
   /** The generated Hono entry module code (virtual module content) */
@@ -133,6 +141,39 @@ export class PluginMeta {
 
 // ─── Root context ────────────────────────────────────────────────
 export class LessBuildContext {
+  /** Phase completion tokens — used for compile-time ordering enforcement */
+  readonly _phaseTokens: {
+    1: Phase1Token | null;
+    2: Phase2Token | null;
+    3: Phase3Token | null;
+  } = { 1: null, 2: null, 3: null };
+
+  /** Mark Phase 1 as complete and return the token for Phase 2 entry */
+  completePhase1(): Phase1Token {
+    const token: Phase1Token = { __phase1: Symbol() as never };
+    this._phaseTokens[1] = token;
+    return token;
+  }
+
+  /** Mark Phase 2 as complete and return the token for Phase 3 entry */
+  completePhase2(token: Phase1Token): Phase2Token {
+    if (this._phaseTokens[1] !== token) {
+      throw new Error('Phase 2 called before Phase 1 completed');
+    }
+    const t2: Phase2Token = { __phase2: Symbol() as never };
+    this._phaseTokens[2] = t2;
+    return t2;
+  }
+
+  /** Verify Phase 2 token is valid (called before Phase 3) */
+  verifyPhase2(token: Phase2Token): Phase3Token {
+    if (this._phaseTokens[2] !== token) {
+      throw new Error('Phase 3 called before Phase 2 completed');
+    }
+    const t3: Phase3Token = { __phase3: Symbol() as never };
+    this._phaseTokens[3] = t3;
+    return t3;
+  }
   /** Phase 1: Route scanning & build metadata */
   readonly phase1: Phase1Meta = new Phase1Meta();
 

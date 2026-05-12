@@ -49,6 +49,7 @@
     "publish:app": "cd packages/app && deno publish --allow-dirty",
     "publish": "deno task publish:rpc && deno task publish:signal && deno task publish:core && deno task publish:adapter-vite && deno task publish:content && deno task publish:i18n && deno task publish:adapter-lit && deno task publish:ui && deno task publish:app && deno task publish:create",
     "test": "deno test --allow-read --allow-write --allow-env --allow-net --allow-run",
+    "test:coverage": "deno test --coverage=.coverage --allow-read --allow-write --allow-env --allow-net --allow-run && deno coverage .coverage --lcov > .coverage/lcov.info",
     "test:watch": "deno test --allow-read --allow-write --allow-env --allow-net --allow-run --watch",
     "test:e2e": "npx -y @playwright/test test --config www/e2e/playwright.config.ts",
     "test:e2e:install": "npx -y playwright install chromium",

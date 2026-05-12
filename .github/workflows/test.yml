@@ -40,7 +40,7 @@ jobs:
       - name: Install dependencies
         run: deno install --node-modules-dir
       - name: Run core tests
-        run: deno test packages/core/__tests__/ --allow-read --allow-write --allow-env --allow-run --allow-ffi
+        run: deno test packages/core/__tests__/ --coverage --allow-read --allow-write --allow-env --allow-run --allow-ffi
 
   test-adapter-vite:
     runs-on: ubuntu-latest
@@ -57,7 +57,7 @@ jobs:
       - name: Install dependencies
         run: deno install --node-modules-dir
       - name: Run adapter-vite tests
-        run: deno test packages/adapter-vite/__tests__/ --allow-read --allow-write --allow-env --allow-run --allow-ffi
+        run: deno test packages/adapter-vite/__tests__/ --coverage --allow-read --allow-write --allow-env --allow-run --allow-ffi
 
   test-rpc:
     runs-on: ubuntu-latest
@@ -74,7 +74,7 @@ jobs:
       - name: Install dependencies
         run: deno install --node-modules-dir
       - name: Run rpc tests
-        run: deno test packages/rpc/__tests__/ --allow-read --allow-write
+        run: deno test packages/rpc/__tests__/ --coverage --allow-read --allow-write
 
   test-ui:
     runs-on: ubuntu-latest
@@ -91,7 +91,7 @@ jobs:
       - name: Install dependencies
         run: deno install --node-modules-dir
       - name: Run ui tests
-        run: deno test packages/ui/__tests__/ --allow-read --allow-write --allow-env
+        run: deno test packages/ui/__tests__/ --coverage --allow-read --allow-write --allow-env
 
   test-create:
     runs-on: ubuntu-latest
@@ -108,7 +108,7 @@ jobs:
       - name: Install dependencies
         run: deno install --node-modules-dir
       - name: Run create tests
-        run: deno test packages/create/__tests__/ --allow-read --allow-write --allow-env --allow-run --allow-ffi
+        run: deno test packages/create/__tests__/ --coverage --allow-read --allow-write --allow-env --allow-run --allow-ffi
 
   test-i18n:
     runs-on: ubuntu-latest
@@ -125,7 +125,7 @@ jobs:
       - name: Install dependencies
         run: deno install --node-modules-dir
       - name: Run i18n tests
-        run: deno test packages/i18n/__tests__/ --allow-read --allow-write --allow-env
+        run: deno test packages/i18n/__tests__/ --coverage --allow-read --allow-write --allow-env
 
   test-content:
     runs-on: ubuntu-latest
@@ -142,7 +142,7 @@ jobs:
       - name: Install dependencies
         run: deno install --node-modules-dir
       - name: Run content tests
-        run: deno test packages/content/__tests__/ --allow-read --allow-write --allow-env
+        run: deno test packages/content/__tests__/ --coverage --allow-read --allow-write --allow-env
 
   test-adapter-lit:
     runs-on: ubuntu-latest
@@ -159,7 +159,7 @@ jobs:
       - name: Install dependencies
         run: deno install --node-modules-dir
       - name: Run adapter-lit tests
-        run: deno test packages/adapter-lit/__tests__/ --allow-read --allow-write --allow-env
+        run: deno test packages/adapter-lit/__tests__/ --coverage --allow-read --allow-write --allow-env
 
   build-www:
     runs-on: ubuntu-latest
