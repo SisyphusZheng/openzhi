@@ -21,7 +21,6 @@ import type { FrameworkOptions, PackageIslandMeta } from '@lessjs/core';
 import type { LessBuildContext } from '../build-context.js';
 import { SsrRenderError } from '@lessjs/core/errors';
 import { createLogger } from '@lessjs/core/logger';
-import { createBlogDataPlugin, createI18nDataPlugin } from '../virtual-data.js';
 
 const log = createLogger('ssg');
 
@@ -255,9 +254,12 @@ async function buildSSG(options: BuildSSGOptions = {}, ctx: LessBuildContext): P
           },
         },
         // ADR 0018: Virtual data modules — resolve virtual:less-blog-data
-        // and virtual:less-i18n-data in the SSR bundle
-        createBlogDataPlugin(ctx),
-        createI18nDataPlugin(ctx),
+        // and virtual:less-i18n-data in the SSR bundle.
+        // Registered by @lessjs/content and @lessjs/i18n via ctx.plugins.
+        ctx.plugins.blogDataPlugin ??
+          { name: 'less:blog-data-stub', enforce: 'pre' as const, resolveId() {}, load() {} },
+        ctx.plugins.i18nDataPlugin ??
+          { name: 'less:i18n-data-stub', enforce: 'pre' as const, resolveId() {}, load() {} },
         // ADR 0008 Phase C: Provide stubs for optional packages.
         // The generated entry code statically imports @lessjs/adapter-lit,
         // @lessjs/content, @lessjs/i18n — but these may not be installed.

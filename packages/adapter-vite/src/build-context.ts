@@ -17,7 +17,7 @@
  * Fields are grouped by Phase to improve type safety and maintainability.
  */
 
-import type { Alias, ResolvedConfig } from 'vite';
+import type { Alias, Plugin, ResolvedConfig } from 'vite';
 import type { FrameworkOptions, PackageIslandMeta, RouteEntry } from '@lessjs/core';
 
 // ─── Phase 1: Route scanning & build metadata ───────────────────
@@ -106,6 +106,12 @@ export class PluginMeta {
   /** Blog options from @lessjs/content plugin */
   blogOptions: { contentDir?: string; basePath?: string } | null = null;
 
+  /** Blog data virtual module plugin, registered by @lessjs/content */
+  blogDataPlugin: Plugin | null = null;
+
+  /** i18n data virtual module plugin, registered by @lessjs/i18n */
+  i18nDataPlugin: Plugin | null = null;
+
   /** Navigation sections from @lessjs/content plugin */
   navSections: unknown[] = [];
 
@@ -173,6 +179,8 @@ export class LessBuildContext {
     this.phase3.islandsDir = 'app/islands';
     this.phase3.componentsDir = 'app/components';
     this.plugins.blogOptions = null;
+    this.plugins.blogDataPlugin = null;
+    this.plugins.i18nDataPlugin = null;
     this.plugins.navSections = [];
     this.plugins.headerNav = [];
     this.plugins.sitemapOptions = null;

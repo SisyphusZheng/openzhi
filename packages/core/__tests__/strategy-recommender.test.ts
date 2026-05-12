@@ -2,7 +2,7 @@
  * @lessjs/core - strategy-recommender.ts tests (Deno)
  */
 import { assertEquals } from 'jsr:@std/assert@^1.0.0';
-import { recommendStrategy, buildRecommendation } from '../src/strategy-recommender.ts';
+import { buildRecommendation, recommendStrategy } from '../src/strategy-recommender.ts';
 import type { IslandProfile } from '../src/strategy-recommender.ts';
 
 function makeProfile(overrides: Partial<IslandProfile> = {}): IslandProfile {

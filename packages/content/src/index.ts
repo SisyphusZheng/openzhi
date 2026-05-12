@@ -109,6 +109,10 @@ export function lessContent(
         // The virtual:less-blog-data plugin reads ctx.plugins.blogOptions in its load() hook
         if (ctx) {
           ctx.plugins.blogOptions = { contentDir, basePath };
+          // Register blog data virtual module plugin with adapter-vite
+          // Lives here (not in adapter-vite) to avoid circular deps
+          const { createBlogDataPlugin } = await import('./blog-data-plugin.ts');
+          ctx.plugins.blogDataPlugin = createBlogDataPlugin(ctx);
         }
       }
 

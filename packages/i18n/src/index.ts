@@ -60,7 +60,7 @@ export function lessI18n(
   return {
     name: 'less:i18n',
 
-    buildStart() {
+    async buildStart() {
       // ADR 0018: Use loadI18nData() pure function — zero module state
       const i18nData = loadI18nData(options);
 
@@ -71,6 +71,10 @@ export function lessI18n(
           locales: i18nData.locales,
           defaultLocale: i18nData.defaultLocale,
         };
+        // Register i18n data virtual module plugin with adapter-vite
+        // Lives here (not in adapter-vite) to avoid circular deps
+        const { createI18nDataPlugin } = await import('./i18n-data-plugin.ts');
+        ctx.plugins.i18nDataPlugin = createI18nDataPlugin(ctx);
       }
 
       log.info(`${options.locales.join(', ')} (default: ${options.defaultLocale})`);

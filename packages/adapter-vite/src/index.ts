@@ -34,7 +34,6 @@ import { devtoolsPlugin } from './devtools/index.js';
 import { generateHonoEntryCode } from './hono-entry.js';
 import { islandTransformPlugin } from './island-transform.js';
 import { fileToTagName, scanIslands, scanPackageIslands, scanRoutes } from './route-scanner.js';
-import { createBlogDataPlugin, createI18nDataPlugin } from './virtual-data.js';
 
 // ─── Subpath resolution (ADR 0016 — JSR remote only) ─────────────
 //
@@ -415,14 +414,20 @@ export function less(options: FrameworkOptions = {}, externalCtx?: LessBuildCont
   return [
     corePlugin,
     createCoreResolvePlugin(metaUrl),
-    createBlogDataPlugin(ctx),
-    createI18nDataPlugin(ctx),
+    // Virtual data modules registered by @lessjs/content and @lessjs/i18n
+    ctx.plugins.blogDataPlugin ?? noopPlugin('less:blog-data'),
+    ctx.plugins.i18nDataPlugin ?? noopPlugin('less:i18n-data'),
     virtualEntryPlugin,
     devServerPlugin,
     islandTransformPlugin(resolvedOptions.islandsDir!),
     buildPlugin(resolvedOptions, ctx),
     devtoolsPlugin(),
   ];
+}
+
+/** No-op plugin for when an optional sub-plugin is not installed */
+function noopPlugin(name: string): Plugin {
+  return { name, enforce: 'pre' as const, resolveId() {}, load() {} } as Plugin;
 }
 
 // Re-export build utilities for CLI consumers
