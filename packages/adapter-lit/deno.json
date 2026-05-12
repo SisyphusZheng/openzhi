@@ -7,11 +7,8 @@
     "./dsd-hydration": "./src/dsd-hydration.ts"
   },
   "imports": {
-    "@lessjs/core": "jsr:@lessjs/core@^0.12",
-    "@lessjs/core/html-escape": "jsr:@lessjs/core@^0.12/html-escape",
-    "@lessjs/core/render-dsd": "jsr:@lessjs/core@^0.12/render-dsd",
-    "@lessjs/core/logger": "jsr:@lessjs/core@^0.12/logger",
-    "@lessjs/core/adapter-registry": "jsr:@lessjs/core@^0.12/adapter-registry"
+    "@lessjs/core": "jsr:@lessjs/core@^0.13",
+    "@lessjs/core/logger": "jsr:@lessjs/core@^0.13/logger"
   },
   "tasks": {
     "build": "deno check src/index.ts src/ssr.ts src/dsd-hydration.ts"
