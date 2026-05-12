@@ -17,7 +17,7 @@ import { less } from '../src/index.ts';
 // Verify core re-exports work (imported via @lessjs/core subpaths)
 import { LessError, SsrRenderError } from '@lessjs/core/errors';
 import { createSsrContext, extractParams, parseQuery } from '@lessjs/core/context';
-import { renderSsrError, wrapInDocument } from '@lessjs/core/ssr-handler';
+import { renderSsrError, wrapInDocument } from '@lessjs/core';
 
 import { buildIslandChunkMap, injectClientScript, injectCspMeta } from '../src/ssg-postprocess.ts';
 

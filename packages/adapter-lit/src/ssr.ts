@@ -106,20 +106,13 @@ function isNothing(value: unknown): boolean {
  *   - Dynamic interpolations are escaped (except unsafeHTML directive)
  */
 
-// Re-export escape utilities from @lessjs/core/html-escape (single source of truth)
-// JSR requires bare specifiers for cross-package imports — relative paths
-// like '../../core/src/html-escape.js' won't resolve once published.
-// NOTE: Use @lessjs/core/html-escape (not @lessjs/core) to avoid pulling in the
-// entire core dependency graph (Hono, Vite, etc.) when Vite SSR loads this module.
-export { camelToKebab } from '@lessjs/core/render-dsd';
-export { escapeAttr, escapeHtml } from '@lessjs/core/html-escape';
-import { camelToKebab } from '@lessjs/core/render-dsd';
-import { escapeAttr, escapeHtml } from '@lessjs/core/html-escape';
+// Re-export utilities from @lessjs/core (single source of truth)
+// @lessjs/core is a pure runtime with zero node:*, zero Vite, zero npm: deps.
+// ADR 0021: Always import from @lessjs/core main entry, never from subpaths.
+export { camelToKebab, escapeAttr, escapeHtml } from '@lessjs/core';
+import { camelToKebab, escapeAttr, escapeHtml } from '@lessjs/core';
 import type { RenderAdapter } from '@lessjs/core';
-// Import registerAdapter from @lessjs/core/adapter-registry so it shares the same
-// module scope as renderDSD when loaded through Vite SSR — no globalThis bridge needed.
-// ADR 0013: import directly from adapter-registry instead of less-runtime barrel.
-import { registerAdapter } from '@lessjs/core/adapter-registry';
+import { registerAdapter } from '@lessjs/core';
 import { createLogger } from '@lessjs/core/logger';
 
 const log = createLogger('core');

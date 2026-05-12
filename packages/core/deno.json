@@ -3,9 +3,6 @@
   "version": "0.12.1",
   "exports": {
     ".": "./src/index.ts",
-    "./render-dsd": "./src/render-dsd.ts",
-    "./html-escape": "./src/html-escape.ts",
-    "./adapter-registry": "./src/adapter-registry.ts",
     "./errors": "./src/errors.ts",
     "./context": "./src/context.ts",
     "./logger": "./src/logger.ts",

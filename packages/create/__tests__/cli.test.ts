@@ -94,11 +94,7 @@ Deno.test('create-less: deno.json maps Lit and package imports explicitly', () =
   assertExists(denoJson.imports['@lessjs/app'].includes('0.2'));
   assertExists(denoJson.imports['@lessjs/adapter-lit'].includes('0.8'));
   assertExists(denoJson.imports['@lessjs/core'].includes('0.10'));
-  assertExists(denoJson.imports['@lessjs/core/adapter-registry'].includes('0.10'));
-  assertExists(denoJson.imports['@lessjs/core/html-escape'].includes('0.10'));
   assertExists(denoJson.imports['@lessjs/core/navigation'].includes('0.10'));
-  assertExists(denoJson.imports['@lessjs/core/render-dsd'].includes('0.10'));
-  assertExists(denoJson.imports['@lessjs/core/ssr-handler'].includes('0.10'));
   assertExists(denoJson.imports['@lessjs/ui'].includes('0.7'));
   assertExists(denoJson.imports['@lessjs/ui/tokens/colors'].includes('0.7'));
   assertExists(denoJson.imports['@lessjs/ui/tokens/color-values'].includes('0.7'));
@@ -180,23 +176,11 @@ Deno.test('create-less: generated project builds through the one-command pipelin
     denoJson.imports['@lessjs/core'] = pathToFileURL(
       join(repoRoot, 'packages', 'core', 'src', 'index.ts'),
     ).href;
-    denoJson.imports['@lessjs/core/adapter-registry'] = pathToFileURL(
-      join(repoRoot, 'packages', 'core', 'src', 'adapter-registry.ts'),
-    ).href;
     denoJson.imports['@lessjs/core/logger'] = pathToFileURL(
       join(repoRoot, 'packages', 'core', 'src', 'logger.ts'),
     ).href;
     denoJson.imports['@lessjs/core/navigation'] = pathToFileURL(
       join(repoRoot, 'packages', 'core', 'src', 'navigation.ts'),
-    ).href;
-    denoJson.imports['@lessjs/core/html-escape'] = pathToFileURL(
-      join(repoRoot, 'packages', 'core', 'src', 'html-escape.ts'),
-    ).href;
-    denoJson.imports['@lessjs/core/ssr-handler'] = pathToFileURL(
-      join(repoRoot, 'packages', 'core', 'src', 'ssr-handler.ts'),
-    ).href;
-    denoJson.imports['@lessjs/core/render-dsd'] = pathToFileURL(
-      join(repoRoot, 'packages', 'core', 'src', 'render-dsd.ts'),
     ).href;
     denoJson.imports['@lessjs/adapter-vite/build-context'] = pathToFileURL(
       join(repoRoot, 'packages', 'adapter-vite', 'src', 'build-context.ts'),
@@ -243,28 +227,12 @@ Deno.test('create-less: generated project builds through the one-command pipelin
         replacement: vitePath(join(repoRoot, 'packages', 'adapter-vite', 'src', 'index.ts')),
       },
       {
-        find: '@lessjs/core/render-dsd',
-        replacement: vitePath(join(repoRoot, 'packages', 'core', 'src', 'render-dsd.ts')),
-      },
-      {
         find: '@lessjs/core/logger',
         replacement: vitePath(join(repoRoot, 'packages', 'core', 'src', 'logger.ts')),
       },
       {
-        find: '@lessjs/core/adapter-registry',
-        replacement: vitePath(join(repoRoot, 'packages', 'core', 'src', 'adapter-registry.ts')),
-      },
-      {
         find: '@lessjs/core/navigation',
         replacement: vitePath(join(repoRoot, 'packages', 'core', 'src', 'navigation.ts')),
-      },
-      {
-        find: '@lessjs/core/html-escape',
-        replacement: vitePath(join(repoRoot, 'packages', 'core', 'src', 'html-escape.ts')),
-      },
-      {
-        find: '@lessjs/core/ssr-handler',
-        replacement: vitePath(join(repoRoot, 'packages', 'core', 'src', 'ssr-handler.ts')),
       },
       {
         find: '@lessjs/core',

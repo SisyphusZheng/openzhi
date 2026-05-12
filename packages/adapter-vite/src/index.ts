@@ -22,7 +22,7 @@ import process from 'node:process';
 import { transform as esbuildTransform } from 'esbuild';
 import { LessError } from '@lessjs/core/errors';
 import { createLogger } from '@lessjs/core/logger';
-import { escapeAttr as escapeHtmlAttr } from '@lessjs/core/html-escape';
+import { escapeAttr as escapeHtmlAttr } from '@lessjs/core';
 
 const log = createLogger('adapter-vite');
 
@@ -52,9 +52,6 @@ const VIRTUAL_CORE_PREFIX = '\0lessjs:core/src/';
 
 /** Mapping of @lessjs/core/* subpath specifiers to source files (used by JSR remote resolution only) */
 const CORE_SUBPATHS: Record<string, string> = {
-  'html-escape': 'html-escape.ts',
-  'render-dsd': 'render-dsd.ts',
-  'adapter-registry': 'adapter-registry.ts',
   'logger': 'logger.ts',
   'build-context': 'build-context.ts',
   'navigation': 'navigation.ts',

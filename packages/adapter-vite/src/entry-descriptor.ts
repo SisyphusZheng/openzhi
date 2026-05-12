@@ -221,10 +221,9 @@ export function buildEntryDescriptor(
   imports.push({ from: 'hono', names: ['Hono'] });
   // v0.5.0: DSD renderer replaces the old Lit SSR pipeline.
   // Components use render(): string — no TemplateResult, no <!--lit-part--> markers.
-  // Import from the lightweight runtime export so SSG never loads the Vite plugin
-  // or dev-server dependency graph.
-  imports.push({ from: '@lessjs/core/render-dsd', names: ['renderDSD', 'renderDSDByName'] });
-  imports.push({ from: '@lessjs/core/html-escape', names: ['escapeHtml'] });
+  // ADR 0021: Always import from @lessjs/core main entry.
+  // @lessjs/core is a pure runtime with zero Vite/Hono dependencies.
+  imports.push({ from: '@lessjs/core', names: ['renderDSD', 'renderDSDByName', 'escapeHtml'] });
 
   // Conditional middleware imports
   const mw = options.middleware;
