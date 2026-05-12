@@ -26,12 +26,7 @@ import {
   VIRTUAL_BLOG_DATA_ID,
   VIRTUAL_I18N_DATA_ID,
 } from '@lessjs/core/constants';
-export {
-  RESOLVED_BLOG_DATA_ID,
-  RESOLVED_I18N_DATA_ID,
-  VIRTUAL_BLOG_DATA_ID,
-  VIRTUAL_I18N_DATA_ID,
-};
+export { RESOLVED_BLOG_DATA_ID, RESOLVED_I18N_DATA_ID, VIRTUAL_BLOG_DATA_ID, VIRTUAL_I18N_DATA_ID };
 
 // ─── Blog data virtual module ──────────────────────────────────
 
