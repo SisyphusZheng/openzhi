@@ -75,7 +75,7 @@ export default defineConfig({
           '<script defer src="/mobile-menu.js"></script>',
           // Code syntax highlighting (Prism, loaded async to avoid blocking)
           '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" media="print" onload="this.media=\'all\'">',
-          '<script defer src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>',
+          '<script defer src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>',
           // Pre-load common grammars with PROPER dependency order:
           // typescript extends javascript → javascript MUST load before typescript
           '<script defer src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>',

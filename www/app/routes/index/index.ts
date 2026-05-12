@@ -124,7 +124,7 @@ export default class DocsHome extends LitElement {
 
     /* ── Quick start ── */
     .qs { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; align-items: center; margin-bottom: 2.5rem; }
-    .qs-card { border: 0.5px solid var(--less-border); border-radius: 10px; padding: 1.25rem; }
+    .qs-card { border: 0.5px solid var(--less-border); border-radius: 10px; padding: 1.25rem; background: var(--less-bg-surface); }
     .qs-step { font-size: 11px; font-weight: 600; color: #888780; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px; }
     .qs-card code { font-family: "SF Mono", "Fira Code", "Consolas", monospace; font-size: 12.5px; color: var(--less-text-primary); line-height: 1.6; white-space: nowrap; }
     .qs-arrow { color: #d4d4d8; font-size: 16px; text-align: center; user-select: none; }
@@ -149,6 +149,10 @@ export default class DocsHome extends LitElement {
       .demo { grid-template-columns: 1fr; }
       .qs { grid-template-columns: 1fr; }
       .qs-arrow { display: none; }
+      .hero h1 { font-size: clamp(2rem, 8vw, 2.6rem); }
+      .stats { gap: 16px; }
+      .bench table { font-size: 11px; }
+      .bench th, .bench td { padding: 8px 10px; }
     }
   `;
 
@@ -158,12 +162,11 @@ export default class DocsHome extends LitElement {
 
   /* ── counterState helper: used in render to create interactive counter ── */
   private _counter(initial = 0) {
-    const id = `c_${Math.random().toString(36).slice(2, 6)}`;
     return html`
       <div class="live-counter">
-        <button @click="${() => { const el = this.shadowRoot?.querySelector(`#${id}`); if (el) el.textContent = String(Number(el.textContent) - 1); }}">−</button>
-        <span id="${id}" class="val">${initial}</span>
-        <button @click="${() => { const el = this.shadowRoot?.querySelector(`#${id}`); if (el) el.textContent = String(Number(el.textContent) + 1); }}">+</button>
+        <button @click="${(e: Event) => { const el = (e.target as HTMLElement).parentElement!.querySelector('.val') as HTMLElement; if (el) el.textContent = String(Number(el.textContent) - 1); }}">−</button>
+        <span class="val">${initial}</span>
+        <button @click="${(e: Event) => { const el = (e.target as HTMLElement).parentElement!.querySelector('.val') as HTMLElement; if (el) el.textContent = String(Number(el.textContent) + 1); }}">+</button>
       </div>`;
   }
 
