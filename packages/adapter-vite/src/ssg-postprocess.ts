@@ -277,9 +277,14 @@ export interface SpeculationRulesOptions {
  *
  * If user-provided rules exist, they are used directly.
  * Otherwise, heuristics are applied based on the route list:
- * - Static page routes → prefetch
+ * - Home page (/) → prerender (moderate)
+ * - Top-level static pages (1 level deep) → prerender (conservative)
+ * - Nested static pages → prefetch
  * - Dynamic routes (containing :) → excluded (content depends on params)
  * - API routes → excluded
+ *
+ * This two-tier strategy balances instant navigation for high-probability
+ * targets (prerender) with bandwidth-conscious loading for deeper pages (prefetch).
  *
  * @param options - User-provided speculation rules configuration
  * @param routes - Known route entries from route scanner (for heuristic rules)
@@ -335,16 +340,48 @@ export function buildSpeculationRulesJson(
 
   if (staticPagePaths.length === 0) return '';
 
-  // Generate prefetch rules for all static pages
-  const rules = {
-    prefetch: staticPagePaths.map((path) => {
-      // For root path, use exact match; for others, use prefix match
-      const pattern = path === '/' ? '/' : `${path}/*`;
-      return {
-        where: { href_matches: pattern },
+  // Two-tier strategy:
+  //   - Home page is the highest-probability target → prerender (moderate)
+  //   - Top-level pages (e.g. /about, /blog) → prerender (conservative)
+  //   - Nested pages (e.g. /blog/post-slug, /docs/guide) → prefetch only
+  const prerenderPaths: string[] = [];
+  const prefetchPaths: string[] = [];
+
+  for (const path of staticPagePaths) {
+    if (path === '/') {
+      // Highest probability: prerender with moderate eagerness
+      prerenderPaths.push(path);
+    } else if (path.split('/').filter(Boolean).length <= 1) {
+      // Top-level: prerender with conservative eagerness
+      prerenderPaths.push(`${path}/*`);
+    } else {
+      // Deeper pages: prefetch only (lighter than prerender)
+      prefetchPaths.push(`${path}/*`);
+    }
+  }
+
+  const rules: Record<string, unknown[]> = {};
+
+  if (prerenderPaths.length > 0) {
+    rules.prerender = prerenderPaths.map((pattern) => {
+      const rule: Record<string, unknown> = {
+        where: pattern === '/' ? {} : { href_matches: pattern },
       };
-    }),
-  };
+      // Home gets moderate eagerness; top-level pages get conservative
+      rule.eagerness = pattern === '/' ? 'moderate' : 'conservative';
+      if (pattern === '/') {
+        rule.source = 'list';
+        rule.urls = ['/'];
+      }
+      return rule;
+    });
+  }
+
+  if (prefetchPaths.length > 0) {
+    rules.prefetch = prefetchPaths.map((pattern) => ({
+      where: { href_matches: pattern },
+    }));
+  }
 
   // Exclude API routes if any exist
   const apiPaths = routes
@@ -352,10 +389,13 @@ export function buildSpeculationRulesJson(
     .map((r) => `${r.path}/*`);
 
   if (apiPaths.length > 0) {
-    for (const rule of rules.prefetch) {
-      (rule.where as Record<string, unknown>).not = {
-        or_matches: apiPaths.map((p) => ({ href_matches: p })),
-      };
+    const excludeWhere = apiPaths.map((p) => ({ href_matches: p }));
+    for (const key of ['prerender', 'prefetch'] as const) {
+      if (rules[key]) {
+        for (const rule of rules[key] as Record<string, unknown>[]) {
+          (rule.where as Record<string, unknown>).not = { or_matches: excludeWhere };
+        }
+      }
     }
   }
 
