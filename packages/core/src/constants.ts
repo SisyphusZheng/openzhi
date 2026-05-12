@@ -13,3 +13,7 @@ export const RESOLVED_BLOG_DATA_ID = '\0' + VIRTUAL_BLOG_DATA_ID;
 
 export const VIRTUAL_I18N_DATA_ID = 'virtual:less-i18n-data';
 export const RESOLVED_I18N_DATA_ID = '\0' + VIRTUAL_I18N_DATA_ID;
+
+/** Nav virtual module — used by @lessjs/content and @lessjs/adapter-vite SSG */
+export const VIRTUAL_NAV_ID = 'virtual:less-nav';
+export const RESOLVED_NAV_ID = '\0' + VIRTUAL_NAV_ID;

@@ -21,6 +21,7 @@ import type { FrameworkOptions, PackageIslandMeta } from '@lessjs/core';
 import type { LessBuildContext } from '../build-context.js';
 import { SsrRenderError } from '@lessjs/core/errors';
 import { createLogger } from '@lessjs/core/logger';
+import { RESOLVED_NAV_ID, VIRTUAL_NAV_ID } from '@lessjs/core/constants';
 
 const log = createLogger('ssg');
 
@@ -266,14 +267,14 @@ async function buildSSG(options: BuildSSGOptions = {}, ctx: LessBuildContext): P
         // This plugin resolves them to empty stubs when missing, so the
         // viteBuild() succeeds regardless of which packages are available.
         optionalPackageStubsPlugin(),
-        // Resolve virtual:less-nav — reads from ctx (ADR 0010: no .less/ fallback)
+        // Resolve virtual:less-nav — uses shared constants from @lessjs/core/constants
         {
           name: 'less:ssg-virtual-nav',
           resolveId(id) {
-            if (id === 'virtual:less-nav') return '\0virtual:less-nav';
+            if (id === VIRTUAL_NAV_ID) return RESOLVED_NAV_ID;
           },
           load(id) {
-            if (id === '\0virtual:less-nav') {
+            if (id === RESOLVED_NAV_ID) {
               const navSections = JSON.stringify(ctx.plugins.navSections || []);
               const headerNav = JSON.stringify(ctx.plugins.headerNav || []);
               return `export const navSections = ${navSections};\nexport const headerNav = ${headerNav};`;

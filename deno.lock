@@ -1116,6 +1116,11 @@
       "npm:vite@8.0.10"
     ],
     "members": {
+      "packages/adapter-lit": {
+        "dependencies": [
+          "jsr:@lessjs/core@0.12"
+        ]
+      },
       "packages/adapter-vite": {
         "dependencies": [
           "jsr:@lessjs/core@0.12",
@@ -1157,6 +1162,8 @@
       },
       "packages/ui": {
         "dependencies": [
+          "jsr:@lessjs/adapter-lit@0.8",
+          "jsr:@lessjs/core@0.12",
           "npm:lit@^3.2.0"
         ]
       }
