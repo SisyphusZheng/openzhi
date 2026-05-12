@@ -271,7 +271,9 @@ export function less(options: FrameworkOptions = {}, externalCtx?: LessBuildCont
         } resolve alias(es) from workspace`,
       );
     }
-  } catch { log.debug('Workspace not available — aliases stay null'); }
+  } catch {
+    log.debug('Workspace not available — aliases stay null');
+  }
 
   const VIRTUAL_ENTRY_ID = 'virtual:less-hono-entry';
   const RESOLVED_ENTRY_ID = '\0' + VIRTUAL_ENTRY_ID;
