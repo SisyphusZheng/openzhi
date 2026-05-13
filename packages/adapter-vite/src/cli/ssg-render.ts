@@ -185,7 +185,12 @@ export async function ssgRender(
   };
 
   const outputDir = join(root, outDir);
-  const app = module.default as { fetch: (req: Request, ...args: unknown[]) => Promise<Response> };
+  const app = module.default as
+    | { fetch: (req: Request, ...args: unknown[]) => Promise<Response> }
+    | undefined;
+  if (!app) {
+    throw new Error('SSR bundle loaded but no Hono app found (no default export)');
+  }
   const result = await toSSG(app as never, fsModule, { dir: outputDir });
 
   if (!result.success) throw result.error;
