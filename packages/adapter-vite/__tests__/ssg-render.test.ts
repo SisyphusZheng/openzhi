@@ -2,14 +2,15 @@
  * @lessjs/adapter-vite - ssg-render.ts tests
  */
 import { assertEquals, assertRejects } from 'jsr:@std/assert@^1.0.0';
+import { Hono } from 'hono';
 import { ssgRender } from '../src/cli/ssg-render.js';
-import type { SsrBundle, SsgRenderOptions } from '../src/cli/ssg-render.js';
+import type { SsgRenderOptions, SsrBundle } from '../src/cli/ssg-render.js';
 
 function createMockBundle(overrides: Partial<SsrBundle> = {}): SsrBundle {
+  const app = new Hono();
+  app.get('/', (c) => c.text('ok'));
   return {
-    default: {
-      fetch: async () => new Response('ok'),
-    },
+    default: app,
     routeInfo: [
       { path: '/', tagName: 'index-page', isDynamic: false, paramNames: [] },
       { path: '/about', tagName: 'about-page', isDynamic: false, paramNames: [] },
@@ -19,7 +20,6 @@ function createMockBundle(overrides: Partial<SsrBundle> = {}): SsrBundle {
 }
 
 const defaultOptions: SsgRenderOptions = {
-  root: process.cwd(),
   outDir: './dist-test-ssg-render',
 };
 
@@ -34,7 +34,6 @@ Deno.test('ssgRender — rejects when module has no default export', async () =>
 
 Deno.test('ssgRender — handles empty routeInfo gracefully', async () => {
   const bundle = createMockBundle({ routeInfo: [] });
-  // Should not throw — empty routes are valid
   await ssgRender(bundle, defaultOptions);
 });
 
@@ -46,7 +45,6 @@ Deno.test('ssgRender — handles dynamic routes with no getStaticPaths', async (
     renderRoute: undefined,
     getStaticPaths: undefined,
   });
-  // Should not throw — gracefully skips dynamic routes
   await ssgRender(bundle, defaultOptions);
 });
 
@@ -56,9 +54,10 @@ Deno.test('ssgRender — handles getStaticPaths failure gracefully', async () =>
       { path: '/blog/:slug', tagName: 'blog-page', isDynamic: true, paramNames: ['slug'] },
     ],
     renderRoute: async () => '<html><body>test</body></html>',
-    getStaticPaths: async () => { throw new Error('fail'); },
+    getStaticPaths: async () => {
+      throw new Error('fail');
+    },
   });
-  // Should not throw — logs warning and continues
   await ssgRender(bundle, defaultOptions);
 });
 
