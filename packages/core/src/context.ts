@@ -51,8 +51,34 @@ export interface SsrContext {
 /**
  * Extract route params from a pathname using a route pattern.
  * e.g., pattern '/posts/:id' + pathname '/posts/123' → { id: '123' }
+ *
+ * Uses WHATWG URLPattern API where available (Deno native, Node 19+, Bun, all browsers).
+ * Falls back to hand-rolled implementation for Node <19.
  */
 export function extractParams(
+  pattern: string,
+  pathname: string,
+): Record<string, string> {
+  if (typeof URLPattern !== 'undefined') {
+    try {
+      const urlPattern = new URLPattern({ pathname: pattern });
+      const match = urlPattern.exec({
+        pathname,
+        protocol: 'https',
+        hostname: 'localhost',
+      });
+      return (match?.pathname?.groups ?? {}) as Record<string, string>;
+    } catch {
+      // URLPattern constructor or exec failed — fall through to fallback
+    }
+  }
+  return extractParamsFallback(pattern, pathname);
+}
+
+/**
+ * Fallback: hand-rolled route param extraction for Node <19 or URLPattern failure.
+ */
+function extractParamsFallback(
   pattern: string,
   pathname: string,
 ): Record<string, string> {

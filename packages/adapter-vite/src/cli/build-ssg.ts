@@ -324,6 +324,54 @@ async function buildSSG(options: BuildSSGOptions = {}, ctx: LessBuildContext): P
 
     log.info('SSR bundle built successfully');
 
+    // ─── Write sidecar importmap.json (ADR 0022) ─────────────
+    // This import map captures the dependency versions used in the SSR bundle,
+    // enabling the bundle to be loaded in any runtime via standard ESM import().
+    // Currently emitted as metadata alongside the Vite-inline bundle; in the
+    // esbuild --packages=external mode, it becomes the actual resolution map.
+    try {
+      const importMap: Record<string, string> = {
+        'hono': 'npm:hono@4',
+        'parse5': 'npm:parse5@7.0.0',
+        '@lessjs/core': 'npm:@jsr/lessjs__core@0.13.0',
+      };
+
+      // Add known LessJS subpath exports
+      for (
+        const subpath of [
+          '/logger',
+          '/errors',
+          '/html-escape',
+          '/context',
+          '/navigation',
+          '/render-dsd',
+        ]
+      ) {
+        importMap[`@lessjs/core${subpath}`] = `npm:@jsr/lessjs__core${subpath}@0.13.0`;
+      }
+
+      // Add adapter-lit if used
+      if (ctx?.phase1.packageIslands?.length) {
+        importMap['@lessjs/adapter-lit'] = 'npm:@jsr/lessjs__adapter-lit@^0.8.0';
+        importMap['lit'] = 'npm:lit@3.3.2';
+        importMap['@lit/reactive-element'] = 'npm:@lit/reactive-element@2.1.0';
+      }
+
+      // Add @lessjs/ui if used
+      const hasUi = allNoExternal.some((n: string | RegExp) =>
+        typeof n === 'string' ? n.includes('@lessjs/ui') : n.toString().includes('@lessjs/ui')
+      );
+      if (hasUi) {
+        importMap['@lessjs/ui'] = 'npm:@jsr/lessjs__ui@^0.7.0';
+      }
+
+      const importMapPath = join(ssrOutDir, 'importmap.json');
+      writeFileSync(importMapPath, JSON.stringify({ imports: importMap }, null, 2), 'utf-8');
+      log.info(`Import map written → ${importMapPath} (${Object.keys(importMap).length} entries)`);
+    } catch (e) {
+      log.warn('Failed to write importmap.json — non-fatal:', e);
+    }
+
     // Load the SSR bundle
     // Use file:// URL for import() — Deno doesn't accept Windows paths (c:\)
     const ssrBundlePath = resolve(ssrOutDir, 'entry.js');

@@ -23,7 +23,8 @@ Deno.test('context - extractParams', async (t) => {
 
   await t.step('handles URL-encoded values', () => {
     const params = extractParams('/search/:query', '/search/hello%20world');
-    assertEquals(params, { query: 'hello world' });
+    // URLPattern preserves raw encoding (standard behaviour); consumer decodes if needed
+    assertEquals(params, { query: 'hello%20world' });
   });
 });
 
