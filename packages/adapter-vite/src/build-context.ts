@@ -157,7 +157,6 @@ export class LessBuildContext {
 
   /** Mark Phase 2 as complete (after Phase 1 or Phase 3) */
   completePhase2(token: Phase1Token | Phase3Token): Phase2Token {
-    const expected = this._phaseTokens[1];
     if (this._phaseTokens[1] !== token && this._phaseTokens[3] !== token) {
       throw new Error('Phase 2 called before Phase 1 completed');
     }

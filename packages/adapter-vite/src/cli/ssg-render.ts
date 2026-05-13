@@ -8,7 +8,7 @@
  * This module has zero Vite dependency — it only needs the SSR bundle module.
  */
 
-import { join, resolve } from 'node:path';
+import { join } from 'node:path';
 import process from 'node:process';
 import {
   existsSync,
@@ -20,7 +20,6 @@ import {
   writeFileSync,
 } from 'node:fs';
 import type { LessBuildContext } from '../build-context.js';
-import { SsrRenderError } from '@lessjs/core/errors';
 import { createLogger } from '@lessjs/core/logger';
 
 const log = createLogger('ssg');
@@ -166,13 +165,15 @@ export async function ssgRender(
   const nodePath = await import('node:path');
 
   const fsModule = {
-    writeFile: async (path: string, data: string | Uint8Array) => {
+    writeFile: (path: string, data: string | Uint8Array) => {
       const dir = nodePath.dirname(path);
       if (!nodeFs.existsSync(dir)) nodeFs.mkdirSync(dir, { recursive: true });
       nodeFs.writeFileSync(path, data);
+      return Promise.resolve();
     },
-    mkdir: async (path: string) => {
+    mkdir: (path: string) => {
       if (!nodeFs.existsSync(path)) nodeFs.mkdirSync(path, { recursive: true });
+      return Promise.resolve();
     },
     isDirectory: (path: string) => {
       try {

@@ -14,6 +14,7 @@ import type { Plugin, ResolvedConfig } from 'vite';
 import type { FrameworkOptions } from '@lessjs/core';
 import type { LessBuildContext, Phase1Token, Phase2Token, Phase3Token } from './build-context.js';
 import { join } from 'node:path';
+import process from 'node:process';
 import { createLogger } from '@lessjs/core/logger';
 
 const log = createLogger('core');

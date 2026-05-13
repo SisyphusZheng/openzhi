@@ -16,7 +16,7 @@
 
 import { join, resolve } from 'node:path';
 import process from 'node:process';
-import { existsSync, readFileSync, writeFileSync } from 'node:fs';
+import { writeFileSync } from 'node:fs';
 import type { Plugin } from 'vite';
 import type { FrameworkOptions, PackageIslandMeta } from '@lessjs/core';
 import type { LessBuildContext } from '../build-context.js';
