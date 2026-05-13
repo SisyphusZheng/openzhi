@@ -1,7 +1,7 @@
 /**
  * @lessjs/adapter-vite - ssg-render.ts tests
  */
-import { assertEquals, assertRejects } from 'jsr:@std/assert@^1.0.0';
+import { assertRejects } from 'jsr:@std/assert@^1.0.0';
 import { Hono } from 'hono';
 import { ssgRender } from '../src/cli/ssg-render.js';
 import type { SsgRenderOptions, SsrBundle } from '../src/cli/ssg-render.js';
@@ -20,6 +20,7 @@ function createMockBundle(overrides: Partial<SsrBundle> = {}): SsrBundle {
 }
 
 const defaultOptions: SsgRenderOptions = {
+  root: Deno.cwd(),
   outDir: './dist-test-ssg-render',
 };
 
@@ -53,10 +54,9 @@ Deno.test('ssgRender — handles getStaticPaths failure gracefully', async () =>
     routeInfo: [
       { path: '/blog/:slug', tagName: 'blog-page', isDynamic: true, paramNames: ['slug'] },
     ],
-    renderRoute: async () => '<html><body>test</body></html>',
-    getStaticPaths: async () => {
-      throw new Error('fail');
-    },
+    renderRoute: (() =>
+      Promise.resolve('<html><body>test</body></html>')) as SsrBundle['renderRoute'],
+    getStaticPaths: (() => Promise.reject(new Error('fail'))) as SsrBundle['getStaticPaths'],
   });
   await ssgRender(bundle, defaultOptions);
 });
@@ -66,8 +66,9 @@ Deno.test('ssgRender — handles empty getStaticPaths gracefully', async () => {
     routeInfo: [
       { path: '/blog/:slug', tagName: 'blog-page', isDynamic: true, paramNames: ['slug'] },
     ],
-    renderRoute: async () => '<html><body>test</body></html>',
-    getStaticPaths: async () => [],
+    renderRoute: (() =>
+      Promise.resolve('<html><body>test</body></html>')) as SsrBundle['renderRoute'],
+    getStaticPaths: (() => Promise.resolve([])) as SsrBundle['getStaticPaths'],
   });
   await ssgRender(bundle, defaultOptions);
 });

@@ -1,33 +1,20 @@
 /**
  * @lessjs/adapter-vite - ssg.ts CLI tests
  *
- * Tests the standalone SSG CLI argument parsing and bundle loading.
+ * Tests the standalone SSG CLI module imports and type exports.
  * Full SSG pipeline tests are in ssg-render.test.ts.
  */
-import { assertEquals, assertRejects } from 'jsr:@std/assert@^1.0.0';
-import { join } from 'node:path';
 
-// Test that the CLI module can be imported
 Deno.test('ssg CLI — module can be imported', async () => {
   const mod = await import('../src/cli/ssg.ts');
-  // At minimum, the module should load without errors
-  assertEquals(typeof mod, 'object');
+  _assert(mod !== null && typeof mod === 'object');
 });
 
-// Test that ssg-render types are exported
-Deno.test('ssg CLI — types are exported from ssg-render', async () => {
+Deno.test('ssg CLI — ssgRender is exported from ssg-render', async () => {
   const mod = await import('../src/cli/ssg-render.js');
-  assertEquals(typeof mod.ssgRender, 'function');
+  _assert(typeof mod.ssgRender === 'function');
 });
 
-// Test that the CLI throws on non-existent SSR bundle
-Deno.test('ssg CLI — loadSsrBundle throws on missing bundle', async () => {
-  const nonExistentDir = join(Deno.cwd(), 'nonexistent-ssg-dir-xyz');
-  // Import the CLI module — loadSsrBundle is internal, so we test via ssgRender rejection
-  try {
-    const mod = await import('../src/cli/ssg.ts');
-    // Module loaded — the loading happens in main()
-  } catch {
-    // Expected for missing bundle
-  }
-});
+function _assert(condition: boolean): void {
+  if (!condition) throw new Error('Assertion failed');
+}
