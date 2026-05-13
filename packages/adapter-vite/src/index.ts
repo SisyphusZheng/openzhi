@@ -205,16 +205,32 @@ export function less(options: FrameworkOptions = {}, externalCtx?: LessBuildCont
   let headExtras = options.headExtras;
 
   const validateSafeUrl = (url: string, context: string): string => {
-    const trimmed = url.trim().toLowerCase();
-    if (trimmed.startsWith('javascript:') || trimmed.startsWith('data:')) {
+    // Normalise: decode URL encoding, strip whitespace, lowercase
+    const normalised = url.trim();
+    try {
+      const decoded = decodeURIComponent(normalised); // catch malformed %XX
+      const lower = decoded.toLowerCase().trim();
+      const blockedProtocols = ['javascript:', 'data:', 'vbscript:', 'file:'];
+      for (const proto of blockedProtocols) {
+        if (lower.startsWith(proto)) {
+          throw new LessError(
+            `Unsafe URL in ${context}: "${url}" — ${proto} protocol is not allowed`,
+            'UNSAFE_URL',
+            400,
+            false,
+          );
+        }
+      }
+    } catch {
+      // decodeURIComponent threw — malformed encoding, treat as unsafe
       throw new LessError(
-        `Unsafe URL in ${context}: "${url}" - javascript: and data: protocols are not allowed`,
+        `Invalid URL in ${context}: "${url}" — malformed percent-encoding`,
         'UNSAFE_URL',
         400,
         false,
       );
     }
-    return url;
+    return normalised;
   };
 
   if (options.inject && !headExtras) {

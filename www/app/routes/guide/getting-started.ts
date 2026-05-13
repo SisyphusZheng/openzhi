@@ -133,7 +133,7 @@ export const tagName = 'page-home';</code></pre></less-code-block>
 
           <div class="nav-row">
             <a href="/guide/positioning" class="nav-link">&larr; 框架定位</a>
-            <a href="/guide/design-philosophy" class="nav-link">设计哲学 &rarr;</a>
+            <a href="/guide/architecture" class="nav-link">设计哲学 &rarr;</a>
           </div>
         </div>
       </less-layout>
@@ -247,7 +247,7 @@ export const tagName = 'page-home';</code></pre></less-code-block>
 
           <div class="nav-row">
             <a href="/guide/positioning" class="nav-link">&larr; Framework Positioning</a>
-            <a href="/guide/design-philosophy" class="nav-link">Design Philosophy &rarr;</a>
+            <a href="/guide/architecture" class="nav-link">Design Philosophy &rarr;</a>
           </div>
         </div>
       </less-layout>

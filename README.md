@@ -37,16 +37,16 @@ adapter-lit  ui  signals  rpc  create
 
 | 包                     | 版本   | 职责                                              | 外部依赖            |
 | ---------------------- | ------ | ------------------------------------------------- | ------------------- |
-| `@lessjs/core`         | 0.13.0 | DSD 渲染、Island、Navigation、日志                | parse5（唯一）      |
-| `@lessjs/adapter-vite` | 0.3.0  | Vite 构建：路由扫描、Island Transform、SSG 三阶段 | vite, hono, esbuild |
-| `@lessjs/adapter-lit`  | 0.8.0  | Lit TemplateResult → DSD HTML                     | lit                 |
-| `@lessjs/content`      | 0.3.3  | Blog + Nav + Sitemap 构建时插件                   | marked, gray-matter |
-| `@lessjs/i18n`         | 0.1.1  | 国际化 locale 展开                                | 无                  |
-| `@lessjs/app`          | 0.3.1  | 伞包：lessjs() = less() + content + i18n          | —                   |
-| `@lessjs/ui`           | 0.7.1  | 8 个 Web Component（layout, button, input…）      | lit                 |
-| `@lessjs/signals`      | 0.6.2  | TC39 Signals polyfill + framework layer           | 无                  |
-| `@lessjs/rpc`          | 0.6.1  | 零依赖 fetch RPC 控制器                           | 无                  |
-| `@lessjs/create`       | 0.7.0  | 脚手架 CLI                                        | 无                  |
+| `@lessjs/core`         | 0.14.0 | DSD 渲染、Island、Navigation、日志                | parse5（唯一）      |
+| `@lessjs/adapter-vite` | 0.14.0 | Vite 构建：路由扫描、Island Transform、SSG 三阶段 | vite, hono, esbuild |
+| `@lessjs/adapter-lit`  | 0.14.0 | Lit TemplateResult → DSD HTML                     | lit                 |
+| `@lessjs/content`      | 0.14.0 | Blog + Nav + Sitemap 构建时插件                   | marked, gray-matter |
+| `@lessjs/i18n`         | 0.14.0 | 国际化 locale 展开                                | 无                  |
+| `@lessjs/app`          | 0.14.0 | 伞包：lessjs() = less() + content + i18n          | —                   |
+| `@lessjs/ui`           | 0.14.0 | 8 个 Web Component（layout, button, input…）      | lit                 |
+| `@lessjs/signals`      | 0.14.0 | TC39 Signals polyfill + framework layer           | 无                  |
+| `@lessjs/rpc`          | 0.14.0 | 零依赖 fetch RPC 控制器                           | 无                  |
+| `@lessjs/create`       | 0.14.0 | 脚手架 CLI                                        | 无                  |
 
 ### 渲染管线
 

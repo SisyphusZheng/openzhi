@@ -36,16 +36,16 @@ adapter-lit  ui  signals  rpc  create
 
 | Package                | Version | Role                                         | External Deps       |
 | ---------------------- | ------- | -------------------------------------------- | ------------------- |
-| `@lessjs/core`         | 0.13.0  | DSD rendering, Islands, Navigation, Logger   | parse5 only         |
-| `@lessjs/adapter-vite` | 0.3.0   | Vite build: routes, islands, SSG 3-phase     | vite, hono, esbuild |
-| `@lessjs/adapter-lit`  | 0.8.0   | Lit TemplateResult → DSD HTML bridge         | lit                 |
-| `@lessjs/content`      | 0.3.3   | Blog + Nav + Sitemap build-time plugin       | marked, gray-matter |
-| `@lessjs/i18n`         | 0.1.1   | i18n locale expansion                        | none                |
-| `@lessjs/app`          | 0.3.1   | Umbrella: lessjs() = less() + content + i18n | —                   |
-| `@lessjs/ui`           | 0.7.1   | 8 Web Components (layout, button, input…)    | lit                 |
-| `@lessjs/signals`      | 0.6.2   | TC39 Signals polyfill + framework layer      | none                |
-| `@lessjs/rpc`          | 0.6.1   | Zero-dep fetch RPC controller                | none                |
-| `@lessjs/create`       | 0.7.0   | CLI scaffold                                 | none                |
+| `@lessjs/core`         | 0.14.0  | DSD rendering, Islands, Navigation, Logger   | parse5 only         |
+| `@lessjs/adapter-vite` | 0.14.0  | Vite build: routes, islands, SSG 3-phase     | vite, hono, esbuild |
+| `@lessjs/adapter-lit`  | 0.14.0  | Lit TemplateResult → DSD HTML bridge         | lit                 |
+| `@lessjs/content`      | 0.14.0  | Blog + Nav + Sitemap build-time plugin       | marked, gray-matter |
+| `@lessjs/i18n`         | 0.14.0  | i18n locale expansion                        | none                |
+| `@lessjs/app`          | 0.14.0  | Umbrella: lessjs() = less() + content + i18n | —                   |
+| `@lessjs/ui`           | 0.14.0  | 8 Web Components (layout, button, input…)    | lit                 |
+| `@lessjs/signals`      | 0.14.0  | TC39 Signals polyfill + framework layer      | none                |
+| `@lessjs/rpc`          | 0.14.0  | Zero-dep fetch RPC controller                | none                |
+| `@lessjs/create`       | 0.14.0  | CLI scaffold                                 | none                |
 
 ### Rendering Pipeline
 
