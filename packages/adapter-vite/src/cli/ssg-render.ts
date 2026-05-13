@@ -167,13 +167,11 @@ export async function ssgRender(
 
   const fsModule = {
     writeFile: async (path: string, data: string | Uint8Array) => {
-      // deno-lint-ignore require-await
       const dir = nodePath.dirname(path);
       if (!nodeFs.existsSync(dir)) nodeFs.mkdirSync(dir, { recursive: true });
       nodeFs.writeFileSync(path, data);
     },
     mkdir: async (path: string) => {
-      // deno-lint-ignore require-await
       if (!nodeFs.existsSync(path)) nodeFs.mkdirSync(path, { recursive: true });
     },
     isDirectory: (path: string) => {
@@ -273,28 +271,6 @@ export async function ssgRender(
           }
         }
       }
-    }
-  }
-
-  // ── Inject client script ────────────────────────────────────
-  const clientManifestPath = join(root, outDir, 'client', '.vite', 'manifest.json');
-  if (existsSync(clientManifestPath)) {
-    try {
-      const manifestRaw = readFileSync(clientManifestPath, 'utf-8');
-      const manifest = JSON.parse(manifestRaw);
-      for (const [src, entry] of Object.entries(manifest) as [string, { file?: string }][]) {
-        if (
-          (src.includes('less-client-entry') || src.includes('virtual:less-client')) && entry.file
-        ) {
-          const scriptSrc = `${basePath}client/${entry.file}`;
-          const { injectClientScript } = await import('../ssg-postprocess.js');
-          injectClientScript(outputDir, scriptSrc);
-          log.info(`Client script injected: ${scriptSrc}`);
-          break;
-        }
-      }
-    } catch (err) {
-      log.warn('Could not read client manifest for script injection:', err);
     }
   }
 

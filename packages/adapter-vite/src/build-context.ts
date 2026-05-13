@@ -148,16 +148,17 @@ export class LessBuildContext {
     3: Phase3Token | null;
   } = { 1: null, 2: null, 3: null };
 
-  /** Mark Phase 1 as complete and return the token for Phase 2 entry */
+  /** Mark Phase 1 as complete and return the token for subsequent phases */
   completePhase1(): Phase1Token {
     const token: Phase1Token = { __phase1: Symbol() as never };
     this._phaseTokens[1] = token;
     return token;
   }
 
-  /** Mark Phase 2 as complete and return the token for Phase 3 entry */
-  completePhase2(token: Phase1Token): Phase2Token {
-    if (this._phaseTokens[1] !== token) {
+  /** Mark Phase 2 as complete (after Phase 1 or Phase 3) */
+  completePhase2(token: Phase1Token | Phase3Token): Phase2Token {
+    const expected = this._phaseTokens[1];
+    if (this._phaseTokens[1] !== token && this._phaseTokens[3] !== token) {
       throw new Error('Phase 2 called before Phase 1 completed');
     }
     const t2: Phase2Token = { __phase2: Symbol() as never };
@@ -165,10 +166,10 @@ export class LessBuildContext {
     return t2;
   }
 
-  /** Verify Phase 2 token is valid (called before Phase 3) */
-  verifyPhase2(token: Phase2Token): Phase3Token {
-    if (this._phaseTokens[2] !== token) {
-      throw new Error('Phase 3 called before Phase 2 completed');
+  /** Mark Phase 3 as complete (only requires Phase 1, not Phase 2) */
+  completePhase3(token: Phase1Token): Phase3Token {
+    if (this._phaseTokens[1] !== token) {
+      throw new Error('Phase 3 called before Phase 1 completed');
     }
     const t3: Phase3Token = { __phase3: Symbol() as never };
     this._phaseTokens[3] = t3;

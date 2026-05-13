@@ -12,7 +12,8 @@
 
 import type { Plugin, ResolvedConfig } from 'vite';
 import type { FrameworkOptions } from '@lessjs/core';
-import type { LessBuildContext, Phase1Token, Phase2Token } from './build-context.js';
+import type { LessBuildContext, Phase1Token, Phase2Token, Phase3Token } from './build-context.js';
+import { join } from 'node:path';
 import { createLogger } from '@lessjs/core/logger';
 
 const log = createLogger('core');
@@ -21,28 +22,28 @@ const log = createLogger('core');
 export interface BuildStep {
   readonly name: string;
   readonly phase: 1 | 2 | 3;
-  run(ctx: LessBuildContext, token: Phase1Token | Phase2Token): Promise<void>;
+  run(ctx: LessBuildContext, token: Phase1Token | Phase2Token | Phase3Token): Promise<void>;
 }
 
-/** Phase 2: Client island bundle */
+/** Phase 2: Client island bundle — runs AFTER SSG (ADR 0023) */
 class ClientBuildStep implements BuildStep {
   readonly name = 'Client island build';
   readonly phase = 2 as const;
 
-  async run(ctx: LessBuildContext, token: Phase1Token): Promise<void> {
+  async run(ctx: LessBuildContext, token: Phase1Token | Phase3Token): Promise<void> {
     ctx.completePhase2(token);
     const { buildClient } = await import('./cli/build-client.js');
     await buildClient(ctx);
   }
 }
 
-/** Phase 3: Static site generation */
+/** Phase 3: Static site generation — runs BEFORE Phase 2 (ADR 0023) */
 class SSGBuildStep implements BuildStep {
   readonly name = 'Static site generation';
   readonly phase = 3 as const;
 
-  async run(ctx: LessBuildContext, token: Phase1Token | Phase2Token): Promise<void> {
-    ctx.verifyPhase2(token as Phase2Token);
+  async run(ctx: LessBuildContext, token: Phase1Token): Promise<void> {
+    ctx.completePhase3(token);
     const { buildSSG } = await import('./cli/build-ssg.js');
     await buildSSG({}, ctx);
   }
@@ -104,21 +105,29 @@ export function buildPlugin(options: FrameworkOptions = {}, ctx?: LessBuildConte
 
       log.info('Phase 1/3 complete — SSR bundle + metadata written to ctx');
 
-      // ADR 0021: Compile-time phase ordering via branded tokens.
-      // Phase 1 token is created when Phase 1 completes (above).
-      // Phase 2 steps receive Phase1Token; Phase 3 receives Phase2Token.
+      // ADR 0023: Phase 3 (SSG) runs before Phase 2 (client bundle).
+      // SSG only needs Phase 1 — it renders HTML from the SSR bundle.
+      // Phase 2 runs last because client chunks have content hashes that
+      // don't affect HTML content, and injection is a post-processing step.
       const phase1Token = ctx!.completePhase1();
       const steps: BuildStep[] = [];
-      if (ctx && totalIslands > 0) steps.push(new ClientBuildStep());
+
+      // Phase 3: SSG render (always runs — generates HTML pages)
       if (ctx) steps.push(new SSGBuildStep());
 
-      let currentToken: Phase1Token | Phase2Token = phase1Token;
+      // Phase 2: Client island bundle (only if islands exist)
+      if (ctx && totalIslands > 0) steps.push(new ClientBuildStep());
+
+      let currentToken: Phase1Token | Phase2Token | Phase3Token = phase1Token;
       for (const step of steps) {
         try {
           log.info(`[${step.phase}/3] ${step.name}...`);
           await step.run(ctx!, currentToken);
-          // After step completes, update token for next phase
-          if (step.phase === 2) {
+          // Track the latest completion token
+          if (step.phase === 3 && ctx!._phaseTokens[3]) {
+            currentToken = ctx!._phaseTokens[3] as Phase3Token;
+          }
+          if (step.phase === 2 && ctx!._phaseTokens[2]) {
             currentToken = ctx!._phaseTokens[2] as Phase2Token;
           }
           log.info(`[${step.phase}/3] ${step.name} — complete`);
@@ -126,6 +135,40 @@ export function buildPlugin(options: FrameworkOptions = {}, ctx?: LessBuildConte
           log.error(`[${step.phase}/3] ${step.name} — FAILED:`, error);
           throw error;
         }
+      }
+
+      // ── Inject client script (only runs if Phase 2 completed) ──
+      // Phase 2's manifest.json tells us the client chunk URLs to inject
+      // into the already-rendered HTML pages.
+      if (ctx!._phaseTokens[2]) {
+        try {
+          const outDir = ctx!.phase3.outDir || 'dist';
+          const root = ctx!.phase3.root || process.cwd();
+          const clientManifestPath = join(root, outDir, 'client', '.vite', 'manifest.json');
+          const { existsSync, readFileSync } = await import('node:fs');
+          if (existsSync(clientManifestPath)) {
+            const manifestRaw = readFileSync(clientManifestPath, 'utf-8');
+            const manifest = JSON.parse(manifestRaw);
+            for (const [src, entry] of Object.entries(manifest) as [string, { file?: string }][]) {
+              if (
+                (src.includes('less-client-entry') || src.includes('virtual:less-client')) &&
+                entry.file
+              ) {
+                const base = ctx!.phase3.base || '/';
+                const scriptSrc = `${base}client/${entry.file}`;
+                const { injectClientScript } = await import('./ssg-postprocess.js');
+                const outputDir = join(root, outDir);
+                injectClientScript(outputDir, scriptSrc);
+                log.info(`Client script injected: ${scriptSrc}`);
+                break;
+              }
+            }
+          }
+        } catch (error) {
+          log.warn('Failed to inject client script:', error);
+        }
+      } else {
+        log.info('No Phase 2 — client script injection skipped');
       }
 
       log.info('Build complete.');
