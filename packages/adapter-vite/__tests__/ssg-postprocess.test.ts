@@ -521,10 +521,16 @@ Deno.test('buildSpeculationRulesJson generates heuristic prerender rules from ro
       r.where && !r.where.href_matches
     ),
   );
-  // Top-level page with wildcard
+  // Top-level page with wildcard (document rule — has where.href_matches)
   assertExists(
-    parsed.prerender.some((r: { where: { href_matches: string } }) =>
-      r.where.href_matches === '/about/*'
+    parsed.prerender.some((r: { where?: { href_matches: string } }) =>
+      r.where?.href_matches === '/about/*'
+    ),
+  );
+  // Home page should be a list rule (source + urls, no where)
+  assertExists(
+    parsed.prerender.some((r: { source?: string; urls?: string[] }) =>
+      r.source === 'list' && r.urls?.includes('/')
     ),
   );
   // Dynamic routes (with :) should be excluded
