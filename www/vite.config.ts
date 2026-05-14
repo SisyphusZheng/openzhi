@@ -71,12 +71,9 @@ export default defineConfig({
       ssr: {
         noExternal: ['@lessjs/ui'],
       },
-      pwa: {
-        name: 'LessJS Framework — Less is More',
-        shortName: 'LessJS',
-        themeColor: '#000000',
-        backgroundColor: '#ffffff',
-      },
+      // PWA disabled for now — the service worker blocks goatcounter and
+      // other cross-origin requests, causing console errors and page load issues.
+      // pwa: { ... },
       viewTransition: true,
       speculation: true,
       inject: {
@@ -113,7 +110,7 @@ export default defineConfig({
           },
           { src: '/prism-init.js', defer: true },
           {
-            src: '//gc.zgo.at/count.js',
+            src: 'https://gc.zgo.at/count.js',
             async: true,
             attrs: { 'data-goatcounter': 'https://lessjs.goatcounter.com/count' },
           },
