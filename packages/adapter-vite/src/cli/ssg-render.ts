@@ -287,11 +287,19 @@ export async function ssgRender(
       log.info(`i18n: expanding for locales: ${locales.join(', ')}`);
       for (const locale of locales) {
         for (const route of routeInfo) {
-          let paramsList: Array<Record<string, string>> = [{}];
-          if (!getStaticPaths) continue;
-          try {
-            paramsList = await getStaticPaths(route.path);
-          } catch {
+          let paramsList: Array<Record<string, string>>;
+          // v0.14.6: Fix pre-existing bug — static routes use [{}] directly;
+          // only dynamic routes should call getStaticPaths()
+          if (!route.isDynamic) {
+            paramsList = [{}];
+          } else if (getStaticPaths) {
+            try {
+              paramsList = await getStaticPaths(route.path);
+            } catch {
+              log.warn(`i18n: getStaticPaths failed for ${route.path}, skipping`);
+              continue;
+            }
+          } else {
             continue;
           }
           if (paramsList.length === 0) continue;
