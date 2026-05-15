@@ -62,6 +62,8 @@ function optionalPackageStubsPlugin(): import('vite').Plugin {
     '@lessjs/adapter-lit': [
       'export function installLitAdapter() {}',
       'export function uninstallLitAdapter() {}',
+      'export const DsdLitElement = undefined;',
+      'export const WithDsdHydration = undefined;',
     ].join('\n'),
     // ADR 0018: @lessjs/content no longer exports initBlogData/getPosts/getPostBySlug/getBlogOptions
     // Route components import from virtual:less-blog-data instead.
