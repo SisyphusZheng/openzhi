@@ -133,7 +133,7 @@ test.describe('Performance', () => {
         // independently of the app; these are infrastructure noise, not bugs.
         !e.includes('cdnjs.cloudflare.com') &&
         !e.includes('cdn.jsdelivr.net') &&
-        !e.includes('Failed to find a valid digest in the \'integrity\' attribute'),
+        !e.includes("Failed to find a valid digest in the 'integrity' attribute"),
     );
 
     expect(criticalErrors.length).toBe(0);
