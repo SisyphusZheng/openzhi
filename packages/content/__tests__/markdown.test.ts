@@ -54,3 +54,80 @@ Deno.test('parseMarkdownFile: custom markdown renderer', async () => {
   const post = await parseMarkdownFile('custom.md', content, 'custom', customOptions);
   assertEquals(post.html, '<p>CUSTOM: **bold text**</p>');
 });
+
+// --- XSS regression tests (v0.14.10: sanitize-html allow-list) ---
+
+Deno.test('sanitize: strips <script> tags entirely', async () => {
+  const content = `Hello <script>alert(1)</script> World`;
+  const post = await parseMarkdownFile('xss1.md', content, 'xss1');
+  assertEquals(post.html.includes('<script'), false);
+  assertEquals(post.html.includes('alert'), false);
+});
+
+Deno.test('sanitize: strips <iframe> tags entirely', async () => {
+  const content = `Hello <iframe src="evil.com"></iframe> World`;
+  const post = await parseMarkdownFile('xss2.md', content, 'xss2');
+  assertEquals(post.html.includes('<iframe'), false);
+});
+
+Deno.test('sanitize: strips event handler attributes (on*)', async () => {
+  const content = `<p onclick="alert(1)">click me</p>`;
+  const post = await parseMarkdownFile('xss3.md', content, 'xss3');
+  assertEquals(post.html.includes('onclick'), false);
+});
+
+Deno.test('sanitize: strips unquoted javascript: URLs', async () => {
+  const content = `<a href=javascript:alert(1)>xss</a>`;
+  const post = await parseMarkdownFile('xss4.md', content, 'xss4');
+  assertEquals(post.html.includes('javascript:'), false);
+});
+
+Deno.test('sanitize: strips HTML-entity-encoded javascript: URLs', async () => {
+  const content = `<a href="javas&#99;ript:alert(1)">xss</a>`;
+  const post = await parseMarkdownFile('xss5.md', content, 'xss5');
+  assertEquals(post.html.includes('javascript:'), false);
+  assertEquals(post.html.includes('&#99;'), false);
+});
+
+Deno.test('sanitize: strips data: URLs in href', async () => {
+  const content = `<a href="data:text/html,<script>alert(1)</script>">xss</a>`;
+  const post = await parseMarkdownFile('xss6.md', content, 'xss6');
+  assertEquals(post.html.includes('data:'), false);
+});
+
+Deno.test('sanitize: allows safe http/https links', async () => {
+  const content = `[safe](https://example.com) and [local](/about)`;
+  const post = await parseMarkdownFile('safe1.md', content, 'safe1');
+  assertEquals(post.html.includes('https://example.com'), true);
+});
+
+Deno.test('sanitize: custom renderer output is also sanitized by default', async () => {
+  const content = `irrelevant`;
+  const customOptions = {
+    // deno-lint-ignore require-await
+    markdown: async (_md: string) =>
+      `<p onclick="alert(1)">evil</p><a href="javascript:alert(1)">link</a>`,
+  };
+  const post = await parseMarkdownFile('xss-custom.md', content, 'xss-custom', customOptions);
+  assertEquals(post.html.includes('onclick'), false);
+  assertEquals(post.html.includes('javascript:'), false);
+});
+
+Deno.test('sanitize: trustedHtml skips sanitization for custom renderer', async () => {
+  const content = `irrelevant`;
+  const customOptions = {
+    trustedHtml: true,
+    // deno-lint-ignore require-await
+    markdown: async (_md: string) => `<p onclick="ok">trusted</p>`,
+  };
+  const post = await parseMarkdownFile('trusted.md', content, 'trusted', customOptions);
+  assertEquals(post.html.includes('onclick'), true);
+  assertEquals(post.html.includes('trusted'), true);
+});
+
+Deno.test('sanitize: strips SVG/MathML elements', async () => {
+  const content = `<svg onload="alert(1)"><circle/></svg>`;
+  const post = await parseMarkdownFile('xss-svg.md', content, 'xss-svg');
+  assertEquals(post.html.includes('<svg'), false);
+  assertEquals(post.html.includes('onload'), false);
+});

@@ -6,27 +6,76 @@
 
 import matter from 'gray-matter';
 import { marked } from 'marked';
+import sanitizeHtml from 'sanitize-html';
 import type { BlogPost, LessBlogOptions } from './types.ts';
 
 /**
- * Strip dangerous HTML elements and attributes from markdown output.
- * Removes <script>, <iframe>, <object>, <embed>, <form>, and on* event attributes.
+ * Allow-list HTML sanitizer using sanitize-html.
+ * Only permits safe tags and attributes — all other HTML is stripped.
+ * href/src/action only allow http/https/mailto/#/relative URLs.
  * This is a build-time defense-in-depth — content files are developer-controlled,
  * but sanitization prevents accidental or malicious XSS via raw HTML in markdown.
  */
-function sanitizeHtml(html: string): string {
-  return html
-    // Remove dangerous tags entirely (including content)
-    .replace(/<script[\s>][\s\S]*?<\/script\s*>/gi, '')
-    .replace(/<iframe[\s>][\s\S]*?<\/iframe\s*>/gi, '')
-    .replace(/<object[\s>][\s\S]*?<\/object\s*>/gi, '')
-    .replace(/<embed[\s>][\s\S]*?<\/embed\s*>/gi, '')
-    .replace(/<form[\s>][\s\S]*?<\/form\s*>/gi, '')
-    // Remove event handler attributes (onclick, onerror, onload, etc.)
-    .replace(/\s+on\w+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi, '')
-    // Remove javascript: URLs in href/src/action
-    .replace(/(href|src|action)\s*=\s*["']javascript:[^"']*["']/gi, '$1=""');
-}
+const SANITIZE_OPTIONS: sanitizeHtml.IOptions = {
+  allowedTags: [
+    'p',
+    'a',
+    'code',
+    'pre',
+    'ul',
+    'ol',
+    'li',
+    'h1',
+    'h2',
+    'h3',
+    'h4',
+    'h5',
+    'h6',
+    'blockquote',
+    'strong',
+    'em',
+    'b',
+    'i',
+    's',
+    'del',
+    'ins',
+    'table',
+    'thead',
+    'tbody',
+    'tr',
+    'th',
+    'td',
+    'br',
+    'hr',
+    'img',
+    'figure',
+    'figcaption',
+    'details',
+    'summary',
+    'sup',
+    'sub',
+    'abbr',
+    'input', // for task lists
+  ],
+  allowedAttributes: {
+    '*': ['class', 'id'],
+    a: ['href', 'title', 'target', 'rel'],
+    img: ['src', 'alt', 'title', 'width', 'height'],
+    td: ['colspan', 'rowspan'],
+    th: ['colspan', 'rowspan'],
+    code: ['language', 'data-language'],
+    input: ['type', 'disabled', 'checked'],
+    abbr: ['title'],
+  },
+  // Only allow safe URL schemes in href/src/action
+  allowedSchemes: ['http', 'https', 'mailto', '#', 'relative'],
+  // Strip tag content for disallowed tags (don't keep inner text of <script> etc.)
+  disallowedTagsMode: 'discard',
+  // Enforce rel=noopener on target=_blank links
+  transformTags: {
+    a: sanitizeHtml.simpleTransform('a', { rel: 'noopener noreferrer' }),
+  },
+};
 
 /**
  * Parse a markdown file into a BlogPost.
@@ -51,13 +100,13 @@ export async function parseMarkdownFile(
 
   let html: string;
   if (options?.markdown) {
-    html = await options.markdown(content);
+    // v0.14.10: Custom markdown renderer output is also sanitized by default.
+    // Use options.trustedHtml = true to skip sanitization for trusted content.
+    const raw = await options.markdown(content);
+    html = options.trustedHtml ? raw : sanitizeHtml(raw, SANITIZE_OPTIONS);
   } else {
-    // v0.14.7: Sanitize markdown output — strip dangerous HTML tags
-    // to prevent stored XSS from malicious markdown files.
-    // marked renders raw HTML by default; we explicitly disable it.
     const raw = await marked(content, { async: true });
-    html = sanitizeHtml(raw);
+    html = sanitizeHtml(raw, SANITIZE_OPTIONS);
   }
 
   return {

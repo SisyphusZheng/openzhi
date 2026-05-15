@@ -70,6 +70,13 @@ function renderMiddleware(lines: string[], mw: MiddlewareDecl): void {
 
     case 'cors': {
       const corsOrigin = mw.config?.corsOrigin;
+      // v0.14.10: Reject '*' + credentials: true — browsers refuse this combo.
+      if (corsOrigin === '*' || (Array.isArray(corsOrigin) && corsOrigin.includes('*'))) {
+        throw new Error(
+          'CORS misconfiguration: origin "*" with credentials: true is invalid. ' +
+            'Specify explicit origin(s) or set credentials: false.',
+        );
+      }
       if (corsOrigin !== undefined) {
         const originStr = renderCorsOrigin(corsOrigin);
         lines.push(
