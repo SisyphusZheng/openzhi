@@ -186,7 +186,8 @@ export async function renderDSD(
     // (bare `process` is not a Deno global and triggers "Cannot find name").
     // deno-lint-ignore no-explicit-any
     const _nodeProcess = (globalThis as any).process as
-      { env?: Record<string, string | undefined> } | undefined;
+      | { env?: Record<string, string | undefined> }
+      | undefined;
     const _nodeIsDev = _nodeProcess?.env?.NODE_ENV !== 'production';
     const isDev = typeof Deno !== 'undefined'
       ? Deno.env?.get('LESSJS_ENV') !== 'production'
