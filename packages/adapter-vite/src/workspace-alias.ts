@@ -20,7 +20,46 @@ function tryReadJson(path: string): Record<string, unknown> | null {
     const content = typeof Deno !== 'undefined'
       ? Deno.readTextFileSync(path)
       : require('node:fs').readFileSync(path, 'utf-8');
-    return JSON.parse(content);
+    // deno.json files may contain comments — strip them before JSON.parse.
+    // Naive regex breaks URLs (https:// → https:), so we walk character by character,
+    // tracking whether we're inside a string literal.
+    let result = '';
+    let inString = false;
+    let escape = false;
+    for (let i = 0; i < content.length; i++) {
+      const ch = content[i];
+      if (escape) {
+        result += ch;
+        escape = false;
+        continue;
+      }
+      if (ch === '\\') {
+        result += ch;
+        escape = true;
+        continue;
+      }
+      if (ch === '"') {
+        inString = !inString;
+        result += ch;
+        continue;
+      }
+      if (!inString && ch === '/' && content[i + 1] === '/') {
+        // Skip until end of line
+        while (i < content.length && content[i] !== '\n') i++;
+        result += '\n';
+        continue;
+      }
+      if (!inString && ch === '/' && content[i + 1] === '*') {
+        // Skip until */
+        i += 2;
+        while (i < content.length && !(content[i] === '*' && content[i + 1] === '/')) i++;
+        i++; // skip past */
+        result += ' ';
+        continue;
+      }
+      result += ch;
+    }
+    return JSON.parse(result);
   } catch {
     return null;
   }
