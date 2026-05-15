@@ -30,7 +30,7 @@ const log = createLogger('ssg');
 
 const VIRTUAL_SSG_ENTRY_ID = 'virtual:less-ssg-entry';
 const RESOLVED_SSG_ENTRY_ID = '\0' + VIRTUAL_SSG_ENTRY_ID;
-const FALLBACK_LESSJS_VERSION = '0.14.2';
+const FALLBACK_LESSJS_VERSION = '0.14.8';
 
 function readWorkspacePackageVersion(root: string, packageDir: string): string {
   // v0.14.6: Try import.meta.url fallback when root does not point to workspace root

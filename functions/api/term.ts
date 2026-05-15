@@ -25,7 +25,7 @@ const NEOCAT = [
   '<span style="color:#7dd3fc;">     ██            ██</span>',
   '<span style="color:#7dd3fc;">       ████████████</span>',
   '',
-  '<span style="color:#f4f4f5;">lessjs</span><span style="color:#52525b;">@</span><span style="color:#86efac;">v0.14.7</span>',
+  '<span style="color:#f4f4f5;">lessjs</span><span style="color:#52525b;">@</span><span style="color:#86efac;">v0.14.8</span>',
   '<span style="color:#a1a1aa;">os</span>         deno 2.7+ / node 18+ / bun / cloudflare workers',
   '<span style="color:#a1a1aa;">packages</span>  10',
   '<span style="color:#a1a1aa;">tests</span>     475 passing',
@@ -36,7 +36,7 @@ const NEOCAT = [
 
 const BUILD = [
   '<span style="color:#fbbf24;">$</span> deno task build',
-  '<span style="color:#52525b;">│</span> <span style="color:#7dd3fc;">less</span> v0.14.7 — ssg pipeline',
+  '<span style="color:#52525b;">│</span> <span style="color:#7dd3fc;">less</span> v0.14.8 — ssg pipeline',
   '<span style="color:#52525b;">├─ phase 1</span> route scan  <span style="color:#52525b;">··</span> <span style="color:#86efac;">8 pages, 2 islands</span>',
   '<span style="color:#52525b;">├─ phase 2</span> client build <span style="color:#52525b;">··</span> <span style="color:#86efac;">2 island chunks (1.2 kb)</span>',
   '<span style="color:#52525b;">├─ phase 3</span> ssg render  <span style="color:#52525b;">··</span> <span style="color:#86efac;">8/8 pages rendered</span>',
