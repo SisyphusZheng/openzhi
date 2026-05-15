@@ -277,47 +277,28 @@ export async function scanPackageIslands(
   const allIslands: PackageIslandMeta[] = [];
 
   for (const pkg of packageNames) {
-    try {
-      // v0.14.6: JSR-safe dynamic import — wrap to avoid unanalyzable-dynamic-import warning
-      let mod: Record<string, unknown>;
-      try {
-        mod = await import(/* @vite-ignore */ pkg);
-      } catch (e) {
-        log.warn(
-          `Failed to dynamically import package "${pkg}": ${
-            e instanceof Error ? e.message : String(e)
-          }`,
-        );
-        continue;
-      }
-      if (mod.islands && Array.isArray(mod.islands)) {
-        // Validate each island has required fields
-        for (const island of mod.islands) {
-          if (island.tagName && island.modulePath) {
-            allIslands.push({
-              tagName: island.tagName,
-              modulePath: island.modulePath,
-              strategy: island.strategy || 'lazy',
-            });
-          } else {
-            log.warn(
-              `Invalid island in ${pkg}: missing tagName or modulePath`,
-            );
-          }
+    // v0.14.6: @vite-ignore suppresses unanalyzable-dynamic-import JSR warning.
+    // Non-existent packages intentionally throw (fail-fast for misconfiguration).
+    // deno-lint-ignore no-explicit-any
+    const mod: Record<string, unknown> = await import(/* @vite-ignore */ pkg) as Record<
+      string,
+      unknown
+    >;
+    if (mod.islands && Array.isArray(mod.islands)) {
+      // Validate each island has required fields
+      for (const island of mod.islands) {
+        if (island.tagName && island.modulePath) {
+          allIslands.push({
+            tagName: island.tagName,
+            modulePath: island.modulePath,
+            strategy: island.strategy || 'lazy',
+          });
+        } else {
+          log.warn(
+            `Invalid island in ${pkg}: missing tagName or modulePath`,
+          );
         }
       }
-    } catch (e) {
-      // Package scan failure is fatal — misconfigured packages should break
-      // the build, not silently produce a broken site. This is consistent
-      // with how route scanning failures are handled (throw LessError).
-      throw new LessError(
-        `Failed to scan package islands from "${pkg}": ${
-          e instanceof Error ? e.message : String(e)
-        }`,
-        'PACKAGE_SCAN_ERROR',
-        500,
-        false,
-      );
     }
   }
 
