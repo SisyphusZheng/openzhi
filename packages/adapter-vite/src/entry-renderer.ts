@@ -189,8 +189,9 @@ function renderPageRoute(
   });
 
   lines.push(`// Page: ${route.path} (${route.filePath})`);
-  // H-02 fix: Use JSON.stringify to escape route path (handles single quotes, special chars)
-  lines.push(`app.get(${JSON.stringify(route.path)}, async (c) => {`);
+  // H-02 fix: escape single quotes in route path (for paths like "/it's-a-test")
+  const pathStr = route.path.replace(/'/g, "\\'");
+  lines.push(`app.get('${pathStr}', async (c) => {`);
   lines.push(`  try {`);
   lines.push(
     `    const tag = ${route.varName}.tagName || '${route.defaultTagName}'`,
@@ -619,8 +620,8 @@ export function renderEntry(desc: EntryDescriptor): string {
     if (dynamicRoutes.length > 0) {
       lines.push("  // Dispatch to the route module's getStaticPaths()");
       for (const r of dynamicRoutes) {
-        // H-02 fix: Use JSON.stringify to escape route path
-        lines.push(`  if (routePath === ${JSON.stringify(r.path)}) {`);
+        // H-02 fix: escape single quotes in route path
+        lines.push(`  if (routePath === '${r.path.replace(/'/g, "\\'")}') {`);
         lines.push(
           `    if (typeof ${r.varName}.getStaticPaths === 'function') {`,
         );
