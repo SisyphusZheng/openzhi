@@ -29,13 +29,6 @@ const workspaceAlias = [
     replacement: resolve(__dir, '../packages/core/src/index.ts'),
   },
   {
-    find: '@lessjs/ui',
-    replacement: resolve(__dir, '../packages/ui/src/index.ts'),
-  },
-  // rolldown does not support subpath resolution from a file:// alias
-  // (treats index.ts/less-layout as a directory path → ENOTDIR).
-  // Each component subpath must be listed explicitly in the Vite alias.
-  {
     find: '@lessjs/ui/design-tokens',
     replacement: resolve(__dir, '../packages/ui/src/design-tokens.ts'),
   },
@@ -78,6 +71,11 @@ const workspaceAlias = [
   {
     find: '@lessjs/ui/tokens/colors',
     replacement: resolve(__dir, '../packages/ui/src/tokens/colors.ts'),
+  },
+  // @lessjs/ui root — placed AFTER all subpaths so more specific aliases match first
+  {
+    find: '@lessjs/ui',
+    replacement: resolve(__dir, '../packages/ui/src/index.ts'),
   },
   {
     find: '@lessjs/adapter-lit',

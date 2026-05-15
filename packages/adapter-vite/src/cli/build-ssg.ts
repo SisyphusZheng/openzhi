@@ -338,10 +338,24 @@ async function buildSSG(options: BuildSSGOptions = {}, ctx: LessBuildContext): P
       resolve: {
         preserveSymlinks: true,
         extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
-        alias: alias || undefined,
+        // Normalize alias replacements to absolute paths for rolldown.
+        // Relative paths can cause subpath ENOTDIR errors when rolldown
+        // continues resolution after a parent alias match.
+        alias: alias ? (Array.isArray(alias) ? alias.map((a) => ({
+          find: a.find,
+          replacement: a.replacement.startsWith('/') || /^[A-Za-z]:/.test(a.replacement)
+            ? a.replacement
+            : resolve(root, a.replacement),
+        })) : Object.fromEntries(
+          Object.entries(alias).map(([k, v]) => [
+            k,
+            v.startsWith('/') || /^[A-Za-z]:/.test(v)
+              ? v
+              : resolve(root, v),
+          ]),
+        )) : undefined,
       },
     });
-
     log.info('SSR bundle built successfully');
 
     // ─── Write sidecar importmap.json (ADR 0022) ─────────────
@@ -372,12 +386,26 @@ async function buildSSG(options: BuildSSGOptions = {}, ctx: LessBuildContext): P
         importMap['@lit/reactive-element'] = 'npm:@lit/reactive-element@2.1.0';
       }
 
-      // Add @lessjs/ui if used
+      // Add @lessjs/ui if used (root + all subpath exports used by packageIslands)
       const hasUi = allNoExternal.some((n: string | RegExp) =>
         typeof n === 'string' ? n.includes('@lessjs/ui') : n.toString().includes('@lessjs/ui')
       );
       if (hasUi) {
-        importMap['@lessjs/ui'] = `npm:@jsr/lessjs__ui@${uiVersion}`;
+        const uiPkg = `npm:@jsr/lessjs__ui@${uiVersion}`;
+        importMap['@lessjs/ui'] = uiPkg;
+        // Also map each subpath used by packageIslands so the SSR bundle's
+        // dynamic imports (e.g. @lessjs/ui/less-layout) resolve at runtime.
+        // The npm package exports field exposes the same subpaths as deno.json.
+        const uiSubpaths = new Set<string>();
+        for (const island of packageIslands) {
+          const mp = island.modulePath;
+          if (mp.startsWith('@lessjs/ui/')) {
+            uiSubpaths.add(mp);
+          }
+        }
+        for (const subpath of uiSubpaths) {
+          importMap[subpath] = uiPkg;
+        }
       }
 
       const importMapPath = join(ssrOutDir, 'importmap.json');
