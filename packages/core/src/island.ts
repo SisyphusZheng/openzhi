@@ -131,7 +131,7 @@ export function getSSRProps(el: HTMLElement): Record<string, unknown> | null {
  * v0.14.7: Extended to cover all Object.prototype methods that could be
  * exploited via arbitrary property assignment (C-03 fix).
  */
-const DANGEROUS_KEYS = new Set([
+const DANGEROUS_KEYS: Set<string> = new Set([
   '__proto__',
   'constructor',
   'prototype',

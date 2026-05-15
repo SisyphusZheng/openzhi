@@ -11,7 +11,6 @@ import { css, html, nothing } from 'lit';
 import { DsdLitElement } from '@lessjs/adapter-lit';
 
 export class LessTermDemo extends DsdLitElement {
-
   /** Escape HTML entities for safe text insertion */
   private static _escapeHtml(s: string): string {
     return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
