@@ -66,6 +66,7 @@ export default class LessToc extends LitElement {
   private _headings: Array<{ level: number; id: string; text: string }> = [];
   private _observer: IntersectionObserver | null = null;
   private _activeId = '';
+  private _retryTimer: ReturnType<typeof setTimeout> | null = null;
 
   override connectedCallback() {
     super.connectedCallback();
@@ -75,6 +76,7 @@ export default class LessToc extends LitElement {
   override disconnectedCallback() {
     super.disconnectedCallback();
     this._observer?.disconnect();
+    if (this._retryTimer !== null) clearTimeout(this._retryTimer);
   }
 
   private _scanHeadings() {
@@ -87,7 +89,7 @@ export default class LessToc extends LitElement {
     // Wait for DSD to settle — retry once if needed
     this._extractHeadings(contentCol);
     if (this._headings.length === 0) {
-      setTimeout(() => this._extractHeadings(contentCol), 100);
+      this._retryTimer = setTimeout(() => this._extractHeadings(contentCol), 100);
     }
   }
 

@@ -11,6 +11,7 @@ import { css, html, nothing } from 'lit';
 import { DsdLitElement } from '@lessjs/adapter-lit';
 
 export class LessTermDemo extends DsdLitElement {
+  private _abortController = new AbortController();
   /** Escape HTML entities for safe text insertion */
   private static _escapeHtml(s: string): string {
     return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
@@ -238,6 +239,7 @@ export class LessTermDemo extends DsdLitElement {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ cmd }),
+        signal: this._abortController.signal,
       });
       if (!res.ok) throw new Error(`status ${res.status}`);
       const data = await res.json();
@@ -247,6 +249,11 @@ export class LessTermDemo extends DsdLitElement {
         '<span class="err">error: could not reach api. try <span class="hl">help</span> for local commands.</span>',
       );
     }
+  }
+
+  override disconnectedCallback() {
+    super.disconnectedCallback?.();
+    this._abortController.abort();
   }
 }
 

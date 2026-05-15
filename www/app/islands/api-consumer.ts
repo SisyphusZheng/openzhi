@@ -11,6 +11,7 @@ import { css, html, LitElement } from 'lit';
 export const tagName = 'api-consumer';
 
 export default class ApiConsumer extends LitElement {
+  private _abortController = new AbortController();
   static override styles = css`
     :host {
       display: block;
@@ -224,19 +225,19 @@ export default class ApiConsumer extends LitElement {
 
   override connectedCallback() {
     super.connectedCallback();
-    // Wait for first render to complete before triggering fetch.
-    // In LitElement, setting properties in connectedCallback races with
-    // the initial update cycle. The old Lit SSR client route could block
-    // the second update pipeline when
-    // the component is nested inside a DSD-rendered parent shadow DOM.
     this.updateComplete.then(() => this._fetchStatus());
+  }
+
+  override disconnectedCallback() {
+    super.disconnectedCallback();
+    this._abortController.abort();
   }
 
   private async _fetchStatus() {
     this.apiLoading = true;
     this.apiError = '';
     try {
-      const res = await fetch(`${this._base}/api`);
+      const res = await fetch(`${this._base}/api`, { signal: this._abortController.signal });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       this.apiData = (await res.json()) as Record<string, unknown>;
     } catch (e) {
@@ -256,6 +257,7 @@ export default class ApiConsumer extends LitElement {
     try {
       const res = await fetch(
         `${this._base}/api/hello/${encodeURIComponent(t)}`,
+        { signal: this._abortController.signal },
       );
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const j = (await res.json()) as { message: string };
