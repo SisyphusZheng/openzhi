@@ -111,7 +111,6 @@ function isNothing(value: unknown): boolean {
 // ADR 0021: Always import from @lessjs/core main entry, never from subpaths.
 export { camelToKebab, escapeAttr, escapeHtml } from '@lessjs/core';
 import { camelToKebab, escapeAttr, escapeHtml } from '@lessjs/core';
-import type { RenderAdapter } from '@lessjs/core';
 import { registerAdapter } from '@lessjs/core';
 import { createLogger } from '@lessjs/core/logger';
 

@@ -21,6 +21,7 @@ import {
 } from 'node:fs';
 import type { LessBuildContext } from '../build-context.js';
 import { createLogger } from '@lessjs/core/logger';
+import { stableHash } from '../island-manifest.js';
 
 const log = createLogger('ssg');
 
@@ -81,15 +82,6 @@ function joinUrlPath(...parts: string[]): string {
     .map((part) => part.trim())
     .filter(Boolean);
   return '/' + segments.join('/');
-}
-
-function stableHash(input: string): string {
-  let hash = 2166136261;
-  for (let i = 0; i < input.length; i++) {
-    hash ^= input.charCodeAt(i);
-    hash = Math.imul(hash, 16777619);
-  }
-  return (hash >>> 0).toString(36);
 }
 
 function hasControlCharacter(value: string): boolean {

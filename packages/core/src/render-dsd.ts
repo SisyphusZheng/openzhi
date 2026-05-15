@@ -104,6 +104,10 @@ export async function renderDSD(
   sourceInfo?: { route?: string; source?: string },
   dsdOptions?: DsdOptions,
   collector?: DsdRenderCollector,
+  // v0.14.3 N-6: Accept actual nesting depth from renderNestedCustomElements
+  // instead of always recording 0. This makes the build report's maxNestingDepth
+  // metric meaningful.
+  nestingDepth = 0,
 ): Promise<string> {
   const startTime = performance.now();
   const sourceStr = sourceInfo
@@ -177,11 +181,12 @@ export async function renderDSD(
     // v0.14.3: Only include error details in HTML comments during development.
     // In production, leaking file paths and code structure in HTML comments
     // is a security risk — anyone viewing page source can see internal info.
+    // Cross-runtime environment detection: check Deno first, then Node, else production.
+    // deno-lint-ignore no-process-global
+    const _nodeIsDev = typeof process !== 'undefined' && process.env?.NODE_ENV !== 'production';
     const isDev = typeof Deno !== 'undefined'
       ? Deno.env?.get('LESSJS_ENV') !== 'production'
-      : typeof process !== 'undefined'
-        ? process.env?.NODE_ENV !== 'production'
-        : false;
+      : _nodeIsDev;
     if (isDev) {
       content = `<!-- LessJS ERROR: <${tagName}> render() threw: ${escapeHtml(errMsg)} -->\n` +
         (errStack
@@ -226,7 +231,8 @@ export async function renderDSD(
       templateSize: content.length,
       layer: resolvedLayer,
       hasError: false,
-      nestingDepth: 0,
+      // v0.14.3 N-6: Use actual nesting depth passed from renderNestedCustomElements
+      nestingDepth,
     });
   }
 

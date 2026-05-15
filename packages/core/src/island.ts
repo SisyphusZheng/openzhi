@@ -44,6 +44,19 @@
 import { createLogger } from './logger.js';
 const log = createLogger('core');
 
+// Module-level store of active visibility strategy timeout IDs.
+// Used for test cleanup — tests can call _clearAllVisibilityTimeouts()
+// to prevent timer leaks.
+const _visibilityTimeouts: Set<number> = new Set();
+
+/** Clear all active visibility strategy timeouts (for test cleanup). */
+export function _clearAllVisibilityTimeouts(): void {
+  for (const id of _visibilityTimeouts) {
+    clearTimeout(id);
+  }
+  _visibilityTimeouts.clear();
+}
+
 export interface IslandOptions {
   /** Upgrade strategy:
    *   - 'eager': load immediately when module is imported
@@ -124,7 +137,9 @@ export function lessBind(el: HTMLElement): void {
   for (const [key, value] of Object.entries(props)) {
     // v0.14.3: Prevent prototype pollution — skip dangerous keys
     if (DANGEROUS_KEYS.has(key)) {
-      log.warn(`Skipping dangerous key "${key}" in data-ssr-props on <${el.tagName.toLowerCase()}>`);
+      log.warn(
+        `Skipping dangerous key "${key}" in data-ssr-props on <${el.tagName.toLowerCase()}>`,
+      );
       continue;
     }
     try {
@@ -159,6 +174,8 @@ function createVisibleStrategy(
           observer.disconnect();
           if (!registered) {
             registered = true;
+            clearTimeout(timeoutId);
+            _visibilityTimeouts.delete(timeoutId);
             registerFn();
           }
           return;
@@ -188,13 +205,15 @@ function createVisibleStrategy(
   // (e.g., route changed after island was registered), disconnect
   // both observers after 30 seconds to prevent memory/perf leaks.
   const VISIBILITY_TIMEOUT = 30_000; // 30s
-  setTimeout(() => {
+  const timeoutId = setTimeout(() => {
+    _visibilityTimeouts.delete(timeoutId);
     if (!registered) {
       mo.disconnect();
       observer.disconnect();
       log.debug(`Visibility strategy for <${tagName}> timed out after ${VISIBILITY_TIMEOUT}ms`);
     }
   }, VISIBILITY_TIMEOUT);
+  _visibilityTimeouts.add(timeoutId);
 
   // Start observing after DOM content loaded
   if (document.readyState === 'loading') {

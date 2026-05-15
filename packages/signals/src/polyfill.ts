@@ -201,13 +201,17 @@ function _assertProducerNode(node: ReactiveNode): void {
   node.liveConsumerIndexOfThis ??= [];
 }
 
+// ─── Module-level sentinel symbols ───────────────────────────────
+// v0.14.3 N-8: Moved from inside _createPolyfill to module scope so they
+// are created once (not per-call). If _createPolyfill is called more than
+// once (e.g., in tests), the sentinels remain consistent across instances.
+const _UNSET = Symbol('UNSET');
+const _COMPUTING = Symbol('COMPUTING');
+const _ERRORED = Symbol('ERRORED');
+
 // ─── _createPolyfill: Signal.State / Signal.Computed / Signal.subtle.Watcher ──
 
 export function _createPolyfill(): SignalEngineNamespace {
-  const UNSET = Symbol('UNSET');
-  const COMPUTING = Symbol('COMPUTING');
-  const ERRORED = Symbol('ERRORED');
-
   // --- Signal.State ---
   class State<T> {
     readonly [NODE]: SignalNode<T>;
@@ -260,23 +264,23 @@ export function _createPolyfill(): SignalEngineNamespace {
       const node: ComputedNode<T> = Object.create({
         ...REACTIVE_NODE,
         equal: (a: T, b: T) => Object.is(a, b),
-        value: UNSET as any,
+        value: _UNSET as any,
         error: undefined,
         computation,
       });
       node.consumerAllowSignalWrites = true;
       node.wrapper = this;
 
-      node.producerMustRecompute = (n: unknown) => (n as ComputedNode<T>).value === UNSET;
+      node.producerMustRecompute = (n: unknown) => (n as ComputedNode<T>).value === _UNSET;
       node.producerRecomputeValue = (n: unknown) => {
         const cNode = n as ComputedNode<T>;
         const prevConsumer = _consumerBeforeComputation(cNode);
-        cNode.value = COMPUTING as any;
+        cNode.value = _COMPUTING as any;
         try {
           cNode.value = cNode.computation.call(cNode.wrapper);
           cNode.error = undefined;
         } catch (err) {
-          cNode.value = ERRORED as any;
+          cNode.value = _ERRORED as any;
           cNode.error = err;
         } finally {
           _consumerAfterComputation(cNode, prevConsumer);
@@ -297,7 +301,7 @@ export function _createPolyfill(): SignalEngineNamespace {
       }
       _producerUpdateValueVersion(this[NODE]);
       _producerAccessed(this[NODE]);
-      if (this[NODE].value === ERRORED) throw this[NODE].error;
+      if (this[NODE].value === _ERRORED) throw this[NODE].error;
       return this[NODE].value;
     }
   }

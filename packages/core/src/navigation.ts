@@ -16,6 +16,52 @@ import { createLogger } from './logger.js';
 
 const log = createLogger('core');
 
+// ─── Module-level shared state for History API monkey-patching ────
+// v0.14.3 B-4 fix: Use a shared reference counter so multiple onNavigate
+// subscribers don't corrupt each other's monkey-patches.
+// Each call to onNavigate increments the counter; each unsubscribe decrements.
+// Only the first subscriber installs the patch; only the last removes it.
+let _historyPatchCount = 0;
+
+// Capture originals lazily — not at module load time (SSR/tests may not
+// have `history`). Use null as sentinel; patching is only needed when
+// onNavigate() is actually called in a browser context.
+// deno-lint-ignore no-explicit-any
+let _origPushState: any = null;
+// deno-lint-ignore no-explicit-any
+let _origReplaceState: any = null;
+let _lastNavWasPush = false;
+
+function _ensureHistoryOriginals(): void {
+  if (_origPushState === null) {
+    _origPushState = history.pushState.bind(history);
+    _origReplaceState = history.replaceState.bind(history);
+  }
+}
+
+function _installHistoryPatch(): void {
+  _ensureHistoryOriginals();
+  if (_historyPatchCount === 0) {
+    history.pushState = ((...args: any[]) => {
+      _lastNavWasPush = true;
+      _origPushState(...args);
+    }) as unknown as typeof history.pushState;
+    history.replaceState = ((...args: any[]) => {
+      _lastNavWasPush = true;
+      _origReplaceState(...args);
+    }) as unknown as typeof history.replaceState;
+  }
+  _historyPatchCount++;
+}
+
+function _uninstallHistoryPatch(): void {
+  _historyPatchCount--;
+  if (_historyPatchCount === 0) {
+    history.pushState = _origPushState;
+    history.replaceState = _origReplaceState;
+  }
+}
+
 interface NavigationDestination {
   url: string;
   index: number;
@@ -120,32 +166,22 @@ export function onNavigate(callback: NavigationCallback): () => void {
     // History API fires popstate for back/forward navigation but NOT for
     // pushState/replaceState — so we dispatch it manually in navigate()
     // and use a flag to tell them apart.
-    let _lastNavWasPush = false;
-
+    //
+    // B-4 fix: Monkey-patching uses a shared reference counter (_historyPatchCount)
+    // declared at module scope. Multiple onNavigate() subscribers share the same
+    // patched history methods. Each unsubscriber only decrements the counter;
+    // the original methods are restored only when the last subscriber leaves.
     const handler = () => {
       const navType: 'push' | 'back' = _lastNavWasPush ? 'push' : 'back';
       _lastNavWasPush = false;
       callback(new URL(globalThis.location.href), navType);
     };
 
-    // Intercept pushState/replaceState to mark user-initiated navigations
-    const origPushState = history.pushState.bind(history);
-    const origReplaceState = history.replaceState.bind(history);
-    history.pushState = (...args: Parameters<typeof history.pushState>) => {
-      _lastNavWasPush = true;
-      origPushState(...args);
-    };
-    history.replaceState = (...args: Parameters<typeof history.replaceState>) => {
-      _lastNavWasPush = true;
-      origReplaceState(...args);
-    };
-
+    _installHistoryPatch();
     globalThis.addEventListener('popstate', handler);
     return () => {
       globalThis.removeEventListener('popstate', handler);
-      // Restore original methods on cleanup
-      history.pushState = origPushState;
-      history.replaceState = origReplaceState;
+      _uninstallHistoryPatch();
     };
   }
 }

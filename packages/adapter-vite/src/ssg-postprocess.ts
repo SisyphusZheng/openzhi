@@ -50,7 +50,8 @@ function walkHtmlFiles(
 
 /** Insert content immediately after <head> opening tag (handles attributes) */
 export function insertAfterHead(html: string, content: string): string {
-  const headMatch = html.match(/<head(\s[^>]*)?>/i);
+  // v0.14.3 N-7: Use [\s\S] instead of [^>] to handle multi-line <head> tags
+  const headMatch = html.match(/<head(\s[\s\S]*?)?>/i);
   if (!headMatch) {
     return html.startsWith('<!') || html.startsWith('<html')
       ? html.replace(/(<(?:!DOCTYPE|html)[^>]*>)/i, `$1\n<head>\n  ${content}\n</head>`)

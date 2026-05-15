@@ -186,7 +186,7 @@ export async function renderNestedCustomElements(
   const ast = parse5.parseFragment(html);
 
   // Collect custom element nodes in bottom-up (deepest-first) order
-  const ceNodes: P5Element[] = [];
+  const ceNodes: Array<{ node: P5Element; depth: number }> = [];
 
   function collectCustomElements(node: P5ChildNode, depth = 0): void {
     if (!('tagName' in node)) return;
@@ -215,7 +215,7 @@ export async function renderNestedCustomElements(
     // Skip if exceeds max depth (prevents stack overflow on pathological nesting)
     if (depth > maxDepth) return;
 
-    ceNodes.push(element);
+    ceNodes.push({ node: element, depth });
   }
 
   // Fragment childNodes are the top-level nodes directly
@@ -224,7 +224,7 @@ export async function renderNestedCustomElements(
   }
 
   // Process each custom element (already in bottom-up order)
-  for (const ceNode of ceNodes) {
+  for (const { node: ceNode, depth } of ceNodes) {
     const tagName = ceNode.tagName;
     const Cls = globalThis.customElements!.get(tagName) as CustomElementConstructor;
     if (!Cls) continue;
@@ -233,7 +233,7 @@ export async function renderNestedCustomElements(
     const dsdOpts = inferDsdOptions(tagName, Cls);
 
     // Render DSD HTML for this component
-    const dsdHtml = await renderDSD(tagName, Cls, props, undefined, dsdOpts, collector);
+    const dsdHtml = await renderDSD(tagName, Cls, props, undefined, dsdOpts, collector, depth);
 
     // Parse the DSD HTML into a fragment
     const dsdFragment = parse5.parseFragment(dsdHtml);

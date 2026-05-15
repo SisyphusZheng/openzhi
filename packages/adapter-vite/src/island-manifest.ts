@@ -124,8 +124,10 @@ export function writeIslandManifests(outputDir: string, manifests: PageIslandMan
  * to significantly reduce collision probability for large sites.
  * Uses BigInt for the 64-bit arithmetic, falling back to 32-bit
  * if BigInt is unavailable.
+ *
+ * Exported as shared utility for use by other modules (e.g., ssg-render.ts).
  */
-function stableHash(str: string): string {
+export function stableHash(str: string): string {
   // FNV-1a 64-bit parameters
   const FNV_OFFSET_BASIS = 14695981039346656037n;
   const FNV_PRIME = 1099511628211n;
