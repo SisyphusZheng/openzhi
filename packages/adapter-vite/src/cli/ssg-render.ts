@@ -272,8 +272,8 @@ export async function ssgRender(
     const dirPath = join(outputDir, baseName);
     const indexPath = join(dirPath, 'index.html');
     if (existsSync(dirPath)) continue;
-    nodeFs.mkdirSync(dirPath, { recursive: true });
-    nodeFs.renameSync(filePath, indexPath);
+    mkdirSync(dirPath, { recursive: true });
+    renameSync(filePath, indexPath);
     log.info(`Clean URL: /${urlBaseName} → ${urlBaseName}/index.html`);
   }
 

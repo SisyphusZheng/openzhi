@@ -210,7 +210,8 @@ async function buildSSG(options: BuildSSGOptions = {}, ctx: LessBuildContext): P
           if (a.find === '@lessjs/ui') {
             // v0.14.6: Check if replacement is already covered by defaultNoExternal
             const isAlreadyCovered = defaultNoExternal.some(
-              (pattern: string | RegExp) => pattern instanceof RegExp && pattern.test(a.replacement)
+              (pattern: string | RegExp) =>
+                pattern instanceof RegExp && pattern.test(a.replacement),
             );
             if (!isAlreadyCovered) {
               allNoExternal.push(a.replacement);
@@ -219,7 +220,8 @@ async function buildSSG(options: BuildSSGOptions = {}, ctx: LessBuildContext): P
         }
       } else if ('@lessjs/ui' in alias) {
         const isAlreadyCovered = defaultNoExternal.some(
-          (pattern: string | RegExp) => pattern instanceof RegExp && pattern.test(alias['@lessjs/ui'])
+          (pattern: string | RegExp) =>
+            pattern instanceof RegExp && pattern.test(alias['@lessjs/ui']),
         );
         if (!isAlreadyCovered) {
           allNoExternal.push(alias['@lessjs/ui']);

@@ -283,7 +283,11 @@ export async function scanPackageIslands(
       try {
         mod = await import(/* @vite-ignore */ pkg);
       } catch (e) {
-        log.warn(`Failed to dynamically import package "${pkg}": ${e instanceof Error ? e.message : String(e)}`);
+        log.warn(
+          `Failed to dynamically import package "${pkg}": ${
+            e instanceof Error ? e.message : String(e)
+          }`,
+        );
         continue;
       }
       if (mod.islands && Array.isArray(mod.islands)) {

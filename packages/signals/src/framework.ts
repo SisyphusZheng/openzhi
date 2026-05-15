@@ -71,7 +71,7 @@ export function effect(fn: () => void | (() => void)): Unsubscribe {
       queueMicrotask(() => {
         pendingCount = 0;
         // Loop to handle signal changes that occurred during processing
-        let pendingSignals: readonly object[];
+        let pendingSignals: unknown[];
         while ((pendingSignals = watcher.getPending()).length > 0) {
           for (const s of pendingSignals) {
             try {

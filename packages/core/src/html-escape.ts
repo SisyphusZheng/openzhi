@@ -103,11 +103,11 @@ export function wrapInDocument(
   } = options;
   // v0.14.5: CSP nonce format validation per CSP spec (base64 value)
   const NONCE_RE = /^[A-Za-z0-9+/=_-]+$/;
-  if (cspNonce && !NONCE_RE.test(cspNonce)) {
+  const validNonce = cspNonce && NONCE_RE.test(cspNonce) ? cspNonce : undefined;
+  if (cspNonce && !validNonce) {
     log.warn(`Invalid CSP nonce format: "${cspNonce}". Nonce should be a base64-encoded value.`);
-    cspNonce = undefined; // Fall back to no nonce
   }
-  const nonceAttr = cspNonce ? ` nonce="${cspNonce}"` : '';
+  const nonceAttr = validNonce ? ` nonce="${validNonce}"` : '';
 
   // Security: warn if headExtras contains <script> tags, which may indicate
   // user-supplied content being injected unsafely. Legitimate use cases exist

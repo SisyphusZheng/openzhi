@@ -45,9 +45,9 @@ export type IslandLayerMap = Record<string, 'dsd-static' | 'dsd-interactive' | '
 export function extractCustomElementTags(html: string): string[] {
   // Strip HTML comments, script blocks, and style blocks first
   const cleaned = html
-    .replace(/<!--[\s\S]*?-->/g, '')           // Remove HTML comments
+    .replace(/<!--[\s\S]*?-->/g, '') // Remove HTML comments
     .replace(/<script[\s>][\s\S]*?<\/script>/gi, '') // Remove script blocks
-    .replace(/<style[\s>][\s\S]*?<\/style>/gi, '');  // Remove style blocks
+    .replace(/<style[\s>][\s\S]*?<\/style>/gi, ''); // Remove style blocks
   const tagPattern = /<([a-z][a-z0-9]*-[a-z0-9-]+)[\s>\/]/gi;
   const tags = new Set<string>();
   let match: RegExpExecArray | null;

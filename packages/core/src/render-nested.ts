@@ -60,8 +60,10 @@ function parseAttrsToProps(attrs: Array<{ name: string; value: string }>): Recor
       if (value.startsWith('[') || value.startsWith('{')) {
         // Fast check: JSON must end with matching bracket
         const lastChar = value[value.length - 1];
-        if ((value.startsWith('{') && lastChar === '}') ||
-            (value.startsWith('[') && lastChar === ']')) {
+        if (
+          (value.startsWith('{') && lastChar === '}') ||
+          (value.startsWith('[') && lastChar === ']')
+        ) {
           try {
             const parsed = JSON.parse(value);
             if (typeof parsed === 'object' && parsed !== null) {
@@ -281,7 +283,7 @@ export async function renderNestedCustomElements(
     if (!dsdCeElement) {
       log.warn(
         `renderDSD() for <${tagName}> returned unexpected content — ` +
-        'DSD element not found in rendered output. Falling back to raw fragment.',
+          'DSD element not found in rendered output. Falling back to raw fragment.',
       );
     }
 

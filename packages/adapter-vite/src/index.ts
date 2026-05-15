@@ -529,8 +529,8 @@ function dispatchDataPlugin(ctx: LessBuildContext): Plugin {
   ];
 
   // v0.14.6: Use Map for O(1) virtual module ID lookup
-  const ENTRIES_MAP = new Map(ENTRIES.map(e => [e.virtual, e]));
-  const RESOLVED_MAP = new Map(ENTRIES.map(e => [e.resolved, e]));
+  const ENTRIES_MAP = new Map(ENTRIES.map((e) => [e.virtual, e]));
+  const RESOLVED_MAP = new Map(ENTRIES.map((e) => [e.resolved, e]));
 
   return {
     name: 'less:data-dispatch',
