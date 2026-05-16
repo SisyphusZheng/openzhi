@@ -68,9 +68,6 @@ into CEM/manifest-based validation.
 - **Vanilla adapter render fallback**: `WithDsdHydration(HTMLElement)` mixin now
   auto-calls `render()` when no DSD content exists (ssr:false islands). Fix in
   mixin layer, not per-island — all vanilla adapter consumers benefit.
-- **Shoelace showcase color contrast**: Overrode Shoelace default color tokens
-  with higher-contrast values (Primary `#4f46e5`, Success `#059669`,
-  Neutral `#52525b`).
 - 554 tests passing; build produces 298 pages.
 
 ## Known Issues
