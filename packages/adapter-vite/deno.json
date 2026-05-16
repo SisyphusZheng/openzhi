@@ -17,7 +17,6 @@
     "@lessjs/core/navigation": "jsr:@lessjs/core@^0.14.11/navigation",
     "@lessjs/core/build-types": "jsr:@lessjs/core@^0.14.11/build-types",
     "@lessjs/core/virtual-ids": "jsr:@lessjs/core@^0.14.11/virtual-ids",
-    "@lessjs/content/sitemap": "jsr:@lessjs/content@^0.14.11/sitemap",
     "esbuild": "npm:esbuild@^0.25",
     "hono": "npm:hono@^4",
     "@hono/vite-dev-server": "npm:@hono/vite-dev-server@^0.25.3",

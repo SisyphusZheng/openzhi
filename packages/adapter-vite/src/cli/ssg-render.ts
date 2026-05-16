@@ -22,8 +22,6 @@ import {
 import type { LessBuildContext } from '../build-context.js';
 import { createLogger } from '@lessjs/core/logger';
 import { stableHash } from '../island-manifest.js';
-import { generateSitemap } from '@lessjs/content/sitemap';
-import type { SitemapOptions } from '@lessjs/content/sitemap';
 
 const log = createLogger('ssg');
 
@@ -560,7 +558,14 @@ async function networkFirst(req) {
 
   try {
     if (ctx?.plugins?.sitemapOptions) {
-      generateSitemap(join(root, outDir), ctx.plugins.sitemapOptions as unknown as SitemapOptions);
+      // Dynamic import: adapter-vite cannot statically depend on @lessjs/content
+      // (would create a JSR publish-time circular dependency).
+      // At runtime, the Deno workspace import map or the SSR bundle's import map
+      // resolves '@lessjs/content/sitemap' correctly.
+      const { generateSitemap } = await import(
+        '@lessjs/content/sitemap'
+      ) as { generateSitemap: (dir: string, opts: unknown) => string[] };
+      generateSitemap(join(root, outDir), ctx.plugins.sitemapOptions);
     }
   } catch {
     log.debug('Sitemap generation skipped or failed');

@@ -1167,7 +1167,6 @@
       },
       "packages/adapter-vite": {
         "dependencies": [
-          "jsr:@lessjs/content@~0.14.11",
           "jsr:@lessjs/core@~0.14.11",
           "npm:@hono/vite-dev-server@~0.25.3",
           "npm:esbuild@0.25",
@@ -1186,7 +1185,6 @@
       },
       "packages/content": {
         "dependencies": [
-          "jsr:@lessjs/adapter-vite@~0.14.11",
           "jsr:@lessjs/core@~0.14.11",
           "npm:@types/sanitize-html@2",
           "npm:gray-matter@^4.0.3",
@@ -1202,7 +1200,6 @@
       },
       "packages/i18n": {
         "dependencies": [
-          "jsr:@lessjs/adapter-vite@~0.14.11",
           "jsr:@lessjs/core@~0.14.11",
           "npm:vite@8.0.10"
         ]
