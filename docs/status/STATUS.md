@@ -2,32 +2,37 @@
 
 > AI assistant: read this file first on every session start.
 
-## Current Version: 0.15.3
+## Current Version: 0.16.0
 
 ## Branch Status
 
 | Branch        | HEAD      | Status          |
 | ------------- | --------- | --------------- |
-| `origin/dev`  | pending   | v0.15.3 release |
-| `origin/main` | `32f3579` | v0.15.2 merged  |
+| `origin/dev`  | pending   | v0.16.0 release |
+| `origin/main` | `5e06fc9` | v0.15.3 merged  |
 
 ## Tags
 
 | Tag      | Commit    | Date       |
 | -------- | --------- | ---------- |
-| v0.15.3  | pending   | 2026-05-16 |
+| v0.16.0  | pending   | 2026-05-16 |
+| v0.15.3  | `5e06fc9` | 2026-05-16 |
 | v0.15.2  | `64dadd8` | 2026-05-16 |
 | v0.15.1  | `dd36eea` | 2026-05-16 |
 | v0.14.11 | `32dcc7c` | 2026-05-16 |
 
-## Last Release: 0.15.3 (2026-05-16)
+## Last Release: 0.16.0 (2026-05-16)
 
-- `dsd-report.json` written to SSG output directory after rendering.
-- New types: `DsdBuildReport`, `DsdPageDiagnostics`, `DsdMetricsSummary`, `DsdHydrationHintSummary`.
-- `SsrBundle.renderRoute()` returns `SsgPageOutput` (structured) instead of `string`.
-- `collectPageOutput()` provides backward compat for string-only returns.
-- Integration tests for report shape, diagnostics collection, and backward compat.
-- Release gate: all 7 checks pass (fmt, lint, typecheck, audit, test, build, e2e).
+- CEM-compatible `LessPackageManifest` with 20+ fields.
+- Local `LessRegistry` with register/validate/getByTagName/generateIndex.
+- 7 validation rules: missing fields, invalid tags, unsafe paths, invalid
+  strategies, duplicate tags, unresolved refs, registry conflicts.
+- `packageIslandFromManifest()` for backward compat with v0.15 `PackageIslandMeta`.
+- `@lessjs/ui` manifest with CEM metadata for all 7 components.
+- `PackageIslandMeta` marked `@deprecated` (removal target: v0.18+).
+- Global 6-phase roadmap: `docs/roadmap/ROADMAP.md`.
+- Public roadmap page updated with 6-phase vision.
+- Release gate: 526 tests + 90 e2e pass; fmt, lint, typecheck, build clean.
 
 ## Known Issues
 
@@ -35,8 +40,8 @@
 
 ## In Progress
 
-- v0.15.3 DSD Report + Release Gate complete on dev.
-- v0.16.0 Package Protocol is the next implementation step.
+- v0.16.0 Package Protocol complete on dev.
+- v0.16.1 Build-Time Integration is the next step (conditional — may defer to v0.17).
 
 ## Version Ladder
 
@@ -45,8 +50,8 @@
 | v0.15.1 | `docs/sop/v0.15.1-audit-gates.md`                    | Security and test gates           | ✅ Done |
 | v0.15.2 | `docs/sop/v0.15.2-render-output-hooks.md`            | `RenderOutput` + `RenderHooks`    | ✅ Done |
 | v0.15.3 | `docs/sop/v0.15.3-dsd-report-and-release-gate.md`    | `dsd-report.json` + release gate  | ✅ Done |
-| v0.16.0 | `docs/sop/v0.16.0-package-protocol.md`               | CEM manifest + local registry     | Next    |
-| v0.16.1 | `docs/sop/v0.16.1-build-time-package-integration.md` | Manifest-driven build integration | —       |
+| v0.16.0 | `docs/sop/v0.16.0-package-protocol.md`               | CEM manifest + local registry     | ✅ Done |
+| v0.16.1 | `docs/sop/v0.16.1-build-time-package-integration.md` | Manifest-driven build integration | Next    |
 
 ## JSR Publish Order
 

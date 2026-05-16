@@ -8,7 +8,12 @@
  * - Islands are the only client JS allowed
  */
 
-/** Package Island metadata exported from npm/JSR packages */
+/** Package Island metadata exported from npm/JSR packages
+ *
+ * @deprecated Use LessPackageManifest instead. This type will be removed
+ * in v0.18+. Migration: use packageIslandFromManifest() to generate
+ * PackageIslandMeta[] from a LessPackageManifest.
+ */
 export interface PackageIslandMeta {
   /** Custom element tag name (e.g. 'less-theme-toggle') */
   tagName: string;
@@ -16,6 +21,246 @@ export interface PackageIslandMeta {
   modulePath: string;
   /** Island upgrade strategy */
   strategy?: 'eager' | 'lazy' | 'idle' | 'visible';
+}
+
+// ─── WC Package Protocol (v0.16) ──────────────────────────────────────
+
+/** Custom element attribute descriptor (CEM-compatible) */
+export interface LessAttribute {
+  /** Attribute name */
+  name: string;
+  /** Attribute type (e.g. 'string', 'boolean', 'number') */
+  type?: string;
+  /** Default value */
+  default?: string;
+  /** Description */
+  description?: string;
+  /** Whether the attribute reflects to the corresponding property */
+  reflects?: boolean;
+  /** Field name on the element class (if different from attribute name) */
+  fieldName?: string;
+}
+
+/** Custom element class member descriptor (CEM-compatible) */
+export interface LessMember {
+  /** Member name */
+  name: string;
+  /** Member kind */
+  kind: 'field' | 'method' | 'property';
+  /** Type string */
+  type?: string;
+  /** Default value */
+  default?: string;
+  /** Description */
+  description?: string;
+  /** Privacy level */
+  privacy?: 'public' | 'protected' | 'private';
+  /** Whether this member is static */
+  static?: boolean;
+  /** Whether this member is readonly */
+  readonly?: boolean;
+}
+
+/** Custom element event descriptor (CEM-compatible) */
+export interface LessEvent {
+  /** Event name */
+  name: string;
+  /** Event type (e.g. 'CustomEvent<{ value: string }>') */
+  type?: string;
+  /** Description */
+  description?: string;
+}
+
+/** Custom element slot descriptor (CEM-compatible) */
+export interface LessSlot {
+  /** Slot name (empty string for default slot) */
+  name: string;
+  /** Description */
+  description?: string;
+}
+
+/** Custom element CSS custom property descriptor (CEM-compatible) */
+export interface LessCssProperty {
+  /** CSS property name (e.g. '--button-padding') */
+  name: string;
+  /** Default value */
+  default?: string;
+  /** Description */
+  description?: string;
+  /** Type (e.g. 'length', 'color') */
+  type?: string;
+}
+
+/** Custom element CSS part descriptor (CEM-compatible) */
+export interface LessCssPart {
+  /** Part name */
+  name: string;
+  /** Description */
+  description?: string;
+}
+
+/** SSR/DSD/hydration declarations for a LessJS custom element */
+export interface LessElementExtensions {
+  /** Whether this component can be server-side rendered */
+  ssr?: boolean;
+  /** Whether this component uses Declarative Shadow DOM for SSR output */
+  dsd?: boolean;
+  /** Component layer in the three-layer model */
+  layer?: ComponentLayer;
+  /** Hydration strategy for client-side upgrade */
+  hydrate?: 'eager' | 'lazy' | 'idle' | 'visible';
+  /** Declarative event bindings for dsd-interactive components */
+  hydrateEvents?: HydrateEventDescriptor[];
+  /** Module path for import (e.g. '@lessjs/ui/less-button') */
+  module?: string;
+  /** Export name from the module (default: tagName in PascalCase) */
+  export?: string;
+}
+
+/** Package-level LessJS declarations */
+export interface LessPackageExtensions {
+  /** Minimum LessJS core version required */
+  lessjsVersion?: string;
+  /** Adapter required for SSR rendering (e.g. 'lit', 'vanilla') */
+  adapter?: string;
+  /** Whether this package provides a default CSS stylesheet */
+  hasStylesheet?: boolean;
+  /** CSS custom property prefix (e.g. 'less') */
+  cssPrefix?: string;
+}
+
+/** Named export descriptor within a package module */
+export interface LessExport {
+  /** Export name (e.g. 'LessButton') */
+  name: string;
+  /** Reference path (e.g. './less-button.js') */
+  path?: string;
+  /** Description */
+  description?: string;
+}
+
+/** Custom element declaration within a LessJS package manifest */
+export interface LessDeclaration {
+  /** Custom element tag name (must be valid per HTML spec) */
+  tagName: string;
+  /** Element class name */
+  className?: string;
+  /** Super class name (e.g. 'LitElement') */
+  superclassName?: string;
+  /** Attributes */
+  attributes?: LessAttribute[];
+  /** Class members */
+  members?: LessMember[];
+  /** Events */
+  events?: LessEvent[];
+  /** Slots */
+  slots?: LessSlot[];
+  /** CSS custom properties */
+  cssProperties?: LessCssProperty[];
+  /** CSS shadow parts */
+  cssParts?: LessCssPart[];
+  /** LessJS SSR/DSD/hydration extensions */
+  less?: LessElementExtensions;
+  /** Description */
+  description?: string;
+}
+
+/** Module entry within a LessJS package manifest */
+export interface LessModule {
+  /** Module path relative to package root (e.g. './less-button.js') */
+  path: string;
+  /** Named exports from this module */
+  exports?: LessExport[];
+  /** Declarations defined in this module */
+  declarations?: string[];
+}
+
+/** CEM-compatible package manifest for LessJS Web Component packages.
+ *
+ * This is the v0.16 replacement for PackageIslandMeta. It provides
+ * structured, tool-consumable metadata for an entire WC package.
+ */
+export interface LessPackageManifest {
+  /** Schema version of the manifest format */
+  schemaVersion: string;
+  /** Package name on JSR/npm (e.g. '@lessjs/ui') */
+  packageName: string;
+  /** Package version (semver) */
+  version: string;
+  /** Human-readable package description */
+  description?: string;
+  /** Author or organization */
+  author?: string;
+  /** License identifier (e.g. 'MIT') */
+  license?: string;
+  /** Homepage URL */
+  homepage?: string;
+  /** Repository URL */
+  repository?: string;
+  /** Custom element declarations in this package */
+  declarations: LessDeclaration[];
+  /** Module entry points */
+  modules?: LessModule[];
+  /** Package-level LessJS extensions */
+  less?: LessPackageExtensions;
+}
+
+/** Result of validating a LessPackageManifest */
+export interface ValidationResult {
+  /** Whether the manifest is valid */
+  valid: boolean;
+  /** Validation errors (blocking) */
+  errors: ValidationError[];
+  /** Validation warnings (non-blocking) */
+  warnings: ValidationWarning[];
+}
+
+/** A validation error from manifest checking */
+export interface ValidationError {
+  /** Error code for programmatic handling */
+  code: string;
+  /** Human-readable message */
+  message: string;
+  /** Path to the problematic field (e.g. 'declarations[0].tagName') */
+  path?: string;
+}
+
+/** A validation warning from manifest checking */
+export interface ValidationWarning {
+  /** Warning code */
+  code: string;
+  /** Human-readable message */
+  message: string;
+  /** Path to the field that triggered the warning */
+  path?: string;
+}
+
+/** Index entry generated from a registered manifest */
+export interface RegistryIndexEntry {
+  /** Tag name */
+  tagName: string;
+  /** Package name */
+  packageName: string;
+  /** Package version */
+  version: string;
+  /** Module path */
+  module?: string;
+  /** SSR capability */
+  ssr?: boolean;
+  /** DSD capability */
+  dsd?: boolean;
+  /** Hydration strategy */
+  hydrate?: string;
+}
+
+/** Aggregated index of all registered manifests */
+export interface RegistryIndex {
+  /** Total packages registered */
+  totalPackages: number;
+  /** Total declarations across all packages */
+  totalDeclarations: number;
+  /** Index entries, sorted by tagName */
+  entries: RegistryIndexEntry[];
 }
 
 /** Framework configuration options */

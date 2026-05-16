@@ -166,288 +166,142 @@ export class RoadmapPage extends LitElement {
         <div class="container">
           <h1>Roadmap</h1>
           <p class="subtitle">
-            LessJS 的路线图在 2026-05-15 按 <code>origin/main</code> 重新校准：源码已到
-            <code>0.14.9</code>，但下一阶段必须先修复发布一致性、package island SSR、per-page island
-            manifest 和 create scaffold 入口，再扩大 Web Components registry hub 叙事。
+            从渲染内核到通用 WC SSR/SSG 引擎 + Registry Hub。六个 Phase，近细远粗。 当前版本 <code
+            >v0.15.3</code>，下一里程碑 <code>v0.16.0</code>。
           </p>
 
           <div class="callout">
             <p>
-              当前原则是事实优先、标准优先、协议优先：已经被测试证明的能力进入文档；尚未冻结的能力留在
-              roadmap 和 ADR； registry hub 只能建立在 renderer kernel、package manifest 和 release parity
-              稳定之后。 版本纪律继续遵循 ADR 0006，npm 发布策略继续遵循 ADR 0007，2026-05-15 的执行 SOP
-              见 ADR 20260515-1。
+              事实优先、标准优先、协议优先。已测试的能力进入文档；未冻结的留在 roadmap 和 ADR；registry
+              hub 只在 renderer kernel、package manifest 和 release parity 稳定之后才建设。版本纪律遵循
+              ADR 0006。
             </p>
           </div>
 
-          <h2>2026-05-16 愿景可行性评估</h2>
-          <p>
-            长期愿景可以成立，但“通用”必须定义为<strong>协议通用</strong>，不是“任意 Web Component
-            都能被魔法 SSR 和水合”。LessJS 更现实的目标是 WC SSR/SSG 渲染内核、CEM-compatible 包协议、本地
-            registry index、
-            <code>less add</code> 安装辅助、自动注册、受控自动渲染和声明式水合。
-          </p>
-          <table class="reset-table">
-            <thead>
-              <tr>
-                <th>方向</th>
-                <th>现实判断</th>
-                <th>必须满足的条件</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>WC SSR/SSG 渲染内核</td>
-                <td>可行，是当前最强主线。</td>
-                <td>
-                  公开 renderer protocol、adapter contract、错误模型、DSD metrics 和真实浏览器验证。
-                </td>
-              </tr>
-              <tr>
-                <td>一键 install</td>
-                <td>只对可信 manifest 包可行。</td>
-                <td>读取 package manifest，更新配置，生成注册入口，保留 lockfile 和权限提示。</td>
-              </tr>
-              <tr>
-                <td>自动注册 / 自动渲染</td>
-                <td>可做，但必须可解释、可关闭、可降级。</td>
-                <td>组件声明 tag、module、export、SSR renderability、adapter、DSD 约束和 fallback。</td>
-              </tr>
-              <tr>
-                <td>自动水合</td>
-                <td>只能声明式水合，不能猜事件。</td>
-                <td>manifest 或组件类声明 strategy、events、selectors 和 cleanup 规则。</td>
-              </tr>
-              <tr>
-                <td>WC registry hub</td>
-                <td>有市场缺口，但治理成本高。</td>
-                <td>先完成本地 index、manifest validator、验证产物、provenance、安全响应和维护边界。</td>
-              </tr>
-            </tbody>
-          </table>
-
-          <h2>2026-05-15 Main-Branch Review Reset</h2>
-          <p>
-            LessJS 应被定义为 Web Standards-first 的 DSD/WC 应用框架和渲染基础设施。近期目标不是追随
-            OpenWC，也不是先做中心化 marketplace，而是把 LessJS 自己已经具备的 DSD 渲染、SSR bundle、SSG
-            pipeline、 package island model 和发布纪律产品化。
-          </p>
-
-          <table class="reset-table">
-            <thead>
-              <tr>
-                <th>议题</th>
-                <th>中立判断</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>OpenWC</td>
-                <td>
-                  只作为历史经验和概念参考，不作为路线图主轴。<code>@open-wc/testing</code>
-                  与 <code>@open-wc/semantic-dom-diff</code> 已经明显老化；<code>@web/test-runner</code>
-                  较新，但仍偏 Node/npm 工具链。LessJS 应继续以 Deno、Playwright 和自举 SSG 作为验证主线。
-                </td>
-              </tr>
-              <tr>
-                <td>构建工具</td>
-                <td>
-                  不采用 webpack，也不把 Rollup/OpenWC building presets 写进路线图。当前的 Vite 8、ESM
-                  bundle 和 Phase 3 Vite-free 方向更贴近 LessJS，需要继续抽象构建边界，
-                  而不是切换到旧生态方案。
-                </td>
-              </tr>
-              <tr>
-                <td>Open UI</td>
-                <td>
-                  保留为组件契约参考：parts、states、events、a11y、form behavior 和设计 token 可以帮助
-                  LessJS 描述组件能力，但不会把 LessJS 改造成 OpenWC 项目模板。
-                </td>
-              </tr>
-              <tr>
-                <td>SSR/SSG for WC</td>
-                <td>
-                  这是更强的主线。LessJS 已有 <code>RenderAdapter</code>、<code>renderDSD()</code>、
-                  <code>renderRoute()</code>、<code>ssgRender()</code> 和 <code>PackageIslandMeta</code>，
-                  下一步应把它们整理为稳定的 Web Components 渲染内核。
-                </td>
-              </tr>
-              <tr>
-                <td>WC registry hub</td>
-                <td>
-                  值得探索，但先做 manifest/protocol，不先承诺中心化市场。中心 hub 会带来治理、审核、
-                  安全和长期维护压力；更合理的顺序是让包能自描述、被本地扫描、被文档站索引。
-                </td>
-              </tr>
-            </tbody>
-          </table>
-
-          <h2>Three Workstreams</h2>
-          <div class="tracks">
-            <section class="track">
-              <h3>Engine</h3>
-              <p>
-                把 DSD renderer、SSR bundle、route rendering 和 SSG pipeline 收束为一个可复用的 Web
-                Components rendering kernel。
-              </p>
-            </section>
-            <section class="track">
-              <h3>Protocol</h3>
-              <p>
-                定义组件包如何声明 tag、module、SSR 可渲染性、upgrade strategy、parts、states、 events 和
-                tokens。
-              </p>
-            </section>
-            <section class="track">
-              <h3>Ecosystem</h3>
-              <p>
-                优先解决可发现性、文档索引、benchmark、interactive scaffold 和 npm
-                触达，而不是过早建设中心化 hub。
-              </p>
-            </section>
-          </div>
-
-          <h2>Foundation Already Built</h2>
+          <h2>Six-Phase Vision</h2>
           <table class="version-table">
             <thead>
               <tr>
+                <th>Phase</th>
                 <th>Version</th>
-                <th>Outcome</th>
+                <th>Name</th>
+                <th>Goal</th>
                 <th>Status</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td>v0.7-v0.10</td>
-                <td>建立 SSR、DSD、Island Upgrade、Hono API、SSG 与基础文档站。</td>
-                <td>Done</td>
+                <td>1</td>
+                <td>v0.15.x</td>
+                <td>Renderer Kernel</td>
+                <td>结构化渲染输出、错误分类、构建报告</td>
+                <td><span class="status done">Done</span></td>
               </tr>
               <tr>
-                <td>v0.11-v0.13</td>
-                <td>补强适配器、文档体系、npm 发布路径、组件包暴露方式。</td>
-                <td>Done</td>
+                <td>2</td>
+                <td>v0.16.x</td>
+                <td>WC Package Protocol</td>
+                <td>CEM manifest + 本地 registry + 构建集成</td>
+                <td><span class="status next">Next</span></td>
               </tr>
               <tr>
-                <td>v0.14-v0.14.9</td>
-                <td>
-                  确立 DSD/WC 为主叙事，完成 docs 自举、发布纪律、标准审计入口、安全补丁和 main
-                  线鲁棒性修补。
-                </td>
-                <td>Done</td>
+                <td>3</td>
+                <td>v0.17.x</td>
+                <td>Ecosystem Entry</td>
+                <td>第三方 WC 包接入、CLI 工具、多适配器</td>
+                <td><span class="status planned">Planned</span></td>
+              </tr>
+              <tr>
+                <td>4</td>
+                <td>v0.18.x</td>
+                <td>Hub Foundation</td>
+                <td>公共 registry API、搜索、快照预览、安全审计</td>
+                <td><span class="status deferred">Far</span></td>
+              </tr>
+              <tr>
+                <td>5</td>
+                <td>v0.19.x</td>
+                <td>Platform Maturity</td>
+                <td>Scoped Registries、设计系统 CI/CD、Edge 渲染</td>
+                <td><span class="status deferred">Far</span></td>
+              </tr>
+              <tr>
+                <td>6</td>
+                <td>v1.0.x</td>
+                <td>General-Purpose Engine</td>
+                <td>任意 CEM manifest WC 包 → 自动 SSR/SSG</td>
+                <td><span class="status deferred">Vision</span></td>
               </tr>
             </tbody>
           </table>
 
-          <h2>Next Roadmap</h2>
+          <h2>Phase Details</h2>
 
           <div class="phase">
             <span class="status done">Done</span>
-            <h3>v0.14.2 Standards &amp; Safety Patch</h3>
-            <p>已完成：先修正真实标准和安全边界，再扩大生态叙事。</p>
-            <ul class="criteria-list">
+            <h3>Phase 1: v0.15.x — Renderer Kernel</h3>
+            <p>
+              v0.15.1 审计门禁、v0.15.2 RenderOutput + RenderHooks、v0.15.3 dsd-report + Release Gate。
+              渲染内核产品化完成。
+            </p>
+            <ul class="compact-list">
               <li>
-                修正 DSD 属性输出，补齐 <code>shadowrootclonable</code>，重新核对 WHATWG template 属性。
+                <code>RenderOutput</code> / <code>RenderError</code> / <code>HydrationHint</code>
+                结构化类型
               </li>
-              <li>收紧 <code>headExtras</code> / <code>headFragments</code> 的注入边界和文档说明。</li>
-              <li>修复 route regex 风险，避免路由参数生成过宽匹配。</li>
-              <li>补真实 SSR bundle 测试，并覆盖 i18n、content、UI、docs 自举的关键路径。</li>
+              <li><code>RendererProtocol</code> 命名适配器 + <code>RenderHooks</code> 生命周期</li>
+              <li><code>dsd-report.json</code> SSG 构建报告</li>
+              <li>7-gate release pipeline: fmt / lint / typecheck / audit / test / build / e2e</li>
             </ul>
           </div>
 
           <div class="phase">
             <span class="status next">Next</span>
-            <h3>v0.15 Renderer Kernel &amp; Release Parity</h3>
+            <h3>Phase 2: v0.16.x — WC Package Protocol</h3>
             <p>
-              目标：先让 install、scaffold、package SSR 和 SSG manifest 真实可靠，再冻结 Web Component
-              render protocol。
+              从 3 字段 <code>PackageIslandMeta</code> 升级为 20+ 字段 CEM 兼容
+              <code>LessPackageManifest</code>。LessJS 第一次能以数据描述 WC 包。
             </p>
-            <ul class="criteria-list">
-              <li>
-                修复 <code>@lessjs/create</code> 的 JSR metadata endpoint、<code>adapter-vite</code>
-                版本解析、<code>--help</code> 和项目名校验。
-              </li>
-              <li>
-                对齐 <code>deno.lock</code>、package versions、changelog 和 registry
-                latest，发布前后都有自动检查。
-              </li>
-              <li>让 package islands 在 SSR bundle 中被显式导入和注册，不能只参与 client upgrade。</li>
-              <li>
-                接通 <code>buildIslandChunkMap()</code>、<code>generateIslandManifests()</code> 和 <code
-                >writeIslandManifests()</code>，或明确推迟页面级 manifest 文档。
-              </li>
-              <li>正式定义 adapter contract：输入、输出、错误模型、hydration hints 和 DSD 约束。</li>
-              <li>
-                把 DSD metrics/report、nested custom element rendering、route rendering
-                整理成公开内核能力。
-              </li>
-              <li>继续以 Playwright 作为真实浏览器验证主线，而不是引入老旧 DOM diff/test preset。</li>
-              <li>为 Lit 之外的 adapter 留出边界，但不在协议稳定前承诺多适配器矩阵或中心化 hub。</li>
+            <ul class="compact-list">
+              <li>v0.16.0: Manifest 类型系统 + 本地 registry + validate + @lessjs/ui manifest</li>
+              <li>v0.16.1: Manifest 驱动构建集成（条件性 — 可能推到 v0.17）</li>
+              <li>关键规则: v0.16.0 可独立交付，不因 v0.16.1 阻塞</li>
             </ul>
           </div>
 
           <div class="phase">
             <span class="status planned">Planned</span>
-            <h3>v0.16 WC Package Protocol</h3>
-            <p>目标：把 <code>PackageIslandMeta</code> 扩展为 CEM-compatible 的组件包 manifest。</p>
-            <ul class="criteria-list">
-              <li>
-                声明 tag、module、SSR renderability、upgrade strategy、parts、states、events 和 tokens。
-              </li>
-              <li>
-                在 Custom Elements Manifest 兼容字段之上增加 LessJS 的 <code>ssr</code>、<code
-                >dsd</code>、<code>hydrate</code> 和 diagnostics 字段。
-              </li>
-              <li>支持本地 registry index，使组件包可以被扫描、校验和文档站索引。</li>
-              <li>为 Open UI 风格的组件契约保留字段，但避免绑定到 OpenWC 项目模板。</li>
-              <li>提供 manifest 校验和迁移说明，避免生态入口先于协议成熟。</li>
+            <h3>Phase 3: v0.17.x — Ecosystem Entry</h3>
+            <p>从"只能用自己的包"变成"能接入生态"。</p>
+            <ul class="compact-list">
+              <li><code>less add &lt;pkg&gt;</code> 一键安装第三方 WC 包</li>
+              <li><code>less validate-manifest</code> 验证任意包的 manifest</li>
+              <li>npm 兼容层 + 第三方 WC 包 SSR 降级策略</li>
+              <li>多框架适配器探索（adapter-vanilla 增强、adapter-react）</li>
             </ul>
           </div>
 
           <div class="phase">
             <span class="status planned">Planned</span>
-            <h3>v0.17 Ecosystem Entry</h3>
-            <p>目标：让 LessJS 组件和应用更容易被发现、试用和比较。</p>
-            <ul class="criteria-list">
-              <li>改善 npm 触达、文档搜索、benchmark 和 interactive scaffold。</li>
-              <li>
-                建立本地 registry 页面原型，展示组件 manifest、SSR/SSG 结果、bundle
-                cost、测试状态和文档索引能力。
-              </li>
-              <li>提供可复制的 starter 和 migration examples，但不承诺中心化 marketplace。</li>
-              <li>把性能、可访问性和 SSR/SSG 行为作为生态入口的展示指标。</li>
-            </ul>
-          </div>
-
-          <div class="phase">
-            <span class="status planned">Planned</span>
-            <h3>v0.18 Hub Prototype &amp; v1.0 API Freeze</h3>
-            <p>目标：先发布静态 hub 原型，再冻结真正支撑 1.0 的公共边界。</p>
-            <ul class="criteria-list">
-              <li>公共 hub 只消费 manifest 和验证产物，不直接相信 README 或营销字段。</li>
-              <li>明确 package provenance、审核、举报、安全响应和维护边界，避免过早 marketplace 化。</li>
-              <li>
-                冻结 <code>lessjs()</code> 配置、renderer protocol、adapter contract 和 package manifest。
-              </li>
-              <li>明确 breaking change policy、migration policy、support window 和 release cadence。</li>
-              <li>
-                用 docs 自举、SSR bundle、SSG output、Playwright smoke 和 package manifest
-                校验作为发布门槛。
-              </li>
+            <h3>Phase 4: v0.18.x — Hub Foundation</h3>
+            <p>从本地 registry 到公共 registry，需要 Web 服务基础设施。</p>
+            <ul class="compact-list">
+              <li>Hub API + 包搜索 + 浏览界面</li>
+              <li>SSR/SSG 快照预览 + bundle cost 分析</li>
+              <li>版本冲突检测 + 安全审计 + 发布者身份验证</li>
             </ul>
           </div>
 
           <div class="phase deferred">
-            <span class="status deferred">Long-term Bets</span>
-            <h3>v1.0+ Bets</h3>
-            <p>这些方向有价值，但应在 renderer/protocol 稳定之后推进。</p>
-            <ul class="criteria-list">
-              <li>Edge SSR、ISR、compiler pipeline 和 multi-adapter support。</li>
-              <li>
-                WC registry hub：只有在 manifest/protocol、本地
-                index、安全模型和治理规则成熟后再考虑中心化。
-              </li>
-              <li>更广义的 full-stack 能力：不能先于渲染协议稳定成为主承诺。</li>
-            </ul>
+            <span class="status deferred">Far</span>
+            <h3>Phase 5: v0.19.x — Platform Maturity</h3>
+            <p>生产就绪平台：Scoped Registries、设计系统 CI/CD、Edge 渲染。</p>
+          </div>
+
+          <div class="phase deferred">
+            <span class="status deferred">Vision</span>
+            <h3>Phase 6: v1.0.x — General-Purpose Engine</h3>
+            <p>任意 CEM manifest WC 包 → 自动 SSR/SSG，零配置。从"工具"走向"标准"。</p>
           </div>
 
           <h2>Rejected / Deferred</h2>
@@ -510,358 +364,146 @@ export class RoadmapPage extends LitElement {
         <div class="container">
           <h1>Roadmap</h1>
           <p class="subtitle">
-            As of 2026-05-15, the LessJS roadmap is recalibrated against
-            <code>origin/main</code>: source packages are at <code>0.14.9</code>, but the next phase must
-            fix release parity, package island SSR, per-page island manifests, and the create scaffold
-            before expanding the Web Components registry hub story.
+            From renderer kernel to general-purpose WC SSR/SSG engine + Registry Hub. Six phases,
+            near-term fine and far-term coarse. Current version <code>v0.15.3</code>, next milestone <code
+            >v0.16.0</code>.
           </p>
 
           <div class="callout">
             <p>
-              The roadmap is fact-first, standards-first, and protocol-first. Tested capabilities move
-              into docs; unfinished boundaries stay in the roadmap and ADRs; the registry hub only follows
-              renderer kernel, package manifest, and release parity stability. Version discipline follows
-              ADR 0006, npm publishing follows ADR 0007, and the 2026-05-15 execution SOP is ADR
-              20260515-1.
+              Fact-first, standards-first, protocol-first. Tested capabilities move into docs; unfinished
+              boundaries stay in the roadmap and ADRs; the registry hub only follows renderer kernel,
+              package manifest, and release parity stability. Version discipline follows ADR 0006.
             </p>
           </div>
 
-          <h2>2026-05-16 Vision Feasibility Check</h2>
-          <p>
-            The long-term vision is feasible, but "universal" must mean
-            <strong>protocol-universal</strong>, not "magically SSR and hydrate every arbitrary Web
-            Component." The realistic target is a WC SSR/SSG rendering kernel, a CEM-compatible package
-            protocol, a local registry index, <code>less add</code> install assistance, generated
-            registration, controlled automatic rendering, and declarative hydration.
-          </p>
-          <table class="reset-table">
-            <thead>
-              <tr>
-                <th>Direction</th>
-                <th>Reality Check</th>
-                <th>Required Contract</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>WC SSR/SSG rendering kernel</td>
-                <td>Feasible and the strongest mainline.</td>
-                <td>
-                  Public renderer protocol, adapter contract, error model, DSD metrics, and browser
-                  validation.
-                </td>
-              </tr>
-              <tr>
-                <td>One-command install</td>
-                <td>Feasible only for trusted manifest packages.</td>
-                <td>
-                  Read package manifest, update config, generate registration, and preserve
-                  lockfile/permission signals.
-                </td>
-              </tr>
-              <tr>
-                <td>Automatic registration / rendering</td>
-                <td>Feasible, but it must be explainable, disableable, and degradable.</td>
-                <td>
-                  Components declare tag, module, export, SSR renderability, adapter, DSD constraints, and
-                  fallback.
-                </td>
-              </tr>
-              <tr>
-                <td>Automatic hydration</td>
-                <td>Only declarative hydration is credible; event guessing is not.</td>
-                <td>
-                  Manifest or component class declares strategy, events, selectors, and cleanup behavior.
-                </td>
-              </tr>
-              <tr>
-                <td>WC registry hub</td>
-                <td>There is a market gap, but governance cost is high.</td>
-                <td>
-                  Local index, manifest validator, validation artifacts, provenance, security response,
-                  and maintenance rules first.
-                </td>
-              </tr>
-            </tbody>
-          </table>
-
-          <h2>2026-05-15 Main-Branch Review Reset</h2>
-          <p>
-            LessJS should be positioned as a Web Standards-first DSD/WC application framework and
-            rendering infrastructure. The near-term goal is not to follow OpenWC or lead with a
-            centralized marketplace, but to productize LessJS's own DSD rendering, SSR bundle, SSG
-            pipeline, package island model, and release discipline.
-          </p>
-
-          <table class="reset-table">
-            <thead>
-              <tr>
-                <th>Topic</th>
-                <th>Neutral judgement</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>OpenWC</td>
-                <td>
-                  Useful as historical and conceptual reference, but not as the roadmap spine.
-                  <code>@open-wc/testing</code> and <code>@open-wc/semantic-dom-diff</code>
-                  are visibly old; <code>@web/test-runner</code> is newer, but still leans into the
-                  Node/npm toolchain. LessJS should continue validating through Deno, Playwright, and its
-                  self-hosted SSG path.
-                </td>
-              </tr>
-              <tr>
-                <td>Build tooling</td>
-                <td>
-                  Do not adopt webpack, and do not put Rollup/OpenWC building presets on the roadmap. The
-                  current Vite 8, ESM bundle, and Phase 3 Vite-free direction fit LessJS better. The next
-                  step is to abstract the build boundary, not switch to an older ecosystem preset.
-                </td>
-              </tr>
-              <tr>
-                <td>Open UI</td>
-                <td>
-                  Keep it as component contract guidance: parts, states, events, accessibility, form
-                  behavior, and design tokens can help LessJS describe components without turning LessJS
-                  into an OpenWC project template.
-                </td>
-              </tr>
-              <tr>
-                <td>SSR/SSG for WC</td>
-                <td>
-                  This is the stronger mainline. LessJS already has <code>RenderAdapter</code>,
-                  <code>renderDSD()</code>, <code>renderRoute()</code>, <code>ssgRender()</code>, and
-                  <code>PackageIslandMeta</code>; these should become a stable Web Components rendering
-                  kernel.
-                </td>
-              </tr>
-              <tr>
-                <td>WC registry hub</td>
-                <td>
-                  Worth exploring, but manifest/protocol comes first. A central hub brings governance,
-                  review, security, and maintenance costs. The better first step is self-describing
-                  packages that can be locally scanned and indexed by docs.
-                </td>
-              </tr>
-            </tbody>
-          </table>
-
-          <h2>Three Workstreams</h2>
-          <div class="tracks">
-            <section class="track">
-              <h3>Engine</h3>
-              <p>
-                Consolidate the DSD renderer, SSR bundle, route rendering, and SSG pipeline into a
-                reusable Web Components rendering kernel.
-              </p>
-            </section>
-            <section class="track">
-              <h3>Protocol</h3>
-              <p>
-                Define how component packages declare tags, modules, SSR renderability, upgrade strategy,
-                parts, states, events, and tokens.
-              </p>
-            </section>
-            <section class="track">
-              <h3>Ecosystem</h3>
-              <p>
-                Prioritize discoverability, docs indexing, benchmarks, interactive scaffolds, and npm
-                reach before committing to any centralized hub.
-              </p>
-            </section>
-          </div>
-
-          <h2>Foundation Already Built</h2>
+          <h2>Six-Phase Vision</h2>
           <table class="version-table">
             <thead>
               <tr>
+                <th>Phase</th>
                 <th>Version</th>
-                <th>Outcome</th>
+                <th>Name</th>
+                <th>Goal</th>
                 <th>Status</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td>v0.7-v0.10</td>
-                <td>Established SSR, DSD, Island Upgrade, Hono API, SSG, and the first docs site.</td>
-                <td>Done</td>
+                <td>1</td>
+                <td>v0.15.x</td>
+                <td>Renderer Kernel</td>
+                <td>Structured render output, error taxonomy, build report</td>
+                <td><span class="status done">Done</span></td>
               </tr>
               <tr>
-                <td>v0.11-v0.13</td>
-                <td>Strengthened adapters, docs, npm publishing, and component package exports.</td>
-                <td>Done</td>
+                <td>2</td>
+                <td>v0.16.x</td>
+                <td>WC Package Protocol</td>
+                <td>CEM manifest + local registry + build integration</td>
+                <td><span class="status next">Next</span></td>
               </tr>
               <tr>
-                <td>v0.14-v0.14.9</td>
-                <td>
-                  Made DSD/WC the primary narrative and added docs self-hosting, release discipline,
-                  standards audit entry points, safety patches, and mainline robustness fixes.
-                </td>
-                <td>Done</td>
+                <td>3</td>
+                <td>v0.17.x</td>
+                <td>Ecosystem Entry</td>
+                <td>Third-party WC packages, CLI tooling, multi-adapter</td>
+                <td><span class="status planned">Planned</span></td>
+              </tr>
+              <tr>
+                <td>4</td>
+                <td>v0.18.x</td>
+                <td>Hub Foundation</td>
+                <td>Public registry API, search, snapshots, security audit</td>
+                <td><span class="status deferred">Far</span></td>
+              </tr>
+              <tr>
+                <td>5</td>
+                <td>v0.19.x</td>
+                <td>Platform Maturity</td>
+                <td>Scoped Registries, design system CI/CD, Edge rendering</td>
+                <td><span class="status deferred">Far</span></td>
+              </tr>
+              <tr>
+                <td>6</td>
+                <td>v1.0.x</td>
+                <td>General-Purpose Engine</td>
+                <td>Any CEM manifest WC package → automatic SSR/SSG</td>
+                <td><span class="status deferred">Vision</span></td>
               </tr>
             </tbody>
           </table>
 
-          <h2>Next Roadmap</h2>
+          <h2>Phase Details</h2>
 
           <div class="phase">
             <span class="status done">Done</span>
-            <h3>v0.14.2 Standards &amp; Safety Patch</h3>
-            <p>Completed: fix standards and safety boundaries before expanding the ecosystem story.</p>
-            <ul class="criteria-list">
+            <h3>Phase 1: v0.15.x — Renderer Kernel</h3>
+            <p>
+              v0.15.1 audit gates, v0.15.2 RenderOutput + RenderHooks, v0.15.3 dsd-report + Release Gate.
+              The rendering kernel is productized.
+            </p>
+            <ul class="compact-list">
               <li>
-                Correct DSD attribute output, add <code>shadowrootclonable</code>, and re-check WHATWG
-                template attributes.
+                <code>RenderOutput</code> / <code>RenderError</code> / <code>HydrationHint</code>
+                structured types
               </li>
-              <li>
-                Tighten <code>headExtras</code> / <code>headFragments</code> injection boundaries and
-                documentation.
-              </li>
-              <li>Fix route regex risk so parameterized routes do not generate overly broad matches.</li>
-              <li>
-                Add real SSR bundle tests and cover the key i18n, content, UI, and docs self-hosting
-                paths.
-              </li>
+              <li><code>RendererProtocol</code> named adapters + <code>RenderHooks</code> lifecycle</li>
+              <li><code>dsd-report.json</code> SSG build report</li>
+              <li>7-gate release pipeline: fmt / lint / typecheck / audit / test / build / e2e</li>
             </ul>
           </div>
 
           <div class="phase">
             <span class="status next">Next</span>
-            <h3>v0.15 Renderer Kernel &amp; Release Parity</h3>
+            <h3>Phase 2: v0.16.x — WC Package Protocol</h3>
             <p>
-              Goal: make install, scaffold, package SSR, and SSG manifests reliable before freezing the
-              Web Component render protocol.
+              Upgrade from 3-field <code>PackageIslandMeta</code> to 20+ field CEM-compatible
+              <code>LessPackageManifest</code>. LessJS can describe WC packages as data for the first
+              time.
             </p>
-            <ul class="criteria-list">
-              <li>
-                Fix <code>@lessjs/create</code> JSR metadata endpoint, <code>adapter-vite</code> version
-                resolution, <code>--help</code>, and project-name validation.
-              </li>
-              <li>
-                Align <code>deno.lock</code>, package versions, changelog, and registry latest with
-                automated checks before and after publish.
-              </li>
-              <li>
-                Explicitly import and register package islands in the SSR bundle instead of using them
-                only for client upgrade.
-              </li>
-              <li>
-                Wire <code>buildIslandChunkMap()</code>, <code>generateIslandManifests()</code>, and <code
-                >writeIslandManifests()</code>, or clearly defer page-level manifest docs.
-              </li>
-              <li>
-                Define the adapter contract: inputs, outputs, error model, hydration hints, and DSD
-                constraints.
-              </li>
-              <li>
-                Make DSD metrics/reporting, nested custom element rendering, and route rendering part of
-                the public kernel.
-              </li>
-              <li>
-                Keep Playwright as the real-browser validation mainline instead of adopting older DOM
-                diff/test presets.
-              </li>
-              <li>
-                Leave room for non-Lit adapters without promising a full adapter matrix or centralized hub
-                before the protocol stabilizes.
-              </li>
+            <ul class="compact-list">
+              <li>v0.16.0: Manifest type system + local registry + validate + @lessjs/ui manifest</li>
+              <li>v0.16.1: Manifest-driven build integration (conditional — may defer to v0.17)</li>
+              <li>Key rule: v0.16.0 ships even if v0.16.1 integration is not ready</li>
             </ul>
           </div>
 
           <div class="phase">
             <span class="status planned">Planned</span>
-            <h3>v0.16 WC Package Protocol</h3>
-            <p>
-              Goal: extend <code>PackageIslandMeta</code> into a CEM-compatible component package
-              manifest.
-            </p>
-            <ul class="criteria-list">
-              <li>
-                Declare tag, module, SSR renderability, upgrade strategy, parts, states, events, and
-                tokens.
-              </li>
-              <li>
-                Add LessJS <code>ssr</code>, <code>dsd</code>, <code>hydrate</code>, and diagnostics
-                fields on top of Custom Elements Manifest-compatible metadata.
-              </li>
-              <li>
-                Support a local registry index so packages can be scanned, validated, and indexed by docs.
-              </li>
-              <li>
-                Keep fields for Open UI-style component contracts without binding LessJS to OpenWC
-                templates.
-              </li>
-              <li>
-                Provide manifest validation and migration notes so ecosystem entry follows protocol
-                maturity.
-              </li>
+            <h3>Phase 3: v0.17.x — Ecosystem Entry</h3>
+            <p>From "own packages only" to "ecosystem-ready".</p>
+            <ul class="compact-list">
+              <li><code>less add &lt;pkg&gt;</code> one-command install of third-party WC packages</li>
+              <li><code>less validate-manifest</code> validate any package's manifest</li>
+              <li>npm compat layer + third-party WC SSR fallback strategies</li>
+              <li>Multi-framework adapter exploration (adapter-vanilla enhanced, adapter-react)</li>
             </ul>
           </div>
 
           <div class="phase">
             <span class="status planned">Planned</span>
-            <h3>v0.17 Ecosystem Entry</h3>
-            <p>Goal: make LessJS components and applications easier to discover, try, and compare.</p>
-            <ul class="criteria-list">
-              <li>Improve npm reach, docs search, benchmarks, and interactive scaffolds.</li>
-              <li>
-                Create a local registry page prototype that demonstrates component manifests, SSR/SSG
-                results, bundle cost, test status, and docs indexing.
-              </li>
-              <li>
-                Provide reproducible starters and migration examples without promising a centralized
-                marketplace.
-              </li>
-              <li>Use performance, accessibility, and SSR/SSG behavior as ecosystem-facing signals.</li>
-            </ul>
-          </div>
-
-          <div class="phase">
-            <span class="status planned">Planned</span>
-            <h3>v0.18 Hub Prototype &amp; v1.0 API Freeze</h3>
-            <p>
-              Goal: publish the static hub prototype first, then freeze the public boundaries that
-              actually support 1.0.
-            </p>
-            <ul class="criteria-list">
-              <li>
-                The public hub consumes manifests and validation artifacts; it does not trust README or
-                marketing fields directly.
-              </li>
-              <li>
-                Define package provenance, review, reporting, security response, and maintenance
-                boundaries before marketplace behavior.
-              </li>
-              <li>
-                Freeze <code>lessjs()</code> config, renderer protocol, adapter contract, and package
-                manifest.
-              </li>
-              <li>
-                Define breaking change policy, migration policy, support window, and release cadence.
-              </li>
-              <li>
-                Use docs self-hosting, SSR bundle, SSG output, Playwright smoke, and package manifest
-                validation as release gates.
-              </li>
+            <h3>Phase 4: v0.18.x — Hub Foundation</h3>
+            <p>From local registry to public registry. Requires Web service infrastructure.</p>
+            <ul class="compact-list">
+              <li>Hub API + package search + browse UI</li>
+              <li>SSR/SSG snapshot previews + bundle cost analysis</li>
+              <li>Version conflict detection + security audit + publisher authentication</li>
             </ul>
           </div>
 
           <div class="phase deferred">
-            <span class="status deferred">Long-term Bets</span>
-            <h3>v1.0+ Bets</h3>
-            <p>These directions matter, but should follow renderer/protocol stability.</p>
-            <ul class="criteria-list">
-              <li>Edge SSR, ISR, compiler pipeline, and multi-adapter support.</li>
-              <li>
-                WC registry hub: only after manifest/protocol, local index, security model, and governance
-                mature.
-              </li>
-              <li>
-                Broader full-stack capabilities: do not make them the main promise before the rendering
-                protocol is stable.
-              </li>
-            </ul>
+            <span class="status deferred">Far</span>
+            <h3>Phase 5: v0.19.x — Platform Maturity</h3>
+            <p>Production-ready platform: Scoped Registries, design system CI/CD, Edge rendering.</p>
+          </div>
+
+          <div class="phase deferred">
+            <span class="status deferred">Vision</span>
+            <h3>Phase 6: v1.0.x — General-Purpose Engine</h3>
+            <p>
+              Any CEM manifest WC package → automatic SSR/SSG, zero config. From "tool" to "standard".
+            </p>
           </div>
 
           <h2>Rejected / Deferred</h2>

@@ -25,6 +25,7 @@
  */
 
 import type { PackageIslandMeta } from '@lessjs/core';
+import { packageIslandFromManifest } from '@lessjs/core';
 
 // Design tokens (CSS custom properties)
 export { lessDesignTokens } from './design-tokens.js';
@@ -45,44 +46,11 @@ export { LessThemeToggle, tagName as lessThemeToggleTagName } from './less-theme
 export { default as LessHeroPing, tagName as lessHeroPingTagName } from './less-hero-ping.js';
 export { LessDialog, tagName as lessDialogTagName } from './less-dialog.js';
 
+// Package manifest (v0.16 WC Package Protocol)
+export { manifest } from './manifest.js';
+import { manifest } from './manifest.js';
+
 // Island metadata for auto-detection by @lessjs/core
-// These components are Islands with Shadow DOM and client-side behavior.
-// Any component that appears in SSR output must be listed here so the
-// client entry can import it for custom element self-registration.
-export const islands: PackageIslandMeta[] = [
-  {
-    tagName: 'less-theme-toggle',
-    modulePath: '@lessjs/ui/less-theme-toggle',
-    strategy: 'eager', // Theme should be applied immediately
-  },
-  {
-    tagName: 'less-button',
-    modulePath: '@lessjs/ui/less-button',
-    strategy: 'lazy',
-  },
-  {
-    tagName: 'less-input',
-    modulePath: '@lessjs/ui/less-input',
-    strategy: 'lazy', // Form interaction needs JS
-  },
-  {
-    tagName: 'less-code-block',
-    modulePath: '@lessjs/ui/less-code-block',
-    strategy: 'lazy', // Copy button needs JS
-  },
-  {
-    tagName: 'less-layout',
-    modulePath: '@lessjs/ui/less-layout',
-    strategy: 'eager', // Layout shell must be interactive immediately (hamburger menu, sidebar)
-  },
-  {
-    tagName: 'less-hero-ping',
-    modulePath: '@lessjs/ui/less-hero-ping',
-    strategy: 'lazy',
-  },
-  {
-    tagName: 'less-dialog',
-    modulePath: '@lessjs/ui/less-dialog',
-    strategy: 'lazy',
-  },
-];
+// Generated from the manifest via packageIslandFromManifest().
+// This preserves backward compatibility with v0.15 consumers.
+export const islands: PackageIslandMeta[] = packageIslandFromManifest(manifest);

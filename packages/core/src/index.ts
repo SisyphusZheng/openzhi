@@ -42,12 +42,29 @@ export type {
   DsdPageDiagnostics,
   HydrateEventDescriptor,
   HydrationHint,
+  LessAttribute,
+  LessCssPart,
+  LessCssProperty,
+  LessDeclaration,
+  LessElementExtensions,
+  LessEvent,
+  LessExport,
+  LessMember,
+  LessModule,
+  LessPackageExtensions,
+  LessPackageManifest,
+  LessSlot,
+  RegistryIndex,
+  RegistryIndexEntry,
   RendererProtocol,
   RenderError,
   RenderHooks,
   RenderInput,
   RenderOutput,
   RenderPhase,
+  ValidationError,
+  ValidationResult,
+  ValidationWarning,
 } from './types.js';
 export {
   escapeAttr,
@@ -70,6 +87,17 @@ export type {
   LessNavSection,
   LessPluginMeta,
 } from './build-types.js';
+
+// WC Package Protocol (v0.16)
+export {
+  clear as clearRegistry,
+  generateIndex,
+  getAll as getAllManifests,
+  getByTagName,
+  packageIslandFromManifest,
+  register as registerManifest,
+  validate as validateManifest,
+} from './registry.js';
 
 // G10 fix: Virtual module IDs — shared across adapter-vite, content, i18n
 export {
