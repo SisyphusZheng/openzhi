@@ -13,40 +13,144 @@ import { createLogger } from '@lessjs/core/logger';
 const log = createLogger('content:nav');
 
 /**
- * Extract `meta` export from a route file's source code.
- * Expects: `export const meta = { section: "...", label: "...", order: 1 }`
- * Parsed via JSON after normalizing JS object literal syntax (no eval / Function()).
+ * G5 fix: Replace fragile regex-based JS→JSON conversion with a simple
+ * key-value parser that handles JS object literals like:
+ *   { section: "...", label: "...", order: 1 }
+ *
+ * This avoids breakage from hyphenated keys, nested quotes, trailing commas,
+ * regex special characters in values, etc. We only parse the flat shape
+ * that RouteMeta actually uses (section, label, order, type).
  */
 export function extractMeta(source: string): RouteMeta | null {
-  // v0.14.7: C-08 fix - Use constrained regex to prevent ReDoS from nested braces.
-  // Original /\{[\s\S]*?\}/ can cause exponential backtracking with malformed input.
-  // New pattern allows at most 1 level of nesting: \{[^{}]*(?:\{[^{}]*\}[^{}]*)*\}
-  const fnMatch = source.match(
-    /export\s+const\s+meta\s*=\s*(\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\})\s*;?\s*(?:\n|$)/,
+  // Find the export: `export const meta = { ... }`
+  const exportMatch = source.match(
+    /export\s+const\s+meta\s*=\s*\{/,
   );
-  if (!fnMatch) return null;
+  if (!exportMatch) return null;
 
-  const metaStr = fnMatch[1];
-  try {
-    // Convert JS object literal to JSON: unquoted keys, single quotes, trailing commas
-    const json = metaStr
-      .replace(/'/g, '"') // single quotes → double quotes
-      .replace(/(\w+)\s*:/g, '"$1":') // unquoted keys → quoted keys
-      .replace(/,\s*}/g, '}') // trailing commas
-      .replace(/,\s*]/g, ']'); // trailing commas in arrays
-    const result = JSON.parse(json) as RouteMeta;
-    if (
-      result &&
-      typeof result === 'object' &&
-      result.section &&
-      result.label
-    ) {
-      return result;
+  // Extract the object body — find the matching closing brace
+  const startIdx = exportMatch.index! + exportMatch[0].length;
+  let depth = 1;
+  let endIdx = startIdx;
+  for (let i = startIdx; i < source.length && depth > 0; i++) {
+    const ch = source[i];
+    if (ch === '{') depth++;
+    else if (ch === '}') depth--;
+    else if (ch === "'" || ch === '"' || ch === '`') {
+      // Skip string contents
+      const quote = ch;
+      for (let j = i + 1; j < source.length; j++) {
+        if (source[j] === '\\' && j + 1 < source.length) {
+          j++;
+          continue;
+        }
+        if (source[j] === quote) {
+          i = j;
+          break;
+        }
+      }
     }
-    return null;
-  } catch {
-    return null;
+    endIdx = i;
   }
+
+  if (depth !== 0) return null;
+
+  const body = source.slice(startIdx, endIdx);
+  const result: Record<string, unknown> = {};
+
+  // Parse key-value pairs: `key: value,` or `key: value}`
+  // Split on commas that are NOT inside strings
+  const pairs = splitOnCommas(body);
+  for (const pair of pairs) {
+    const colonIdx = pair.indexOf(':');
+    if (colonIdx === -1) continue;
+
+    const rawKey = pair.slice(0, colonIdx).trim();
+    const rawValue = pair.slice(colonIdx + 1).trim();
+
+    // Normalize key: strip quotes if present
+    const key = rawKey.replace(/^['"`]|['"`]$/g, '');
+    if (!key) continue;
+
+    // Parse value
+    result[key] = parseValue(rawValue);
+  }
+
+  if (
+    result &&
+    typeof result === 'object' &&
+    result.section &&
+    result.label
+  ) {
+    return result as unknown as RouteMeta;
+  }
+  return null;
+}
+
+/**
+ * Split a string on commas, respecting quoted strings.
+ */
+function splitOnCommas(s: string): string[] {
+  const parts: string[] = [];
+  let current = '';
+  let inString: string | null = null;
+
+  for (let i = 0; i < s.length; i++) {
+    const ch = s[i];
+    if (inString) {
+      current += ch;
+      if (ch === '\\' && i + 1 < s.length) {
+        current += s[++i];
+        continue;
+      }
+      if (ch === inString) inString = null;
+    } else if (ch === "'" || ch === '"' || ch === '`') {
+      current += ch;
+      inString = ch;
+    } else if (ch === ',') {
+      parts.push(current);
+      current = '';
+    } else {
+      current += ch;
+    }
+  }
+  if (current.trim()) parts.push(current);
+  return parts;
+}
+
+/**
+ * Parse a JS literal value to a JS primitive.
+ * Handles: strings, numbers, booleans, arrays of strings, null.
+ */
+function parseValue(raw: string): unknown {
+  const s = raw.trim();
+  if (s === 'true') return true;
+  if (s === 'false') return false;
+  if (s === 'null' || s === 'undefined') return null;
+
+  // String (single, double, or backtick quotes)
+  if (
+    (s.startsWith("'") && s.endsWith("'")) ||
+    (s.startsWith('"') && s.endsWith('"')) ||
+    (s.startsWith('`') && s.endsWith('`'))
+  ) {
+    return s.slice(1, -1);
+  }
+
+  // Array of strings: ['a', 'b', 'c']
+  if (s.startsWith('[') && s.endsWith(']')) {
+    const inner = s.slice(1, -1);
+    return inner
+      .split(',')
+      .map((item) => parseValue(item.trim()))
+      .filter((v) => v !== null);
+  }
+
+  // Number
+  const num = Number(s);
+  if (!isNaN(num) && s !== '') return num;
+
+  return s; // fallback: return as string
 }
 
 /**

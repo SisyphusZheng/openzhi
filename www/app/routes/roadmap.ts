@@ -182,8 +182,9 @@ export class RoadmapPage extends LitElement {
 
           <h2>2026-05-16 愿景可行性评估</h2>
           <p>
-            长期愿景可以成立，但“通用”必须定义为<strong>协议通用</strong>，不是“任意 Web Component 都能被魔法 SSR
-            和水合”。LessJS 更现实的目标是 WC SSR/SSG 渲染内核、CEM-compatible 包协议、本地 registry index、
+            长期愿景可以成立，但“通用”必须定义为<strong>协议通用</strong>，不是“任意 Web Component
+            都能被魔法 SSR 和水合”。LessJS 更现实的目标是 WC SSR/SSG 渲染内核、CEM-compatible 包协议、本地
+            registry index、
             <code>less add</code> 安装辅助、自动注册、受控自动渲染和声明式水合。
           </p>
           <table class="reset-table">
@@ -198,7 +199,9 @@ export class RoadmapPage extends LitElement {
               <tr>
                 <td>WC SSR/SSG 渲染内核</td>
                 <td>可行，是当前最强主线。</td>
-                <td>公开 renderer protocol、adapter contract、错误模型、DSD metrics 和真实浏览器验证。</td>
+                <td>
+                  公开 renderer protocol、adapter contract、错误模型、DSD metrics 和真实浏览器验证。
+                </td>
               </tr>
               <tr>
                 <td>一键 install</td>
@@ -543,27 +546,41 @@ export class RoadmapPage extends LitElement {
               <tr>
                 <td>WC SSR/SSG rendering kernel</td>
                 <td>Feasible and the strongest mainline.</td>
-                <td>Public renderer protocol, adapter contract, error model, DSD metrics, and browser validation.</td>
+                <td>
+                  Public renderer protocol, adapter contract, error model, DSD metrics, and browser
+                  validation.
+                </td>
               </tr>
               <tr>
                 <td>One-command install</td>
                 <td>Feasible only for trusted manifest packages.</td>
-                <td>Read package manifest, update config, generate registration, and preserve lockfile/permission signals.</td>
+                <td>
+                  Read package manifest, update config, generate registration, and preserve
+                  lockfile/permission signals.
+                </td>
               </tr>
               <tr>
                 <td>Automatic registration / rendering</td>
                 <td>Feasible, but it must be explainable, disableable, and degradable.</td>
-                <td>Components declare tag, module, export, SSR renderability, adapter, DSD constraints, and fallback.</td>
+                <td>
+                  Components declare tag, module, export, SSR renderability, adapter, DSD constraints, and
+                  fallback.
+                </td>
               </tr>
               <tr>
                 <td>Automatic hydration</td>
                 <td>Only declarative hydration is credible; event guessing is not.</td>
-                <td>Manifest or component class declares strategy, events, selectors, and cleanup behavior.</td>
+                <td>
+                  Manifest or component class declares strategy, events, selectors, and cleanup behavior.
+                </td>
               </tr>
               <tr>
                 <td>WC registry hub</td>
                 <td>There is a market gap, but governance cost is high.</td>
-                <td>Local index, manifest validator, validation artifacts, provenance, security response, and maintenance rules first.</td>
+                <td>
+                  Local index, manifest validator, validation artifacts, provenance, security response,
+                  and maintenance rules first.
+                </td>
               </tr>
             </tbody>
           </table>

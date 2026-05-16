@@ -18,7 +18,7 @@
  */
 
 import type { Alias, Plugin, ResolvedConfig } from 'vite';
-import type { FrameworkOptions, PackageIslandMeta, RouteEntry } from '@lessjs/core';
+import type { FrameworkOptions, LessPluginMeta, PackageIslandMeta, RouteEntry } from '@lessjs/core';
 
 // ─── Phase Branded Types (compile-time ordering enforcement) ───
 // These branded types ensure Phase 2 can only run after Phase 1,
@@ -113,7 +113,10 @@ export class Phase3Meta {
 }
 
 // ─── Plugin data from content/i18n sub-plugins ──────────────────
-export class PluginMeta {
+export class PluginMeta implements LessPluginMeta {
+  /** Index signature to satisfy LessPluginMeta interface */
+  [key: string]: unknown;
+
   /** Blog options from @lessjs/content plugin */
   blogOptions: { contentDir?: string; basePath?: string } | null = null;
 

@@ -223,6 +223,7 @@ export class LessCodeBlock extends DsdLitElement {
    * Retries if Prism hasn't loaded yet (capped at MAX_HIGHLIGHT_RETRIES).
    */
   private _tryHighlight(): void {
+    // deno-lint-ignore no-explicit-any
     const p = (globalThis as any).Prism;
     if (typeof p === 'undefined') {
       if (this._highlightRetries++ < LessCodeBlock.MAX_HIGHLIGHT_RETRIES) {

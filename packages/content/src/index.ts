@@ -31,12 +31,8 @@
 
 import type { Plugin, ViteDevServer } from 'vite';
 import type { LessContentOptions } from './types.ts';
-import type { LessBuildContext } from '@lessjs/adapter-vite/build-context';
-import {
-  RESOLVED_BLOG_DATA_ID,
-  RESOLVED_NAV_ID,
-  VIRTUAL_NAV_ID,
-} from '@lessjs/adapter-vite/virtual-ids';
+import type { LessBuildContextLike } from '@lessjs/core/build-types';
+import { RESOLVED_BLOG_DATA_ID, RESOLVED_NAV_ID, VIRTUAL_NAV_ID } from '@lessjs/core/virtual-ids';
 import { loadBlogData } from './blog/blog-data.ts';
 import { scanNavData } from './nav/scanner.ts';
 import { createLogger } from '@lessjs/core/logger';
@@ -83,7 +79,7 @@ export type { SitemapOptions, SitemapUrl } from './types.ts';
  * Each module is opt-in.
  */
 export function lessContent(
-  options: LessContentOptions & { ctx?: LessBuildContext } = {},
+  options: LessContentOptions & { ctx?: LessBuildContextLike } = {},
 ): Plugin[] {
   const blogOpts = options.blog === false ? null : (options.blog || null);
   const navOpts = options.nav || null;

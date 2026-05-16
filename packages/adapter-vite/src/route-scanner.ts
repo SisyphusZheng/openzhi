@@ -279,7 +279,6 @@ export async function scanPackageIslands(
   for (const pkg of packageNames) {
     // v0.14.6: @vite-ignore suppresses unanalyzable-dynamic-import JSR warning.
     // Non-existent packages intentionally throw LessError (fail-fast for misconfiguration).
-    // deno-lint-ignore no-explicit-any
     let mod: Record<string, unknown>;
     try {
       mod = await import(/* @vite-ignore */ pkg) as Record<string, unknown>;

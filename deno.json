@@ -102,7 +102,6 @@
     "exclude": [
       "deliverables/",
       "www/content/blog/",
-      "www/app/routes/guide/getting-started.ts",
       "custom-dist/",
       "dist-test-ssg-render/"
     ]
@@ -110,7 +109,7 @@
   "lint": {
     "rules": {
       "tags": ["recommended"],
-      "exclude": ["no-sloppy-imports", "no-explicit-any"]
+      "exclude": ["no-sloppy-imports"]
     }
   },
   "compilerOptions": {

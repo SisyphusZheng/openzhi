@@ -1,12 +1,14 @@
 {
   "name": "@lessjs/core",
-  "version": "0.14.9",
+  "version": "0.14.11",
   "exports": {
     ".": "./src/index.ts",
     "./errors": "./src/errors.ts",
     "./context": "./src/context.ts",
     "./logger": "./src/logger.ts",
-    "./navigation": "./src/navigation.ts"
+    "./navigation": "./src/navigation.ts",
+    "./build-types": "./src/build-types.ts",
+    "./virtual-ids": "./src/virtual-ids.ts"
   },
   "imports": {
     "parse5": "npm:parse5@7.0.0"
