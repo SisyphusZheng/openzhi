@@ -326,6 +326,96 @@ export interface RenderAdapter {
 }
 
 /**
+ * Renderer Protocol — the v0.15 successor to RenderAdapter.
+ *
+ * Adds a required `name` field for diagnostics and multi-adapter support.
+ * All existing RenderAdapter methods are preserved as optional.
+ *
+ * @deprecated Use `RendererProtocol` instead of `RenderAdapter` in new code.
+ * `RenderAdapter` is kept as a type alias for backward compatibility.
+ */
+export interface RendererProtocol {
+  /** Adapter name for diagnostics and logging */
+  name: string;
+  /** Check if a value is a template type this adapter handles */
+  isTemplate?: (value: unknown) => boolean;
+  /** Render a template value to HTML string */
+  render?: (value: unknown, tagName: string) => Promise<string>;
+  /** Extract static CSS from a component class */
+  extractStyles?: (componentClass: CustomElementConstructor) => string | undefined;
+}
+
+/**
+ * Phase in the render pipeline where an error can occur.
+ */
+export type RenderPhase = 'instantiate' | 'render' | 'nested' | 'style' | 'serialize';
+
+/**
+ * Structured error from the render pipeline.
+ *
+ * Provides a typed, machine-readable error representation instead of
+ * ad-hoc HTML comments and console logs.
+ */
+export interface RenderError {
+  /** Pipeline phase where the error occurred */
+  phase: RenderPhase;
+  /** Tag name of the component that errored */
+  tagName: string;
+  /** Human-readable error message */
+  message: string;
+  /** Whether the error is recoverable (pipeline can continue) */
+  recoverable: boolean;
+}
+
+/**
+ * Input to a single renderDSD() call.
+ */
+export interface RenderInput {
+  /** Custom element tag name */
+  tagName: string;
+  /** Custom Element class constructor */
+  componentClass: CustomElementConstructor;
+  /** Attribute/property key-value pairs */
+  props: Record<string, unknown>;
+  /** DSD template attributes per HTML Living Standard */
+  dsdOptions?: DsdOptions;
+  /** Current nesting depth (0 = top-level) */
+  nestingDepth: number;
+}
+
+/**
+ * Hydration hint emitted during SSR for client-side adapter use.
+ */
+export interface HydrationHint {
+  /** Custom element tag name */
+  tagName: string;
+  /** Component layer */
+  layer: ComponentLayer;
+  /** Declarative event bindings (dsd-interactive only) */
+  events?: HydrateEventDescriptor[];
+  /** Island upgrade strategy */
+  strategy?: 'eager' | 'lazy' | 'idle' | 'visible';
+}
+
+/**
+ * Structured output from renderDSD().
+ *
+ * v0.15: renderDSD() returns this instead of a bare string,
+ * providing errors, metrics, and hydration hints alongside the HTML.
+ * Use renderDSDString() for backward-compatible string output.
+ */
+export interface RenderOutput {
+  /** Rendered DSD HTML string */
+  html: string;
+  /** Errors collected during rendering */
+  errors: RenderError[];
+  /** Per-component render metrics */
+  metrics: DsdRenderMetrics;
+  /** Hydration hints for client-side adapter use */
+  hydrationHints: HydrationHint[];
+}
+
+/**
  * Interface that components must implement to be DSD-renderable.
  * Works with any Custom Element class that has render() and connectedCallback().
  *

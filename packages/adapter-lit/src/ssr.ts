@@ -467,6 +467,7 @@ export function installLitAdapter(): void {
   // Use registerAdapter() — backed by a module-level variable in @lessjs/core,
   // so the registration is shared within the self-contained SSR bundle.
   registerAdapter({
+    name: 'lit',
     render: (result: unknown, tagName: string): Promise<string> => {
       return Promise.resolve(renderLitToString(result, tagName));
     },
