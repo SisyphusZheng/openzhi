@@ -16,7 +16,14 @@
 
 import * as parse5 from 'parse5';
 import type { DefaultTreeAdapterMap } from 'parse5';
-import { type DsdOptions, type DsdRenderCollector, type RenderHooks, type RenderOutput, type RenderError, type HydrationHint } from './types.js';
+import {
+  type DsdOptions,
+  type DsdRenderCollector,
+  type HydrationHint,
+  type RenderError,
+  type RenderHooks,
+  type RenderOutput,
+} from './types.js';
 import { renderDSD } from './render-dsd.js';
 import { createLogger } from './logger.js';
 
@@ -193,7 +200,19 @@ export async function renderNestedCustomElements(
   hooks?: RenderHooks,
 ): Promise<RenderOutput> {
   if (!globalThis.customElements?.get) {
-    return { html, errors: [], metrics: { tagName: '__nested__', renderTimeMs: 0, templateSize: html.length, layer: 'dsd-static', hasError: false, nestingDepth: 0 }, hydrationHints: [] };
+    return {
+      html,
+      errors: [],
+      metrics: {
+        tagName: '__nested__',
+        renderTimeMs: 0,
+        templateSize: html.length,
+        layer: 'dsd-static',
+        hasError: false,
+        nestingDepth: 0,
+      },
+      hydrationHints: [],
+    };
   }
 
   // Use parseFragment() — NOT parse(). parse5.parse() wraps fragments in
@@ -252,7 +271,16 @@ export async function renderNestedCustomElements(
     const dsdOpts = inferDsdOptions(tagName, Cls);
 
     // Render DSD for this component — now returns RenderOutput
-    const dsdResult = await renderDSD(tagName, Cls, props, undefined, dsdOpts, collector, depth, hooks);
+    const dsdResult = await renderDSD(
+      tagName,
+      Cls,
+      props,
+      undefined,
+      dsdOpts,
+      collector,
+      depth,
+      hooks,
+    );
     const dsdHtml = dsdResult.html;
 
     // Propagate nested errors and hydration hints
@@ -332,7 +360,14 @@ export async function renderNestedCustomElements(
   return {
     html: resultHtml,
     errors: allNestedErrors,
-    metrics: { tagName: '__nested__', renderTimeMs: 0, templateSize: resultHtml.length, layer: 'dsd-static', hasError: allNestedErrors.length > 0, nestingDepth: 0 },
+    metrics: {
+      tagName: '__nested__',
+      renderTimeMs: 0,
+      templateSize: resultHtml.length,
+      layer: 'dsd-static',
+      hasError: allNestedErrors.length > 0,
+      nestingDepth: 0,
+    },
     hydrationHints: allNestedHints,
   };
 }

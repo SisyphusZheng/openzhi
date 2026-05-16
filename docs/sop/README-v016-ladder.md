@@ -5,13 +5,13 @@
 
 ## Ladder Overview
 
-| Version | SOP | Main outcome | Can ship alone |
-| ------- | --- | ------------ | -------------- |
-| v0.15.1 | [v0.15.1-audit-gates.md](./v0.15.1-audit-gates.md) | Security and test gates before protocol work | Yes ✅ Done |
-| v0.15.2 | [v0.15.2-render-output-hooks.md](./v0.15.2-render-output-hooks.md) | `RenderOutput` return type + `RenderHooks` | Yes |
-| v0.15.3 | [v0.15.3-dsd-report-and-release-gate.md](./v0.15.3-dsd-report-and-release-gate.md) | `dsd-report.json` + repeatable release gate | Yes |
-| v0.16.0 | [v0.16.0-package-protocol.md](./v0.16.0-package-protocol.md) | CEM-compatible manifest + local registry | Yes |
-| v0.16.1 | [v0.16.1-build-time-package-integration.md](./v0.16.1-build-time-package-integration.md) | Manifest-driven build-time package rendering | Conditional |
+| Version | SOP                                                                                      | Main outcome                                 | Can ship alone |
+| ------- | ---------------------------------------------------------------------------------------- | -------------------------------------------- | -------------- |
+| v0.15.1 | [v0.15.1-audit-gates.md](./v0.15.1-audit-gates.md)                                       | Security and test gates before protocol work | Yes ✅ Done    |
+| v0.15.2 | [v0.15.2-render-output-hooks.md](./v0.15.2-render-output-hooks.md)                       | `RenderOutput` return type + `RenderHooks`   | Yes            |
+| v0.15.3 | [v0.15.3-dsd-report-and-release-gate.md](./v0.15.3-dsd-report-and-release-gate.md)       | `dsd-report.json` + repeatable release gate  | Yes            |
+| v0.16.0 | [v0.16.0-package-protocol.md](./v0.16.0-package-protocol.md)                             | CEM-compatible manifest + local registry     | Yes            |
+| v0.16.1 | [v0.16.1-build-time-package-integration.md](./v0.16.1-build-time-package-integration.md) | Manifest-driven build-time package rendering | Conditional    |
 
 ## Dependency Chain
 

@@ -296,7 +296,9 @@ Deno.test('renderDSD — DSD options', async (t) => {
   await t.step('adds shadowrootserializable when serializable=true', async () => {
     registerAdapter(undefined);
     const cls = createMockClass('<span>data</span>');
-    const output = await renderDSD('serial-el-1', asCtor(cls), {}, undefined, { serializable: true });
+    const output = await renderDSD('serial-el-1', asCtor(cls), {}, undefined, {
+      serializable: true,
+    });
     assertStringIncludes(output.html, 'shadowrootserializable');
   });
 

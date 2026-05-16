@@ -7,7 +7,7 @@
 import { assertEquals, assertStringIncludes } from 'jsr:@std/assert@^1.0.0';
 import { renderDSD } from '../src/render-dsd.ts';
 import { registerAdapter } from '../src/adapter-registry.ts';
-import type { RenderHooks, RenderOutput, RenderInput, RenderError } from '../src/types.ts';
+import type { RenderError, RenderHooks, RenderInput, RenderOutput } from '../src/types.ts';
 
 // ─── Mock Component Classes ──────────────────────────────────
 
@@ -89,7 +89,16 @@ Deno.test('RenderHooks — beforeRender', async (t) => {
       },
     };
 
-    await renderDSD('hook-test-2', asCtor(cls), { name: 'test' }, undefined, undefined, undefined, 0, hooks);
+    await renderDSD(
+      'hook-test-2',
+      asCtor(cls),
+      { name: 'test' },
+      undefined,
+      undefined,
+      undefined,
+      0,
+      hooks,
+    );
 
     assertEquals(receivedInput!.tagName, 'hook-test-2');
     assertEquals(receivedInput!.props.name, 'test');
@@ -107,7 +116,16 @@ Deno.test('RenderHooks — beforeRender', async (t) => {
     };
 
     // Should not throw — hook errors are caught silently
-    const output = await renderDSD('hook-test-3', asCtor(cls), {}, undefined, undefined, undefined, 0, hooks);
+    const output = await renderDSD(
+      'hook-test-3',
+      asCtor(cls),
+      {},
+      undefined,
+      undefined,
+      undefined,
+      0,
+      hooks,
+    );
     assertStringIncludes(output.html, '<p>Hello</p>');
   });
 });
@@ -236,7 +254,16 @@ Deno.test('RenderHooks — optional (undefined)', async (t) => {
     registerAdapter(undefined);
     const cls = createMockClass('<p>No hooks</p>');
 
-    const output = await renderDSD('hook-test-10', asCtor(cls), {}, undefined, undefined, undefined, 0, undefined);
+    const output = await renderDSD(
+      'hook-test-10',
+      asCtor(cls),
+      {},
+      undefined,
+      undefined,
+      undefined,
+      0,
+      undefined,
+    );
 
     assertStringIncludes(output.html, '<p>No hooks</p>');
     assertEquals(output.errors.length, 0);
@@ -246,7 +273,16 @@ Deno.test('RenderHooks — optional (undefined)', async (t) => {
     registerAdapter(undefined);
     const cls = createMockClass('<p>Empty hooks</p>');
 
-    const output = await renderDSD('hook-test-11', asCtor(cls), {}, undefined, undefined, undefined, 0, {});
+    const output = await renderDSD(
+      'hook-test-11',
+      asCtor(cls),
+      {},
+      undefined,
+      undefined,
+      undefined,
+      0,
+      {},
+    );
 
     assertStringIncludes(output.html, '<p>Empty hooks</p>');
     assertEquals(output.errors.length, 0);
@@ -256,8 +292,26 @@ Deno.test('RenderHooks — optional (undefined)', async (t) => {
     registerAdapter(undefined);
     const cls = createMockClass('<p>Same behavior</p>');
 
-    const withHooks = await renderDSD('hook-test-12a', asCtor(cls), {}, undefined, undefined, undefined, 0, {});
-    const withoutHooks = await renderDSD('hook-test-12b', asCtor(cls), {}, undefined, undefined, undefined, 0, undefined);
+    const withHooks = await renderDSD(
+      'hook-test-12a',
+      asCtor(cls),
+      {},
+      undefined,
+      undefined,
+      undefined,
+      0,
+      {},
+    );
+    const withoutHooks = await renderDSD(
+      'hook-test-12b',
+      asCtor(cls),
+      {},
+      undefined,
+      undefined,
+      undefined,
+      0,
+      undefined,
+    );
 
     // HTML output should be identical (except for tag name differences)
     assertEquals(withHooks.errors.length, withoutHooks.errors.length);
@@ -268,30 +322,33 @@ Deno.test('RenderHooks — optional (undefined)', async (t) => {
 // ─── RenderOutput shape ─────────────────────────────────────
 
 Deno.test('RenderOutput — structured output', async (t) => {
-  await t.step('successful render returns RenderOutput with html, errors, metrics, hydrationHints', async () => {
-    registerAdapter(undefined);
-    const cls = createMockClass('<p>Full output</p>');
+  await t.step(
+    'successful render returns RenderOutput with html, errors, metrics, hydrationHints',
+    async () => {
+      registerAdapter(undefined);
+      const cls = createMockClass('<p>Full output</p>');
 
-    const output = await renderDSD('output-test-1', asCtor(cls), { name: 'test' });
+      const output = await renderDSD('output-test-1', asCtor(cls), { name: 'test' });
 
-    // html
-    assertStringIncludes(output.html, 'output-test-1');
-    assertStringIncludes(output.html, '<p>Full output</p>');
-    assertStringIncludes(output.html, 'name="test"');
+      // html
+      assertStringIncludes(output.html, 'output-test-1');
+      assertStringIncludes(output.html, '<p>Full output</p>');
+      assertStringIncludes(output.html, 'name="test"');
 
-    // errors
-    assertEquals(output.errors.length, 0);
+      // errors
+      assertEquals(output.errors.length, 0);
 
-    // metrics
-    assertEquals(output.metrics.tagName, 'output-test-1');
-    assertEquals(typeof output.metrics.renderTimeMs, 'number');
-    assertEquals(output.metrics.layer, 'dsd-static');
-    assertEquals(output.metrics.hasError, false);
-    assertEquals(output.metrics.nestingDepth, 0);
+      // metrics
+      assertEquals(output.metrics.tagName, 'output-test-1');
+      assertEquals(typeof output.metrics.renderTimeMs, 'number');
+      assertEquals(output.metrics.layer, 'dsd-static');
+      assertEquals(output.metrics.hasError, false);
+      assertEquals(output.metrics.nestingDepth, 0);
 
-    // hydrationHints
-    assertEquals(Array.isArray(output.hydrationHints), true);
-  });
+      // hydrationHints
+      assertEquals(Array.isArray(output.hydrationHints), true);
+    },
+  );
 
   await t.step('failed render returns RenderOutput with errors', async () => {
     registerAdapter(undefined);

@@ -41,13 +41,13 @@
 
 ## Version Ladder
 
-| Version | SOP | Main outcome | Status |
-| ------- | --- | ------------ | ------ |
-| v0.15.1 | `docs/sop/v0.15.1-audit-gates.md` | Security and test gates | ✅ Done |
-| v0.15.2 | `docs/sop/v0.15.2-render-output-hooks.md` | `RenderOutput` + `RenderHooks` | ✅ Done |
-| v0.15.3 | `docs/sop/v0.15.3-dsd-report-and-release-gate.md` | `dsd-report.json` + release gate | Next |
-| v0.16.0 | `docs/sop/v0.16.0-package-protocol.md` | CEM manifest + local registry | — |
-| v0.16.1 | `docs/sop/v0.16.1-build-time-package-integration.md` | Manifest-driven build integration | — |
+| Version | SOP                                                  | Main outcome                      | Status  |
+| ------- | ---------------------------------------------------- | --------------------------------- | ------- |
+| v0.15.1 | `docs/sop/v0.15.1-audit-gates.md`                    | Security and test gates           | ✅ Done |
+| v0.15.2 | `docs/sop/v0.15.2-render-output-hooks.md`            | `RenderOutput` + `RenderHooks`    | ✅ Done |
+| v0.15.3 | `docs/sop/v0.15.3-dsd-report-and-release-gate.md`    | `dsd-report.json` + release gate  | Next    |
+| v0.16.0 | `docs/sop/v0.16.0-package-protocol.md`               | CEM manifest + local registry     | —       |
+| v0.16.1 | `docs/sop/v0.16.1-build-time-package-integration.md` | Manifest-driven build integration | —       |
 
 ## JSR Publish Order
 

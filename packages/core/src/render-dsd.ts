@@ -27,7 +27,17 @@
  */
 
 // ─── Internal imports ──────────────────────────────────────────
-import { type DsdOptions, type DsdRenderCollector, type RenderHooks, type RenderOutput, type RenderError, type RenderInput, type HydrationHint, type DsdRenderMetrics, type ComponentLayer } from './types.js';
+import {
+  type ComponentLayer,
+  type DsdOptions,
+  type DsdRenderCollector,
+  type DsdRenderMetrics,
+  type HydrationHint,
+  type RenderError,
+  type RenderHooks,
+  type RenderInput,
+  type RenderOutput,
+} from './types.js';
 import { getAdapter } from './adapter-registry.js';
 import { renderNestedCustomElements } from './render-nested.js';
 import { createLogger } from './logger.js';
@@ -122,7 +132,14 @@ export async function renderDSD(
     const result: RenderOutput = {
       html,
       errors: collectedErrors,
-      metrics: { tagName, renderTimeMs: 0, templateSize: 0, layer: 'dsd-static', hasError: true, nestingDepth },
+      metrics: {
+        tagName,
+        renderTimeMs: 0,
+        templateSize: 0,
+        layer: 'dsd-static',
+        hasError: true,
+        nestingDepth,
+      },
       hydrationHints: collectedHints,
     };
     hooks?.afterRender?.(result);
@@ -198,7 +215,9 @@ export async function renderDSD(
   const resolvedLayer = dsdOptions?.layer || instance.layer || 'dsd-static';
 
   // ─── Collect DSD render metrics (if collector provided) ─────
-  const renderEnd = typeof performance !== 'undefined' ? performance.now() : renderEnd_timeFallback();
+  const renderEnd = typeof performance !== 'undefined'
+    ? performance.now()
+    : renderEnd_timeFallback();
   const renderTimeMs = renderEnd - startTime;
 
   const metrics: DsdRenderMetrics = {
@@ -302,7 +321,14 @@ export async function renderDSDByName(
     return {
       html,
       errors: [],
-      metrics: { tagName, renderTimeMs: 0, templateSize: 0, layer: 'dsd-static', hasError: false, nestingDepth: 0 },
+      metrics: {
+        tagName,
+        renderTimeMs: 0,
+        templateSize: 0,
+        layer: 'dsd-static',
+        hasError: false,
+        nestingDepth: 0,
+      },
       hydrationHints: [],
     };
   }
