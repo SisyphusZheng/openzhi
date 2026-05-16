@@ -358,15 +358,17 @@ export function renderEntry(desc: EntryDescriptor): string {
   // --- Register page components in SSR customElements registry ---
   // This is essential for renderDSD() to find and render Shadow DOM.
   // Each SSR route module exports { default: ComponentClass, tagName: string }.
-  // ADR 0014: Patch customElements.define to be idempotent in SSR — moved
-  // inside the bundle so build-ssg.ts doesn't need to patch the global.
-  if (desc.isSSG) {
-    lines.push('// ADR 0014: Idempotent customElements.define for SSR');
+  // ADR 0014: Patch customElements.define to be idempotent in SSR —
+  // must apply in BOTH dev and SSG modes because island modules call
+  // customElements.define() as a side-effect (guard try/catch), and
+  // the SSR dom-shim throws on duplicate define() even with the same tag.
+  {
+    lines.push('// ADR 0014: Idempotent customElements.define for SSR (dev + SSG)');
     lines.push(
-      '// Multiple routes may import the same UI modules, causing duplicate define() calls.',
+      '// Island modules call customElements.define() as a side-effect.',
     );
     lines.push(
-      '// Patch once inside the bundle — external code does not touch customElements.',
+      '// The SSR dom-shim does not make define() idempotent, so we patch it.',
     );
     lines.push(
       'const _origDefine = customElements.define.bind(customElements);',

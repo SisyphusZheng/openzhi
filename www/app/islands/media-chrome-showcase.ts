@@ -9,14 +9,20 @@
  * rendering and emits an empty custom element tag. The browser then
  * upgrades it on the client side.
  *
+ * SSR Safety: This module is imported by route components, so it evaluates
+ * in the SSR module runner where globalThis.HTMLElement may be undefined.
+ * - We use a safe base class pattern (fallback to plain class in SSR)
+ * - We load media-chrome dynamically on the client only (it accesses DOM APIs)
+ *
  * @lessjs/app island — auto-detected by adapter-vite.
  */
-import 'media-chrome';
 import { WithDsdHydration } from '@lessjs/adapter-vanilla';
 
-// ADR-0028: globalThis.HTMLElement is guaranteed by the SSR entry code
-// (imported from @lit-labs/ssr-dom-shim before island evaluation).
-const MediaChromeBase = WithDsdHydration(globalThis.HTMLElement);
+// SSR-safe base class: WithDsdHydration(HTMLElement) requires HTMLElement.
+// Fallback to a plain class to avoid "Class extends value undefined" crash.
+const MediaChromeBase = typeof globalThis.HTMLElement !== 'undefined'
+  ? WithDsdHydration(globalThis.HTMLElement)
+  : class {};
 
 export const tagName = 'media-chrome-showcase';
 
@@ -53,9 +59,22 @@ export default class MediaChromeShowcase extends MediaChromeBase {
     }
   `;
 
+  private _mcLoaded = false;
+
+  override connectedCallback(): void {
+    super.connectedCallback();
+    // Load media-chrome dynamically on the client only.
+    // This avoids SSR crashes from browser-only DOM APIs.
+    if (!this._mcLoaded && typeof globalThis.HTMLElement !== 'undefined') {
+      this._mcLoaded = true;
+      import('media-chrome').catch(() => {/* media-chrome not available */});
+    }
+  }
+
   render(): string {
     // When DSD-hydrated, return empty to avoid duplicate DOM
-    if (this._dsdHydrated) return '';
+    // deno-lint-ignore no-explicit-any
+    if ((this as any)._dsdHydrated) return '';
 
     return `
       <div class="mc-wrap">

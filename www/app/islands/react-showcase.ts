@@ -11,6 +11,13 @@
  * - Client: WithDsdHydration mixin detects DSD-pre-populated shadow root
  *   and mounts React tree via createRoot() for interactivity.
  *
+ * SSR Safety: This module is imported by route components, so it evaluates
+ * in the SSR module runner where globalThis.HTMLElement may be undefined.
+ * We use a safe base class pattern — if HTMLElement is unavailable, we fall
+ * back to a plain class that won't crash at module evaluation time. The SSR
+ * admission plan marks this island as renderable (ssr: true by default), so
+ * the SSR bundle will have the Lit SSR dom-shim providing HTMLElement.
+ *
  * @lessjs/app island — auto-detected and SSR'd by adapter-vite.
  */
 import { createElement, type ReactNode } from 'react';
@@ -115,10 +122,13 @@ function Alert({
   );
 }
 
-// Use WithDsdHydration(HTMLElement) for proper SSR + client hydration.
-// ADR-0028: globalThis.HTMLElement is guaranteed by the SSR entry code
-// (imported from @lit-labs/ssr-dom-shim before island evaluation).
-const ReactShowcaseBase = WithDsdHydration(globalThis.HTMLElement);
+// SSR-safe base class: WithDsdHydration(HTMLElement) requires HTMLElement
+// to be defined. In SSR dev mode, @lit-labs/ssr-dom-shim provides it.
+// But the SSR module runner may evaluate this module before the shim is loaded.
+// Fallback to a plain class to avoid "Class extends value undefined" crash.
+const ReactShowcaseBase = typeof globalThis.HTMLElement !== 'undefined'
+  ? WithDsdHydration(globalThis.HTMLElement)
+  : class {};
 
 export const tagName = 'react-showcase';
 
