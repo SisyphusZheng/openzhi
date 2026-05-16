@@ -6,10 +6,10 @@
 
 ## Branch Status
 
-| Branch        | HEAD      | Status          |
-| ------------- | --------- | --------------- |
-| `origin/dev`  | pending   | v0.16.0 release |
-| `origin/main` | `5e06fc9` | v0.15.3 merged  |
+| Branch        | HEAD      | Status         |
+| ------------- | --------- | -------------- |
+| `origin/dev`  | pending   | v0.16.0 CI fix |
+| `origin/main` | `5e06fc9` | v0.15.3 merged |
 
 ## Tags
 
@@ -40,8 +40,8 @@
 
 ## In Progress
 
-- v0.16.0 Package Protocol complete on dev.
-- v0.16.1 Build-Time Integration is the next step (conditional — may defer to v0.17).
+- v0.16.0 CI fixes (SSG smoke test assertions + deno fmt).
+- v0.17.x Ecosystem Entry is the next milestone.
 
 ## Version Ladder
 

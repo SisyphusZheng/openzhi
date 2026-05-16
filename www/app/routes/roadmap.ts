@@ -167,7 +167,7 @@ export class RoadmapPage extends LitElement {
           <h1>Roadmap</h1>
           <p class="subtitle">
             从渲染内核到通用 WC SSR/SSG 引擎 + Registry Hub。六个 Phase，近细远粗。 当前版本 <code
-            >v0.15.3</code>，下一里程碑 <code>v0.16.0</code>。
+            >v0.16.0</code>，下一里程碑 <code>v0.17.x</code>。
           </p>
 
           <div class="callout">
@@ -202,14 +202,14 @@ export class RoadmapPage extends LitElement {
                 <td>v0.16.x</td>
                 <td>WC Package Protocol</td>
                 <td>CEM manifest + 本地 registry + 构建集成</td>
-                <td><span class="status next">Next</span></td>
+                <td><span class="status done">Done</span></td>
               </tr>
               <tr>
                 <td>3</td>
                 <td>v0.17.x</td>
                 <td>Ecosystem Entry</td>
                 <td>第三方 WC 包接入、CLI 工具、多适配器</td>
-                <td><span class="status planned">Planned</span></td>
+                <td><span class="status next">Next</span></td>
               </tr>
               <tr>
                 <td>4</td>
@@ -256,21 +256,20 @@ export class RoadmapPage extends LitElement {
           </div>
 
           <div class="phase">
-            <span class="status next">Next</span>
+            <span class="status done">Done</span>
             <h3>Phase 2: v0.16.x — WC Package Protocol</h3>
             <p>
               从 3 字段 <code>PackageIslandMeta</code> 升级为 20+ 字段 CEM 兼容
               <code>LessPackageManifest</code>。LessJS 第一次能以数据描述 WC 包。
             </p>
             <ul class="compact-list">
-              <li>v0.16.0: Manifest 类型系统 + 本地 registry + validate + @lessjs/ui manifest</li>
+              <li>v0.16.0: Manifest 类型系统 + 本地 registry + validate + @lessjs/ui manifest ✓</li>
               <li>v0.16.1: Manifest 驱动构建集成（条件性 — 可能推到 v0.17）</li>
-              <li>关键规则: v0.16.0 可独立交付，不因 v0.16.1 阻塞</li>
             </ul>
           </div>
 
           <div class="phase">
-            <span class="status planned">Planned</span>
+            <span class="status next">Next</span>
             <h3>Phase 3: v0.17.x — Ecosystem Entry</h3>
             <p>从"只能用自己的包"变成"能接入生态"。</p>
             <ul class="compact-list">
@@ -365,8 +364,8 @@ export class RoadmapPage extends LitElement {
           <h1>Roadmap</h1>
           <p class="subtitle">
             From renderer kernel to general-purpose WC SSR/SSG engine + Registry Hub. Six phases,
-            near-term fine and far-term coarse. Current version <code>v0.15.3</code>, next milestone <code
-            >v0.16.0</code>.
+            near-term fine and far-term coarse. Current version <code>v0.16.0</code>, next milestone <code
+            >v0.17.x</code>.
           </p>
 
           <div class="callout">
@@ -401,14 +400,14 @@ export class RoadmapPage extends LitElement {
                 <td>v0.16.x</td>
                 <td>WC Package Protocol</td>
                 <td>CEM manifest + local registry + build integration</td>
-                <td><span class="status next">Next</span></td>
+                <td><span class="status done">Done</span></td>
               </tr>
               <tr>
                 <td>3</td>
                 <td>v0.17.x</td>
                 <td>Ecosystem Entry</td>
                 <td>Third-party WC packages, CLI tooling, multi-adapter</td>
-                <td><span class="status planned">Planned</span></td>
+                <td><span class="status next">Next</span></td>
               </tr>
               <tr>
                 <td>4</td>
@@ -455,7 +454,7 @@ export class RoadmapPage extends LitElement {
           </div>
 
           <div class="phase">
-            <span class="status next">Next</span>
+            <span class="status done">Done</span>
             <h3>Phase 2: v0.16.x — WC Package Protocol</h3>
             <p>
               Upgrade from 3-field <code>PackageIslandMeta</code> to 20+ field CEM-compatible
@@ -463,14 +462,13 @@ export class RoadmapPage extends LitElement {
               time.
             </p>
             <ul class="compact-list">
-              <li>v0.16.0: Manifest type system + local registry + validate + @lessjs/ui manifest</li>
+              <li>v0.16.0: Manifest type system + local registry + validate + @lessjs/ui manifest ✓</li>
               <li>v0.16.1: Manifest-driven build integration (conditional — may defer to v0.17)</li>
-              <li>Key rule: v0.16.0 ships even if v0.16.1 integration is not ready</li>
             </ul>
           </div>
 
           <div class="phase">
-            <span class="status planned">Planned</span>
+            <span class="status next">Next</span>
             <h3>Phase 3: v0.17.x — Ecosystem Entry</h3>
             <p>From "own packages only" to "ecosystem-ready".</p>
             <ul class="compact-list">

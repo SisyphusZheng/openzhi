@@ -5,7 +5,7 @@
  * hardcoded islands array behavior.
  */
 
-import { assertEquals } from 'jsr:@std/assert';
+import { assertEquals } from 'jsr:@std/assert@^1.0.0';
 import { manifest } from '../../ui/src/manifest.js';
 import {
   packageIslandFromManifest,

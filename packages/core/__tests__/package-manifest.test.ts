@@ -2,12 +2,8 @@
  * Tests for LessPackageManifest types and packageIslandFromManifest().
  */
 
-import { assertEquals } from 'jsr:@std/assert';
-import type {
-  LessPackageManifest,
-  ValidationError,
-  ValidationWarning,
-} from '../src/types.js';
+import { assertEquals } from 'jsr:@std/assert@^1.0.0';
+import type { LessPackageManifest, ValidationError, ValidationWarning } from '../src/types.js';
 import {
   clear as clearRegistry,
   generateIndex,

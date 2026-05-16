@@ -129,7 +129,8 @@ Deno.test('SSG smoke: one-command build produces trusted www output', async (t) 
       }
     >)('/roadmap', { lang: 'en' });
     assertStringIncludes(result.html, '<!DOCTYPE html>');
-    assertStringIncludes(result.html, '2026-05-15 Main-Branch Review Reset');
+    assertStringIncludes(result.html, 'WC Package Protocol');
+    assertStringIncludes(result.html, 'Six-Phase Vision');
   });
 
   await t.step('phase 2 output exists without legacy SSR client runtime', () => {
@@ -162,9 +163,9 @@ Deno.test('SSG smoke: one-command build produces trusted www output', async (t) 
     assert(existsSync(join(WWW_DIST, 'roadmap', 'index.html')), 'Clean URL output should exist');
     assert(existsSync(join(WWW_DIST, 'en', 'roadmap', 'index.html')), 'i18n roadmap should exist');
     const roadmapHtml = readFileSync(join(WWW_DIST, 'roadmap', 'index.html'), 'utf-8');
-    assertStringIncludes(roadmapHtml, '2026-05-15 Main-Branch Review Reset');
+    assertStringIncludes(roadmapHtml, 'WC Package Protocol');
     assertStringIncludes(roadmapHtml, 'No webpack');
-    assertStringIncludes(roadmapHtml, 'WC registry hub');
+    assertStringIncludes(roadmapHtml, 'Registry Hub');
     assert(
       existsSync(
         join(WWW_DIST, 'zh', 'decisions', '20260515-1-renderer-kernel-registry-sop', 'index.html'),
