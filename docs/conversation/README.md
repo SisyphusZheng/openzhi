@@ -13,6 +13,8 @@ whether a prior investigation exists.
 Examples:
 
 - `ssr-island-extends-undefined.md` — `class extends undefined` crash in SSR
+- `sw-crash-package-ssr-admission.md` — SW fetch 崩溃 + Package SSR admission + 嵌套 DSD 修复
+- `vanilla-adapter-render-fallback.md` — Vanilla adapter ssr:false 空白 + Shoelace 颜色对比度
 - `vite-module-graph-cycle.md` — circular import causing build hangs
 - `jsr-publish-token-expiry.md` — JSR publish failure due to expired token
 

@@ -112,6 +112,10 @@ export function WithDsdHydration<T extends Constructor<HTMLElement>>(
 
     /**
      * Auto-wire DSD hydration after the element is connected.
+     *
+     * When DSD content exists (_dsdHydrated = true): bind events.
+     * When no DSD content (_dsdHydrated = false, e.g. ssr: false):
+     * call render() to populate the shadow root on first paint.
      */
     connectedCallback(): void {
       // Call the actual parent class (captured in mixin closure),
@@ -121,6 +125,16 @@ export function WithDsdHydration<T extends Constructor<HTMLElement>>(
       }
       if (this._dsdHydrated) {
         this._hydrateEvents();
+      } else if (this.shadowRoot) {
+        // Client-side render fallback for ssr:false islands.
+        // The subclass provides render(): string; we call it here because
+        // the vanilla adapter, unlike Lit, has no built-in lifecycle that
+        // auto-invokes render().
+        const renderFn = (this as Record<string, unknown>).render;
+        if (typeof renderFn === 'function') {
+          const html = renderFn.call(this);
+          this.shadowRoot.innerHTML = String(html);
+        }
       }
     }
 

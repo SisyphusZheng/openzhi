@@ -34,6 +34,10 @@ export default class ShoelaceShowcase extends LitElement {
   static override styles = css`
     :host {
       display: block;
+      --sl-color-primary-600: #4f46e5;
+      --sl-color-success-600: #059669;
+      --sl-color-neutral-600: #52525b;
+      --sl-input-border-color-focus: #4f46e5;
     }
     .sl-row {
       display: flex;
