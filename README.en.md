@@ -1,131 +1,86 @@
 # LessJS
 
-[简体中文](./README.md) | [English](./README.en.md)
+简体中文 | [English](./README.en.md)
 
-LessJS is a Deno-first Web Components framework for **SSR/SSG with Declarative
-Shadow DOM**. It renders HTML before JavaScript, then upgrades only the
-interactive islands that actually need browser APIs.
-
-The current project is a working early framework, not a mature registry
-ecosystem. The roadmap is intentionally protocol-first: stabilize the renderer
-kernel, define a Custom Elements Manifest-compatible package protocol, then build
-a local registry index before any public WC hub.
+A Deno-first Web Components framework built on **Declarative Shadow DOM SSR/SSG +
+Island Upgrade**: render crawlable, cacheable HTML first, then upgrade only the
+interactive components that need browser APIs.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Deno](https://img.shields.io/badge/Deno-2.7%2B-000000)](https://deno.com/)
 [![JSR](https://img.shields.io/badge/JSR-published-blue)](https://jsr.io/@lessjs/core)
-[![@lessjs/core](https://img.shields.io/jsr/v/@lessjs/core?label=core&style=flat-square)](https://jsr.io/@lessjs/core)
-[![@lessjs/ui](https://img.shields.io/jsr/v/@lessjs/ui?label=ui&style=flat-square)](https://jsr.io/@lessjs/ui)
+[![@lessjs/core](https://img.shields.io/jsr/v/@lessjs/core?label=@lessjs/core)](https://jsr.io/@lessjs/core)
 
-## What LessJS Is
+## Features
 
-LessJS is best understood as a Web Standards-first rendering stack:
-
-- **Engine**: `renderDSD()`, nested custom element rendering, route rendering,
-  SSG output, DSD render metrics, and adapter hooks.
-- **Protocol**: package island metadata today; a CEM-compatible WC package
-  manifest on the roadmap.
-- **Ecosystem**: local package indexing, validation artifacts, install helpers,
-  and eventually a public WC registry hub.
-
-LessJS does not promise to SSR every arbitrary Web Component. Automatic install,
-registration, rendering, and hydration are only reliable for packages that expose
-an explicit manifest and pass validation.
-
-## Package Overview
-
-| Package                | Version | Role                                               | External deps             |
-| ---------------------- | ------- | -------------------------------------------------- | ------------------------- |
-| `@lessjs/core`         | 0.14.9  | DSD renderer, islands, navigation, errors, logging | `parse5`                  |
-| `@lessjs/adapter-vite` | 0.14.9  | Vite orchestration, route scan, SSG, island chunks | `vite`, `hono`, `esbuild` |
-| `@lessjs/adapter-lit`  | 0.14.9  | Lit `TemplateResult` to DSD HTML bridge            | `lit`                     |
-| `@lessjs/app`          | 0.14.9  | Recommended `lessjs()` umbrella entry              | workspace packages        |
-| `@lessjs/content`      | 0.14.9  | Blog, nav, sitemap build plugins                   | `marked`, `gray-matter`   |
-| `@lessjs/i18n`         | 0.14.9  | Locale expansion and route helpers                 | none                      |
-| `@lessjs/ui`           | 0.14.9  | LessJS Web Components and package islands          | `lit`                     |
-| `@lessjs/signals`      | 0.14.9  | Signals helpers and island effects                 | none                      |
-| `@lessjs/rpc`          | 0.14.9  | Fetch-based RPC controller                         | none                      |
-| `@lessjs/create`       | 0.14.9  | Project scaffold CLI                               | none                      |
-
-## Rendering Pipeline
-
-```text
-Route module or Web Component
-  -> render() returns string or Lit TemplateResult
-  -> renderDSD() emits Declarative Shadow DOM HTML
-  -> nested custom elements are rendered through parse5-backed expansion
-  -> SSG writes static HTML and island assets
-  -> browser parses <template shadowrootmode="open">
-  -> Custom Elements upgrade existing hosts
-  -> dsd-interactive components bind declared hydrateEvents
-```
-
-The stable current model is SSG-first. ISR, edge SSR, a multi-adapter matrix, and
-a public registry hub are roadmap items, not current production guarantees.
+- **SSG-first** — static HTML output, zero-JS first paint
+- **Declarative Shadow DOM** — WHATWG standard, no framework markers
+- **Island upgrade** — client JS loaded only for interactive components
+- **Renderer Protocol** — structured render output, error taxonomy, DSD metrics
+- **Multi-adapter** — Lit built-in, extensible to non-Lit adapters
+- **Deno workspace** — pure ESM, no `package.json`
 
 ## Quick Start
 
 ```bash
 deno run -A jsr:@lessjs/create my-app
 cd my-app
-deno task dev
-deno task build
+deno task dev      # dev server
+deno task build    # SSG build
 ```
 
-Requirements:
+Requirements: Deno 2.7+ / modern browser with Declarative Shadow DOM support
 
-- Deno 2.7+
-- A modern browser with Declarative Shadow DOM support
+## Packages
 
-## Roadmap Boundary
+| Package                | Role                                                 |
+| ---------------------- | ---------------------------------------------------- |
+| `@lessjs/core`         | DSD renderer, Renderer Protocol, islands, navigation |
+| `@lessjs/adapter-vite` | Vite orchestration, route scanning, SSG pipeline     |
+| `@lessjs/adapter-lit`  | Lit TemplateResult → DSD HTML bridge                 |
+| `@lessjs/app`          | Unified `lessjs()` entry                             |
+| `@lessjs/content`      | Blog, nav, sitemap build plugins                     |
+| `@lessjs/i18n`         | Locale expansion and route helpers                   |
+| `@lessjs/ui`           | Web Components library and package islands           |
+| `@lessjs/signals`      | Signals helpers and island effects                   |
+| `@lessjs/rpc`          | Fetch-based RPC controller                           |
+| `@lessjs/create`       | Project scaffold CLI                                 |
 
-The realistic path is:
+## Rendering Pipeline
 
-1. **Renderer kernel**: harden DSD rendering, adapter contracts, route rendering,
-   metrics, and package island SSR.
-2. **WC package protocol**: extend `PackageIslandMeta` toward a
-   Custom Elements Manifest-compatible schema with `ssr`, `dsd`, `hydrate`, and
-   diagnostics fields.
-3. **Local registry index**: scan installed/workspace packages, validate
-   manifests, and show SSR/SSG output, bundle cost, docs completeness, and test
-   status.
-4. **Install automation**: `less add <package>` can update config and generated
-   registration only for validated packages.
-5. **Public hub**: publish reproducible manifests and validation reports after
-   provenance, review, reporting, and security response rules exist.
+```
+render() → RenderAdapter → renderDSD() → DSD HTML → SSG → browser parses
+                                                       ↓
+                                            customElements.upgrade()
+                                                       ↓
+                                            dsd-interactive → bind hydrateEvents
+```
 
-## Standards Positioning
+## Roadmap
 
-LessJS follows the platform where it is already useful and treats emerging
-standards as explicit roadmap boundaries:
+| Version | Target                   | Status         |
+| ------- | ------------------------ | -------------- |
+| v0.15   | Renderer Kernel Protocol | In development |
+| v0.16   | WC Package Protocol      | Planned        |
+| v0.17   | Ecosystem Entry          | Planned        |
+| v1.0    | API Freeze               | Future         |
 
-- WHATWG HTML defines Declarative Shadow DOM attributes such as
-  `shadowrootmode`, `shadowrootdelegatesfocus`, `shadowrootclonable`,
-  `shadowrootserializable`, and `shadowrootcustomelementregistry`.
-- Custom Elements Manifest provides the metadata base for tags, attributes,
-  properties, events, slots, CSS parts, CSS custom properties, and custom states.
-- Open UI is used as vocabulary for parts, states, behaviors, accessibility, and
-  form semantics, not as a toolchain dependency.
-- OpenWC is useful ecosystem history for testing, linting, demoing, and
-  publishing conventions, but LessJS keeps Deno, Playwright, and self-hosted SSG
-  as its validation mainline.
-- Lit and FAST prove that Web Components can support real component authoring;
-  LessJS should integrate through adapters and manifests rather than assume one
-  authoring library.
-- Scoped Custom Element Registries and CSS Houdini are tracked as future
-  integration surfaces, not current core promises.
+See [ADR-0024](docs/adr/README.md) and [ADR-0025](docs/adr/0025-renderer-protocol.md).
 
-## Key Docs
+## Governance Docs
 
-- [Roadmap](www/app/routes/roadmap.ts)
-- [Standards-first renderer ADR](www/content/blog/0024-standards-first-wc-renderer-roadmap.md)
-- [Renderer kernel / registry SOP](www/app/routes/zh/decisions/20260515-1-renderer-kernel-registry-sop.ts)
-- [Architecture guide](www/app/routes/guide/architecture.ts)
-- [Standards & registry guide](www/app/routes/guide/standards-registry.ts)
-- [DSD guide](www/app/routes/guide/dsd.ts)
-- [Island guide](www/app/routes/guide/islands.ts)
-- [API reference](www/app/routes/reference/core.ts)
-- [v0.14.9 changelog](deliverables/review260516/CHANGELOG-v0.14.9.md)
+```
+docs/
+├── adr/           Architecture Decision Records
+├── changelog/     Version changelogs
+├── conventions/   Coding conventions
+├── sop/           Standard Operating Procedures
+└── status/        Project status + review archive
+```
+
+## Contributing
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md).
 
 ## License
 

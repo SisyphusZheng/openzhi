@@ -33,6 +33,7 @@ architectural decision, its context, and consequences.
 | 0017 | Runtime/Build separation            | Accepted, Implemented |
 | 0018 | Virtual Data Modules                | Accepted, Implemented |
 | 0024 | Standards-first WC Renderer Roadmap | Accepted              |
+| 0025 | Renderer Protocol                   | Proposed              |
 
 ## Superseded / Historical
 
