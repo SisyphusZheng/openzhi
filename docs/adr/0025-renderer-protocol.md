@@ -2,6 +2,21 @@
 
 - Status: ACCEPTED
 - Date: 2026-05-16
+- Updated: 2026-05-16 (implementation status)
+
+## Implementation Status
+
+| Section                       | v0.15 Delivered | v0.16 Planned | Notes                                                                                     |
+| ----------------------------- | --------------- | ------------- | ----------------------------------------------------------------------------------------- |
+| §1 RendererProtocol           | ✅              | —             | `RenderAdapter` fully removed                                                             |
+| §2 renderDSD() → RenderOutput | ❌ Types only   | ✅            | Return type still `Promise<string>`; `RenderOutput` type defined + exported               |
+| §3 Module split               | ✅              | —             | 4 files as specified                                                                      |
+| §4 DSD report output          | ❌              | ✅            | `DsdRenderCollector` works, `getReport()` works, but `dsd-report.json` not written by SSG |
+| §5 Named adapters             | ✅              | —             | `registerAdapter` + `getAdapter` + `getRegisteredAdapters`                                |
+| §6 create CLI                 | ✅              | —             | JSR resolution + project name validation                                                  |
+| §7 customElementRegistry      | ✅              | —             | Type simplified to `boolean`                                                              |
+| RenderHooks                   | ❌ Types only   | ✅            | Interface defined but not wired into pipeline                                             |
+| RenderInput                   | ✅ Types only   | ✅            | Type defined + exported; not used as renderDSD() parameter                                |
 
 ## Context
 
@@ -95,7 +110,13 @@ interface RenderInput {
 }
 ```
 
-### 2. `renderDSD()` returns `RenderOutput`
+### 2. `renderDSD()` returns `RenderOutput` (DEFERRED to v0.16)
+
+> **v0.15 status**: Types (`RenderOutput`, `RenderError`, `HydrationHint`) are defined
+> and exported from `@lessjs/core`, but `renderDSD()` still returns `Promise<string>`.
+> The return type change is deferred to v0.16 so it can be done together with
+> `RenderHooks` integration — avoiding two consecutive breaking changes to the same
+> function signature.
 
 The function signature changes from:
 
@@ -121,7 +142,12 @@ acceptable.
 | `render-serialize.ts`   | Attribute serialization + DSD template wrapping |
 | `render-errors.ts`      | Error types + RenderError classification        |
 
-### 4. DSD report output
+### 4. DSD report output (DEFERRED to v0.16)
+
+> **v0.15 status**: `DsdRenderCollector` is implemented and `getReport()` returns
+> structured metrics. However, the SSG pipeline does not yet write `dsd-report.json`.
+> This is deferred to v0.16 because the report format depends on `RenderOutput`
+> (§2), which is also deferred.
 
 `DsdRenderCollector.getReport()` output is written to `dsd-report.json` during
 SSG builds. The SSG CLI (`adapter-vite/src/cli/ssg-render.ts`) calls
@@ -179,8 +205,11 @@ attribute with no value.
 
 ## Validation
 
-- [ ] All existing tests pass after refactoring
-- [ ] New tests for `RenderOutput`, `RenderError`, `HydrationHint` types
-- [ ] `dsd-report.json` is generated during `deno task build:ssg`
-- [ ] `deno run -A jsr:@lessjs/create test-app` produces a working scaffold
-- [ ] `deno task typecheck && deno lint && deno fmt --check` all pass
+- [x] All existing tests pass after refactoring (54 tests, v0.15)
+- [x] Types for `RenderOutput`, `RenderError`, `HydrationHint`, `RenderInput` defined and exported
+- [ ] `renderDSD()` returns `RenderOutput` instead of `string` (v0.16)
+- [ ] `dsd-report.json` is generated during `deno task build:ssg` (v0.16)
+- [ ] `RenderHooks` wired into render pipeline (v0.16)
+- [x] `deno run -A jsr:@lessjs/create test-app` produces a working scaffold
+- [x] `deno task typecheck && deno lint && deno fmt --check` all pass
+- [x] Zero `RenderAdapter` references in codebase

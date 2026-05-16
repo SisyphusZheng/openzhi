@@ -8,8 +8,8 @@
 
 | Branch        | HEAD      | Status             |
 | ------------- | --------- | ------------------ |
-| `origin/dev`  | `d7571b3` | Active development |
-| `origin/main` | `d7571b3` | Synced with dev    |
+| `origin/dev`  | `d4f9cc2` | v0.15 development  |
+| `origin/main` | `d7571b3` | Behind dev (v0.14) |
 
 ## Tags
 
@@ -32,11 +32,15 @@
 
 ## In Progress
 
-- v0.15 Renderer Kernel (Phase 4-6 remaining: DSD report, create CLI fix, tests)
+- v0.15 Renderer Kernel — code complete on dev, awaiting JSR publish and main sync
+  - See `docs/sop/v0.15-renderer-kernel.md` for full status
+  - ADR-0025 partial delivery; deferred items tracked in ADR-0026
 
-## Next Target: v0.16 WC Package Protocol
+## Next Target: v0.16 Structured Render Pipeline
 
-Per ADR-0024: extend PackageIslandMeta toward CEM-compatible package manifest.
+Per ADR-0026: complete `renderDSD()` → `RenderOutput`, `RenderHooks`, `dsd-report.json`,
+package islands SSR via hooks, pre-publish checks, Playwright E2E baseline.
+See `docs/sop/v0.16-structured-render-pipeline.md`.
 
 ## JSR Publish Order
 
