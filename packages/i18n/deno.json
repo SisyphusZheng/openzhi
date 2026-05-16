@@ -5,8 +5,10 @@
     ".": "./src/index.ts"
   },
   "imports": {
-    "@lessjs/core/logger": "jsr:@lessjs/core@^0.14.8/logger",
-    "@lessjs/adapter-vite/build-context": "jsr:@lessjs/adapter-vite@^0.14.8/build-context",
+    "@lessjs/core/logger": "jsr:@lessjs/core@^0.14.11/logger",
+    "@lessjs/core/build-types": "jsr:@lessjs/core@^0.14.11/build-types",
+    "@lessjs/core/virtual-ids": "jsr:@lessjs/core@^0.14.11/virtual-ids",
+    "@lessjs/adapter-vite/build-context": "jsr:@lessjs/adapter-vite@^0.14.11/build-context",
     "vite": "npm:vite@8.0.10"
   },
   "publish": {

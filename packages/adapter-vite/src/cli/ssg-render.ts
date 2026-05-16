@@ -22,6 +22,8 @@ import {
 import type { LessBuildContext } from '../build-context.js';
 import { createLogger } from '@lessjs/core/logger';
 import { stableHash } from '../island-manifest.js';
+import { generateSitemap } from '@lessjs/content/sitemap';
+import type { SitemapOptions } from '@lessjs/content/sitemap';
 
 const log = createLogger('ssg');
 
@@ -558,19 +560,7 @@ async function networkFirst(req) {
 
   try {
     if (ctx?.plugins?.sitemapOptions) {
-      const sitemapPkg = '@lessjs/content/sitemap';
-      const sitemapModule = (await import(sitemapPkg)) as Record<
-        string,
-        unknown
-      >;
-      if (typeof sitemapModule.generateSitemap === 'function') {
-        (
-          sitemapModule.generateSitemap as (
-            dir: string,
-            opts: unknown,
-          ) => string[]
-        )(join(root, outDir), ctx.plugins.sitemapOptions);
-      }
+      generateSitemap(join(root, outDir), ctx.plugins.sitemapOptions as unknown as SitemapOptions);
     }
   } catch {
     log.debug('Sitemap generation skipped or failed');
