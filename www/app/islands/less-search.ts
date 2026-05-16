@@ -179,7 +179,7 @@ export default class LessSearch extends LitElement {
         fetch('/search-index.json'),
         import('flexsearch'),
       ]);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // deno-lint-ignore no-explicit-any
       const FlexSearch = (FlexSearchModule as any).default || FlexSearchModule;
       this._entries = await res.json() as SearchEntry[];
       this._index = new FlexSearch.Document({

@@ -45,3 +45,25 @@ export { createLogger, LessLogger, LogLevel } from './logger.js';
 export { DANGEROUS_KEYS, getSSRProps, island, type IslandOptions, lessBind } from './island.js';
 export { hasNavigationApi, matchRoute, navigate, onNavigate } from './navigation.js';
 export type { NavigationCallback } from './navigation.js';
+
+// G10 fix: Build-time shared types — breaks adapter-vite ↔ content circular dep
+export type {
+  LessBlogOptions,
+  LessBuildContextLike,
+  LessHeaderNavLink,
+  LessI18nContextOptions,
+  LessNavSection,
+  LessPluginMeta,
+} from './build-types.js';
+
+// G10 fix: Virtual module IDs — shared across adapter-vite, content, i18n
+export {
+  RESOLVED_BLOG_DATA_ID,
+  RESOLVED_I18N_DATA_ID,
+  RESOLVED_NAV_ID,
+  RESOLVED_PAGE_DATA_ID,
+  VIRTUAL_BLOG_DATA_ID,
+  VIRTUAL_I18N_DATA_ID,
+  VIRTUAL_NAV_ID,
+  VIRTUAL_PAGE_DATA_ID,
+} from './virtual-ids.js';

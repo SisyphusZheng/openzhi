@@ -33,7 +33,7 @@
 
 import type { Plugin } from 'vite';
 import type { LessI18nOptions } from './types.ts';
-import type { LessBuildContext } from '@lessjs/adapter-vite/build-context';
+import type { LessBuildContextLike } from '@lessjs/core/build-types';
 import { loadI18nData } from './i18n-data.ts';
 import { createLogger } from '@lessjs/core/logger';
 
@@ -52,7 +52,7 @@ export { i18nStaticPaths, switchLocale } from './routes.ts';
  * Configures locale options for route-level i18n helpers.
  */
 export function lessI18n(
-  options: LessI18nOptions & { ctx?: LessBuildContext },
+  options: LessI18nOptions & { ctx?: LessBuildContextLike },
 ): Plugin {
   // ctx must be explicitly provided (via lessjs() umbrella or direct param)
   const ctx = options.ctx;

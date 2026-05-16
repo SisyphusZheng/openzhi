@@ -1,8 +1,13 @@
+// deno-lint-ignore-file no-explicit-any
 /**
  * @lessjs/signals - TC39 Signal Polyfill Implementation
  *
  * Internal polyfill for Signal.State / Signal.Computed / Signal.subtle.Watcher.
  * Used when the browser does not provide native Signal support.
+ *
+ * G12 note: This file uses `any` extensively because it implements a low-level
+ * polyfill that mirrors the TC39 proposal's internal slot structure. The types
+ * are intentionally loose to match the spec's brand-check semantics.
  * When browsers ship native Signal, this module becomes dead code.
  *
  * @module @lessjs/signals/polyfill
@@ -370,11 +375,8 @@ export function _createPolyfill(): SignalEngineNamespace {
   const Sig = {
     State,
     Computed,
-    // deno-lint-ignore no-explicit-any
     isState: (s: any) => typeof s === 'object' && s !== null && s instanceof State,
-    // deno-lint-ignore no-explicit-any
     isComputed: (s: any) => typeof s === 'object' && s !== null && s instanceof Computed,
-    // deno-lint-ignore no-explicit-any
     isWatcher: (s: any) => typeof s === 'object' && s !== null && s instanceof Watcher,
     subtle: {
       Watcher,
@@ -386,23 +388,18 @@ export function _createPolyfill(): SignalEngineNamespace {
           _setActiveConsumer(prev);
         }
       },
-      // deno-lint-ignore no-explicit-any
       currentComputed(): any {
         return _activeConsumer?.wrapper;
       },
-      // deno-lint-ignore no-explicit-any
       introspectSources(sink: any): any[] {
         return sink[NODE]?.producerNode?.map((n: any) => n.wrapper) ?? [];
       },
-      // deno-lint-ignore no-explicit-any
       introspectSinks(signal: any): any[] {
         return signal[NODE]?.liveConsumerNode?.map((n: any) => n.wrapper) ?? [];
       },
-      // deno-lint-ignore no-explicit-any
       hasSinks(signal: any): boolean {
         return (signal[NODE]?.liveConsumerNode?.length ?? 0) > 0;
       },
-      // deno-lint-ignore no-explicit-any
       hasSources(signal: any): boolean {
         return (signal[NODE]?.producerNode?.length ?? 0) > 0;
       },

@@ -360,7 +360,9 @@ export function island<T extends CustomElementConstructor>(
         origConnected.call(this);
       }
       // Auto-bind SSR props on upgrade (idempotent — only once per element)
+      // deno-lint-ignore no-explicit-any
       if (this.hasAttribute('data-ssr-props') && !(this as any).__lessBindDone) {
+        // deno-lint-ignore no-explicit-any
         (this as any).__lessBindDone = true;
         Promise.resolve().then(() => lessBind(this));
       }

@@ -26,10 +26,11 @@ let _historyPatchCount = 0;
 // Capture originals lazily — not at module load time (SSR/tests may not
 // have `history`). Use null as sentinel; patching is only needed when
 // onNavigate() is actually called in a browser context.
-// deno-lint-ignore no-explicit-any
-let _origPushState: any = null;
-// deno-lint-ignore no-explicit-any
-let _origReplaceState: any = null;
+// G12 fix: Use specific type instead of any
+let _origPushState: ((data: unknown, unused: string, url?: string | URL | null) => void) | null =
+  null;
+let _origReplaceState: ((data: unknown, unused: string, url?: string | URL | null) => void) | null =
+  null;
 // H-08 fix: Use three-state navigation type instead of boolean
 let _lastNavType: 'push' | 'replace' | 'back' = 'back';
 
@@ -49,13 +50,13 @@ function _installHistoryPatch(): void {
   _ensureHistoryOriginals();
   if (_historyPatchCount === 0) {
     // H-08 fix: Track navigation type correctly (push vs replace)
-    history.pushState = ((...args: any[]) => {
+    history.pushState = ((data: unknown, unused: string, url?: string | URL | null) => {
       _lastNavType = 'push';
-      _origPushState(...args);
+      _origPushState!(data, unused, url);
     }) as unknown as typeof history.pushState;
-    history.replaceState = ((...args: any[]) => {
+    history.replaceState = ((data: unknown, unused: string, url?: string | URL | null) => {
       _lastNavType = 'replace';
-      _origReplaceState(...args);
+      _origReplaceState!(data, unused, url);
     }) as unknown as typeof history.replaceState;
   }
   _historyPatchCount++;
@@ -64,8 +65,8 @@ function _installHistoryPatch(): void {
 function _uninstallHistoryPatch(): void {
   _historyPatchCount--;
   if (_historyPatchCount === 0) {
-    history.pushState = _origPushState;
-    history.replaceState = _origReplaceState;
+    history.pushState = _origPushState!;
+    history.replaceState = _origReplaceState!;
   }
 }
 

@@ -1,3 +1,4 @@
+// deno-lint-ignore-file no-explicit-any
 /**
  * @lessjs/signals - Engine Layer
  *
@@ -87,7 +88,7 @@ export interface ComputedNode<T> extends ReactiveNode {
 // ─── Engine singleton ───────────────────────────────────────────
 // Import _createPolyfill after all exports — ensures polyfill.ts
 // gets NODE and types before engine.ts needs _createPolyfill.
-// deno-lint-ignore no-explicit-any
 import { _createPolyfill } from './polyfill.ts';
 
+// deno-lint-ignore-next-line no-explicit-any
 export const _engine: SignalEngineNamespace = (globalThis as any).Signal ?? _createPolyfill();

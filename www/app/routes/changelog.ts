@@ -2,7 +2,7 @@
  * Changelog Page — LessJS Framework Version History
  */
 export const meta = { section: 'History', label: 'Changelog', order: 20 };
-import { navSections, headerNav } from 'virtual:less-nav';
+import { headerNav, navSections } from 'virtual:less-nav';
 import { css, html, LitElement } from 'lit';
 import { pageStyles } from '../components/page-styles.js';
 import '@lessjs/ui/less-layout';
@@ -103,7 +103,13 @@ export class ChangelogPage extends LitElement {
 
   override render() {
     return html`
-      <less-layout locale="${this.locale || 'zh'}" .locales="${['en', 'zh']}" .navItems="${navSections}" .headerNav="${headerNav}" current-path="/changelog">
+      <less-layout
+        locale="${this.locale || 'zh'}"
+        .locales="${['en', 'zh']}"
+        .navItems="${navSections}"
+        .headerNav="${headerNav}"
+        current-path="/changelog"
+      >
         <div class="container">
           <h1>更新日志</h1>
           <p class="subtitle">
@@ -128,10 +134,10 @@ export class ChangelogPage extends LitElement {
               <h4>新增</h4>
               <ul class="change-list">
                 <li>
-                  <strong>@lessjs/adapter-vite 独立包</strong>（ADR 0017）：
-                  从 @lessjs/core 中提取 Vite 构建编排代码到
-                  <span class="inline-code">@lessjs/adapter-vite</span>，
-                  core 只保留纯运行时（零 node:*，零 npm:，零 Vite 依赖）。
+                  <strong>@lessjs/adapter-vite 独立包</strong>（ADR 0017）： 从 @lessjs/core 中提取 Vite
+                  构建编排代码到
+                  <span class="inline-code">@lessjs/adapter-vite</span>， core 只保留纯运行时（零
+                  node:*，零 npm:，零 Vite 依赖）。
                   <span class="inline-code">less()</span> 函数从 core 迁移到 adapter-vite。
                 </li>
               </ul>
@@ -140,26 +146,24 @@ export class ChangelogPage extends LitElement {
               <h4>变更</h4>
               <ul class="change-list">
                 <li>
-                  <strong>框架运行时与构建编排解耦</strong>（ADR 0017）：
-                  @lessjs/core 成为纯 Web Standard 运行时包，可在 Deno / Node / Bun / Edge 任意运行。
-                  Vite 插件、路由扫描、SSG 三阶段流水线、npm:→bare 翻译全部移至 @lessjs/adapter-vite。
+                  <strong>框架运行时与构建编排解耦</strong>（ADR 0017）： @lessjs/core 成为纯 Web Standard
+                  运行时包，可在 Deno / Node / Bun / Edge 任意运行。 Vite 插件、路由扫描、SSG
+                  三阶段流水线、npm:→bare 翻译全部移至 @lessjs/adapter-vite。
                 </li>
                 <li>
                   <strong>API 迁移</strong>：
                   <span class="inline-code">less()</span> 从 <span class="inline-code">@lessjs/core</span>
                   迁移到 <span class="inline-code">@lessjs/adapter-vite</span>。
-                  <span class="inline-code">lessjs()</span> 仍从 <span class="inline-code">@lessjs/app</span>
+                  <span class="inline-code">lessjs()</span> 仍从 <span class="inline-code"
+                  >@lessjs/app</span>
                   导出，用户代码无需改动。
                 </li>
                 <li>
-                  <strong>构建工具依赖移除</strong>：
-                  @lessjs/core 不再依赖 Vite、esbuild、@hono/vite-dev-server、node:*。
-                  仅保留 parse5 作为纯 JS HTML 解析器依赖。
+                  <strong>构建工具依赖移除</strong>： @lessjs/core 不再依赖
+                  Vite、esbuild、@hono/vite-dev-server、node:*。 仅保留 parse5 作为纯 JS HTML 解析器依赖。
                 </li>
                 <li>
-                  <strong>包版本变更</strong>：
-                  @lessjs/core 0.10.7 → 0.11.0；
-                  @lessjs/app 0.2.6 → 0.3.0；
+                  <strong>包版本变更</strong>： @lessjs/core 0.10.7 → 0.11.0； @lessjs/app 0.2.6 → 0.3.0；
                   @lessjs/adapter-vite 新增 0.1.0。
                 </li>
               </ul>
@@ -175,8 +179,9 @@ export class ChangelogPage extends LitElement {
               <h4>新增</h4>
               <ul class="change-list">
                 <li>
-                  <strong>SSR Bundle 公共 API</strong>（ADR 0014）：
-                  SSR bundle 新增 <span class="inline-code">renderRoute(path, opts)→HTML</span>、
+                  <strong>SSR Bundle 公共 API</strong>（ADR 0014）： SSR bundle 新增 <span
+                    class="inline-code"
+                  >renderRoute(path, opts)→HTML</span>、
                   <span class="inline-code">getStaticPaths(path)→params[]</span>、
                   <span class="inline-code">routeInfo[]</span> 三个导出。
                   <span class="inline-code">build-ssg.ts</span> 不再直接访问 customElements、
@@ -184,11 +189,11 @@ export class ChangelogPage extends LitElement {
                   仅负责路径枚举和文件写入。
                 </li>
                 <li>
-                  <strong>@lessjs/app 独立包</strong>（ADR 0012）：
-                  从 core 中提取 umbrella 函数
-                  <span class="inline-code">lessApp()</span>、<span class="inline-code">lessContent()</span>、
-                  <span class="inline-code">lessI18n()</span> 到 <span class="inline-code">@lessjs/app</span>，
-                  core 不再承担应用层组装职责。
+                  <strong>@lessjs/app 独立包</strong>（ADR 0012）： 从 core 中提取 umbrella 函数
+                  <span class="inline-code">lessApp()</span>、<span class="inline-code"
+                  >lessContent()</span>、
+                  <span class="inline-code">lessI18n()</span> 到 <span class="inline-code"
+                  >@lessjs/app</span>， core 不再承担应用层组装职责。
                 </li>
                 <li>
                   <strong>内联 Shim 替代 less-runtime barrel</strong>（ADR 0013）：
@@ -202,18 +207,16 @@ export class ChangelogPage extends LitElement {
               <h4>变更</h4>
               <ul class="change-list">
                 <li>
-                  <strong>消除 globalThis 桥接</strong>（ADR 0008）：
-                  消除 <span class="inline-code">createServer()</span> 和全部 globalThis 桥接
-                  (<span class="inline-code">__lessDevServer</span>、
+                  <strong>消除 globalThis 桥接</strong>（ADR 0008）： 消除 <span class="inline-code"
+                  >createServer()</span> 和全部 globalThis 桥接 (<span class="inline-code"
+                  >__lessDevServer</span>、
                   <span class="inline-code">__lessIslands</span>、
                   <span class="inline-code">__lessRoutes</span>、
                   <span class="inline-code">__lessPluginCtx</span>、
-                  <span class="inline-code">__lessBuildMetadata</span>)，
-                  改为 Vite 插件 ctx 显式传递。
+                  <span class="inline-code">__lessBuildMetadata</span>)， 改为 Vite 插件 ctx 显式传递。
                 </li>
                 <li>
-                  <strong>消除 .less/ 临时文件</strong>（ADR 0010）：
-                  构建 ctx 替代文件系统中间态，消除
+                  <strong>消除 .less/ 临时文件</strong>（ADR 0010）： 构建 ctx 替代文件系统中间态，消除
                   <span class="inline-code">.less/routes.json</span>、
                   <span class="inline-code">.less/nav.json</span>、
                   <span class="inline-code">.less/islands.json</span> 等临时文件。
@@ -224,12 +227,9 @@ export class ChangelogPage extends LitElement {
                   <span class="inline-code">__lessBuildMetadata</span> 数据传递。
                 </li>
                 <li>
-                  <strong>包版本变更</strong>：
-                  @lessjs/core 0.9.2 → 0.10.0；
-                  @lessjs/app 0.1.0 → 0.2.0；
-                  @lessjs/content 0.2.0 → 0.3.0；
-                  @lessjs/adapter-lit 0.7.1 → 0.8.0；
-                  @lessjs/create 0.6.2 → 0.7.0。
+                  <strong>包版本变更</strong>： @lessjs/core 0.9.2 → 0.10.0； @lessjs/app 0.1.0 → 0.2.0；
+                  @lessjs/content 0.2.0 → 0.3.0； @lessjs/adapter-lit 0.7.1 → 0.8.0； @lessjs/create 0.6.2
+                  → 0.7.0。
                 </li>
               </ul>
             </div>
@@ -237,21 +237,20 @@ export class ChangelogPage extends LitElement {
               <h4>修复</h4>
               <ul class="change-list">
                 <li>
-                  <strong>SSG i18n locale 展开恢复</strong>：
-                  ADR 0010/0011 重构后 locale 展开逻辑遗漏，已恢复 en/zh 双语路径生成。
+                  <strong>SSG i18n locale 展开恢复</strong>： ADR 0010/0011 重构后 locale
+                  展开逻辑遗漏，已恢复 en/zh 双语路径生成。
                 </li>
                 <li>
-                  <strong>SSG 嵌套路由 URL 清理</strong>：
-                  嵌套路由路径含多余斜杠，已修正。
+                  <strong>SSG 嵌套路由 URL 清理</strong>： 嵌套路由路径含多余斜杠，已修正。
                 </li>
                 <li>
                   <strong>create 模板 subpath 别名补全</strong>：
-                  <span class="inline-code">@lessjs/core</span> 的 html-escape 和 ssr-handler
-                  子路径导出在 create 模板中缺失，已补全。
+                  <span class="inline-code">@lessjs/core</span> 的 html-escape 和 ssr-handler 子路径导出在
+                  create 模板中缺失，已补全。
                 </li>
                 <li>
-                  <strong>sidebar 导航空数据修复</strong>：
-                  ADR 0011 后 active build context 共享机制变更导致 sidebar 为空，已修复。
+                  <strong>sidebar 导航空数据修复</strong>： ADR 0011 后 active build context
+                  共享机制变更导致 sidebar 为空，已修复。
                 </li>
               </ul>
             </div>
@@ -266,27 +265,27 @@ export class ChangelogPage extends LitElement {
               <h4>新增</h4>
               <ul class="change-list">
                 <li>
-                  <strong>View Transitions API</strong>：
-                  SSG 后处理管线新增 <span class="inline-code">injectViewTransitionMeta()</span>，
-                  在每个 HTML 页面注入 <span class="inline-code">&lt;meta name="view-transition" content="same-origin"&gt;</span>，
-                  启用跨页面 MPA 动画（Chrome 111+, Safari 18+, Firefox 129+）。
-                  配置项 <span class="inline-code">viewTransition: true</span>，默认开启。
-                  18 个新增测试覆盖 meta 注入、多页面渲染、配置传递。
+                  <strong>View Transitions API</strong>： SSG 后处理管线新增 <span class="inline-code"
+                  >injectViewTransitionMeta()</span>， 在每个 HTML 页面注入 <span class="inline-code"
+                  >&lt;meta name="view-transition" content="same-origin"&gt;</span>， 启用跨页面 MPA
+                  动画（Chrome 111+, Safari 18+, Firefox 129+）。 配置项 <span class="inline-code"
+                  >viewTransition: true</span>，默认开启。 18 个新增测试覆盖 meta
+                  注入、多页面渲染、配置传递。
                 </li>
                 <li>
-                  <strong>Speculation Rules API</strong>：
-                  SSG 后处理管线新增 <span class="inline-code">injectSpeculationRules()</span>，
-                  在 HTML 页面注入 <span class="inline-code">&lt;script type="speculationrules"&gt;</span> JSON，
-                  浏览器自动 prefetch/prerender 链接目标页面（Chrome 121+）。
-                  配置项 <span class="inline-code">speculation: true</span>，默认关闭，需显式启用。
-                  支持 <span class="inline-code">eagerness</span>（conservative/moderate/eager）和
+                  <strong>Speculation Rules API</strong>： SSG 后处理管线新增 <span class="inline-code"
+                  >injectSpeculationRules()</span>， 在 HTML 页面注入 <span class="inline-code"
+                  >&lt;script type="speculationrules"&gt;</span> JSON， 浏览器自动 prefetch/prerender
+                  链接目标页面（Chrome 121+）。 配置项 <span class="inline-code"
+                  >speculation: true</span>，默认关闭，需显式启用。 支持 <span class="inline-code"
+                  >eagerness</span>（conservative/moderate/eager）和
                   <span class="inline-code">prerender</span> 选项。
                 </li>
                 <li>
                   <strong>SSG Post-process 管线重构</strong>：
                   <span class="inline-code">ssg-postprocess.ts</span> 从单一函数拆分为 5 步管线：
-                  injectClientScript → injectViewTransitionMeta → injectSpeculationRules → injectCspMeta → injectDsdPolyfill。
-                  每步独立、可测试、可配置。39 个测试。
+                  injectClientScript → injectViewTransitionMeta → injectSpeculationRules → injectCspMeta →
+                  injectDsdPolyfill。 每步独立、可测试、可配置。39 个测试。
                 </li>
               </ul>
             </div>
@@ -295,24 +294,23 @@ export class ChangelogPage extends LitElement {
               <ul class="change-list">
                 <li>
                   <strong>Phase 1→3 配置传递补全</strong>：
-                  <span class="inline-code">viewTransition</span> 和 <span class="inline-code">speculation</span>
-                  配置项从 Phase 1 写入 <span class="inline-code">build-metadata.json</span>，
-                  Phase 3 读取并传递给 SSG 后处理管线。所有 11 项配置现在完整传递。
+                  <span class="inline-code">viewTransition</span> 和 <span class="inline-code"
+                  >speculation</span>
+                  配置项从 Phase 1 写入 <span class="inline-code">build-metadata.json</span>， Phase 3
+                  读取并传递给 SSG 后处理管线。所有 11 项配置现在完整传递。
                 </li>
                 <li>
-                  <strong>View Transitions 默认开启</strong>：
-                  单 <span class="inline-code">&lt;meta&gt;</span> 标签零成本，
-                  不支持浏览器静默降级。用户可通过 <span class="inline-code">viewTransition: false</span> 关闭。
+                  <strong>View Transitions 默认开启</strong>： 单 <span class="inline-code"
+                  >&lt;meta&gt;</span> 标签零成本， 不支持浏览器静默降级。用户可通过 <span
+                    class="inline-code"
+                  >viewTransition: false</span> 关闭。
                 </li>
                 <li>
-                  <strong>Speculation Rules 默认关闭</strong>：
-                  需用户显式启用 <span class="inline-code">speculation: true</span>，
-                  避免不必要的带宽消耗。属于性能优化，非核心渲染功能。
+                  <strong>Speculation Rules 默认关闭</strong>： 需用户显式启用 <span class="inline-code"
+                  >speculation: true</span>， 避免不必要的带宽消耗。属于性能优化，非核心渲染功能。
                 </li>
                 <li>
-                  <strong>包版本变更</strong>：
-                  @lessjs/core 0.9.0-alpha-1 → 0.9.2；
-                  其余包未变更。
+                  <strong>包版本变更</strong>： @lessjs/core 0.9.0-alpha-1 → 0.9.2； 其余包未变更。
                 </li>
               </ul>
             </div>
@@ -341,25 +339,25 @@ export class ChangelogPage extends LitElement {
               <h4>新增</h4>
               <ul class="change-list">
                 <li>
-                  <strong>@lessjs/i18n 独立包</strong>：
-                  从 <span class="inline-code">@lessjs/content</span> 中拆分 i18n 功能为独立
+                  <strong>@lessjs/i18n 独立包</strong>： 从 <span class="inline-code"
+                  >@lessjs/content</span> 中拆分 i18n 功能为独立
                   <span class="inline-code">@lessjs/i18n</span> 包（v0.1.0）。
-                  <span class="inline-code">lessI18n()</span> 独立 Vite 插件，
-                  包含 <span class="inline-code">i18nStaticPaths()</span>、
+                  <span class="inline-code">lessI18n()</span> 独立 Vite 插件， 包含 <span
+                    class="inline-code"
+                  >i18nStaticPaths()</span>、
                   <span class="inline-code">switchLocale()</span> 路由辅助函数。
                 </li>
                 <li>
                   <strong>SSG locale 展开</strong>：
                   <span class="inline-code">build-ssg.ts</span> 新增 i18n locale 展开阶段，
-                  构建时自动为每个 locale × 每个路由渲染页面，
-                  写入 <span class="inline-code">dist/en/guide/architecture/</span> 等 locale 前缀路径。
-                  126 HTML 文件（原 42）。
+                  构建时自动为每个 locale × 每个路由渲染页面， 写入 <span class="inline-code"
+                  >dist/en/guide/architecture/</span> 等 locale 前缀路径。 126 HTML 文件（原 42）。
                 </li>
                 <li>
-                  <strong>双语文档站</strong>：
-                  25/30 文档页面添加 <span class="inline-code">_renderEn()</span> 英文版，
-                  <span class="inline-code">render()</span> 根据 <span class="inline-code">this.locale</span> 分发。
-                  language switcher 在 header-right 可点击切换整个网站语言。
+                  <strong>双语文档站</strong>： 25/30 文档页面添加 <span class="inline-code"
+                  >_renderEn()</span> 英文版，
+                  <span class="inline-code">render()</span> 根据 <span class="inline-code"
+                  >this.locale</span> 分发。 language switcher 在 header-right 可点击切换整个网站语言。
                 </li>
                 <li>
                   <strong>i18n StaticPaths</strong>：
@@ -372,15 +370,13 @@ export class ChangelogPage extends LitElement {
               <ul class="change-list">
                 <li>
                   <strong>i18n 从 @lessjs/content 剥离</strong>：
-                  <span class="inline-code">LessContentOptions.i18n</span> 选项移除，
-                  改为独立 <span class="inline-code">lessI18n()</span> 插件。
-                  i18n 是跨切面功能，不属内容管理。
+                  <span class="inline-code">LessContentOptions.i18n</span> 选项移除， 改为独立 <span
+                    class="inline-code"
+                  >lessI18n()</span> 插件。 i18n 是跨切面功能，不属内容管理。
                 </li>
                 <li>
-                  <strong>包版本</strong>：
-                  @lessjs/core 0.9.0-alpha-1（不变），
-                  @lessjs/content 0.2.0（不变），
-                  @lessjs/i18n 0.1.0（新增）。
+                  <strong>包版本</strong>： @lessjs/core 0.9.0-alpha-1（不变）， @lessjs/content
+                  0.2.0（不变）， @lessjs/i18n 0.1.0（新增）。
                 </li>
               </ul>
             </div>
@@ -391,18 +387,18 @@ export class ChangelogPage extends LitElement {
                   <strong>route-scanner index 路由 bug</strong>：
                   <span class="inline-code">filePathToRoutePath('index/index.ts')</span>
                   返回 <span class="inline-code">/index</span> 而非 <span class="inline-code">/</span>。
-                  <span class="inline-code">p === 'index'</span> 检查在 slice 之前执行，
-                  slice 后未重新检查。导致首页 locale 展开写入 <span class="inline-code">dist/en/index/</span>。
+                  <span class="inline-code">p === 'index'</span> 检查在 slice 之前执行， slice
+                  后未重新检查。导致首页 locale 展开写入 <span class="inline-code">dist/en/index/</span>。
                 </li>
                 <li>
-                  <strong>首页 current-path 缺失</strong>：
-                  首页 <span class="inline-code">&lt;less-layout&gt;</span> 无
-                  <span class="inline-code">current-path</span> 属性，
-                  导致 language switcher href 为 <span class="inline-code">/en</span>（缺斜杠）。
+                  <strong>首页 current-path 缺失</strong>： 首页 <span class="inline-code"
+                  >&lt;less-layout&gt;</span> 无
+                  <span class="inline-code">current-path</span> 属性， 导致 language switcher href 为
+                  <span class="inline-code">/en</span>（缺斜杠）。
                 </li>
                 <li>
-                  <strong>kissjs.org 域名残留</strong>：
-                  UI 组件示例邮箱 <span class="inline-code">hello@kissjs.org</span> →
+                  <strong>kissjs.org 域名残留</strong>： UI 组件示例邮箱 <span class="inline-code"
+                  >hello@kissjs.org</span> →
                   <span class="inline-code">hello@lessjs.org</span>。
                 </li>
               </ul>
@@ -421,17 +417,16 @@ export class ChangelogPage extends LitElement {
                   <strong>@lessjs/content 统一内容插件</strong>：
                   <span class="inline-code">lessContent()</span> 合并 Blog + Nav + Sitemap 三模块，
                   每个模块 opt-in。Blog 模块从
-                  <span class="inline-code">@lessjs/blog</span> 升级而来，
-                  新增 Nav 模块（路由文件 meta 扫描 → sidebar 自动生成）和
-                  Sitemap 模块（SSG 产物扫描 → sitemap.xml + robots.txt）。
-                  25 个测试用例覆盖全部三模块。
+                  <span class="inline-code">@lessjs/blog</span> 升级而来， 新增 Nav 模块（路由文件 meta
+                  扫描 → sidebar 自动生成）和 Sitemap 模块（SSG 产物扫描 → sitemap.xml + robots.txt）。 25
+                  个测试用例覆盖全部三模块。
                 </li>
                 <li>
                   <strong>Nav 虚拟模块</strong>：
                   <span class="inline-code">virtual:less-nav</span> 在构建时注入
                   <span class="inline-code">navSections</span> +
-                  <span class="inline-code">headerNav</span>，
-                  docs 站点 33 个路由文件消费。告别硬编码 DEFAULT_NAV。
+                  <span class="inline-code">headerNav</span>， docs 站点 33 个路由文件消费。告别硬编码
+                  DEFAULT_NAV。
                 </li>
                 <li>
                   <strong>Sitemap SSG 集成</strong>：
@@ -440,20 +435,21 @@ export class ChangelogPage extends LitElement {
                   调用 <span class="inline-code">generateSitemap()</span>，生成 sitemap.xml + robots.txt。
                 </li>
                 <li>
-                  <strong>SSR 属性绑定保留</strong>：
-                  Lit 模板中的 <span class="inline-code">.prop="$&#123;val&#125;"</span>
-                  不再被 SSR 剥弃，而是转换为 kebab-case HTML 属性 + JSON 序列化值
-                  （如 <span class="inline-code">.navItems="$&#123;arr&#125;"</span> →
-                  <span class="inline-code">nav-items="[{...}]"</span>），
-                  嵌套自定义元素在 SSR 阶段获得属性数据。事件绑定仍被剥离。
+                  <strong>SSR 属性绑定保留</strong>： Lit 模板中的 <span class="inline-code"
+                  >.prop="$&#123;val&#125;"</span>
+                  不再被 SSR 剥弃，而是转换为 kebab-case HTML 属性 + JSON 序列化值 （如 <span
+                    class="inline-code"
+                  >.navItems="$&#123;arr&#125;"</span> →
+                  <span class="inline-code">nav-items="[{...}]"</span>）， 嵌套自定义元素在 SSR
+                  阶段获得属性数据。事件绑定仍被剥离。
                 </li>
                 <li>
                   <strong>camelToKebab + parseAttrsToProps</strong>：
                   <span class="inline-code">adapter-lit/ssr.ts</span> 新增
                   <span class="inline-code">camelToKebab()</span> 转换，
                   <span class="inline-code">core/render-nested.ts</span> 的
-                  <span class="inline-code">parseAttrsToProps()</span> 新增 JSON.parse
-                  反序列化 object/array 属性值。
+                  <span class="inline-code">parseAttrsToProps()</span> 新增 JSON.parse 反序列化
+                  object/array 属性值。
                 </li>
               </ul>
             </div>
@@ -463,8 +459,8 @@ export class ChangelogPage extends LitElement {
                 <li>
                   <strong>@lessjs/blog → @lessjs/content</strong>：
                   <span class="inline-code">lessBlog()</span> →
-                  <span class="inline-code">lessContent()</span>，
-                  0.x 阶段 Breaking Change。API 入口从单一博客扩展为三合一内容插件。
+                  <span class="inline-code">lessContent()</span>， 0.x 阶段 Breaking Change。API
+                  入口从单一博客扩展为三合一内容插件。
                 </li>
                 <li>
                   <strong>Monorepo 包版本策略</strong>（ADR 0006 补充）：
@@ -472,11 +468,8 @@ export class ChangelogPage extends LitElement {
                   不采用固定版本（虚增未修改包），也不采用完全独立（缺叙事节奏）。
                 </li>
                 <li>
-                  <strong>包版本变更</strong>：
-                  @lessjs/core 0.8.1→0.9.0-alpha-1，
-                  @lessjs/adapter-lit 0.6.4→0.7.0，
-                  @lessjs/content 0.1.0→0.2.0；
-                  ui/rpc/signal/create 不变。
+                  <strong>包版本变更</strong>： @lessjs/core 0.8.1→0.9.0-alpha-1， @lessjs/adapter-lit
+                  0.6.4→0.7.0， @lessjs/content 0.1.0→0.2.0； ui/rpc/signal/create 不变。
                 </li>
               </ul>
             </div>
@@ -484,8 +477,8 @@ export class ChangelogPage extends LitElement {
               <h4>修复</h4>
               <ul class="change-list">
                 <li>
-                  <strong>Sidebar 空白修复</strong>：移除 DEFAULT_NAV 后 SSR 管线剥离所有属性绑定，
-                  导致 <span class="inline-code">&lt;less-layout .navItems="$&#123;data&#125;"&gt;</span>
+                  <strong>Sidebar 空白修复</strong>：移除 DEFAULT_NAV 后 SSR 管线剥离所有属性绑定， 导致
+                  <span class="inline-code">&lt;less-layout .navItems="$&#123;data&#125;"&gt;</span>
                   在 SSR 阶段收到空数据。根因：属性绑定现在保留为 HTML 属性。
                 </li>
                 <li>
@@ -511,9 +504,9 @@ export class ChangelogPage extends LitElement {
                   <strong>删除 /styling/less-ui</strong>：内容合并进 /ui，减少路由碎片。
                 </li>
                 <li>
-                  <strong>仓库清理</strong>：删除 deliverables/（一次性审计报告）、demo/ 目录（v0.4.0 死代码）、
-                  docs/index.html（构建残留）、playwright-report/ 和 test-results/（已在 .gitignore 但被误跟踪）。
-                  e2e/ 移至 docs/e2e/（测试目标就是 docs 站构建产物）。
+                  <strong>仓库清理</strong>：删除 deliverables/（一次性审计报告）、demo/ 目录（v0.4.0
+                  死代码）、 docs/index.html（构建残留）、playwright-report/ 和 test-results/（已在
+                  .gitignore 但被误跟踪）。 e2e/ 移至 docs/e2e/（测试目标就是 docs 站构建产物）。
                 </li>
               </ul>
             </div>
@@ -531,26 +524,26 @@ export class ChangelogPage extends LitElement {
                   <strong>Signal 原生切换</strong>：
                   <span class="inline-code">@lessjs/signals</span>
                   新增 <span class="inline-code">isNativeSignal()</span> 检测函数，优先使用浏览器原生
-                  <span class="inline-code">globalThis.Signal</span>，不可用时自动回退 polyfill。
-                  Native Signal 测试 2 个用例。
+                  <span class="inline-code">globalThis.Signal</span>，不可用时自动回退 polyfill。 Native
+                  Signal 测试 2 个用例。
                 </li>
                 <li>
                   <strong>Island Upgrade Manifest</strong>：
-                  <span class="inline-code">@lessjs/core/island-manifest</span> 新模块（130 行），
-                  包含 <span class="inline-code">extractCustomElementTags()</span> 正则提取、
+                  <span class="inline-code">@lessjs/core/island-manifest</span> 新模块（130 行）， 包含
+                  <span class="inline-code">extractCustomElementTags()</span> 正则提取、
                   <span class="inline-code">generateIslandManifests()</span> 页面级清单生成、
-                  <span class="inline-code">writeIslandManifests()</span> JSON 落盘。
-                  替代全局 island 入口，实现按需加载。
-                  7 个测试用例覆盖标签提取、清单生成、策略/层级映射、JSON 写入。
+                  <span class="inline-code">writeIslandManifests()</span> JSON 落盘。 替代全局 island
+                  入口，实现按需加载。 7 个测试用例覆盖标签提取、清单生成、策略/层级映射、JSON 写入。
                 </li>
                 <li>
                   <strong>@lessjs/blog 包</strong>（v0.8.0）：
                   <span class="inline-code">lessBlog()</span> Vite 插件，
                   <span class="inline-code">parseMarkdownFile()</span>（gray-matter + marked）、
                   <span class="inline-code">slugFromFilename()</span> 日期前缀剥离、
-                  <span class="inline-code">scanPosts()</span> + <span class="inline-code">generateBlogRoutes()</span>
-                  路由生成。支持 frontmatter、draft 过滤、自定义 basePath 和 markdown 渲染器。
-                  10 个测试用例（markdown 6 + routes 4）。
+                  <span class="inline-code">scanPosts()</span> + <span class="inline-code"
+                  >generateBlogRoutes()</span>
+                  路由生成。支持 frontmatter、draft 过滤、自定义 basePath 和 markdown 渲染器。 10
+                  个测试用例（markdown 6 + routes 4）。
                 </li>
                 <li>
                   <strong>Signals 测试套件</strong>：19 个测试用例覆盖 signal/computed/effect/islandEffect
@@ -562,12 +555,13 @@ export class ChangelogPage extends LitElement {
                 </li>
                 <li>
                   <strong>结构化日志 createLogger</strong>：
-                  <span class="inline-code">@lessjs/core/logger</span> 新模块，
-                  提供 <span class="inline-code">createLogger(scope)</span> 工厂函数，
-                  统一 <span class="inline-code">[LessJS]</span> / <span class="inline-code">[LessJS/SSG]</span>
-                  / <span class="inline-code">[LessJS/Blog]</span> 前缀。
-                  支持 debug/info/warn/error 四级，SILENT 级别可静默所有输出。
-                  全框架内部模块已从原始 <span class="inline-code">console.*</span> 迁移至结构化日志。
+                  <span class="inline-code">@lessjs/core/logger</span> 新模块， 提供 <span
+                    class="inline-code"
+                  >createLogger(scope)</span> 工厂函数， 统一 <span class="inline-code">[LessJS]</span> /
+                  <span class="inline-code">[LessJS/SSG]</span>
+                  / <span class="inline-code">[LessJS/Blog]</span> 前缀。 支持 debug/info/warn/error
+                  四级，SILENT 级别可静默所有输出。 全框架内部模块已从原始 <span class="inline-code"
+                  >console.*</span> 迁移至结构化日志。
                 </li>
                 <li>
                   <strong>Runtime Shim 自动生成</strong>：
@@ -576,8 +570,8 @@ export class ChangelogPage extends LitElement {
                   <span class="inline-code">runtime-shim.ts</span>，消除手工同步风险。
                 </li>
                 <li>
-                  <strong>parse5 嵌套 DSD 优化</strong>：将嵌套自定义元素渲染从正则 O(n²) 替换为
-                  parse5 AST O(n×d) 方案，支持复杂嵌套场景。
+                  <strong>parse5 嵌套 DSD 优化</strong>：将嵌套自定义元素渲染从正则 O(n²) 替换为 parse5
+                  AST O(n×d) 方案，支持复杂嵌套场景。
                 </li>
                 <li>
                   <strong>Playwright E2E 测试</strong>：10 个端到端测试覆盖 DSD layers
@@ -596,25 +590,24 @@ export class ChangelogPage extends LitElement {
                   <span class="inline-code">render-dsd.ts</span>（统一导出 + 向后兼容）。
                 </li>
                 <li>
-                  <strong>UI 统一到 DsdLitElement</strong>：
-                  LessButton、LessInput、LessThemeToggle 三个组件迁移到
+                  <strong>UI 统一到 DsdLitElement</strong>： LessButton、LessInput、LessThemeToggle
+                  三个组件迁移到
                   <span class="inline-code">DsdLitElement</span> Mixin，消除手工
-                  <span class="inline-code">_dsdHydrated</span> + <span class="inline-code">createRenderRoot()</span>
+                  <span class="inline-code">_dsdHydrated</span> + <span class="inline-code"
+                  >createRenderRoot()</span>
                   重复代码。
                 </li>
                 <li>
-                  <strong>insertAfterHead 去重</strong>：
-                  从 <span class="inline-code">@lessjs/ui</span> 移至
+                  <strong>insertAfterHead 去重</strong>： 从 <span class="inline-code">@lessjs/ui</span>
+                  移至
                   <span class="inline-code">@lessjs/core</span>，消除跨包重复实现。
                 </li>
                 <li>
                   <strong>框架定位重写</strong>：LessJS 重新定位为"静态站点框架"，以 SSG + DSD + Island
-                  为核心，未来演进方向为混合框架 + .less Compiler。
-                  README 和文档站同步更新。
+                  为核心，未来演进方向为混合框架 + .less Compiler。 README 和文档站同步更新。
                 </li>
                 <li>
-                  <strong>包版本统一</strong>：@lessjs/core 0.8.0、@lessjs/blog 0.8.0，
-                  其余包未变更。
+                  <strong>包版本统一</strong>：@lessjs/core 0.8.0、@lessjs/blog 0.8.0， 其余包未变更。
                 </li>
               </ul>
             </div>
@@ -629,8 +622,8 @@ export class ChangelogPage extends LitElement {
                 <li>
                   <strong>buildIslandChunkMap 重复前缀</strong>：
                   <span class="inline-code">buildIslandChunkMap</span> 在已包含
-                  <span class="inline-code">islands/</span> 前缀的路径上再次拼接，导致 SSG HTML
-                  中 island 脚本 URL 404（回归修复）。
+                  <span class="inline-code">islands/</span> 前缀的路径上再次拼接，导致 SSG HTML 中 island
+                  脚本 URL 404（回归修复）。
                 </li>
                 <li>
                   <strong>Runtime shim log 未定义</strong>：生成的 runtime-shim 代码引用
@@ -657,22 +650,24 @@ export class ChangelogPage extends LitElement {
               <h4>新增</h4>
               <ul class="change-list">
                 <li>
-                  <strong>render-dsd.ts 单元测试</strong>：44 个测试用例覆盖核心 DSD 渲染器（770 行，此前零覆盖）。
-                  包含 escapeHtml/escapeAttr/escapeAttrValue、serializeAttributes、renderDSD 全路径、
-                  L2 Nested DSD、XSS 安全、DSD options、pure-island layer、adapter protocol、edge cases。
+                  <strong>render-dsd.ts 单元测试</strong>：44 个测试用例覆盖核心 DSD 渲染器（770
+                  行，此前零覆盖）。 包含
+                  escapeHtml/escapeAttr/escapeAttrValue、serializeAttributes、renderDSD 全路径、 L2 Nested
+                  DSD、XSS 安全、DSD options、pure-island layer、adapter protocol、edge cases。
                 </li>
                 <li>
-                  <strong>island.ts 单元测试</strong>：29 个测试用例覆盖 Island 系统（321 行，此前零覆盖）。
-                  包含 tagName 验证、元数据标记（__island/__tagName/__layer）、DSD opt-out、
-                  四种策略实现（eager/lazy/idle/visible）、幂等注册、connectedCallback 包装、
+                  <strong>island.ts 单元测试</strong>：29 个测试用例覆盖 Island 系统（321
+                  行，此前零覆盖）。 包含 tagName 验证、元数据标记（__island/__tagName/__layer）、DSD
+                  opt-out、 四种策略实现（eager/lazy/idle/visible）、幂等注册、connectedCallback 包装、
                   getSSRProps、lessBind。
                 </li>
                 <li>
                   <strong>Pre-commit Hooks</strong>：<span class="inline-code">.githooks/pre-commit</span>
                   自动运行 <span class="inline-code">deno fmt --check</span> +
                   <span class="inline-code">deno lint</span> +
-                  <span class="inline-code">deno check</span>，阻止格式/lint/类型错误进入仓库。
-                  通过 <span class="inline-code">deno task hooks:install</span> 启用。
+                  <span class="inline-code">deno check</span>，阻止格式/lint/类型错误进入仓库。 通过 <span
+                    class="inline-code"
+                  >deno task hooks:install</span> 启用。
                 </li>
                 <li>
                   <strong>CI adapter-lit 测试</strong>：test.yml 新增
@@ -691,8 +686,9 @@ export class ChangelogPage extends LitElement {
                   <strong>runtime-shim 一致性修复</strong>：
                   <span class="inline-code">serializeAttributes()</span> 改用
                   <span class="inline-code">escapeAttrValue()</span>，与
-                  <span class="inline-code">render-dsd.ts</span> 保持一致。此前
-                  runtime-shim 的 <span class="inline-code">serializeAttributes</span> 直接调用
+                  <span class="inline-code">render-dsd.ts</span> 保持一致。此前 runtime-shim 的 <span
+                    class="inline-code"
+                  >serializeAttributes</span> 直接调用
                   <span class="inline-code">escapeAttr</span>，跳过了 null/undefined 处理逻辑。
                 </li>
                 <li>
