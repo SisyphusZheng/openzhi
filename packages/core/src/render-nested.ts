@@ -149,26 +149,18 @@ function inferDsdOptions(_tagName: string, cls: CustomElementConstructor): DsdOp
 
 /**
  * Check if a node is inside a DSD template (shadow DOM content).
- * We must NOT process custom elements inside shadow DOM — they are
- * already rendered output, not light DOM that needs DSD wrapping.
+ *
+ * v0.17.4: REMOVED — we now allow nested DSD rendering inside shadow DOM.
+ * Previously, all CEs inside a DSD template were skipped because they were
+ * assumed to be "already rendered output". But nested DSD is valid and
+ * necessary — a parent's shadow DOM can contain child CEs that need their
+ * own DSD templates (e.g. <less-layout> inside <docs-home>'s shadow DOM).
+ *
+ * The correct guard is elementAlreadyHasDSD(), which skips CEs that already
+ * have their own <template shadowrootmode="open"> child — meaning they were
+ * already rendered by their parent's render() method.
  */
-function isInsideDsdTemplate(node: P5Element): boolean {
-  let parent: P5Element['parentNode'] = node.parentNode;
-  while (parent) {
-    if ('nodeName' in parent && (parent as P5Element).nodeName === 'template') {
-      const tpl = parent as P5Element;
-      if (
-        tpl.attrs.some((a: { name: string; value: string }) =>
-          a.name === 'shadowrootmode' && a.value === 'open'
-        )
-      ) {
-        return true;
-      }
-    }
-    parent = (parent as P5Element).parentNode;
-  }
-  return false;
-}
+// isInsideDsdTemplate removed — see ADR 0015
 
 /**
  * Recursively render nested Custom Elements with DSD using parse5 AST.
@@ -249,8 +241,8 @@ export async function renderNestedCustomElements(
     // They must not be instantiated by nested DSD rendering.
     if (isClientOnlyTag(tagName)) return;
 
-    // Skip if inside a DSD template (shadow DOM content)
-    if (isInsideDsdTemplate(element)) return;
+    // v0.17.4: isInsideDsdTemplate removed — nested DSD is valid.
+    // elementAlreadyHasDSD() below prevents double-rendering.
 
     // Check if registered
     if (!globalThis.customElements!.get(tagName)) return;

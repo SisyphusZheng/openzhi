@@ -480,10 +480,17 @@ export function buildSsrAdmissionPlan(islands: IslandDecl[]): SsrAdmissionPlan {
       renderPath = 'client-only';
       reason = island.reason || 'less.ssr is false';
     } else if (source === 'package') {
-      renderPath = 'client-only';
-      reason = island.ssr === true
-        ? 'package SSR import is deferred until v0.18 admission validation'
-        : 'package island has no validated SSR capability';
+      // v0.17.4: Package islands with explicit ssr:true now go through SSR.
+      // This enables DSD output for package islands like less-layout,
+      // which is critical for FCP — styles render before JS upgrade.
+      // Package islands without explicit ssr:true remain client-only.
+      if (island.ssr === true) {
+        renderPath = 'ssr+client';
+        reason = 'package island with less.ssr=true';
+      } else {
+        renderPath = 'client-only';
+        reason = 'package island has no validated SSR capability';
+      }
     } else {
       renderPath = 'ssr+client';
       reason = island.ssr === true ? 'less.ssr is true' : 'local island default SSR path';
