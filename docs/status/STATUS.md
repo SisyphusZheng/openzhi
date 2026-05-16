@@ -8,8 +8,8 @@
 
 | Branch        | HEAD      | Status             |
 | ------------- | --------- | ------------------ |
-| `origin/dev`  | `b7550cb` | Active development |
-| `origin/main` | `b7550cb` | Synced with dev    |
+| `origin/dev`  | `d7571b3` | Active development |
+| `origin/main` | `d7571b3` | Synced with dev    |
 
 ## Tags
 
@@ -50,3 +50,14 @@ Per ADR-0024 and roadmap: adapter contract, DSD metrics, create CLI fix, release
 8. `@lessjs/ui` (depends on core + adapter-lit)
 9. `@lessjs/app` (depends on core + adapter-vite + content + i18n)
 10. `@lessjs/create` (JSR only)
+
+## Historical Reviews
+
+Archived in [docs/status/reviews/](./reviews/) — organized by date:
+
+| Date       | Directory                            | Description                          |
+| ---------- | ------------------------------------ | ------------------------------------ |
+| 2026-05-13 | [2026-05-13/](./reviews/2026-05-13/) | Full team audit (arch/eng/prod/QA)   |
+| 2026-05-14 | [2026-05-14/](./reviews/2026-05-14/) | Follow-up audit (arch/code/doc/test) |
+| 2026-05-15 | [2026-05-15/](./reviews/2026-05-15/) | Quality/robustness/usability review  |
+| 2026-05-16 | [2026-05-16/](./reviews/2026-05-16/) | Full audit + fix tracker             |
