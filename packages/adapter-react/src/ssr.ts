@@ -28,19 +28,19 @@ const log = createLogger('adapter-react');
 
 /** Symbol used by React to identify elements (React 17+). */
 const REACT_ELEMENT_TYPE = Symbol.for('react.element');
+/** Symbol used by React 19 for transitional elements. */
+const REACT_TRANSITIONAL_ELEMENT_TYPE = Symbol.for('react.transitional.element');
 
 /**
  * Check if a value is a React element.
  *
- * React elements have a $$typeof property equal to Symbol.for('react.element').
- * Works with any React version that uses the element type symbol.
+ * React elements have a $$typeof property equal to Symbol.for('react.element')
+ * (React ≤18) or Symbol.for('react.transitional.element') (React 19).
  */
 export function isReactElement(value: unknown): boolean {
-  return (
-    typeof value === 'object' &&
-    value !== null &&
-    (value as Record<string, unknown>).$$typeof === REACT_ELEMENT_TYPE
-  );
+  if (typeof value !== 'object' || value === null) return false;
+  const typeSymbol = (value as Record<string, unknown>).$$typeof;
+  return typeSymbol === REACT_ELEMENT_TYPE || typeSymbol === REACT_TRANSITIONAL_ELEMENT_TYPE;
 }
 
 // ─── React SSR Rendering ─────────────────────────────────────

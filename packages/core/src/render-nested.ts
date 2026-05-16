@@ -120,6 +120,13 @@ function isCustomElementName(tagName: string): boolean {
   return /^[a-z][a-z0-9]*-[a-z0-9-]+$/i.test(tagName);
 }
 
+function isClientOnlyTag(tagName: string): boolean {
+  const globalWithTags = globalThis as typeof globalThis & {
+    __LESS_CLIENT_ONLY_TAGS__?: Set<string>;
+  };
+  return globalWithTags.__LESS_CLIENT_ONLY_TAGS__?.has(tagName) === true;
+}
+
 /**
  * Infer DSD options from the component class.
  * Checks for static properties that declare DSD behavior:
@@ -237,6 +244,10 @@ export async function renderNestedCustomElements(
     // Check if this is a custom element
     const tagName = element.tagName;
     if (!tagName || !isCustomElementName(tagName)) return;
+
+    // v0.17.4: client-only tags are admitted for browser upgrade only.
+    // They must not be instantiated by nested DSD rendering.
+    if (isClientOnlyTag(tagName)) return;
 
     // Skip if inside a DSD template (shadow DOM content)
     if (isInsideDsdTemplate(element)) return;

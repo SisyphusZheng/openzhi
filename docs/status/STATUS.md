@@ -2,14 +2,20 @@
 
 > AI assistant: read this file first on every session start.
 
-## Current Version: 0.17.3-dev
+## Current Version: 0.17.4
+
+## Next Planned Version: 0.18.0
+
+v0.17.4 is closed as the compatibility-boundary hardening release. v0.18.0 is
+the next implementation target and must turn the conservative admission plan
+into CEM/manifest-based validation.
 
 ## Branch Status
 
-| Branch        | HEAD      | Status              |
-| ------------- | --------- | ------------------- |
-| `origin/dev`  | pending   | v0.17.3 in progress |
-| `origin/main` | `249d704` | v0.17.2 release     |
+| Branch        | HEAD      | Status                                                 |
+| ------------- | --------- | ------------------------------------------------------ |
+| `origin/dev`  | pending   | v0.17.4 compatibility hardening complete; push pending |
+| `origin/main` | `249d704` | v0.17.2 release                                        |
 
 ## Tags
 
@@ -24,65 +30,89 @@
 | v0.15.1  | `dd36eea` | 2026-05-16 |
 | v0.14.11 | `32dcc7c` | 2026-05-16 |
 
-## Last Release: 0.17.3 (2026-05-16)
+## Last Completed Release: 0.17.4 (2026-05-16)
 
-- **@lessjs/adapter-vanilla**: New package for plain/vanilla Web Components.
-  `installVanillaAdapter()`, `extractVanillaStyles()`, `DsdVanillaElement`.
-- **@lessjs/adapter-react**: New package for React-to-Web-Component bridging.
-  `installReactAdapter()`, `isReactElement()`, `renderReactToString()`,
-  `DsdReactElement`.
-- 554 tests passing (+26 new), fmt/lint/typecheck/build/e2e all clean.
+- **SSR admission plan**: entry generation now uses explicit
+  renderable/client-only decisions instead of importing every island into SSR.
+- **Static local island metadata**: `less.ssr`, `less.dsd`, and
+  `less.hydrate` are scanned without importing browser-only island modules.
+- **Browser-only package boundary**: packages that require browser globals
+  during manifest discovery are skipped conservatively instead of breaking the
+  docs build.
+- **Optional adapter stubs**: Lit, Vanilla, and React adapters resolve as
+  optional packages in both the main Vite build and SSG sub-build.
+- **Build exit fix**: one-command build exits cleanly after successful Vite
+  completion.
+- 554 tests passing, 92 e2e passing, fmt/lint/typecheck/audit/build clean at
+  release gate time.
 
 ## Known Issues
 
-- 3 JSR `unanalyzable-dynamic-import` warnings in adapter-vite (expected,
-  runtime-only deps, not blocking publish)
+- 3 JSR `unanalyzable-dynamic-import` warnings in adapter-vite are expected for
+  runtime-only deps and do not block publish.
+- Docs showcase chunks intentionally exceed the old 200KB total JS budget. The
+  gate now tracks core and showcase budgets separately; v0.18+ should add
+  package-level bundle classification.
+- Browser-only packages skipped during manifest discovery are not validated
+  packages yet. v0.18 must replace this with CEM/manifest validation.
 
-## In Progress
+## Active Rule
 
-- v0.18.0: Universal WC Engine (CEM parser + third-party WC SSR fallback)
+Third-party package handling is conservative:
 
-## Version Ladder
+- explicit supported SSR metadata -> SSR/SSG
+- `ssr: false` or unknown CEM-only package -> client-only
+- invalid metadata, duplicate tags, unsafe paths -> rejected before build
+- DOM simulation -> experimental opt-in only
 
-| Version | SOP                                               | Main outcome                                       | Status |
-| ------- | ------------------------------------------------- | -------------------------------------------------- | ------ |
-| v0.15.1 | `docs/sop/v0.15.1-audit-gates.md`                 | Security and test gates                            | Done   |
-| v0.15.2 | `docs/sop/v0.15.2-render-output-hooks.md`         | `RenderOutput` + `RenderHooks`                     | Done   |
-| v0.15.3 | `docs/sop/v0.15.3-dsd-report-and-release-gate.md` | `dsd-report.json` + release gate                   | Done   |
-| v0.16.0 | `docs/sop/v0.16.0-package-protocol.md`            | CEM manifest + local registry                      | Done   |
-| v0.17.0 | `docs/sop/v0.17.0-manifest-native-pipeline.md`    | Delete `PackageIslandMeta`, manifest-native pipe   | Done   |
-| v0.17.1 | `docs/sop/v0.17.1-cross-runtime.md`               | Cross-runtime adapter-vite, build + e2e gates      | Done   |
-| v0.17.2 | `docs/sop/v0.17.2-ssr-filtering-dsd-report.md`    | SSR filtering + dsd-report manifest decisions      | Done   |
-| v0.17.3 | `docs/sop/v0.17.3-multi-framework-adapters.md`    | Multi-framework adapters (vanilla + react)         | Done   |
-| v0.18.0 | `docs/sop/v0.18.0-universal-wc-engine.md`         | CEM parser + third-party WC SSR fallback           | Far    |
-| v0.18.1 | —                                                 | `less add` package discovery + registration        | Far    |
-| v0.18.2 | —                                                 | Zero-config SSG/SSG for any CEM WC package         | Far    |
-| v0.19.0 | —                                                 | Registry Hub + search + snapshots + Edge rendering | Far    |
-| v1.0.0  | —                                                 | General-Purpose Engine + API freeze                | Vision |
+## Version Ladder With Admission And Exit Gates
+
+| Version | SOP                                                    | Status       | Entry Gate                                    | Exit Gate                                                 |
+| ------- | ------------------------------------------------------ | ------------ | --------------------------------------------- | --------------------------------------------------------- |
+| v0.17.3 | `docs/sop/v0.17.3-multi-framework-adapters.md`         | Done         | v0.17.2 SSR filtering exists                  | Vanilla/React adapters documented; no universal SSR claim |
+| v0.17.4 | `docs/sop/v0.17.4-compatibility-boundary-hardening.md` | Done         | v0.17.3 docs closed                           | Client-only modules excluded before SSR entry generation  |
+| v0.18.0 | `docs/sop/v0.18.0-universal-wc-engine.md`              | Next         | v0.17.4 admission planner complete            | CEM parser + compatibility tiers + report reasons         |
+| v0.18.1 | `docs/sop/v0.18.1-validate-manifest-cli.md`            | Planned      | v0.18.0 classifier stable                     | `less validate-manifest` emits stable diagnostics         |
+| v0.18.2 | `docs/sop/v0.18.2-less-add-install-flow.md`            | Planned      | validation CLI stable                         | `less add` dry-run/install is validation-gated            |
+| v0.18.3 | `docs/sop/v0.18.3-dom-simulation-experiment.md`        | Experimental | client-only fallback stable                   | opt-in DOM simulation decision recorded                   |
+| v0.19.0 | `docs/sop/v0.19.0-platform-hub.md`                     | Planned      | validation/build reports stable               | Hub ingests artifacts and shows compatibility             |
+| v0.19.1 | `docs/sop/v0.19.1-hub-previews-quality-gates.md`       | Planned      | Hub ingestion MVP stable                      | previews/quality gates reflect validation evidence        |
+| v1.0.0  | `docs/sop/v1.0.0-general-purpose-engine.md`            | Vision       | engine, reports, add flow, Hub records stable | API/schema freeze with deterministic package outcomes     |
+
+## Operator Checklist
+
+Before starting any version:
+
+1. Read this STATUS file.
+2. Read the target version SOP.
+3. Confirm entry criteria are true.
+4. Implement only the target SOP scope.
+5. Run verification commands listed in the SOP.
+6. Update changelog and STATUS only after exit criteria pass.
 
 ## JSR Publish Order
 
 1. `@lessjs/rpc` (no LessJS deps)
 2. `@lessjs/signals` (no LessJS deps)
-3. `@lessjs/core` (no LessJS deps) — must be published before all others
+3. `@lessjs/core` (no LessJS deps) - must be published before all others
 4. `@lessjs/adapter-lit` (depends on core only)
 5. `@lessjs/adapter-vanilla` (depends on core only)
 6. `@lessjs/adapter-react` (depends on core only)
 7. `@lessjs/content` (depends on core only)
 8. `@lessjs/i18n` (depends on core only)
-9. `@lessjs/adapter-vite` (depends on core only; sitemap via dynamic import
-   at runtime)
+9. `@lessjs/adapter-vite` (depends on core only; sitemap via dynamic import at
+   runtime)
 10. `@lessjs/ui` (depends on core + adapter-lit)
 11. `@lessjs/app` (depends on core + adapter-vite + content + i18n)
 12. `@lessjs/create` (JSR only)
 
 ## Historical Reviews
 
-Archived in [docs/status/reviews/](./reviews/) — organized by date:
+Archived in [docs/status/reviews/](./reviews/) and organized by date.
 
-| Date       | Directory                            | Description                          |
-| ---------- | ------------------------------------ | ------------------------------------ |
-| 2026-05-13 | [2026-05-13/](./reviews/2026-05-13/) | Full team audit (arch/eng/prod/QA)   |
-| 2026-05-14 | [2026-05-14/](./reviews/2026-05-14/) | Follow-up audit (arch/code/doc/test) |
-| 2026-05-15 | [2026-05-15/](./reviews/2026-05-15/) | Quality/robustness/usability review  |
-| 2026-05-16 | [2026-05-16/](./reviews/2026-05-16/) | Full audit + fix tracker             |
+| Date       | Directory                            | Description                         |
+| ---------- | ------------------------------------ | ----------------------------------- |
+| 2026-05-13 | [2026-05-13/](./reviews/2026-05-13/) | Full team audit                     |
+| 2026-05-14 | [2026-05-14/](./reviews/2026-05-14/) | Follow-up audit                     |
+| 2026-05-15 | [2026-05-15/](./reviews/2026-05-15/) | Quality/robustness/usability review |
+| 2026-05-16 | [2026-05-16/](./reviews/2026-05-16/) | Full audit + fix tracker            |

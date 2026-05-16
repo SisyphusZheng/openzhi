@@ -670,6 +670,7 @@ async function networkFirst(req) {
     },
     // v0.17.2: Manifest-driven render decisions per package island
     manifestDecisions: buildManifestDecisions(ctx),
+    admissionDecisions: ctx?.phase1?.ssrAdmissionPlan?.decisions || [],
   };
 
   const reportPath = join(outputDir, 'dsd-report.json');
@@ -703,7 +704,10 @@ function buildManifestDecisions(ctx?: LessBuildContext): ManifestDecision[] {
   }
 
   return decls.map((island) => {
-    const ssr = island.ssr !== false; // default: true
+    const admission = ctx?.phase1?.ssrAdmissionPlan?.decisions.find((d) =>
+      d.tagName === island.tagName
+    );
+    const ssr = admission?.renderPath === 'ssr+client';
     const dsd = island.dsd !== false; // default: true
     const renderPath: ManifestDecision['renderPath'] = ssr ? 'ssr+client' : 'client-only';
 
@@ -714,6 +718,8 @@ function buildManifestDecisions(ctx?: LessBuildContext): ManifestDecision[] {
       dsd,
       hydrate: island.hydrate,
       renderPath,
+      reason: admission?.reason,
+      source: 'package',
     };
   });
 }
