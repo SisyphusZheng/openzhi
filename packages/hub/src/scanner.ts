@@ -15,15 +15,15 @@ import { resolve } from 'node:path';
 import { validateHubPackageRecord } from './schema.ts';
 import type {
   BuildPackageRecordOptions,
-  CompatibilityTier,
   CemAttribute,
   CemEvent,
   CemSlot,
+  CompatibilityTier,
   HubIndex,
   HubPackageRecord,
   HubTagRecord,
 } from './schema.ts';
-import { renderSnapshotLit, formatSnapshotForDisplay } from './snapshot-renderer.ts';
+import { formatSnapshotForDisplay, renderSnapshotLit } from './snapshot-renderer.ts';
 
 // ─── Known WC Packages ──────────────────────────────────────────────────
 
@@ -142,7 +142,8 @@ const WC_PACKAGES: KnownWcPackage[] = [
     ],
     modulePaths: {
       'sl-alert': '@shoelace-style/shoelace/dist/components/alert/alert.js',
-      'sl-animated-image': '@shoelace-style/shoelace/dist/components/animated-image/animated-image.js',
+      'sl-animated-image':
+        '@shoelace-style/shoelace/dist/components/animated-image/animated-image.js',
       'sl-avatar': '@shoelace-style/shoelace/dist/components/avatar/avatar.js',
       'sl-badge': '@shoelace-style/shoelace/dist/components/badge/badge.js',
       'sl-button': '@shoelace-style/shoelace/dist/components/button/button.js',
@@ -157,7 +158,8 @@ const WC_PACKAGES: KnownWcPackage[] = [
       'sl-dropdown': '@shoelace-style/shoelace/dist/components/dropdown/dropdown.js',
       'sl-icon': '@shoelace-style/shoelace/dist/components/icon/icon.js',
       'sl-icon-button': '@shoelace-style/shoelace/dist/components/icon-button/icon-button.js',
-      'sl-image-comparer': '@shoelace-style/shoelace/dist/components/image-comparer/image-comparer.js',
+      'sl-image-comparer':
+        '@shoelace-style/shoelace/dist/components/image-comparer/image-comparer.js',
       'sl-input': '@shoelace-style/shoelace/dist/components/input/input.js',
       'sl-menu': '@shoelace-style/shoelace/dist/components/menu/menu.js',
       'sl-menu-item': '@shoelace-style/shoelace/dist/components/menu-item/menu-item.js',
@@ -322,7 +324,9 @@ export async function scanInstalledPackages(): Promise<ScanResult> {
     const tags: HubTagRecord[] = [];
 
     // Load CEM data for this package if available
-    const cemDecls = pkg.cemPath ? loadCemDeclarations(pkg.cemPath) : new Map<string, CemDeclaration>();
+    const cemDecls = pkg.cemPath
+      ? loadCemDeclarations(pkg.cemPath)
+      : new Map<string, CemDeclaration>();
 
     for (const tag of pkg.tagNames) {
       let ssrSnapshot: string | undefined;
@@ -331,13 +335,17 @@ export async function scanInstalledPackages(): Promise<ScanResult> {
       if (pkg.compatibility === 'ssr-capable' && pkg.modulePaths?.[tag]) {
         try {
           const modPath = resolve(Deno.cwd(), pkg.modulePaths[tag]);
-          const modUrl = modPath.startsWith('/') ? `file://${modPath}` : `file:///${modPath.replace(/\\/g, '/')}`;
+          const modUrl = modPath.startsWith('/')
+            ? `file://${modPath}`
+            : `file:///${modPath.replace(/\\/g, '/')}`;
           const result = await renderSnapshotLit(modUrl, tag);
           if (result.success && result.html) {
             ssrSnapshot = formatSnapshotForDisplay(result.html);
           }
         } catch (e) {
-          console.warn(`  ⚠  Snapshot failed for <${tag}>: ${e instanceof Error ? e.message : String(e)}`);
+          console.warn(
+            `  ⚠  Snapshot failed for <${tag}>: ${e instanceof Error ? e.message : String(e)}`,
+          );
         }
       }
 
@@ -349,10 +357,13 @@ export async function scanInstalledPackages(): Promise<ScanResult> {
           // global state / module caching conflicts with the parent process
           const cmd = new Deno.Command(Deno.execPath(), {
             args: [
-              'run', '-A',
-              '--config', resolve(Deno.cwd(), 'deno.json'),
+              'run',
+              '-A',
+              '--config',
+              resolve(Deno.cwd(), 'deno.json'),
               resolve(Deno.cwd(), 'packages/hub/src/cli/render-happy.ts'),
-              importSpec, tag,
+              importSpec,
+              tag,
             ],
             stdout: 'piped',
             stderr: 'piped',
@@ -360,7 +371,9 @@ export async function scanInstalledPackages(): Promise<ScanResult> {
           const { stdout, stderr, success: procSuccess } = await cmd.output();
           const stderrStr = new TextDecoder().decode(stderr).trim();
           if (!procSuccess) {
-            if (stderrStr) console.warn(`  ⚠  Happy DOM failed for <${tag}>: ${stderrStr.split('\n').pop()}`);
+            if (stderrStr) {
+              console.warn(`  ⚠  Happy DOM failed for <${tag}>: ${stderrStr.split('\n').pop()}`);
+            }
           } else if (stdout.length > 0) {
             const output = new TextDecoder().decode(stdout).trim();
             // Check if result is real HTML, not placeholder
@@ -369,13 +382,18 @@ export async function scanInstalledPackages(): Promise<ScanResult> {
             }
           }
         } catch (e) {
-          console.warn(`  ⚠  Happy DOM snapshot failed for <${tag}>: ${e instanceof Error ? e.message : String(e)}`);
+          console.warn(
+            `  ⚠  Happy DOM snapshot failed for <${tag}>: ${
+              e instanceof Error ? e.message : String(e)
+            }`,
+          );
         }
       }
 
       // For client-only, generate placeholder snapshot
       if (!ssrSnapshot && pkg.compatibility === 'client-only') {
-        ssrSnapshot = `<div class="snapshot-preview"><span style="display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;">${tag}</span></div>`;
+        ssrSnapshot =
+          `<div class="snapshot-preview"><span style="display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;">${tag}</span></div>`;
       }
 
       const cemApi = extractCemApi(cemDecls.get(tag));
@@ -388,6 +406,17 @@ export async function scanInstalledPackages(): Promise<ScanResult> {
         ssrSnapshot,
         ...cemApi,
       });
+    }
+
+    // Load CEM content for manifestHash computation
+    let manifestContent: string | undefined;
+    if (pkg.cemPath) {
+      try {
+        const absCemPath = resolve(Deno.cwd(), pkg.cemPath);
+        manifestContent = Deno.readTextFileSync(absCemPath);
+      } catch {
+        // CEM not found — manifestHash will be empty
+      }
     }
 
     const opts: BuildPackageRecordOptions = {
@@ -414,6 +443,7 @@ export async function scanInstalledPackages(): Promise<ScanResult> {
       homepage: pkg.homepage,
       submittedBy: 'hub-scanner',
       validatorVersion: '0.19.0',
+      manifestContent,
     };
 
     const record = await buildPackageRecord(opts);

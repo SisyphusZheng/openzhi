@@ -43,7 +43,12 @@ jobs:
         if: success() && github.actor != 'dependabot[bot]'
         run: |
           FAILED=false
-          for file in $(git diff --name-only origin/${{ github.base_ref }}...HEAD -- 'hub-index/packages/*.json'); do
+          # Match both unscoped and scoped package paths
+          for file in $(git diff --name-only origin/${{ github.base_ref }}...HEAD -- 'hub-index/packages/**/*.json'); do
+            # Skip index.json itself
+            case "$file" in
+              hub-index/index.json) continue ;;
+            esac
             TIER=$(jq -r '.compatibility // "unknown"' "$file")
             case "$TIER" in
               ssr-capable|client-only)

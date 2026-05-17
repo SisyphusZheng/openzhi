@@ -177,13 +177,36 @@ export async function renderSnapshotWithHappyDom(
   // 3. Save and replace ALL global constructors from Happy DOM Window
   // This ensures components can reference Document, Node, Event, etc.
   const _savedGlobals = new Map<string, unknown>();
-  const _hdPropNames = ['window', 'self', 'document', 'customElements', 'HTMLElement',
-    'ShadowRoot', 'Document', 'Node', 'Element', 'Text', 'Comment',
-    'Event', 'CustomEvent', 'MouseEvent', 'KeyboardEvent', 'FocusEvent',
-    'HTMLMediaElement', 'HTMLVideoElement', 'HTMLAudioElement',
-    'HTMLInputElement', 'HTMLButtonElement', 'HTMLDivElement',
-    'MutationObserver', 'Selection', 'Range',
-    'CSSStyleSheet', 'CSS', 'CSSStyleDeclaration', 'CSSRule',
+  const _hdPropNames = [
+    'window',
+    'self',
+    'document',
+    'customElements',
+    'HTMLElement',
+    'ShadowRoot',
+    'Document',
+    'Node',
+    'Element',
+    'Text',
+    'Comment',
+    'Event',
+    'CustomEvent',
+    'MouseEvent',
+    'KeyboardEvent',
+    'FocusEvent',
+    'HTMLMediaElement',
+    'HTMLVideoElement',
+    'HTMLAudioElement',
+    'HTMLInputElement',
+    'HTMLButtonElement',
+    'HTMLDivElement',
+    'MutationObserver',
+    'Selection',
+    'Range',
+    'CSSStyleSheet',
+    'CSS',
+    'CSSStyleDeclaration',
+    'CSSRule',
     'getComputedStyle',
   ];
   const g = globalThis as Record<string, unknown>;
@@ -263,7 +286,9 @@ export async function renderSnapshotWithHappyDom(
     }
     // Manually trigger connectedCallback (more reliable than DOM append)
     if (typeof elRecord.connectedCallback === 'function') {
-      try { (elRecord.connectedCallback as () => void)(); } catch { /* ignore callback errors */ }
+      try {
+        (elRecord.connectedCallback as () => void)();
+      } catch { /* ignore callback errors */ }
     }
     await new Promise((r) => setTimeout(r, 0));
     // Append to DOM for a more complete environment
@@ -290,7 +315,9 @@ export async function renderSnapshotWithHappyDom(
   } catch (err) {
     // Throw so the caller sees the failure (scanner's own try/catch will handle it)
     throw new Error(
-      `Happy DOM render failed for <${tagName}>: ${err instanceof Error ? err.message : String(err)}`,
+      `Happy DOM render failed for <${tagName}>: ${
+        err instanceof Error ? err.message : String(err)
+      }`,
     );
   } finally {
     // 10. Restore original globals
@@ -299,7 +326,9 @@ export async function renderSnapshotWithHappyDom(
     }
 
     // 11. Clean up Happy DOM
-    try { hWin.happyDOM?.cancelAsync(); } catch { /* ignore */ }
+    try {
+      hWin.happyDOM?.cancelAsync();
+    } catch { /* ignore */ }
   }
 }
 
@@ -343,7 +372,9 @@ function templateResultToString(result: unknown, tagName: string): string {
           output += htmlEscape(item);
         } else if (isLitTemplateResult(item)) {
           output += templateResultToString(item, tagName);
-        } else if (item && typeof item === 'object' && 'strings' in (item as Record<string, unknown>)) {
+        } else if (
+          item && typeof item === 'object' && 'strings' in (item as Record<string, unknown>)
+        ) {
           output += templateResultToString(item, tagName);
         } else {
           output += htmlEscape(String(item));
@@ -384,7 +415,8 @@ function htmlEscape(str: string): string {
  * Generate a placeholder snapshot for components that cannot be rendered.
  */
 function renderPlaceholder(tagName: string, reason?: string): SnapshotRenderResult {
-  const html = `<div class="snapshot-preview"><span style="display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;">${tagName}</span></div>`;
+  const html =
+    `<div class="snapshot-preview"><span style="display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;">${tagName}</span></div>`;
   return { html, success: true, error: reason };
 }
 

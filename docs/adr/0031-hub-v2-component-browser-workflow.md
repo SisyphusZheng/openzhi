@@ -16,6 +16,7 @@ Their purpose is: **"I need `<sl-dialog>` in my LessJS page."**
 
 Currently, after finding a package and reading its detail page, a developer
 hits a wall:
+
 - `less add` CLI does not exist (v0.18.2 SOP was written but never implemented)
 - No component-level drill-down — 39 Shoelace tags are listed as text, not clickable
 - No rendered preview for individual components
@@ -33,6 +34,7 @@ hits a wall:
 ### User Personas
 
 #### Persona A: Alex — LessJS Site Builder (Primary)
+
 - **Background**: Frontend developer, knows HTML/CSS/JS, chose LessJS for its
   SSG + DSD approach
 - **Goal**: "I need a dialog component for my site. I don't want to write one."
@@ -43,6 +45,7 @@ hits a wall:
   snippet, no preview
 
 #### Persona B: Bob — WC Package Author (Secondary)
+
 - **Background**: Built a component library, wants it discoverable
 - **Goal**: "I want LessJS users to find and use my components."
 - **Flow**: Run `less hub submit my-package` → CI validates → PR merges →
@@ -51,6 +54,7 @@ hits a wall:
   what users will see
 
 #### Persona C: Carol — Framework Evaluator (Discovery)
+
 - **Background**: Evaluating LessJS vs Astro vs Eleventy
 - **Goal**: "Does LessJS have a good third-party component ecosystem?"
 - **Flow**: Browse Hub → See richness of packages → See that components have
@@ -58,6 +62,7 @@ hits a wall:
 - **Pain points**: Empty Hub looks dead; no way to evaluate quality
 
 #### Persona D: Dave — Casual Browser (Long Tail)
+
 - **Background**: Heard about Web Components, wants to see what's possible
 - **Goal**: "What kind of components can I use on the web today?"
 - **Flow**: Browse Hub → Click interesting packages → Click individual
@@ -73,6 +78,7 @@ with a working `less add` CLI and usage-first detail pages.**
 
 The current `/registry/` index page stays with search, filter, and package
 cards. **Enhancements**:
+
 - Show package metrics at a glance (total components, SSR count, client count)
 - Add "new" badge for recently submitted packages
 - Sort by component count, last updated, compatibility tier
@@ -80,6 +86,7 @@ cards. **Enhancements**:
 ### Tier 2: Package Detail (Existing, Enhance)
 
 The current `/registry/:package` detail page stays. **Enhancements**:
+
 - Each component tag in the list becomes a **clickable link** to its own page
 - Add a **"Quick install"** section with the `less add` command and a copy
   button
@@ -93,6 +100,7 @@ The current `/registry/:package` detail page stays. **Enhancements**:
 Example: `/registry/@shoelace-style~shoelace/sl-dialog`
 
 **Page structure**:
+
 1. **Rendered Preview**: SSR snapshot or inline demo of the component
    - SSR-capable components: rendered at build time, embedded as static HTML
    - Client-only components: displayed via iframe snapshot or placeholder
@@ -127,6 +135,7 @@ SSG build:
 
 Each component record can carry an `ssrSnapshot` field (HTML string, <5KB).
 For SSR-capable components:
+
 - Generated during `hub:scan` by rendering the component in isolation
 - Embedded directly in the SSG page as static HTML
 - For client-only components: a placeholder or a pre-captured screenshot
@@ -161,6 +170,7 @@ Hand-written, high-quality usage examples with real attribute/event usage.
 
 **Generic fallback** (any unknown package):
 Auto-generated from CEM manifest:
+
 ```html
 <script>
   import 'package-name/register.js';
@@ -204,16 +214,16 @@ Auto-generated from CEM manifest:
 
 ## Implementation Priority
 
-| Priority | Item | Depends On |
-|----------|------|------------|
-| P0 | `less add` CLI implementation | v0.18.2 SOP (exists) |
-| P0 | Component detail route + SSG | Package detail route (exists) |
-| P0 | Component → Component drill-down link | Component detail route |
-| P1 | Rendered preview for SSR-capable components | `hub:scan` snapshot generation |
-| P1 | Usage example section on detail pages | Hub data format |
-| P2 | API reference from CEM | CEM parser (exists in adapter-vite) |
-| P2 | Client-only component placeholder preview | Preview infrastructure |
-| P2 | Richer package list (badges, metrics) | — |
+| Priority | Item                                        | Depends On                          |
+| -------- | ------------------------------------------- | ----------------------------------- |
+| P0       | `less add` CLI implementation               | v0.18.2 SOP (exists)                |
+| P0       | Component detail route + SSG                | Package detail route (exists)       |
+| P0       | Component → Component drill-down link       | Component detail route              |
+| P1       | Rendered preview for SSR-capable components | `hub:scan` snapshot generation      |
+| P1       | Usage example section on detail pages       | Hub data format                     |
+| P2       | API reference from CEM                      | CEM parser (exists in adapter-vite) |
+| P2       | Client-only component placeholder preview   | Preview infrastructure              |
+| P2       | Richer package list (badges, metrics)       | —                                   |
 
 ## Route Design
 

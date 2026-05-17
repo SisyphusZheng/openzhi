@@ -2,7 +2,7 @@
 
 > AI assistant: read this file first on every session start.
 
-## Current Version: 0.19.0 (In Progress)
+## Current Version: 0.19.0 (In Progress — Audit Remediation)
 
 ## Next Planned Version: 0.19.0 (Component Browser + Usage Workflow)
 
@@ -14,28 +14,33 @@ Hub CI pipeline (Deno-based validator + index drift checker).
 Registry UI (www) with static SSG pages for all packages.
 CLI submission pipeline: `--dry-run` (default) + `--submit` (PR mode).
 
-### v0.19.0 — Component Browser + Full-Stack Usage Workflow (Phase 2: In Progress)
+### v0.19.0 — Component Browser + Full-Stack Usage Workflow (Phase 2: In Progress — Audit Remediation)
 
 **Goal**: Transform the Hub from a "package list" into a complete discovery →
 evaluation → installation → usage pipeline.
 
-**Key deliveries**:
+**Audit Remediation (2026-05-17)**: Full audit identified hard issues
+preventing release-ready status. All fixed:
 
-- `less add <package>` CLI implementation (from v0.18.2 SOP, never coded)
-- Component detail pages: `/registry/:package/:component` with rendered previews
-- Usage example code snippets on detail pages
-- SSR snapshot generation for component previews
-- Enhanced package list with badges and metrics
-- 4-tier user persona support (builder, author, evaluator, browser)
+| Finding | Priority | Status |
+|---------|----------|--------|
+| Hub validator scoped package traversal bug | P0 | ✅ Fixed |
+| Hub index updatedAt non-deterministic | P0 | ✅ Fixed |
+| manifestHash not computed (all empty) | P0 | ✅ Fixed |
+| Snapshot XSS trust boundary (unsafeHTML) | P1 | ✅ Fixed |
+| happy-dom in @lessjs/core barrel | P1 | ✅ Removed |
+| CI/publish missing hub | P1 | ✅ Fixed |
+| WC name validation too weak | P2 | ✅ Fixed |
+| typecheck doesn't cover hub CLI | P2 | ✅ Fixed |
 
 ### Verification
 
 - `deno lint` — ✅ 0 errors
 - `deno fmt --check` — ✅ 0 errors
-- `deno task typecheck` — ✅ passes (includes hub)
+- `deno task typecheck` — ✅ passes (includes hub CLI files)
 - `deno task test` — ✅ 715 passed, 0 failed
 - `deno task build` — ✅ 3 registry detail pages generated
-- `deno task hub:validate` — ✅ all records valid
+- `deno task hub:validate` — ✅ 3 records valid (was 1)
 - `deno task hub:check-index` — ✅ index up to date
 
 See [Audit Gaps Report](../conversation/registry-hub-v019-audit-gaps.md) for blocker close evidence.
@@ -44,10 +49,10 @@ See [ADR-0031](../adr/0031-hub-v2-component-browser-workflow.md) for architectur
 
 ## Branch Status
 
-| Branch        | HEAD     | Status                                                         |
-| ------------- | -------- | -------------------------------------------------------------- |
+| Branch        | HEAD     | Status                                                      |
+| ------------- | -------- | ----------------------------------------------------------- |
 | `origin/dev`  | `latest` | v0.19.0 Phase 2 active (Component Browser + Usage Workflow) |
-| `origin/main` | `latest` | v0.18.3 release                                                |
+| `origin/main` | `latest` | v0.18.3 release                                             |
 
 ## Tags
 
@@ -98,18 +103,18 @@ Third-party package handling is conservative:
 
 ## Version Ladder With Admission And Exit Gates
 
-| Version | SOP                                                    | Status   | Entry Gate                                                           | Exit Gate                                                 |
-| ------- | ------------------------------------------------------ | -------- | -------------------------------------------------------------------- | --------------------------------------------------------- |
-| v0.17.3 | `docs/sop/v0.17.3-multi-framework-adapters.md`         | Done     | v0.17.2 SSR filtering exists                                         | Vanilla/React adapters documented; no universal SSR claim |
-| v0.17.4 | `docs/sop/v0.17.4-compatibility-boundary-hardening.md` | Done     | v0.17.3 docs closed                                                  | Client-only modules excluded before SSR entry generation  |
-| v0.18.0 | `docs/sop/v0.18.0-universal-wc-engine.md`              | Done     | v0.17.4 admission planner complete + package SSR admission validated | CEM parser + compatibility tiers + report reasons         |
-| v0.18.1 | `docs/sop/v0.18.1-validate-manifest-cli.md`            | Done     | v0.18.0 classifier stable                                            | `less validate-manifest` emits stable diagnostics         |
-| v0.18.2 | `docs/sop/v0.18.2-less-add-install-flow.md`            | Done     | validation CLI stable                                                | `less add` dry-run/install is validation-gated            |
-| v0.18.3 | `docs/sop/v0.18.3-dom-simulation-experiment.md`        | Done     | client-only fallback stable                                          | opt-in DOM simulation decision recorded                   |
-| v0.19.0 | `docs/sop/v0.19.0-platform-hub.md`                     | **Done** | validation/build reports stable + ADR-0030 accepted                  | Hub ingests artifacts, CLI submit pipeline, search UI     |
-| v0.19.0 | `docs/sop/v0.19.0-platform-hub.md`                     | **Done (Phase 1)**  | validation/build reports stable + ADR-0030 accepted                  | Hub ingests artifacts, CLI submit pipeline, search UI     |
-| v0.19.0 | `docs/sop/v0.19.0-component-browser.md`                | **Active (Phase 2)** | v0.19.0 Phase 1 deployed + fixture packages indexed                     | Component drill-down, rendered previews, `less add` CLI   |
-| v1.0.0  | `docs/sop/v1.0.0-general-purpose-engine.md`            | Vision   | engine, reports, add flow, Hub records stable                        | API/schema freeze with deterministic package outcomes     |
+| Version | SOP                                                    | Status               | Entry Gate                                                           | Exit Gate                                                 |
+| ------- | ------------------------------------------------------ | -------------------- | -------------------------------------------------------------------- | --------------------------------------------------------- |
+| v0.17.3 | `docs/sop/v0.17.3-multi-framework-adapters.md`         | Done                 | v0.17.2 SSR filtering exists                                         | Vanilla/React adapters documented; no universal SSR claim |
+| v0.17.4 | `docs/sop/v0.17.4-compatibility-boundary-hardening.md` | Done                 | v0.17.3 docs closed                                                  | Client-only modules excluded before SSR entry generation  |
+| v0.18.0 | `docs/sop/v0.18.0-universal-wc-engine.md`              | Done                 | v0.17.4 admission planner complete + package SSR admission validated | CEM parser + compatibility tiers + report reasons         |
+| v0.18.1 | `docs/sop/v0.18.1-validate-manifest-cli.md`            | Done                 | v0.18.0 classifier stable                                            | `less validate-manifest` emits stable diagnostics         |
+| v0.18.2 | `docs/sop/v0.18.2-less-add-install-flow.md`            | Done                 | validation CLI stable                                                | `less add` dry-run/install is validation-gated            |
+| v0.18.3 | `docs/sop/v0.18.3-dom-simulation-experiment.md`        | Done                 | client-only fallback stable                                          | opt-in DOM simulation decision recorded                   |
+| v0.19.0 | `docs/sop/v0.19.0-platform-hub.md`                     | **Done**             | validation/build reports stable + ADR-0030 accepted                  | Hub ingests artifacts, CLI submit pipeline, search UI     |
+| v0.19.0 | `docs/sop/v0.19.0-platform-hub.md`                     | **Done (Phase 1)**   | validation/build reports stable + ADR-0030 accepted                  | Hub ingests artifacts, CLI submit pipeline, search UI     |
+| v0.19.0 | `docs/sop/v0.19.0-component-browser.md`                | **Active (Phase 2)** | v0.19.0 Phase 1 deployed + fixture packages indexed                  | Component drill-down, rendered previews, `less add` CLI   |
+| v1.0.0  | `docs/sop/v1.0.0-general-purpose-engine.md`            | Vision               | engine, reports, add flow, Hub records stable                        | API/schema freeze with deterministic package outcomes     |
 
 ## Operator Checklist
 

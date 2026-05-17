@@ -43,11 +43,9 @@ function loadAllRecords(): HubPackageRecord[] {
     try {
       const entries = Deno.readDirSync(dir);
       for (const entry of entries) {
-        if (!entry.name.endsWith('.json')) continue;
-        // Handle scoped packages (stored as @scope/name.json)
         const fullPath = `${dir}/${entry.name}`;
         if (entry.isDirectory) {
-          // Scoped package: @scope/name.json inside subdirectory
+          // Scoped package directory: @scope/name.json inside subdirectory
           try {
             const subEntries = Deno.readDirSync(fullPath);
             for (const sub of subEntries) {
@@ -57,9 +55,10 @@ function loadAllRecords(): HubPackageRecord[] {
               );
             }
           } catch {
-            // Not a directory, try as file
+            // Not a directory or unreadable, skip
           }
-        } else {
+        } else if (entry.name.endsWith('.json')) {
+          // Unscoped package: name.json directly in packages/
           records.push(JSON.parse(Deno.readTextFileSync(fullPath)));
         }
       }
@@ -112,7 +111,11 @@ function validateRecords(records: HubPackageRecord[], strict: boolean): Validate
     }
 
     // Check manifest hash format
-    if (record.manifestHash && record.manifestHash.length !== 64) {
+    if (!record.manifestHash || record.manifestHash === '') {
+      result.warnings.push(
+        `${fullName}: manifestHash is empty — CEM manifest integrity not verified`,
+      );
+    } else if (record.manifestHash.length !== 64) {
       result.warnings.push(
         `${fullName}: manifestHash has unexpected length (${record.manifestHash.length}, expected 64)`,
       );

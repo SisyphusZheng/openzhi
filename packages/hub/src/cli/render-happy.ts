@@ -81,11 +81,26 @@ async function render(impSpec: string, tag: string): Promise<string> {
   // Patch globals
   const orig: Record<string, unknown> = {};
   const patches = [
-    'window', 'self', 'document', 'HTMLElement', 'customElements', 'ShadowRoot',
-    'Document', 'Node', 'Element', 'Event', 'CustomEvent', 'CSSStyleSheet',
+    'window',
+    'self',
+    'document',
+    'HTMLElement',
+    'customElements',
+    'ShadowRoot',
+    'Document',
+    'Node',
+    'Element',
+    'Event',
+    'CustomEvent',
+    'CSSStyleSheet',
     // Media Chrome's isShimmed check
-    'ResizeObserver', 'DocumentFragment', 'localStorage', 'getComputedStyle',
-    'navigator', 'matchMedia', 'DOMParser',
+    'ResizeObserver',
+    'DocumentFragment',
+    'localStorage',
+    'getComputedStyle',
+    'navigator',
+    'matchMedia',
+    'DOMParser',
     // Required by some components
     'MutationObserver',
   ];
@@ -151,7 +166,9 @@ async function render(impSpec: string, tag: string): Promise<string> {
       g[k] = orig[k];
     }
     // Clean up Happy DOM
-    try { hWin.happyDOM?.cancelAsync(); } catch { /* ignore */ }
+    try {
+      hWin.happyDOM?.cancelAsync();
+    } catch { /* ignore */ }
   }
 }
 

@@ -23,28 +23,32 @@ Everything in the Hub should serve that purpose.
 
 ## Architecture Decision: Three-Tier Browser
 
-| Tier | Route | Status |
-|------|-------|--------|
-| Package List | `/registry/` | ✅ Exists, enhance with metrics |
-| Package Detail | `/registry/:package` | ✅ Exists, add component links + usage |
-| Component Detail | `/registry/:package/:component` | 🆕 New route with rendered preview |
+| Tier             | Route                           | Status                                 |
+| ---------------- | ------------------------------- | -------------------------------------- |
+| Package List     | `/registry/`                    | ✅ Exists, enhance with metrics        |
+| Package Detail   | `/registry/:package`            | ✅ Exists, add component links + usage |
+| Component Detail | `/registry/:package/:component` | 🆕 New route with rendered preview     |
 
 ## User Personas Identified
 
 ### Persona A: Alex — LessJS Site Builder
+
 The primary user. Frontend developer building a site with LessJS who needs
 third-party components. The entire Hub redesign optimizes for Alex's flow:
 discover → evaluate → install → use.
 
 ### Persona B: Bob — WC Package Author
+
 Wants his components discoverable by LessJS users. Needs clear submission docs
 and confidence that listed components show well.
 
 ### Persona C: Carol — Framework Evaluator
+
 Deciding between frameworks. The Hub is LessJS's "ecosystem storefront."
 Component previews and usage docs build trust.
 
 ### Persona D: Dave — Casual Browser
+
 Just looking around. Visual richness matters — component previews make
 browsing rewarding.
 
@@ -70,15 +74,15 @@ browsing rewarding.
 
 ## Implementation Priority
 
-| Pri | Item | Effort | Risk |
-|-----|------|--------|------|
-| P0 | `less add` CLI | M | Medium — validation logic exists in builder |
-| P0 | Component detail route | M | Low — follows existing [package].ts pattern |
-| P0 | Component drill-down links | S | Low — just modify template |
-| P1 | SSR snapshot generation | L | Medium — need headless render infra |
-| P1 | Usage examples | M | Low — content work |
-| P2 | CEM API reference | M | Medium — depends on external package quality |
-| P2 | Package list badges | S | Low — UI work |
+| Pri | Item                       | Effort | Risk                                         |
+| --- | -------------------------- | ------ | -------------------------------------------- |
+| P0  | `less add` CLI             | M      | Medium — validation logic exists in builder  |
+| P0  | Component detail route     | M      | Low — follows existing [package].ts pattern  |
+| P0  | Component drill-down links | S      | Low — just modify template                   |
+| P1  | SSR snapshot generation    | L      | Medium — need headless render infra          |
+| P1  | Usage examples             | M      | Low — content work                           |
+| P2  | CEM API reference          | M      | Medium — depends on external package quality |
+| P2  | Package list badges        | S      | Low — UI work                                |
 
 ## Files Referenced
 

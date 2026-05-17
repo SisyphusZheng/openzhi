@@ -22,6 +22,59 @@ import '@lessjs/ui/less-layout';
 import pkgRecords from '../_hub-data-full.ts';
 import type { HubPackageRecord } from '../_hub-data-full.ts';
 
+// ─── Snapshot Sanitizer ──────────────────────────────────────────────────
+// Strip dangerous elements and attributes from snapshot HTML before
+// rendering with unsafeHTML. This is the trust boundary for external
+// Hub submissions — never render raw third-party HTML without sanitization.
+
+const DANGEROUS_TAGS = new Set([
+  'script', 'iframe', 'object', 'embed', 'applet', 'form',
+  'input', 'textarea', 'select', 'button', 'link', 'meta',
+  'base', 'style',
+]);
+
+const DANGEROUS_ATTRS = /^(on\w+|srcdoc|formaction|xlink:href|data-bind|javascript:)/i;
+const DANGEROUS_URL = /^\s*(javascript|data|vbscript):/i;
+
+function sanitizeSnapshot(raw: string): string {
+  // Remove dangerous self-closing and open tags with their content
+  let safe = raw;
+
+  // Remove <script>...</script> and similar dangerous tag pairs
+  for (const tag of DANGEROUS_TAGS) {
+    const openRe = new RegExp(`<${tag}[\\s>]`, 'gi');
+    const closeRe = new RegExp(`</${tag}>`, 'gi');
+    safe = safe.replace(openRe, '&lt;blocked&gt;');
+    safe = safe.replace(closeRe, '&lt;/blocked&gt;');
+  }
+
+  // Remove dangerous attributes from all remaining tags
+  safe = safe.replace(
+    /<([a-z][a-z0-9-]*)((?:\s+[^>]*?)?)>/gi,
+    (_match: string, tagName: string, attrs: string) => {
+      // Filter out dangerous attributes
+      const cleanAttrs = attrs.replace(
+        /\s+([a-z][a-z0-9:-]*)\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]*)/gi,
+        (attrMatch: string, attrName: string) => {
+          if (DANGEROUS_ATTRS.test(attrName)) return '';
+          // Check for javascript: URLs in href/src/action
+          if (/^(href|src|action)$/i.test(attrName)) {
+            const valMatch = attrMatch.match(/=\s*(?:"([^"]*)"|'([^']*)')/);
+            if (valMatch) {
+              const val = valMatch[1] || valMatch[2] || '';
+              if (DANGEROUS_URL.test(val)) return '';
+            }
+          }
+          return attrMatch;
+        },
+      );
+      return `<${tagName}${cleanAttrs}>`;
+    },
+  );
+
+  return safe;
+}
+
 interface ComponentPageParams {
   package: string;
   component: string;
@@ -271,7 +324,7 @@ export default class DocsRegistryComponentDetail extends LitElement {
             <div class="preview-label">Pre-rendered at build time</div>
             <div class="preview-frame">
               ${hasSnapshot ? html`
-                <div style="width:100%;">${unsafeHTML(tag.ssrSnapshot)}</div>
+                <div style="width:100%;">${unsafeHTML(sanitizeSnapshot(tag.ssrSnapshot))}</div>
               ` : html`
                 <div class="preview-placeholder">
                   <div style="font-size:0.875rem;margin-bottom:0.25rem;">&lt;${tagName}&gt;</div>

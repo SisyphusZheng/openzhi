@@ -21,7 +21,7 @@ export interface HubIndexData {
 
 const _data: HubIndexData = {
   schema: "hub-index-v1",
-  updatedAt: "2026-05-17T12:03:05.032Z",
+  updatedAt: "2026-05-17T12:17:16.881Z",
   packages: [
   {
     "name": "ui",

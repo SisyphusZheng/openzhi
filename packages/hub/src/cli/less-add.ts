@@ -309,8 +309,8 @@ async function classifyCompatibility(
       const cem = JSON.parse(pkg.manifestContent);
       const declarations = cem.modules
         ? cem.modules.flatMap((m: Record<string, unknown>) =>
-            (m.declarations || []) as Array<Record<string, unknown>>
-          )
+          (m.declarations || []) as Array<Record<string, unknown>>
+        )
         : [];
       for (const decl of declarations) {
         const tagName = (decl.tagName || decl.name || '') as string;

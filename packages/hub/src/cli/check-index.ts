@@ -64,11 +64,16 @@ function main() {
   const newIndex = buildIndex(records);
   const newIndexJson = JSON.stringify(newIndex, null, 2);
 
-  // Compare with existing
+  // Compare with existing — ignore updatedAt since it changes on every run
   let needsUpdate = true;
   try {
     const existingIndex = Deno.readTextFileSync(indexPath);
-    if (existingIndex === newIndexJson) {
+    const existingParsed = JSON.parse(existingIndex);
+    const newParsed = JSON.parse(newIndexJson);
+    // Compare content excluding updatedAt
+    existingParsed.updatedAt = '';
+    newParsed.updatedAt = '';
+    if (JSON.stringify(existingParsed) === JSON.stringify(newParsed)) {
       needsUpdate = false;
     }
   } catch {

@@ -240,9 +240,20 @@ export interface SchemaValidationError {
   value?: unknown;
 }
 
+export interface SchemaValidationResult {
+  errors: SchemaValidationError[];
+  warnings: SchemaValidationWarning[];
+}
+
+export interface SchemaValidationWarning {
+  path: string;
+  message: string;
+  value?: unknown;
+}
+
 /**
  * Validate a HubPackageRecord against the v1 schema.
- * Returns a list of validation errors (empty = valid).
+ * Returns errors (must fix) and warnings (should fix).
  */
 export function validateHubPackageRecord(
   record: unknown,
@@ -289,6 +300,19 @@ export function validateHubPackageRecord(
 
   if (!Array.isArray(r.tags)) {
     errors.push({ path: 'tags', message: 'Missing or non-array tags' });
+  } else {
+    // Validate tag names follow WHATWG custom element name rules
+    for (let i = 0; i < r.tags.length; i++) {
+      const tag = r.tags[i] as Record<string, unknown>;
+      const tagName = tag?.tagName;
+      if (typeof tagName === 'string' && !/^[a-z][a-z0-9]*(-[a-z0-9]+)*$/.test(tagName)) {
+        errors.push({
+          path: `tags[${i}].tagName`,
+          message:
+            `Invalid custom element name: "${tagName}". Must start with lowercase letter, contain only lowercase/digits/hyphens.`,
+        });
+      }
+    }
   }
 
   if (!r.reports || typeof r.reports !== 'object') {
