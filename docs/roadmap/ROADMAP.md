@@ -21,10 +21,12 @@ is generated.
 | ----- | ------- | ------------------- | -------------------------------------------------------------- | ------ |
 | 1     | v0.15.x | Renderer Kernel     | Structured render output, hooks, build report                  | Done   |
 | 2     | v0.16.x | WC Package Protocol | Manifest + local registry                                      | Done   |
-| 3     | v0.17.x | Ecosystem Entry     | Manifest-native pipeline, filtering, multi-adapter boundary    | Active |
+| 3     | v0.17.x | Ecosystem Entry     | Manifest-native pipeline, filtering, multi-adapter boundary    | Done   |
 | 4     | v0.18.x | Universal WC Engine | CEM parser, compatibility tiers, validation CLI, safe add flow | Done   |
 | 5     | v0.19.x | Registry Hub MVP    | Searchable validated package index with reports and snapshots  | Active |
-| 6     | v1.0.x  | Stable Engine       | API freeze and deterministic package admission guarantees      | Vision |
+| 6     | v0.20.x | Full-Stack Groundwork | Hono API Route, request-time SSR, Supabase integration      | Planned|
+| 7     | v0.21.x | Full-Stack Framework | Vue adapter, Signals rendering, ISR/DPR, edge runtime       | Vision |
+| 8     | v1.0.x  | Stable Engine       | API freeze and deterministic package admission guarantees      | Vision |
 
 ## Compatibility Admission Model
 
@@ -62,7 +64,7 @@ Patch breakdown: see [v0.16.md](./v0.16.md).
 Exit criteria: manifest + registry shipped; legacy `PackageIslandMeta`
 removed in later v0.17 work.
 
-## Phase 3: Ecosystem Entry (v0.17.x) - Active
+## Phase 3: Ecosystem Entry (v0.17.x) - Done
 
 Goal: make the pipeline manifest-native and prove that multiple rendering
 families can coexist without overclaiming third-party compatibility.
@@ -158,7 +160,75 @@ Hub rule:
 **The Hub does not execute arbitrary packages as a trust decision. It displays
 validation output produced by the engine and its CI jobs.**
 
-## Phase 6: Stable Engine (v1.0) - Vision
+## Phase 6: Full-Stack Groundwork (v0.20.x) - Planned
+
+Goal: evolve LessJS from a pure SSG engine into a framework that supports
+both static and dynamic rendering with API routes.
+
+### WC Rendering Strategy Overhaul
+
+The WC rendering model is restructured into two tiers:
+
+| Tier | Behavior | Condition | Coverage |
+| ---- | -------- | --------- | -------- |
+| Tier 2 (default) | Output `<my-comp>` tag, browser upgrades via JS | None required | All WC, 100% |
+| Tier 1 (enhanced) | Pre-render shadow DOM as DSD template | Adapter or Hub validation | Verified components |
+
+Tier 2 is the baseline — any WC tag in SSG output is valid HTML that the
+browser will always upgrade. Tier 1 (DSD pre-rendering) is a performance
+enhancement that provides visual content before JS loads.
+
+Key realization: "WC automatic SSR" was overcomplicated. The fallback chain
+is DSD → SD → Tier 2 client-only. Everything is always usable; DSD is the
+best case, not a prerequisite.
+
+See [Vision & Strategy](../strategy/vision-and-differentiation.md) for full
+analysis.
+
+### Full-Stack Capabilities
+
+| Capability | Priority | Description |
+| ---------- | -------- | ----------- |
+| Hono API Route | P0 | `app/api/**/*.ts` → Hono route → CF Pages Function |
+| Request-time SSR | P1 | Dynamic routes render at request time, not build time |
+| Supabase integration | P1 | Auth + DB + Realtime via Deno-native client |
+| Request context | P0 | Environment variables, Supabase client, user identity |
+
+### Blog Validation
+
+Before building full-stack features, the author's personal blog serves as
+the first real-world validation: pages mixing Shoelace, Media Chrome,
+@lessjs/ui, and other WC libraries on the same page.
+
+### Exit Criteria
+
+- Hono API Route serves JSON from `app/api/` in both dev and production
+- At least one dynamic route renders at request time on CF Pages
+- Blog is live and mixing 3+ WC UI libraries
+- Tier 2 default behavior is documented and reflected in CLI output
+
+## Phase 7: Full-Stack Framework (v0.21.x) - Vision
+
+Goal: complete the full-stack framework with multi-framework support and
+advanced rendering capabilities.
+
+Scope:
+
+- `@lessjs/adapter-vue`: Vue 3 WC wrapper + SSR bridge
+- Signals → rendering layer penetration (signal-to-DOM binding)
+- ISR / DPR support for incremental static regeneration
+- Deno Deploy runtime adapter (parity with CF Workers)
+- Hub community submission workflow maturity
+- Tier 1 expansion to more WC libraries (Material Web, etc.)
+
+### Exit Criteria
+
+- adapter-vue renders Vue SFC as WC with DSD hydration
+- Signals drive DOM updates (not just island-to-island communication)
+- ISR regenerates stale pages without full rebuild
+- Blog and at least one data-driven app (CRM prototype) running on LessJS
+
+## Phase 8: Stable Engine (v1.0) - Vision
 
 Goal: freeze the public API and support Web Components through stable package
 admission guarantees.
@@ -184,6 +254,9 @@ v1.0 exit criteria:
 - `less init && less add <validated-package> && deno task build` produces
   either SSR/SSG output or a documented client-only fallback with no manual
   patching.
+- Hono API Route and request-time SSR are stable and documented
+- Supabase Auth + DB integration works out of the box
+- adapter-vue is available alongside adapter-lit/react/vanilla
 - all exported APIs are documented with stability level
 - v0.x migration guide exists
 - validation, report, and add/install flows are covered by tests
@@ -193,13 +266,14 @@ v1.0 exit criteria:
 
 | Concern                      | Current State            | Target                                      |
 | ---------------------------- | ------------------------ | ------------------------------------------- |
-| Third-party UI compatibility | Active v0.17.3 issue     | Admission tiers + client-only fallback      |
+| Third-party UI compatibility | Active v0.17.3 issue     | Tier 1/2 model with DSD pre-render for verified libs |
+| Full-stack capabilities      | SSG only                 | API Route + request-time SSR + Supabase     |
 | Documentation sync           | Manual                   | Release checklist and changelog index       |
-| Test coverage                | Strong unit/e2e baseline | Add compatibility fixtures                  |
+| Test coverage                | Strong unit/e2e baseline | Add compatibility fixtures + API route tests |
 | Open source governance       | Partial                  | Complete before public Hub                  |
-| Version checks               | Manual                   | `check:versions` before v0.18               |
 | Security                     | Basic audit              | Package admission and Hub policy            |
 | Build reports                | `dsd-report.json` exists | Include skip reasons and compatibility tier |
+| Vue ecosystem support        | None                     | adapter-vue with DSD hydration              |
 
 ## Document Cross-Reference
 

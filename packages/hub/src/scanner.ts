@@ -200,6 +200,7 @@ const WC_PACKAGES: KnownWcPackage[] = [
     compatibility: 'client-only',
     justification:
       'Media Chrome components depend on browser-specific HTMLMediaElement APIs. Not available in SSR.',
+    cemPath: 'node_modules/media-chrome/dist/custom-elements.json',
     tagNames: [
       'media-controller',
       'media-play-button',
@@ -489,14 +490,24 @@ async function buildAndStoreRecord(
   pkgIdx: number,
   errors: string[],
 ): Promise<void> {
-  // Load CEM content for manifestHash computation
+  // Load content for manifestHash computation
+  // Prefer CEM manifest; fall back to deno.json for local packages
   let manifestContent: string | undefined;
   if (pkg.cemPath) {
     try {
       const absCemPath = resolve(Deno.cwd(), pkg.cemPath);
       manifestContent = Deno.readTextFileSync(absCemPath);
     } catch {
-      // CEM not found — manifestHash will be empty
+      // CEM not found — try fallback
+    }
+  }
+  if (!manifestContent && pkg.source === 'local') {
+    // For local packages without CEM, use deno.json as integrity source
+    try {
+      const denoJsonPath = resolve(Deno.cwd(), `packages/${pkg.name}/deno.json`);
+      manifestContent = Deno.readTextFileSync(denoJsonPath);
+    } catch {
+      // deno.json not found — manifestHash will be empty
     }
   }
 

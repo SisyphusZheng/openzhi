@@ -7,7 +7,7 @@
   "repository": "https://github.com/lessjs-run/lessjs",
   "description": "LessJS UI component library with DSD-first Lit elements. All components are SSR-capable.",
   "homepage": "https://lessjs.dev",
-  "manifestHash": "",
+  "manifestHash": "a56e4bd90c590baedd7a2a083c6d91939e6849d1f24cb57abc5ddea9009d0df2",
   "compatibility": "ssr-capable",
   "compatibilityJustification": "First-party LessJS package. All components extend DsdLitElement with declared SSR metadata.",
   "tags": [
@@ -81,7 +81,7 @@
     "warnings": [],
     "ssrCapable": true
   },
-  "submittedAt": "2026-05-17T16:33:47.755Z",
+  "submittedAt": "2026-05-17T17:36:17.842Z",
   "submittedBy": "hub-scanner",
   "validatorVersion": "0.19.0"
 }
