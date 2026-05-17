@@ -24,6 +24,9 @@ import type {
   HubTagRecord,
 } from './schema.ts';
 import { formatSnapshotForDisplay, renderSnapshotLit } from './snapshot-renderer.ts';
+import { renderBatchWithPlaywright } from './snapshot-playwright.ts';
+import type { PlaywrightRenderOptions } from './snapshot-playwright.ts';
+import { DEMO_ATTRS, DEMO_SLOTS } from './demo-config.ts';
 
 // ─── Known WC Packages ──────────────────────────────────────────────────
 
@@ -319,6 +322,14 @@ export interface ScanResult {
 export async function scanInstalledPackages(): Promise<ScanResult> {
   const errors: string[] = [];
   const records: HubPackageRecord[] = [];
+  const skipSnapshots = Deno.args.includes('--skip-snapshots');
+
+  // ── Phase 1: Collect all items to render ────────────────────────────
+  // SSR-capable Lit components use renderSnapshotLit (fast, in-process).
+  // Client-only npm components use Playwright (batch, one browser instance).
+  const playwrightItems: PlaywrightRenderOptions[] = [];
+  // Map: tagName → package index + tag index (for results lookup)
+  const playwrightIndex = new Map<string, { pkgIdx: number; tagIdx: number }>();
 
   for (const pkg of WC_PACKAGES) {
     const tags: HubTagRecord[] = [];
@@ -329,10 +340,53 @@ export async function scanInstalledPackages(): Promise<ScanResult> {
       : new Map<string, CemDeclaration>();
 
     for (const tag of pkg.tagNames) {
+      const cemApi = extractCemApi(cemDecls.get(tag));
+
+      tags.push({
+        tagName: tag,
+        compatibility: pkg.compatibility,
+        validationErrors: 0,
+        validationWarnings: pkg.compatibility === 'client-only' ? 1 : 0,
+        ssrSnapshot: undefined, // will be filled below
+        ...cemApi,
+      });
+    }
+
+    records.push(null!); // placeholder, will be filled later
+    const pkgIdx = records.length - 1;
+
+    // Collect client-only components for Playwright batch rendering
+    if (!skipSnapshots && pkg.compatibility !== 'ssr-capable') {
+      for (let i = 0; i < pkg.tagNames.length; i++) {
+        const tag = pkg.tagNames[i];
+        if (pkg.modulePaths?.[tag]) {
+          playwrightItems.push({
+            importSpec: pkg.modulePaths[tag],
+            tagName: tag,
+            demoAttrs: DEMO_ATTRS[tag],
+            demoSlots: DEMO_SLOTS[tag],
+            timeout: 5000,
+          });
+          playwrightIndex.set(tag, { pkgIdx, tagIdx: i });
+        }
+      }
+    }
+  }
+
+  // ── Phase 2: Render SSR-capable Lit components (in-process) ─────────
+  for (let pkgIdx = 0; pkgIdx < WC_PACKAGES.length; pkgIdx++) {
+    const pkg = WC_PACKAGES[pkgIdx];
+    if (pkg.compatibility !== 'ssr-capable') continue;
+
+    const cemDecls = pkg.cemPath
+      ? loadCemDeclarations(pkg.cemPath)
+      : new Map<string, CemDeclaration>();
+
+    const tags: HubTagRecord[] = [];
+    for (const tag of pkg.tagNames) {
       let ssrSnapshot: string | undefined;
 
-      // Generate snapshot for SSR-capable Lit components using @lit-labs/ssr-dom-shim
-      if (pkg.compatibility === 'ssr-capable' && pkg.modulePaths?.[tag]) {
+      if (!skipSnapshots && pkg.modulePaths?.[tag]) {
         try {
           const modPath = resolve(Deno.cwd(), pkg.modulePaths[tag]);
           const modUrl = modPath.startsWith('/')
@@ -349,55 +403,63 @@ export async function scanInstalledPackages(): Promise<ScanResult> {
         }
       }
 
-      // For client-only npm packages, try Happy DOM rendering
-      if (!ssrSnapshot && pkg.modulePaths?.[tag] && pkg.compatibility !== 'ssr-capable') {
-        try {
-          const importSpec = pkg.modulePaths[tag];
-          // Spawn a fresh Deno subprocess for each component to avoid
-          // global state / module caching conflicts with the parent process
-          const cmd = new Deno.Command(Deno.execPath(), {
-            args: [
-              'run',
-              '-A',
-              '--config',
-              resolve(Deno.cwd(), 'deno.json'),
-              resolve(Deno.cwd(), 'packages/hub/src/cli/render-happy.ts'),
-              importSpec,
-              tag,
-            ],
-            stdout: 'piped',
-            stderr: 'piped',
-          });
-          const { stdout, stderr, success: procSuccess } = await cmd.output();
-          const stderrStr = new TextDecoder().decode(stderr).trim();
-          if (!procSuccess) {
-            if (stderrStr) {
-              console.warn(`  ⚠  Happy DOM failed for <${tag}>: ${stderrStr.split('\n').pop()}`);
-            }
-          } else if (stdout.length > 0) {
-            const output = new TextDecoder().decode(stdout).trim();
-            // Check if result is real HTML, not placeholder
-            if (!output.includes('padding:0.75rem 1.25rem;border:1px dashed')) {
-              ssrSnapshot = formatSnapshotForDisplay(output);
-            }
-          }
-        } catch (e) {
-          console.warn(
-            `  ⚠  Happy DOM snapshot failed for <${tag}>: ${
-              e instanceof Error ? e.message : String(e)
-            }`,
-          );
+      const cemApi = extractCemApi(cemDecls.get(tag));
+      tags.push({
+        tagName: tag,
+        compatibility: pkg.compatibility,
+        validationErrors: 0,
+        validationWarnings: 0,
+        ssrSnapshot,
+        ...cemApi,
+      });
+    }
+
+    // Build record for this SSR-capable package
+    await buildAndStoreRecord(pkg, tags, records, pkgIdx, errors);
+  }
+
+  // ── Phase 3: Render client-only components via Playwright ───────────
+  let playwrightResults: Map<string, { html: string; success: boolean; error?: string }> = new Map();
+  if (playwrightItems.length > 0) {
+    console.log(`\n🎬 Rendering ${playwrightItems.length} components via Playwright...`);
+    try {
+      playwrightResults = await renderBatchWithPlaywright({ items: playwrightItems });
+    } catch (e) {
+      console.warn(
+        `  ⚠  Playwright batch rendering failed: ${e instanceof Error ? e.message : String(e)}`,
+      );
+    }
+  }
+
+  // ── Phase 4: Assemble records for client-only packages ──────────────
+  for (let pkgIdx = 0; pkgIdx < WC_PACKAGES.length; pkgIdx++) {
+    const pkg = WC_PACKAGES[pkgIdx];
+    if (pkg.compatibility === 'ssr-capable') continue; // already handled
+
+    const cemDecls = pkg.cemPath
+      ? loadCemDeclarations(pkg.cemPath)
+      : new Map<string, CemDeclaration>();
+
+    const tags: HubTagRecord[] = [];
+    for (const tag of pkg.tagNames) {
+      let ssrSnapshot: string | undefined;
+
+      // Check Playwright results
+      const pwResult = playwrightResults.get(tag);
+      if (pwResult?.success && pwResult.html) {
+        // Check if result is real HTML, not placeholder
+        if (!pwResult.html.includes('padding:0.75rem 1.25rem;border:1px dashed')) {
+          ssrSnapshot = formatSnapshotForDisplay(pwResult.html);
         }
       }
 
-      // For client-only, generate placeholder snapshot
-      if (!ssrSnapshot && pkg.compatibility === 'client-only') {
+      // Fallback to placeholder for client-only
+      if (!ssrSnapshot) {
         ssrSnapshot =
           `<div class="snapshot-preview"><span style="display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;">${tag}</span></div>`;
       }
 
       const cemApi = extractCemApi(cemDecls.get(tag));
-
       tags.push({
         tagName: tag,
         compatibility: pkg.compatibility,
@@ -408,62 +470,76 @@ export async function scanInstalledPackages(): Promise<ScanResult> {
       });
     }
 
-    // Load CEM content for manifestHash computation
-    let manifestContent: string | undefined;
-    if (pkg.cemPath) {
-      try {
-        const absCemPath = resolve(Deno.cwd(), pkg.cemPath);
-        manifestContent = Deno.readTextFileSync(absCemPath);
-      } catch {
-        // CEM not found — manifestHash will be empty
-      }
-    }
-
-    const opts: BuildPackageRecordOptions = {
-      name: pkg.name,
-      scope: pkg.scope,
-      version: pkg.version,
-      source: pkg.source,
-      compatibility: pkg.compatibility,
-      compatibilityJustification: pkg.justification,
-      tags,
-      validationReport: JSON.stringify({
-        packageName: pkg.scope ? `${pkg.scope}/${pkg.name}` : pkg.name,
-        version: pkg.version,
-        valid: pkg.compatibility !== 'rejected',
-        compatibility: pkg.compatibility,
-        tags: tags.length,
-        errors: [],
-        warnings: pkg.compatibility === 'client-only'
-          ? [{ code: 'NO_LESS_SSR', severity: 'warning', message: 'No LessJS SSR metadata found.' }]
-          : [],
-      }),
-      repository: pkg.repository,
-      description: pkg.description,
-      homepage: pkg.homepage,
-      submittedBy: 'hub-scanner',
-      validatorVersion: '0.19.0',
-      manifestContent,
-    };
-
-    const record = await buildPackageRecord(opts);
-
-    const schemaErrors = validateHubPackageRecord(record);
-    if (schemaErrors.length > 0) {
-      errors.push(
-        `${pkg.scope ? pkg.scope + '/' : ''}${pkg.name}: ${
-          schemaErrors.map((e) => e.message).join(', ')
-        }`,
-      );
-      continue;
-    }
-
-    records.push(record);
+    await buildAndStoreRecord(pkg, tags, records, pkgIdx, errors);
   }
 
-  const index = buildIndex(records);
+  // Remove null placeholders (from initial pass)
+  const validRecords = records.filter((r) => r !== null);
 
-  return { records, index, errors };
+  const index = buildIndex(validRecords);
+
+  return { records: validRecords, index, errors };
+}
+
+/** Helper: build a HubPackageRecord and store it in the records array */
+async function buildAndStoreRecord(
+  pkg: KnownWcPackage,
+  tags: HubTagRecord[],
+  records: (HubPackageRecord | null)[],
+  pkgIdx: number,
+  errors: string[],
+): Promise<void> {
+  // Load CEM content for manifestHash computation
+  let manifestContent: string | undefined;
+  if (pkg.cemPath) {
+    try {
+      const absCemPath = resolve(Deno.cwd(), pkg.cemPath);
+      manifestContent = Deno.readTextFileSync(absCemPath);
+    } catch {
+      // CEM not found — manifestHash will be empty
+    }
+  }
+
+  const opts: BuildPackageRecordOptions = {
+    name: pkg.name,
+    scope: pkg.scope,
+    version: pkg.version,
+    source: pkg.source,
+    compatibility: pkg.compatibility,
+    compatibilityJustification: pkg.justification,
+    tags,
+    validationReport: JSON.stringify({
+      packageName: pkg.scope ? `${pkg.scope}/${pkg.name}` : pkg.name,
+      version: pkg.version,
+      valid: pkg.compatibility !== 'rejected',
+      compatibility: pkg.compatibility,
+      tags: tags.length,
+      errors: [],
+      warnings: pkg.compatibility === 'client-only'
+        ? [{ code: 'NO_LESS_SSR', severity: 'warning', message: 'No LessJS SSR metadata found.' }]
+        : [],
+    }),
+    repository: pkg.repository,
+    description: pkg.description,
+    homepage: pkg.homepage,
+    submittedBy: 'hub-scanner',
+    validatorVersion: '0.19.0',
+    manifestContent,
+  };
+
+  const record = await buildPackageRecord(opts);
+
+  const schemaErrors = validateHubPackageRecord(record);
+  if (schemaErrors.length > 0) {
+    errors.push(
+      `${pkg.scope ? pkg.scope + '/' : ''}${pkg.name}: ${
+        schemaErrors.map((e) => e.message).join(', ')
+      }`,
+    );
+    return;
+  }
+
+  records[pkgIdx] = record;
 }
 
 /**
@@ -487,7 +563,7 @@ export async function writeScanOutput(
   // Write index
   await Deno.writeTextFile(
     `${outputDir}/index.json`,
-    JSON.stringify(result.index, null, 2),
+    JSON.stringify(result.index, null, 2) + '\n',
   );
 
   // Write individual package records
@@ -503,7 +579,7 @@ export async function writeScanOutput(
     }
     await Deno.writeTextFile(
       pkgPath,
-      JSON.stringify(record, null, 2),
+      JSON.stringify(record, null, 2) + '\n',
     );
   }
 
