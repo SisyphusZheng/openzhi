@@ -28,9 +28,19 @@ import type { HubPackageRecord } from '../_hub-data-full.ts';
 // Hub submissions — never render raw third-party HTML without sanitization.
 
 const DANGEROUS_TAGS = new Set([
-  'script', 'iframe', 'object', 'embed', 'applet', 'form',
-  'input', 'textarea', 'select', 'button', 'link', 'meta',
-  'base', 'style',
+  'script',
+  'iframe',
+  'object',
+  'embed',
+  'applet',
+  'form',
+  'input',
+  'textarea',
+  'select',
+  'button',
+  'link',
+  'meta',
+  'base',
 ]);
 
 const DANGEROUS_ATTRS = /^(on\w+|srcdoc|formaction|xlink:href|data-bind|javascript:)/i;
@@ -125,17 +135,65 @@ export default class DocsRegistryComponentDetail extends LitElement {
   static override styles = [
     pageStyles,
     css`
-      .detail-header { margin-bottom: 2rem; }
-      .breadcrumb { font-size: 0.8125rem; color: var(--less-text-tertiary); margin-bottom: 0.75rem; }
-      .breadcrumb a { color: var(--less-accent); text-decoration: none; }
-      .breadcrumb a:hover { text-decoration: underline; }
-      .section { border: 0.5px solid var(--less-border); border-radius: 8px; padding: 1.25rem; margin-bottom: 1.25rem; background: var(--less-bg-surface); }
-      .section-title { font-size: 1rem; font-weight: 600; margin: 0 0 0.75rem; display: flex; align-items: center; gap: 0.5rem; }
+      .detail-header {
+        margin-bottom: 2rem;
+      }
+      .breadcrumb {
+        font-size: 0.8125rem;
+        color: var(--less-text-tertiary);
+        margin-bottom: 0.75rem;
+      }
+      .breadcrumb a {
+        color: var(--less-accent);
+        text-decoration: none;
+      }
+      .breadcrumb a:hover {
+        text-decoration: underline;
+      }
+      .section {
+        border: 0.5px solid var(--less-border);
+        border-radius: 8px;
+        padding: 1.25rem;
+        margin-bottom: 1.25rem;
+        background: var(--less-bg-surface);
+      }
+      .section-title {
+        font-size: 1rem;
+        font-weight: 600;
+        margin: 0 0 0.75rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
 
-      .tag-header { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem; }
-      .tag-name { font-size: 1.5rem; font-weight: 700; font-family: monospace; margin: 0; }
-      .compat-badge { display: inline-flex; align-items: center; gap: 0.375rem; padding: 0.25rem 0.75rem; border-radius: 14px; font-size: 0.8125rem; font-weight: 600; }
-      .compat-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+      .tag-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-bottom: 1rem;
+      }
+      .tag-name {
+        font-size: 1.5rem;
+        font-weight: 700;
+        font-family: monospace;
+        margin: 0;
+      }
+      .compat-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+        padding: 0.25rem 0.75rem;
+        border-radius: 14px;
+        font-size: 0.8125rem;
+        font-weight: 600;
+      }
+      .compat-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        display: inline-block;
+      }
 
       /* Preview area */
       .preview-frame {
@@ -180,12 +238,29 @@ export default class DocsRegistryComponentDetail extends LitElement {
         user-select: all;
       }
 
-      .meta-table { width: 100%; border-collapse: collapse; }
-      .meta-table th, .meta-table td { text-align: left; padding: 0.375rem 0.5rem; font-size: 0.8125rem; border-bottom: 0.5px solid var(--less-border); }
-      .meta-table th { color: var(--less-text-tertiary); font-weight: 500; }
-      .meta-table th:not(:first-child) { width: auto; }
+      .meta-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      .meta-table th, .meta-table td {
+        text-align: left;
+        padding: 0.375rem 0.5rem;
+        font-size: 0.8125rem;
+        border-bottom: 0.5px solid var(--less-border);
+      }
+      .meta-table th {
+        color: var(--less-text-tertiary);
+        font-weight: 500;
+      }
+      .meta-table th:not(:first-child) {
+        width: auto;
+      }
 
-      .not-found { text-align: center; padding: 3rem 1rem; color: var(--less-text-tertiary); }
+      .not-found {
+        text-align: center;
+        padding: 3rem 1rem;
+        color: var(--less-text-tertiary);
+      }
 
       .back-link {
         display: inline-block;
@@ -194,7 +269,9 @@ export default class DocsRegistryComponentDetail extends LitElement {
         color: var(--less-accent);
         text-decoration: none;
       }
-      .back-link:hover { text-decoration: underline; }
+      .back-link:hover {
+        text-decoration: underline;
+      }
     `,
   ];
 
@@ -256,12 +333,19 @@ export default class DocsRegistryComponentDetail extends LitElement {
 
     if (!pkg) {
       return html`
-        <less-layout .navItems="${navSections}" .headerNav="${headerNav}" current-path="/registry/${pkgRoute}" locale="en" .locales="${['en', 'zh']}">
+        <less-layout
+          .navItems="${navSections}"
+          .headerNav="${headerNav}"
+          current-path="/registry/${pkgRoute}"
+          locale="en"
+          .locales="${['en', 'zh']}"
+        >
           <div class="container">
             <div class="not-found">
               <h2>Component Not Found</h2>
               <p>"${fullPkgName}" is not in the registry.</p>
-              <a href="/registry" style="color:var(--less-accent);font-size:0.875rem;">← Back to Registry</a>
+              <a href="/registry" style="color:var(--less-accent);font-size:0.875rem;"
+              >← Back to Registry</a>
             </div>
           </div>
         </less-layout>
@@ -273,12 +357,19 @@ export default class DocsRegistryComponentDetail extends LitElement {
 
     if (!tag) {
       return html`
-        <less-layout .navItems="${navSections}" .headerNav="${headerNav}" current-path="/registry/${pkgRoute}" locale="en" .locales="${['en', 'zh']}">
+        <less-layout
+          .navItems="${navSections}"
+          .headerNav="${headerNav}"
+          current-path="/registry/${pkgRoute}"
+          locale="en"
+          .locales="${['en', 'zh']}"
+        >
           <div class="container">
             <div class="not-found">
               <h2>Component Not Found</h2>
               <p>"&lt;${tagName}&gt;" is not in the ${fullPkgName} package.</p>
-              <a href="/registry" style="color:var(--less-accent);font-size:0.875rem;">← Back to Registry</a>
+              <a href="/registry" style="color:var(--less-accent);font-size:0.875rem;"
+              >← Back to Registry</a>
             </div>
           </div>
         </less-layout>
@@ -297,7 +388,13 @@ export default class DocsRegistryComponentDetail extends LitElement {
     const usageSnippet = this._buildUsageSnippet(tagName, pkg);
 
     return html`
-      <less-layout .navItems="${navSections}" .headerNav="${headerNav}" current-path="/registry/${pkgRoute}" locale="en" .locales="${['en', 'zh']}">
+      <less-layout
+        .navItems="${navSections}"
+        .headerNav="${headerNav}"
+        current-path="/registry/${pkgRoute}"
+        locale="en"
+        .locales="${['en', 'zh']}"
+      >
         <div class="container">
           <a class="back-link" href="/registry/${this.package}">← Back to ${fullPkgName}</a>
           <div class="breadcrumb">
@@ -310,11 +407,23 @@ export default class DocsRegistryComponentDetail extends LitElement {
           <div class="detail-header">
             <div class="tag-header">
               <h1 class="tag-name">&lt;${tagName}&gt;</h1>
-              <span class="compat-badge" style="background:${compatColor}15;border:0.5px solid ${compatColor}40;">
+              <span
+                class="compat-badge"
+                style="background:${compatColor}15;border:0.5px solid ${compatColor}40;"
+              >
                 <span class="compat-dot" style="background:${compatColor}"></span>${compatLabel}
               </span>
-              ${tag.validationErrors > 0 ? html`<span style="color:#ef4444;font-size:0.8125rem;">${tag.validationErrors} error(s)</span>` : ''}
-              ${tag.validationWarnings > 0 ? html`<span style="color:#f59e0b;font-size:0.8125rem;">${tag.validationWarnings} warning(s)</span>` : ''}
+              ${tag.validationErrors > 0
+                ? html`
+                  <span style="color:#ef4444;font-size:0.8125rem;">${tag
+                    .validationErrors} error(s)</span>
+                `
+                : ''} ${tag.validationWarnings > 0
+                ? html`
+                  <span style="color:#f59e0b;font-size:0.8125rem;">${tag
+                    .validationWarnings} warning(s)</span>
+                `
+                : ''}
             </div>
           </div>
 
@@ -323,17 +432,23 @@ export default class DocsRegistryComponentDetail extends LitElement {
             <div class="section-title">Rendered Preview</div>
             <div class="preview-label">Pre-rendered at build time</div>
             <div class="preview-frame">
-              ${hasSnapshot ? html`
-                <div style="width:100%;">${unsafeHTML(sanitizeSnapshot(tag.ssrSnapshot))}</div>
-              ` : html`
-                <div class="preview-placeholder">
-                  <div style="font-size:0.875rem;margin-bottom:0.25rem;">&lt;${tagName}&gt;</div>
-                  <div>No preview snapshot available.</div>
-                  ${tag.compatibility === 'client-only'
-                    ? html`<div style="margin-top:0.5rem;font-size:0.75rem;">Client-only components require a browser to render.</div>`
-                    : ''}
-                </div>
-              `}
+              ${hasSnapshot
+                ? html`
+                  <div style="width:100%;">${unsafeHTML(sanitizeSnapshot(tag.ssrSnapshot))}</div>
+                `
+                : html`
+                  <div class="preview-placeholder">
+                    <div style="font-size:0.875rem;margin-bottom:0.25rem;">&lt;${tagName}&gt;</div>
+                    <div>No preview snapshot available.</div>
+                    ${tag.compatibility === 'client-only'
+                      ? html`
+                        <div style="margin-top:0.5rem;font-size:0.75rem;">
+                          Client-only components require a browser to render.
+                        </div>
+                      `
+                      : ''}
+                  </div>
+                `}
             </div>
             <div class="preview-note">
               ${tag.compatibility === 'ssr-capable'
@@ -355,76 +470,134 @@ export default class DocsRegistryComponentDetail extends LitElement {
           <div class="section">
             <div class="section-title">Compatibility</div>
             <table class="meta-table">
-              <tr><th>Package</th><td><a href="/registry/${this.package}" style="color:var(--less-accent);">${fullPkgName}</a></td></tr>
-              <tr><th>Version</th><td>v${pkg.version}</td></tr>
-              <tr><th>Tag</th><td style="font-family:monospace;">${tagName}</td></tr>
-              <tr><th>Tier</th><td><span class="compat-badge" style="background:${compatColor}15;border:0.5px solid ${compatColor}40;font-size:0.75rem;"><span class="compat-dot" style="background:${compatColor}"></span>${compatLabel}</span></td></tr>
-              <tr><th>Errors</th><td style="color:${tag.validationErrors > 0 ? '#ef4444' : '#22c55e'};">${tag.validationErrors}</td></tr>
-              <tr><th>Warnings</th><td style="color:${tag.validationWarnings > 0 ? '#f59e0b' : '#22c55e'};">${tag.validationWarnings}</td></tr>
-              <tr><th>Source</th><td>${pkg.source}</td></tr>
-              <tr><th>Validator</th><td>@lessjs/core v${pkg.validatorVersion}</td></tr>
+              <tr>
+                <th>Package</th>
+                <td><a href="/registry/${this
+                  .package}" style="color:var(--less-accent);">${fullPkgName}</a></td>
+              </tr>
+              <tr>
+                <th>Version</th>
+                <td>v${pkg.version}</td>
+              </tr>
+              <tr>
+                <th>Tag</th>
+                <td style="font-family:monospace;">${tagName}</td>
+              </tr>
+              <tr>
+                <th>Tier</th>
+                <td>
+                  <span
+                    class="compat-badge"
+                    style="background:${compatColor}15;border:0.5px solid ${compatColor}40;font-size:0.75rem;"
+                  ><span class="compat-dot" style="background:${compatColor}"></span>${compatLabel}</span>
+                </td>
+              </tr>
+              <tr>
+                <th>Errors</th>
+                <td style="color:${tag.validationErrors > 0 ? '#ef4444' : '#22c55e'};">${tag
+                  .validationErrors}</td>
+              </tr>
+              <tr>
+                <th>Warnings</th>
+                <td style="color:${tag.validationWarnings > 0 ? '#f59e0b' : '#22c55e'};">${tag
+                  .validationWarnings}</td>
+              </tr>
+              <tr>
+                <th>Source</th>
+                <td>${pkg.source}</td>
+              </tr>
+              <tr>
+                <th>Validator</th>
+                <td>@lessjs/core v${pkg.validatorVersion}</td>
+              </tr>
             </table>
           </div>
 
           <!-- Snapshot info (when available) -->
-          ${hasSnapshot ? html`
-          <div class="section">
-            <div class="section-title">Preview Details</div>
-            <div style="font-size:0.8125rem;color:var(--less-text-secondary);line-height:1.6;">
-              This preview was generated during package validation and stored as a static HTML snapshot.
-              The snapshot is pre-rendered at build time — no client-side rendering needed.
-            </div>
-          </div>
-          ` : ''}
+          ${hasSnapshot
+            ? html`
+              <div class="section">
+                <div class="section-title">Preview Details</div>
+                <div style="font-size:0.8125rem;color:var(--less-text-secondary);line-height:1.6;">
+                  This preview was generated during package validation and stored as a static HTML snapshot. The
+                  snapshot is pre-rendered at build time — no client-side rendering needed.
+                </div>
+              </div>
+            `
+            : ''}
 
           <!-- API Reference (from CEM) -->
-          ${tag.attributes && tag.attributes.length > 0 ? html`
-          <div class="section">
-            <div class="section-title">Attributes</div>
-            <table class="meta-table">
-              <tr><th>Name</th><th>Type</th><th>Default</th><th>Description</th></tr>
-              ${tag.attributes.map(a => html`
-                <tr>
-                  <td style="font-family:monospace;font-size:0.8125rem;">${a.name}</td>
-                  <td style="font-size:0.75rem;color:var(--less-text-tertiary);">${a.type || '—'}</td>
-                  <td style="font-size:0.75rem;color:var(--less-text-tertiary);">${a.default || '—'}</td>
-                  <td style="font-size:0.8125rem;">${a.description || ''}</td>
-                </tr>
-              `)}
-            </table>
-          </div>
-          ` : ''}
-
-          ${tag.events && tag.events.length > 0 ? html`
-          <div class="section">
-            <div class="section-title">Events</div>
-            <table class="meta-table">
-              <tr><th>Name</th><th>Type</th><th>Description</th></tr>
-              ${tag.events.map(e => html`
-                <tr>
-                  <td style="font-family:monospace;font-size:0.8125rem;">${e.name}</td>
-                  <td style="font-size:0.75rem;color:var(--less-text-tertiary);">${e.type || '—'}</td>
-                  <td style="font-size:0.8125rem;">${e.description || ''}</td>
-                </tr>
-              `)}
-            </table>
-          </div>
-          ` : ''}
-
-          ${tag.slots && tag.slots.length > 0 ? html`
-          <div class="section">
-            <div class="section-title">Slots</div>
-            <table class="meta-table">
-              <tr><th>Name</th><th>Description</th></tr>
-              ${tag.slots.map(s => html`
-                <tr>
-                  <td style="font-family:monospace;font-size:0.8125rem;">${s.name || '(default)'}</td>
-                  <td style="font-size:0.8125rem;">${s.description || ''}</td>
-                </tr>
-              `)}
-            </table>
-          </div>
-          ` : ''}
+          ${tag.attributes && tag.attributes.length > 0
+            ? html`
+              <div class="section">
+                <div class="section-title">Attributes</div>
+                <table class="meta-table">
+                  <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Default</th>
+                    <th>Description</th>
+                  </tr>
+                  ${tag.attributes.map((a) =>
+                    html`
+                      <tr>
+                        <td style="font-family:monospace;font-size:0.8125rem;">${a.name}</td>
+                        <td style="font-size:0.75rem;color:var(--less-text-tertiary);">${a.type ||
+                          '—'}</td>
+                        <td style="font-size:0.75rem;color:var(--less-text-tertiary);">${a
+                          .default || '—'}</td>
+                        <td style="font-size:0.8125rem;">${a.description || ''}</td>
+                      </tr>
+                    `
+                  )}
+                </table>
+              </div>
+            `
+            : ''} ${tag.events && tag.events.length > 0
+            ? html`
+              <div class="section">
+                <div class="section-title">Events</div>
+                <table class="meta-table">
+                  <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Description</th>
+                  </tr>
+                  ${tag.events.map((e) =>
+                    html`
+                      <tr>
+                        <td style="font-family:monospace;font-size:0.8125rem;">${e.name}</td>
+                        <td style="font-size:0.75rem;color:var(--less-text-tertiary);">${e.type ||
+                          '—'}</td>
+                        <td style="font-size:0.8125rem;">${e.description || ''}</td>
+                      </tr>
+                    `
+                  )}
+                </table>
+              </div>
+            `
+            : ''} ${tag.slots && tag.slots.length > 0
+            ? html`
+              <div class="section">
+                <div class="section-title">Slots</div>
+                <table class="meta-table">
+                  <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                  </tr>
+                  ${tag.slots.map((s) =>
+                    html`
+                      <tr>
+                        <td style="font-family:monospace;font-size:0.8125rem;">${s.name ||
+                          '(default)'}</td>
+                        <td style="font-size:0.8125rem;">${s.description || ''}</td>
+                      </tr>
+                    `
+                  )}
+                </table>
+              </div>
+            `
+            : ''}
 
           <!-- Install -->
           <div class="section">
@@ -433,28 +606,44 @@ export default class DocsRegistryComponentDetail extends LitElement {
               To use this component in your project:
             </div>
             <div class="usage-block">less add ${fullPkgName}</div>
-            ${pkg.installGuidance.warnings.length > 0 ? html`
-              <div style="margin-top:0.75rem;font-size:0.8125rem;color:var(--less-text-secondary);">
-                ${pkg.installGuidance.warnings.map(w => html`<div style="padding:0.125rem 0;">⚠ ${w}</div>`)}
-              </div>
-            ` : ''}
+            ${pkg.installGuidance.warnings.length > 0
+              ? html`
+                <div style="margin-top:0.75rem;font-size:0.8125rem;color:var(--less-text-secondary);">
+                  ${pkg.installGuidance.warnings.map((w) =>
+                    html`
+                      <div style="padding:0.125rem 0;">⚠ ${w}</div>
+                    `
+                  )}
+                </div>
+              `
+              : ''}
           </div>
 
           <!-- Related components in the same package -->
-          ${relatedComponents.length > 0 ? html`
-          <div class="section">
-            <div class="section-title">Other Components in ${fullPkgName}</div>
-            <div style="display:flex;flex-wrap:wrap;gap:0.5rem;">
-              ${relatedComponents.map(t => html`
-                <a href="/registry/${this.package}/${t.tagName}"
-                   style="display:inline-flex;align-items:center;gap:0.375rem;padding:0.375rem 0.625rem;background:var(--less-bg-code);border-radius:4px;font-size:0.8125rem;font-family:monospace;color:inherit;text-decoration:none;border:0.5px solid transparent;">
-                  <span style="width:6px;height:6px;border-radius:50%;display:inline-block;background:${COMPAT_COLORS[t.compatibility] || '#888'}"></span>
-                  ${t.tagName}
-                </a>
-              `)}
-            </div>
-          </div>
-          ` : ''}
+          ${relatedComponents.length > 0
+            ? html`
+              <div class="section">
+                <div class="section-title">Other Components in ${fullPkgName}</div>
+                <div style="display:flex;flex-wrap:wrap;gap:0.5rem;">
+                  ${relatedComponents.map((t) =>
+                    html`
+                      <a
+                        href="/registry/${this.package}/${t.tagName}"
+                        style="display:inline-flex;align-items:center;gap:0.375rem;padding:0.375rem 0.625rem;background:var(--less-bg-code);border-radius:4px;font-size:0.8125rem;font-family:monospace;color:inherit;text-decoration:none;border:0.5px solid transparent;"
+                      >
+                        <span
+                          style="width:6px;height:6px;border-radius:50%;display:inline-block;background:${COMPAT_COLORS[
+                            t.compatibility
+                          ] || '#888'}"
+                        ></span>
+                        ${t.tagName}
+                      </a>
+                    `
+                  )}
+                </div>
+              </div>
+            `
+            : ''}
         </div>
       </less-layout>
     `;
