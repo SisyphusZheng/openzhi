@@ -145,6 +145,24 @@ async function render(impSpec: string, tag: string): Promise<string> {
     }
     await new Promise((r) => setTimeout(r, 0));
 
+    // Convert adoptedStyleSheets (Lit constructable styles) into inline <style> tags
+    // so the snapshot HTML actually contains the component CSS.
+    if (el.shadowRoot && el.shadowRoot.adoptedStyleSheets?.length) {
+      for (const sheet of el.shadowRoot.adoptedStyleSheets) {
+        try {
+          const rules: string[] = [];
+          for (const rule of sheet.cssRules) {
+            rules.push(rule.cssText);
+          }
+          if (rules.length) {
+            const styleEl = hDoc.createElement('style');
+            styleEl.textContent = rules.join('\n');
+            el.shadowRoot.insertBefore(styleEl as unknown as Node, el.shadowRoot.firstChild);
+          }
+        } catch { /* skip sheets we can't read */ }
+      }
+    }
+
     // Serialize — keep <style> tags so the preview has scoped component styles
     let html = '';
     if (el.shadowRoot) {

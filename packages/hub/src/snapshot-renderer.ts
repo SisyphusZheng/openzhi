@@ -265,8 +265,31 @@ export async function renderSnapshotWithHappyDom(
       'sl-button': { variant: 'primary' },
       'sl-avatar': { image: 'https://placehold.co/40x40/339af0/fff?text=JS' },
       'sl-carousel': { navigation: '', pagination: '', loop: '' },
+      'sl-animated-image': { src: 'https://placehold.co/200x150/339af0/fff?text=GIF' },
+      'sl-image-comparer': {},
+      'sl-skeleton': { effect: 'pulse' },
       'sl-spinner': {},
+      'sl-split-panel': {},
+      'sl-switch': { checked: '' },
+      'sl-checkbox': { checked: '' },
+      'sl-radio': { checked: '' },
+      'sl-radio-group': { label: 'Select one' },
+      'sl-tab-group': {},
+      'sl-tab': {},
+      'sl-tab-panel': {},
+      'sl-table': {},
+      'sl-tree': {},
+      'sl-tree-item': { expanded: '' },
+      'sl-card': {},
+      'sl-divider': {},
+      'sl-menu': {},
+      'sl-menu-item': { checked: '' },
+      'media-controller': {},
+      'media-play-button': {},
+      'media-time-range': {},
+      'media-volume-range': {},
       'media-poster-image': { src: 'https://placehold.co/400x225/111/fff?text=Video' },
+      'media-loading-indicator': {},
     };
     const demos = DEMO_ATTRS[tagName];
     if (demos) {
@@ -297,6 +320,24 @@ export async function renderSnapshotWithHappyDom(
     }
     // Give microtasks time for connectedCallback to fire
     await new Promise((r) => setTimeout(r, 0));
+
+    // Convert adoptedStyleSheets (Lit constructable styles) into inline <style> tags
+    // so the snapshot HTML actually contains the component CSS.
+    if (el.shadowRoot && el.shadowRoot.adoptedStyleSheets?.length) {
+      for (const sheet of el.shadowRoot.adoptedStyleSheets) {
+        try {
+          const rules: string[] = [];
+          for (const rule of sheet.cssRules) {
+            rules.push(rule.cssText);
+          }
+          if (rules.length) {
+            const styleEl = hDoc.createElement('style');
+            styleEl.textContent = rules.join('\n');
+            el.shadowRoot.insertBefore(styleEl as unknown as Node, el.shadowRoot.firstChild);
+          }
+        } catch { /* skip sheets we can't read */ }
+      }
+    }
 
     // 8. Serialize rendered HTML — keep <style> tags for preview styling
     let html = '';

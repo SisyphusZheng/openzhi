@@ -22,16 +22,16 @@ evaluation → installation → usage pipeline.
 **Audit Remediation (2026-05-17)**: Full audit identified hard issues
 preventing release-ready status. All fixed:
 
-| Finding | Priority | Status |
-|---------|----------|--------|
-| Hub validator scoped package traversal bug | P0 | ✅ Fixed |
-| Hub index updatedAt non-deterministic | P0 | ✅ Fixed |
-| manifestHash not computed (all empty) | P0 | ✅ Fixed |
-| Snapshot XSS trust boundary (unsafeHTML) | P1 | ✅ Fixed |
-| happy-dom in @lessjs/core barrel | P1 | ✅ Removed |
-| CI/publish missing hub | P1 | ✅ Fixed |
-| WC name validation too weak | P2 | ✅ Fixed |
-| typecheck doesn't cover hub CLI | P2 | ✅ Fixed |
+| Finding                                    | Priority | Status     |
+| ------------------------------------------ | -------- | ---------- |
+| Hub validator scoped package traversal bug | P0       | ✅ Fixed   |
+| Hub index updatedAt non-deterministic      | P0       | ✅ Fixed   |
+| manifestHash not computed (all empty)      | P0       | ✅ Fixed   |
+| Snapshot XSS trust boundary (unsafeHTML)   | P1       | ✅ Fixed   |
+| happy-dom in @lessjs/core barrel           | P1       | ✅ Removed |
+| CI/publish missing hub                     | P1       | ✅ Fixed   |
+| WC name validation too weak                | P2       | ✅ Fixed   |
+| typecheck doesn't cover hub CLI            | P2       | ✅ Fixed   |
 
 ### Verification
 

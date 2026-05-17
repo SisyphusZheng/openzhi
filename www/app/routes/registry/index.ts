@@ -21,7 +21,7 @@ import '@lessjs/ui/less-layout';
 // During dev: the same import works because the file exists.
 
 import hubData from './_hub-data.ts';
-import type { HubIndexEntry, HubIndexData } from './_hub-data.ts';
+import type { HubIndexData, HubIndexEntry } from './_hub-data.ts';
 
 export const tagName = 'docs-registry-home';
 
@@ -328,7 +328,12 @@ export default class DocsRegistryHome extends LitElement {
         case 'tags':
           return b.tags.length - a.tags.length;
         case 'compatibility': {
-          const order: Record<string, number> = { 'ssr-capable': 0, 'client-only': 1, 'experimental-dom': 2, 'rejected': 3 };
+          const order: Record<string, number> = {
+            'ssr-capable': 0,
+            'client-only': 1,
+            'experimental-dom': 2,
+            'rejected': 3,
+          };
           return (order[a.compatibility] ?? 9) - (order[b.compatibility] ?? 9);
         }
         default: {
@@ -360,7 +365,10 @@ export default class DocsRegistryHome extends LitElement {
         <div class="container">
           <div class="registry-header">
             <h1>Registry Hub</h1>
-            <p>Discover validated Web Component packages. Each package includes compatibility evidence, installation guidance, and snapshot previews.</p>
+            <p>
+              Discover validated Web Component packages. Each package includes compatibility evidence,
+              installation guidance, and snapshot previews.
+            </p>
           </div>
 
           <div class="controls">
@@ -375,69 +383,97 @@ export default class DocsRegistryHome extends LitElement {
               <button
                 class="filter-btn ${this._tierFilter === 'all' ? 'active' : ''}"
                 @click="${() => this._setFilter('all')}"
-              >All</button>
+              >
+                All
+              </button>
               <button
                 class="filter-btn ${this._tierFilter === 'ssr-capable' ? 'active' : ''}"
                 @click="${() => this._setFilter('ssr-capable')}"
-              >SSR ✓</button>
+              >
+                SSR ✓
+              </button>
               <button
                 class="filter-btn ${this._tierFilter === 'client-only' ? 'active' : ''}"
                 @click="${() => this._setFilter('client-only')}"
-              >Client</button>
+              >
+                Client
+              </button>
               <button
                 class="filter-btn ${this._tierFilter === 'rejected' ? 'active' : ''}"
                 @click="${() => this._setFilter('rejected')}"
-              >Rejected</button>
+              >
+                Rejected
+              </button>
             </div>
-            <select class="sort-select" @change="${(e: Event) => { this._sortBy = (e.target as HTMLSelectElement).value as 'name' | 'tags' | 'compatibility'; this._applyFilters(); }}">
-              <option value="name" ?selected=${this._sortBy === 'name'}>Sort: Name</option>
-              <option value="tags" ?selected=${this._sortBy === 'tags'}>Sort: Components</option>
-              <option value="compatibility" ?selected=${this._sortBy === 'compatibility'}>Sort: Compatibility</option>
+            <select class="sort-select" @change="${(e: Event) => {
+              this._sortBy = (e.target as HTMLSelectElement).value as
+                | 'name'
+                | 'tags'
+                | 'compatibility';
+              this._applyFilters();
+            }}">
+              <option value="name" ?selected="${this._sortBy === 'name'}">Sort: Name</option>
+              <option value="tags" ?selected="${this._sortBy === 'tags'}">Sort: Components</option>
+              <option value="compatibility" ?selected="${this._sortBy ===
+                'compatibility'}">Sort: Compatibility</option>
             </select>
           </div>
 
-          ${this._loading ? html`
-            <div class="empty-state">Loading registry...</div>
-          ` : this._filtered.length === 0 ? html`
-            <div class="empty-state">
-              ${this._query || this._tierFilter !== 'all'
-                ? 'No packages match your search criteria.'
-                : 'No packages in the registry yet.'}
-            </div>
-          ` : html`
-            <div class="stats">${this._filtered.length} package${this._filtered.length !== 1 ? 's' : ''} found</div>
+          ${this._loading
+            ? html`
+              <div class="empty-state">Loading registry...</div>
+            `
+            : this._filtered.length === 0
+            ? html`
+              <div class="empty-state">
+                ${this._query || this._tierFilter !== 'all'
+                  ? 'No packages match your search criteria.'
+                  : 'No packages in the registry yet.'}
+              </div>
+            `
+            : html`
+              <div class="stats">${this._filtered.length} package${this._filtered.length !== 1
+                ? 's'
+                : ''} found</div>
 
-            <div class="package-list">
-              ${this._filtered.map((pkg) => {
-                const fullName = pkg.scope ? `${pkg.scope}/${pkg.name}` : pkg.name;
-                const compatLabel = COMPAT_LABELS[pkg.compatibility] || pkg.compatibility;
-                const compatColor = COMPAT_COLORS[pkg.compatibility] || '#888';
-                const ssrIcon = pkg.ssrCapable ? '🖥️' : '🌐';
-                return html`
-                  <a class="package-card" href="${this._packageLink(pkg)}" data-compat="${pkg.compatibility}">
-                    <div class="package-info">
-                      <div class="package-name">
-                        <code>${fullName}</code>
-                        <span class="package-version">v${pkg.version}</span>
+              <div class="package-list">
+                ${this._filtered.map((pkg) => {
+                  const fullName = pkg.scope ? `${pkg.scope}/${pkg.name}` : pkg.name;
+                  const compatLabel = COMPAT_LABELS[pkg.compatibility] || pkg.compatibility;
+                  const compatColor = COMPAT_COLORS[pkg.compatibility] || '#888';
+                  const ssrIcon = pkg.ssrCapable ? '🖥️' : '🌐';
+                  return html`
+                    <a class="package-card" href="${this._packageLink(pkg)}" data-compat="${pkg
+                      .compatibility}">
+                      <div class="package-info">
+                        <div class="package-name">
+                          <code>${fullName}</code>
+                          <span class="package-version">v${pkg.version}</span>
+                        </div>
+                        <div class="package-desc">${pkg.description || 'No description'}</div>
+                        <div class="package-meta">
+                          <span class="compat-badge" style="background:${compatColor}15;border:0.5px solid ${compatColor}40;">
+                            <span class="compat-dot" style="background:${compatColor}"></span>
+                            ${compatLabel}
+                          </span>
+                          <span class="install-badge ${pkg.safeToInstall
+                            ? 'install-safe'
+                            : 'install-unsafe'}">
+                            ${pkg.safeToInstall ? '✅ Safe install' : '❌ Not installable'}
+                          </span>
+                          <span class="tag-pill">${pkg.tags.length} tag${pkg.tags.length !== 1
+                            ? 's'
+                            : ''}</span>
+                          <span class="tag-pill">${ssrIcon} ${pkg.ssrCapable
+                            ? 'SSR'
+                            : 'client'}</span>
+                        </div>
                       </div>
-                      <div class="package-desc">${pkg.description || 'No description'}</div>
-                      <div class="package-meta">
-                        <span class="compat-badge" style="background:${compatColor}15;border:0.5px solid ${compatColor}40;">
-                          <span class="compat-dot" style="background:${compatColor}"></span>
-                          ${compatLabel}
-                        </span>
-                        <span class="install-badge ${pkg.safeToInstall ? 'install-safe' : 'install-unsafe'}">
-                          ${pkg.safeToInstall ? '✅ Safe install' : '❌ Not installable'}
-                        </span>
-                        <span class="tag-pill">${pkg.tags.length} tag${pkg.tags.length !== 1 ? 's' : ''}</span>
-                        <span class="tag-pill">${ssrIcon} ${pkg.ssrCapable ? 'SSR' : 'client'}</span>
-                      </div>
-                    </div>
-                  </a>
-                `;
-              })}
-            </div>
-          `}
+                    </a>
+                  `;
+                })}
+              </div>
+            `}
         </div>
       </less-layout>
     `;

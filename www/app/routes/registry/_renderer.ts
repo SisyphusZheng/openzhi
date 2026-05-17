@@ -78,7 +78,10 @@ const renderer: LessRenderer = {
   wrap(html: string, ctx: { req: { path: string } }) {
     // Only inject search script on the registry index page
     const path = ctx.req.path || '';
-    if (path === '/registry' || path === '/registry/' || path === '/en/registry' || path === '/en/registry/') {
+    if (
+      path === '/registry' || path === '/registry/' || path === '/en/registry' ||
+      path === '/en/registry/'
+    ) {
       return html + SEARCH_SCRIPT;
     }
     return html;
