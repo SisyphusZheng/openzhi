@@ -1,0 +1,450 @@
+/**
+ * Registry Hub — Package Search & List
+ *
+ * v0.19.0: Browse and search validated Web Component packages.
+ * Data is sourced from hub-index/ — pre-built static JSON files.
+ *
+ * @see docs/sop/v0.19.0-platform-hub.md
+ * @see ADR-0030
+ */
+
+export const meta = { section: 'Registry', label: 'Package Registry', order: 5 };
+
+import { css, html, LitElement } from 'lit';
+import { headerNav, navSections } from 'virtual:less-nav';
+import { pageStyles } from '../../components/page-styles.js';
+import '@lessjs/ui/less-layout';
+
+// ─── Types (mirrored from @lessjs/hub) ──────────────────────────────────
+
+interface HubIndexEntry {
+  name: string;
+  scope: string;
+  version: string;
+  description: string;
+  compatibility: string;
+  tags: string[];
+  source: string;
+  safeToInstall: boolean;
+  ssrCapable: boolean;
+}
+
+interface HubIndexData {
+  schema: string;
+  updatedAt: string;
+  packages: HubIndexEntry[];
+}
+
+let _indexData: HubIndexData | null = null;
+
+async function loadIndex(): Promise<HubIndexData> {
+  if (_indexData) return _indexData;
+  const res = await fetch('/registry/index.json');
+  _indexData = await res.json() as HubIndexData;
+  return _indexData;
+}
+
+export const tagName = 'docs-registry-home';
+
+const COMPAT_LABELS: Record<string, string> = {
+  'ssr-capable': 'SSR Capable',
+  'client-only': 'Client Only',
+  'rejected': 'Rejected',
+  'experimental-dom': 'Experimental DOM',
+};
+
+const COMPAT_COLORS: Record<string, string> = {
+  'ssr-capable': '#22c55e',
+  'client-only': '#f59e0b',
+  'rejected': '#ef4444',
+  'experimental-dom': '#8b5cf6',
+};
+
+export default class DocsRegistryHome extends LitElement {
+  private _packages: HubIndexEntry[] = [];
+  private _filtered: HubIndexEntry[] = [];
+  private _query = '';
+  private _tierFilter = 'all';
+  private _loading = true;
+  private _error = '';
+
+  static override styles = [
+    pageStyles,
+    css`
+      .registry-header {
+        margin-bottom: 2rem;
+      }
+
+      .registry-header h1 {
+        font-size: 2rem;
+        font-weight: 700;
+        margin: 0 0 0.5rem;
+      }
+
+      .registry-header p {
+        color: var(--less-text-secondary);
+        margin: 0;
+        font-size: 0.9375rem;
+      }
+
+      /* Controls */
+      .controls {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        flex-wrap: wrap;
+      }
+
+      .search-box {
+        flex: 1;
+        min-width: 200px;
+        padding: 0.625rem 0.875rem;
+        border: 0.5px solid var(--less-border);
+        border-radius: 6px;
+        background: var(--less-bg-surface);
+        color: var(--less-text-primary);
+        font-size: 0.875rem;
+        outline: none;
+        transition: border-color 0.15s;
+      }
+
+      .search-box:focus {
+        border-color: var(--less-accent);
+      }
+
+      .search-box::placeholder {
+        color: var(--less-text-tertiary);
+      }
+
+      .filter-group {
+        display: flex;
+        gap: 0.25rem;
+        flex-wrap: wrap;
+      }
+
+      .filter-btn {
+        padding: 0.375rem 0.75rem;
+        border: 0.5px solid var(--less-border);
+        border-radius: 14px;
+        background: transparent;
+        color: var(--less-text-secondary);
+        font-size: 0.75rem;
+        cursor: pointer;
+        transition: all 0.15s;
+        white-space: nowrap;
+      }
+
+      .filter-btn:hover {
+        border-color: var(--less-border-hover);
+        color: var(--less-text-primary);
+      }
+
+      .filter-btn.active {
+        background: var(--less-accent);
+        border-color: var(--less-accent);
+        color: #fff;
+      }
+
+      /* Stats */
+      .stats {
+        font-size: 0.8125rem;
+        color: var(--less-text-tertiary);
+        margin-bottom: 1rem;
+      }
+
+      /* Package List */
+      .package-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+
+      .package-card {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        padding: 1rem 1.25rem;
+        border: 0.5px solid var(--less-border);
+        border-radius: 8px;
+        background: var(--less-bg-surface);
+        transition: border-color 0.15s, box-shadow 0.15s;
+        cursor: pointer;
+        text-decoration: none;
+        color: inherit;
+      }
+
+      .package-card:hover {
+        border-color: var(--less-accent);
+        box-shadow: 0 1px 6px rgba(0, 0, 0, 0.08);
+      }
+
+      .package-info {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .package-name {
+        font-size: 1rem;
+        font-weight: 600;
+        margin: 0 0 0.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+      }
+
+      .package-name code {
+        font-size: 0.875rem;
+        background: var(--less-bg-code);
+        padding: 0.125rem 0.375rem;
+        border-radius: 3px;
+      }
+
+      .package-version {
+        font-size: 0.75rem;
+        color: var(--less-text-tertiary);
+        font-weight: 400;
+      }
+
+      .package-desc {
+        font-size: 0.8125rem;
+        color: var(--less-text-secondary);
+        margin: 0.25rem 0;
+        line-height: 1.5;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+
+      .package-meta {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+        flex-wrap: wrap;
+        margin-top: 0.375rem;
+      }
+
+      .compat-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.125rem 0.5rem;
+        border-radius: 10px;
+        font-size: 0.6875rem;
+        font-weight: 500;
+        white-space: nowrap;
+      }
+
+      .compat-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        display: inline-block;
+      }
+
+      .tag-pill {
+        display: inline-block;
+        padding: 0.0625rem 0.375rem;
+        background: var(--less-bg-code);
+        border-radius: 3px;
+        font-size: 0.6875rem;
+        color: var(--less-text-tertiary);
+      }
+
+      .install-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        font-size: 0.6875rem;
+        padding: 0.125rem 0.375rem;
+        border-radius: 3px;
+      }
+
+      .install-safe {
+        background: rgba(34, 197, 94, 0.1);
+        color: #22c55e;
+      }
+
+      .install-unsafe {
+        background: rgba(239, 68, 68, 0.1);
+        color: #ef4444;
+      }
+
+      /* Loading & Empty */
+      .loading-state, .error-state, .empty-state {
+        text-align: center;
+        padding: 3rem 1rem;
+        color: var(--less-text-tertiary);
+        font-size: 0.9375rem;
+      }
+
+      .error-state {
+        color: var(--less-error);
+      }
+
+      @media (max-width: 640px) {
+        .controls {
+          flex-direction: column;
+          align-items: stretch;
+        }
+      }
+    `,
+  ];
+
+  override async connectedCallback() {
+    super.connectedCallback();
+    try {
+      const index = await loadIndex();
+      this._packages = index.packages || [];
+      this._filtered = [...this._packages];
+    } catch (e) {
+      this._error = `Failed to load registry index: ${e}`;
+    }
+    this._loading = false;
+    this.requestUpdate();
+  }
+
+  private _onSearch(e: InputEvent) {
+    this._query = (e.target as HTMLInputElement).value;
+    this._applyFilters();
+  }
+
+  private _setFilter(tier: string) {
+    this._tierFilter = tier;
+    this._applyFilters();
+  }
+
+  private _applyFilters() {
+    let result = [...this._packages];
+
+    // Filter by query
+    const q = this._query.toLowerCase();
+    if (q.length >= 2) {
+      result = result.filter((p) => {
+        const fullName = p.scope ? `${p.scope}/${p.name}` : p.name;
+        if (fullName.toLowerCase().includes(q)) return true;
+        if (p.description?.toLowerCase().includes(q)) return true;
+        for (const tag of p.tags) {
+          if (tag.toLowerCase().includes(q)) return true;
+        }
+        return false;
+      });
+    }
+
+    // Filter by tier
+    if (this._tierFilter !== 'all') {
+      result = result.filter((p) => p.compatibility === this._tierFilter);
+    }
+
+    // Sort
+    result.sort((a, b) => {
+      const aName = a.scope ? `${a.scope}/${a.name}` : a.name;
+      const bName = b.scope ? `${b.scope}/${b.name}` : b.name;
+      return aName.localeCompare(bName);
+    });
+
+    this._filtered = result;
+    this.requestUpdate();
+  }
+
+  private _packageLink(pkg: HubIndexEntry): string {
+    const name = pkg.scope ? `${pkg.scope}/${pkg.name}` : pkg.name;
+    return `/registry/${name}`;
+  }
+
+  override render() {
+    return html`
+      <less-layout
+        .navItems="${navSections}"
+        .headerNav="${headerNav}"
+        current-path="/registry"
+        locale="en"
+        .locales="${['en', 'zh']}"
+      >
+        <div class="container">
+          <div class="registry-header">
+            <h1>Registry Hub</h1>
+            <p>Discover validated Web Component packages. Each package includes compatibility evidence, installation guidance, and snapshot previews.</p>
+          </div>
+
+          <div class="controls">
+            <input
+              class="search-box"
+              type="text"
+              placeholder="Search by name, tag, or description..."
+              @input="${this._onSearch}"
+              .value="${this._query}"
+            >
+            <div class="filter-group">
+              <button
+                class="filter-btn ${this._tierFilter === 'all' ? 'active' : ''}"
+                @click="${() => this._setFilter('all')}"
+              >All</button>
+              <button
+                class="filter-btn ${this._tierFilter === 'ssr-capable' ? 'active' : ''}"
+                @click="${() => this._setFilter('ssr-capable')}"
+              >SSR ✓</button>
+              <button
+                class="filter-btn ${this._tierFilter === 'client-only' ? 'active' : ''}"
+                @click="${() => this._setFilter('client-only')}"
+              >Client</button>
+              <button
+                class="filter-btn ${this._tierFilter === 'rejected' ? 'active' : ''}"
+                @click="${() => this._setFilter('rejected')}"
+              >Rejected</button>
+            </div>
+          </div>
+
+          ${this._loading ? html`
+            <div class="loading-state">Loading registry...</div>
+          ` : this._error ? html`
+            <div class="error-state">${this._error}</div>
+          ` : this._filtered.length === 0 ? html`
+            <div class="empty-state">
+              ${this._query || this._tierFilter !== 'all'
+                ? 'No packages match your search criteria.'
+                : 'No packages in the registry yet.'}
+            </div>
+          ` : html`
+            <div class="stats">${this._filtered.length} package${this._filtered.length !== 1 ? 's' : ''} found</div>
+
+            <div class="package-list">
+              ${this._filtered.map((pkg) => {
+                const fullName = pkg.scope ? `${pkg.scope}/${pkg.name}` : pkg.name;
+                const compatLabel = COMPAT_LABELS[pkg.compatibility] || pkg.compatibility;
+                const compatColor = COMPAT_COLORS[pkg.compatibility] || '#888';
+                const ssrIcon = pkg.ssrCapable ? '🖥️' : '🌐';
+                return html`
+                  <a class="package-card" href="${this._packageLink(pkg)}">
+                    <div class="package-info">
+                      <div class="package-name">
+                        <code>${fullName}</code>
+                        <span class="package-version">v${pkg.version}</span>
+                      </div>
+                      <div class="package-desc">${pkg.description || 'No description'}</div>
+                      <div class="package-meta">
+                        <span class="compat-badge" style="background:${compatColor}15;border:0.5px solid ${compatColor}40;">
+                          <span class="compat-dot" style="background:${compatColor}"></span>
+                          ${compatLabel}
+                        </span>
+                        <span class="install-badge ${pkg.safeToInstall ? 'install-safe' : 'install-unsafe'}">
+                          ${pkg.safeToInstall ? '✅ Safe install' : '❌ Not installable'}
+                        </span>
+                        <span class="tag-pill">${pkg.tags.length} tag${pkg.tags.length !== 1 ? 's' : ''}</span>
+                        <span class="tag-pill">${ssrIcon} ${pkg.ssrCapable ? 'SSR' : 'client'}</span>
+                      </div>
+                    </div>
+                  </a>
+                `;
+              })}
+            </div>
+          `}
+        </div>
+      </less-layout>
+    `;
+  }
+}
+
+customElements.define(tagName, DocsRegistryHome);

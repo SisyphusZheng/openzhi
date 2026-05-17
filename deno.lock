@@ -981,6 +981,11 @@
           "npm:parse5@7.0.0"
         ]
       },
+      "packages/hub": {
+        "dependencies": [
+          "npm:typescript@^5.9.0"
+        ]
+      },
       "packages/i18n": {
         "dependencies": [
           "jsr:@lessjs/core@0.18",

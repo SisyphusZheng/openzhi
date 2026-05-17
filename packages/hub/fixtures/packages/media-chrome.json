@@ -1,0 +1,61 @@
+{
+  "schema": "hub-package-v1",
+  "name": "media-chrome",
+  "scope": "",
+  "version": "4.19.0",
+  "source": "npm",
+  "repository": "https://github.com/muxinc/media-chrome",
+  "description": "Custom elements (Web Components) for building media player UI.",
+  "homepage": "https://media-chrome.mux.dev",
+  "manifestHash": "sha256-ghi789jkl012",
+  "compatibility": "client-only",
+  "compatibilityJustification": "Media Chrome uses browser-specific media APIs (HTMLMediaElement) that are not available in SSR. Client-only by default.",
+  "tags": [
+    {
+      "tagName": "media-controller",
+      "compatibility": "client-only",
+      "validationErrors": 0,
+      "validationWarnings": 1
+    },
+    {
+      "tagName": "media-play-button",
+      "compatibility": "client-only",
+      "validationErrors": 0,
+      "validationWarnings": 0
+    },
+    {
+      "tagName": "media-time-range",
+      "compatibility": "client-only",
+      "validationErrors": 0,
+      "validationWarnings": 0
+    },
+    {
+      "tagName": "media-volume-range",
+      "compatibility": "client-only",
+      "validationErrors": 0,
+      "validationWarnings": 0
+    },
+    {
+      "tagName": "media-poster-image",
+      "compatibility": "client-only",
+      "validationErrors": 0,
+      "validationWarnings": 0
+    }
+  ],
+  "reports": {
+    "validation": "{\"packageName\":\"media-chrome\",\"version\":\"4.19.0\",\"valid\":true,\"compatibility\":\"client-only\",\"tags\":5,\"errors\":[],\"warnings\":[{\"code\":\"BROWSER_API_DEPENDENCY\",\"severity\":\"warning\",\"message\":\"media-controller depends on HTMLMediaElement which is not available in SSR.\"}]}"
+  },
+  "snapshotPaths": {},
+  "installGuidance": {
+    "safeToInstall": true,
+    "command": "less add media-chrome",
+    "configChanges": ["packages[\"media-chrome\"] — client-only (no SSR)"],
+    "warnings": [
+      "This package has no SSR metadata. It will render on the client only.",
+      "media-controller uses browser media APIs."
+    ],
+    "ssrCapable": false
+  },
+  "submittedAt": "2026-05-17T00:00:00.000Z",
+  "validatorVersion": "0.19.0"
+}

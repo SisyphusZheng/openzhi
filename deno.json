@@ -13,6 +13,7 @@
     "./packages/content",
     "./packages/i18n",
     "./packages/app",
+    "./packages/hub",
     "./www"
   ],
   "imports": {

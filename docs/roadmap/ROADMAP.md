@@ -17,14 +17,14 @@ is generated.
 
 ## Phase Overview
 
-| Phase | Version | Name                | Goal                                                           | Status  |
-| ----- | ------- | ------------------- | -------------------------------------------------------------- | ------- |
-| 1     | v0.15.x | Renderer Kernel     | Structured render output, hooks, build report                  | Done    |
-| 2     | v0.16.x | WC Package Protocol | Manifest + local registry                                      | Done    |
-| 3     | v0.17.x | Ecosystem Entry     | Manifest-native pipeline, filtering, multi-adapter boundary    | Active  |
-| 4     | v0.18.x | Universal WC Engine | CEM parser, compatibility tiers, validation CLI, safe add flow | Planned |
-| 5     | v0.19.x | Registry Hub MVP    | Searchable validated package index with reports and snapshots  | Planned |
-| 6     | v1.0.x  | Stable Engine       | API freeze and deterministic package admission guarantees      | Vision  |
+| Phase | Version | Name                | Goal                                                           | Status |
+| ----- | ------- | ------------------- | -------------------------------------------------------------- | ------ |
+| 1     | v0.15.x | Renderer Kernel     | Structured render output, hooks, build report                  | Done   |
+| 2     | v0.16.x | WC Package Protocol | Manifest + local registry                                      | Done   |
+| 3     | v0.17.x | Ecosystem Entry     | Manifest-native pipeline, filtering, multi-adapter boundary    | Active |
+| 4     | v0.18.x | Universal WC Engine | CEM parser, compatibility tiers, validation CLI, safe add flow | Done   |
+| 5     | v0.19.x | Registry Hub MVP    | Searchable validated package index with reports and snapshots  | Active |
+| 6     | v1.0.x  | Stable Engine       | API freeze and deterministic package admission guarantees      | Vision |
 
 ## Compatibility Admission Model
 
@@ -83,7 +83,7 @@ v0.17.4 is complete and now provides the cleanup boundary before v0.18:
 - nested custom-element rendering respects client-only decisions
 - `dsd-report.json` records admission decisions with reasons
 
-## Phase 4: Universal WC Engine (v0.18.x) - Planned
+## Phase 4: Universal WC Engine (v0.18.x) - Done
 
 Goal: make third-party WC packages installable and renderable through explicit
 compatibility tiers.
@@ -111,7 +111,7 @@ Primary validation targets:
 - selected third-party WC libraries, initially as compatibility fixtures rather
   than marketing claims
 
-## Phase 5: Registry Hub MVP (v0.19.x) - Planned
+## Phase 5: Registry Hub MVP (v0.19.x) - Active
 
 Goal: move from local registry to a public, searchable registry index that is
 fed by validation artifacts.
@@ -124,7 +124,8 @@ MVP scope:
 - bundle size and hydration metadata
 - security/audit status from lockfiles and package metadata
 - duplicate tag and version conflict reporting
-- v0.19.1 previews and quality gates after ingestion is stable
+- `less hub submit` CLI submission pipeline
+- GitHub Actions CI gate for incoming submissions
 
 Deferred until after MVP:
 

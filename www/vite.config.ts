@@ -131,6 +131,7 @@ export default defineConfig({
           headerNav: [
             { href: '/guide/positioning', label: 'Docs' },
             { href: '/guide/architecture', label: 'Architecture' },
+            { href: '/registry', label: 'Registry' },
             { href: '/blog', label: 'Blog' },
             { href: '/ui', label: 'UI' },
             { href: '/roadmap', label: 'Roadmap' },
