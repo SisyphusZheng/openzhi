@@ -4,12 +4,8 @@
  * v0.19.0: Detailed view of a Hub package with compatibility evidence,
  * tags, install guidance, and snapshot previews.
  *
- * Route parameter: [package] — e.g. /registry/@shoelace-style~shoelace
- * Scoped packages (e.g. @lessjs/ui) use ~ as separator in the URL
- * and are decoded by the connectedCallback.
- *
- * Data is fetched client-side from /hub/packages/*.json.
- * SSR renders a loading state, then client hydrates with real data.
+ * Data is embedded during SSG via hub-data-full.ts import.
+ * No client-side fetch needed — works on static deployments.
  *
  * @see docs/sop/v0.19.0-platform-hub.md
  * @see ADR-0030
@@ -20,8 +16,7 @@ import { headerNav, navSections } from 'virtual:less-nav';
 import { pageStyles } from '../../components/page-styles.js';
 import '@lessjs/ui/less-layout';
 import '@lessjs/ui/less-code-block';
-
-// ─── Types ────────────────────────────────────────────────────────────────
+import pkgRecords from './hub-data-full.ts';
 
 interface HubTagRecord {
   tagName: string;
@@ -62,13 +57,19 @@ interface HubPackageRecord {
 
 export const tagName = 'docs-registry-detail';
 
-/** Static paths for SSG — reads hub-index to pre-render all package detail pages */
+/** Static paths for SSG — pre-renders all package detail pages */
 export function getStaticPaths(): Array<Record<string, string>> {
   try {
-    const cwd = Deno.cwd(); // www/ during SSG build
-    const indexPath = `${cwd}/public/hub/index.json`;
-    const content = Deno.readTextFileSync(indexPath);
-    const index = JSON.parse(content) as { packages: Array<{ name: string; scope: string }> };
+    const cwd = Deno.cwd();
+    const paths = [
+      `${cwd}/public/hub/index.json`,
+      `${cwd}/hub/index.json`,
+    ];
+    let index: { packages: Array<{ name: string; scope: string }> } | null = null;
+    for (const p of paths) {
+      try { index = JSON.parse(Deno.readTextFileSync(p)); break; } catch { continue; }
+    }
+    if (!index) return [];
     return index.packages.map((pkg) => ({
       package: pkg.scope ? `${pkg.scope}/${pkg.name}`.replace('/', '~') : pkg.name,
     }));
@@ -92,14 +93,14 @@ const COMPAT_COLORS: Record<string, string> = {
 };
 
 export default class DocsRegistryDetail extends LitElement {
-  declare packageName: string;
+  /** Route parameter: "package" — set by the framework from `[package].ts` */
+  package = '';
+
   private _record: HubPackageRecord | null = null;
-  private _loading = true;
-  private _error = '';
   private _showValidation = false;
 
   static override properties = {
-    packageName: { type: String },
+    package: { type: String },
   };
 
   static override styles = [
@@ -126,46 +127,31 @@ export default class DocsRegistryDetail extends LitElement {
       .install-cmd { font-family: monospace; background: var(--less-bg-code); padding: 0.5rem 0.75rem; border-radius: 4px; font-size: 0.875rem; margin: 0.5rem 0; user-select: all; }
       .warning-list { list-style: none; padding: 0; margin: 0.5rem 0 0; }
       .warning-list li { font-size: 0.8125rem; padding: 0.25rem 0; padding-left: 1.25rem; position: relative; color: var(--less-text-secondary); }
-      .warning-list li::before { content: '⚠️'; position: absolute; left: 0; }
+      .warning-list li::before { content: '\u26a0\ufe0f'; position: absolute; left: 0; }
       .tag-list { display: flex; flex-wrap: wrap; gap: 0.5rem; }
       .tag-item { display: inline-flex; align-items: center; gap: 0.375rem; padding: 0.375rem 0.625rem; background: var(--less-bg-code); border-radius: 4px; font-size: 0.8125rem; font-family: monospace; }
       .tag-status { width: 6px; height: 6px; border-radius: 50%; }
       .meta-table { width: 100%; border-collapse: collapse; }
       .meta-table th, .meta-table td { text-align: left; padding: 0.375rem 0.5rem; font-size: 0.8125rem; border-bottom: 0.5px solid var(--less-border); }
       .meta-table th { width: 140px; color: var(--less-text-tertiary); font-weight: 500; }
-      .snapshot-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1rem; }
-      .snapshot-card { border: 0.5px solid var(--less-border); border-radius: 6px; overflow: hidden; }
-      .snapshot-header { padding: 0.5rem 0.75rem; font-size: 0.75rem; font-weight: 600; background: var(--less-bg-code); border-bottom: 0.5px solid var(--less-border); font-family: monospace; }
-      .snapshot-body { padding: 1rem; font-size: 0.75rem; color: var(--less-text-secondary); text-align: center; }
-      .no-snapshot { padding: 2rem; text-align: center; color: var(--less-text-tertiary); font-size: 0.875rem; }
+      .not-found { text-align: center; padding: 3rem 1rem; color: var(--less-text-tertiary); }
       .accordion-toggle { background: none; border: none; color: var(--less-accent); cursor: pointer; font-size: 0.8125rem; padding: 0.25rem 0; }
       .accordion-toggle:hover { text-decoration: underline; }
       .accordion-content { margin-top: 0.75rem; padding: 0.75rem; background: var(--less-bg-code); border-radius: 4px; font-family: monospace; font-size: 0.75rem; white-space: pre-wrap; max-height: 400px; overflow: auto; }
-      .loading-state, .error-state { text-align: center; padding: 3rem 1rem; color: var(--less-text-tertiary); }
     `,
   ];
 
-  override connectedCallback() {
-    super.connectedCallback();
-    this._loadData();
+  constructor() {
+    super();
   }
 
-  private async _loadData() {
-    if (!this.packageName) return;
-
-    // Decode scoped package names: ~ → /
-    const pkgPath = this.packageName.replace('~', '/');
-
-    try {
-      const res = await fetch(`/hub/packages/${pkgPath}.json`);
-      if (!res.ok) throw new Error(`Package not found (${res.status})`);
-      this._record = await res.json() as HubPackageRecord;
-    } catch (e) {
-      this._error = `Could not load package: ${e}`;
-    }
-
-    this._loading = false;
-    this.requestUpdate();
+  /** Lazy-load record data — works in SSR (after properties are set) and client */
+  private _getRecord(): HubPackageRecord | null {
+    if (this._record !== null) return this._record;
+    if (!this.package) return null;
+    const decodedName = this.package.replace('~', '/');
+    this._record = (pkgRecords as Record<string, HubPackageRecord>)[decodedName] || null;
+    return this._record;
   }
 
   private _toggleValidation() {
@@ -179,43 +165,28 @@ export default class DocsRegistryDetail extends LitElement {
   }
 
   override render() {
-    if (this._loading) {
-      return html`
-        <less-layout .navItems="${navSections}" .headerNav="${headerNav}" current-path="/registry/${this.packageName}" locale="en" .locales="${['en', 'zh']}">
-          <div class="container"><div class="loading-state">Loading package details...</div></div>
-        </less-layout>
-      `;
-    }
+    const pkg = this._getRecord();
+    const fullName = pkg
+      ? (pkg.scope ? `${pkg.scope}/${pkg.name}` : pkg.name)
+      : this.package?.replace('~', '/') || 'unknown';
+    const compatColor = pkg ? COMPAT_COLORS[pkg.compatibility] || '#888' : '#888';
+    const compatLabel = pkg ? COMPAT_LABELS[pkg.compatibility] || pkg.compatibility : 'Unknown';
 
-    if (this._error || !this._record) {
-      const fullName = this.packageName?.replace('~', '/') || 'unknown';
+    if (!pkg) {
       return html`
-        <less-layout .navItems="${navSections}" .headerNav="${headerNav}" current-path="/registry/${this.packageName}" locale="en" .locales="${['en', 'zh']}">
+        <less-layout .navItems="${navSections}" .headerNav="${headerNav}" current-path="/registry/${fullName}" locale="en" .locales="${['en', 'zh']}">
           <div class="container">
-            <div class="error-state">
-              <h2>Package Not Found</h2>
-              <p>${this._error || `The package "${fullName}" is not in the registry.`}</p>
-              <a href="/registry" style="color:var(--less-accent);font-size:0.875rem;">← Back to Registry</a>
-            </div>
+            <div class="not-found"><h2>Package Not Found</h2><p>"${fullName}" is not in the registry.</p>
+            <a href="/registry" style="color:var(--less-accent);font-size:0.875rem;">← Back to Registry</a></div>
           </div>
         </less-layout>
       `;
     }
 
-    const pkg = this._record;
-    const fullName = pkg.scope ? `${pkg.scope}/${pkg.name}` : pkg.name;
-    const compatColor = COMPAT_COLORS[pkg.compatibility] || '#888';
-    const compatLabel = COMPAT_LABELS[pkg.compatibility] || pkg.compatibility;
     const hasSnapshots = Object.keys(pkg.snapshotPaths).length > 0;
 
     return html`
-      <less-layout
-        .navItems="${navSections}"
-        .headerNav="${headerNav}"
-        current-path="/registry/${fullName}"
-        locale="en"
-        .locales="${['en', 'zh']}"
-      >
+      <less-layout .navItems="${navSections}" .headerNav="${headerNav}" current-path="/registry/${fullName}" locale="en" .locales="${['en', 'zh']}">
         <div class="container">
           <div class="breadcrumb"><a href="/registry">Registry</a> / <span>${fullName}</span></div>
 
@@ -294,33 +265,14 @@ export default class DocsRegistryDetail extends LitElement {
 
           <div class="section">
             <div class="section-title">🖼️ Previews</div>
-            ${hasSnapshots ? html`
-              <div class="snapshot-grid">
-                ${Object.entries(pkg.snapshotPaths).map(([tagName]) => html`
-                  <div class="snapshot-card">
-                    <div class="snapshot-header">&lt;${tagName}&gt;</div>
-                    <div class="snapshot-body">SSR snapshot available.</div>
-                  </div>
-                `)}
-              </div>
-            ` : html`
-              <div class="no-snapshot">
-                ${pkg.compatibility === 'ssr-capable' ? 'No SSR snapshots generated.'
-                  : pkg.compatibility === 'client-only' ? 'Client-only package — no SSR preview.'
-                  : pkg.compatibility === 'rejected' ? 'Rejected — no preview.'
-                  : ''}
-              </div>
-            `}
+            ${hasSnapshots ? html`<div class="no-snapshot">SSR snapshots available.</div>`
+            : html`<div class="no-snapshot">No preview available.</div>`}
           </div>
 
           <div class="section">
             <div class="section-title">📋 Validation Report</div>
-            <button class="accordion-toggle" @click="${this._toggleValidation}">
-              ${this._showValidation ? 'Hide' : 'Show'} validation details
-            </button>
-            ${this._showValidation ? html`
-              <div class="accordion-content">${this._formatJson(pkg.reports.validation)}</div>
-            ` : ''}
+            <button class="accordion-toggle" @click="${this._toggleValidation}">${this._showValidation ? 'Hide' : 'Show'} validation details</button>
+            ${this._showValidation ? html`<div class="accordion-content">${this._formatJson(pkg.reports.validation)}</div>` : ''}
           </div>
         </div>
       </less-layout>
