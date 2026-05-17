@@ -16,273 +16,273 @@
       "compatibility": "client-only",
       "validationErrors": 0,
       "validationWarnings": 1,
-      "ssrSnapshot": "<sl-alert style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-alert</sl-alert>"
+      "ssrSnapshot": "<div class=\"snapshot-preview\"><span style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-alert</span></div>"
     },
     {
       "tagName": "sl-animated-image",
       "compatibility": "client-only",
       "validationErrors": 0,
       "validationWarnings": 1,
-      "ssrSnapshot": "<sl-animated-image style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-animated-image</sl-animated-image>"
+      "ssrSnapshot": "<div class=\"snapshot-preview\"><span style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-animated-image</span></div>"
     },
     {
       "tagName": "sl-avatar",
       "compatibility": "client-only",
       "validationErrors": 0,
       "validationWarnings": 1,
-      "ssrSnapshot": "<sl-avatar style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-avatar</sl-avatar>"
+      "ssrSnapshot": "<div class=\"snapshot-preview\"><span style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-avatar</span></div>"
     },
     {
       "tagName": "sl-badge",
       "compatibility": "client-only",
       "validationErrors": 0,
       "validationWarnings": 1,
-      "ssrSnapshot": "<sl-badge style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-badge</sl-badge>"
+      "ssrSnapshot": "<div class=\"snapshot-preview\"><span style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-badge</span></div>"
     },
     {
       "tagName": "sl-button",
       "compatibility": "client-only",
       "validationErrors": 0,
       "validationWarnings": 1,
-      "ssrSnapshot": "<sl-button style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-button</sl-button>"
+      "ssrSnapshot": "<div class=\"snapshot-preview\"><span style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-button</span></div>"
     },
     {
       "tagName": "sl-card",
       "compatibility": "client-only",
       "validationErrors": 0,
       "validationWarnings": 1,
-      "ssrSnapshot": "<sl-card style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-card</sl-card>"
+      "ssrSnapshot": "<div class=\"snapshot-preview\"><span style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-card</span></div>"
     },
     {
       "tagName": "sl-carousel",
       "compatibility": "client-only",
       "validationErrors": 0,
       "validationWarnings": 1,
-      "ssrSnapshot": "<sl-carousel style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-carousel</sl-carousel>"
+      "ssrSnapshot": "<div class=\"snapshot-preview\"><span style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-carousel</span></div>"
     },
     {
       "tagName": "sl-checkbox",
       "compatibility": "client-only",
       "validationErrors": 0,
       "validationWarnings": 1,
-      "ssrSnapshot": "<sl-checkbox style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-checkbox</sl-checkbox>"
+      "ssrSnapshot": "<div class=\"snapshot-preview\"><span style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-checkbox</span></div>"
     },
     {
       "tagName": "sl-color-picker",
       "compatibility": "client-only",
       "validationErrors": 0,
       "validationWarnings": 1,
-      "ssrSnapshot": "<sl-color-picker style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-color-picker</sl-color-picker>"
+      "ssrSnapshot": "<div class=\"snapshot-preview\"><span style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-color-picker</span></div>"
     },
     {
       "tagName": "sl-details",
       "compatibility": "client-only",
       "validationErrors": 0,
       "validationWarnings": 1,
-      "ssrSnapshot": "<sl-details style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-details</sl-details>"
+      "ssrSnapshot": "<div class=\"snapshot-preview\"><span style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-details</span></div>"
     },
     {
       "tagName": "sl-dialog",
       "compatibility": "client-only",
       "validationErrors": 0,
       "validationWarnings": 1,
-      "ssrSnapshot": "<sl-dialog style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-dialog</sl-dialog>"
+      "ssrSnapshot": "<div class=\"snapshot-preview\"><span style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-dialog</span></div>"
     },
     {
       "tagName": "sl-divider",
       "compatibility": "client-only",
       "validationErrors": 0,
       "validationWarnings": 1,
-      "ssrSnapshot": "<sl-divider style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-divider</sl-divider>"
+      "ssrSnapshot": "<div class=\"snapshot-preview\"><span style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-divider</span></div>"
     },
     {
       "tagName": "sl-drawer",
       "compatibility": "client-only",
       "validationErrors": 0,
       "validationWarnings": 1,
-      "ssrSnapshot": "<sl-drawer style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-drawer</sl-drawer>"
+      "ssrSnapshot": "<div class=\"snapshot-preview\"><span style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-drawer</span></div>"
     },
     {
       "tagName": "sl-dropdown",
       "compatibility": "client-only",
       "validationErrors": 0,
       "validationWarnings": 1,
-      "ssrSnapshot": "<sl-dropdown style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-dropdown</sl-dropdown>"
+      "ssrSnapshot": "<div class=\"snapshot-preview\"><span style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-dropdown</span></div>"
     },
     {
       "tagName": "sl-icon",
       "compatibility": "client-only",
       "validationErrors": 0,
       "validationWarnings": 1,
-      "ssrSnapshot": "<sl-icon style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-icon</sl-icon>"
+      "ssrSnapshot": "<div class=\"snapshot-preview\"><span style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-icon</span></div>"
     },
     {
       "tagName": "sl-icon-button",
       "compatibility": "client-only",
       "validationErrors": 0,
       "validationWarnings": 1,
-      "ssrSnapshot": "<sl-icon-button style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-icon-button</sl-icon-button>"
+      "ssrSnapshot": "<div class=\"snapshot-preview\"><span style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-icon-button</span></div>"
     },
     {
       "tagName": "sl-image-comparer",
       "compatibility": "client-only",
       "validationErrors": 0,
       "validationWarnings": 1,
-      "ssrSnapshot": "<sl-image-comparer style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-image-comparer</sl-image-comparer>"
+      "ssrSnapshot": "<div class=\"snapshot-preview\"><span style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-image-comparer</span></div>"
     },
     {
       "tagName": "sl-input",
       "compatibility": "client-only",
       "validationErrors": 0,
       "validationWarnings": 1,
-      "ssrSnapshot": "<sl-input style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-input</sl-input>"
+      "ssrSnapshot": "<div class=\"snapshot-preview\"><span style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-input</span></div>"
     },
     {
       "tagName": "sl-menu",
       "compatibility": "client-only",
       "validationErrors": 0,
       "validationWarnings": 1,
-      "ssrSnapshot": "<sl-menu style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-menu</sl-menu>"
+      "ssrSnapshot": "<div class=\"snapshot-preview\"><span style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-menu</span></div>"
     },
     {
       "tagName": "sl-menu-item",
       "compatibility": "client-only",
       "validationErrors": 0,
       "validationWarnings": 1,
-      "ssrSnapshot": "<sl-menu-item style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-menu-item</sl-menu-item>"
+      "ssrSnapshot": "<div class=\"snapshot-preview\"><span style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-menu-item</span></div>"
     },
     {
       "tagName": "sl-progress-bar",
       "compatibility": "client-only",
       "validationErrors": 0,
       "validationWarnings": 1,
-      "ssrSnapshot": "<sl-progress-bar style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-progress-bar</sl-progress-bar>"
+      "ssrSnapshot": "<div class=\"snapshot-preview\"><span style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-progress-bar</span></div>"
     },
     {
       "tagName": "sl-radio",
       "compatibility": "client-only",
       "validationErrors": 0,
       "validationWarnings": 1,
-      "ssrSnapshot": "<sl-radio style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-radio</sl-radio>"
+      "ssrSnapshot": "<div class=\"snapshot-preview\"><span style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-radio</span></div>"
     },
     {
       "tagName": "sl-radio-group",
       "compatibility": "client-only",
       "validationErrors": 0,
       "validationWarnings": 1,
-      "ssrSnapshot": "<sl-radio-group style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-radio-group</sl-radio-group>"
+      "ssrSnapshot": "<div class=\"snapshot-preview\"><span style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-radio-group</span></div>"
     },
     {
       "tagName": "sl-range",
       "compatibility": "client-only",
       "validationErrors": 0,
       "validationWarnings": 1,
-      "ssrSnapshot": "<sl-range style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-range</sl-range>"
+      "ssrSnapshot": "<div class=\"snapshot-preview\"><span style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-range</span></div>"
     },
     {
       "tagName": "sl-rating",
       "compatibility": "client-only",
       "validationErrors": 0,
       "validationWarnings": 1,
-      "ssrSnapshot": "<sl-rating style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-rating</sl-rating>"
+      "ssrSnapshot": "<div class=\"snapshot-preview\"><span style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-rating</span></div>"
     },
     {
       "tagName": "sl-select",
       "compatibility": "client-only",
       "validationErrors": 0,
       "validationWarnings": 1,
-      "ssrSnapshot": "<sl-select style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-select</sl-select>"
+      "ssrSnapshot": "<div class=\"snapshot-preview\"><span style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-select</span></div>"
     },
     {
       "tagName": "sl-skeleton",
       "compatibility": "client-only",
       "validationErrors": 0,
       "validationWarnings": 1,
-      "ssrSnapshot": "<sl-skeleton style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-skeleton</sl-skeleton>"
+      "ssrSnapshot": "<div class=\"snapshot-preview\"><span style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-skeleton</span></div>"
     },
     {
       "tagName": "sl-spinner",
       "compatibility": "client-only",
       "validationErrors": 0,
       "validationWarnings": 1,
-      "ssrSnapshot": "<sl-spinner style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-spinner</sl-spinner>"
+      "ssrSnapshot": "<div class=\"snapshot-preview\"><span style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-spinner</span></div>"
     },
     {
       "tagName": "sl-split-panel",
       "compatibility": "client-only",
       "validationErrors": 0,
       "validationWarnings": 1,
-      "ssrSnapshot": "<sl-split-panel style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-split-panel</sl-split-panel>"
+      "ssrSnapshot": "<div class=\"snapshot-preview\"><span style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-split-panel</span></div>"
     },
     {
       "tagName": "sl-switch",
       "compatibility": "client-only",
       "validationErrors": 0,
       "validationWarnings": 1,
-      "ssrSnapshot": "<sl-switch style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-switch</sl-switch>"
+      "ssrSnapshot": "<div class=\"snapshot-preview\"><span style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-switch</span></div>"
     },
     {
       "tagName": "sl-tab",
       "compatibility": "client-only",
       "validationErrors": 0,
       "validationWarnings": 1,
-      "ssrSnapshot": "<sl-tab style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-tab</sl-tab>"
+      "ssrSnapshot": "<div class=\"snapshot-preview\"><span style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-tab</span></div>"
     },
     {
       "tagName": "sl-tab-group",
       "compatibility": "client-only",
       "validationErrors": 0,
       "validationWarnings": 1,
-      "ssrSnapshot": "<sl-tab-group style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-tab-group</sl-tab-group>"
+      "ssrSnapshot": "<div class=\"snapshot-preview\"><span style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-tab-group</span></div>"
     },
     {
       "tagName": "sl-tab-panel",
       "compatibility": "client-only",
       "validationErrors": 0,
       "validationWarnings": 1,
-      "ssrSnapshot": "<sl-tab-panel style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-tab-panel</sl-tab-panel>"
+      "ssrSnapshot": "<div class=\"snapshot-preview\"><span style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-tab-panel</span></div>"
     },
     {
       "tagName": "sl-table",
       "compatibility": "client-only",
       "validationErrors": 0,
       "validationWarnings": 1,
-      "ssrSnapshot": "<sl-table style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-table</sl-table>"
+      "ssrSnapshot": "<div class=\"snapshot-preview\"><span style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-table</span></div>"
     },
     {
       "tagName": "sl-tag",
       "compatibility": "client-only",
       "validationErrors": 0,
       "validationWarnings": 1,
-      "ssrSnapshot": "<sl-tag style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-tag</sl-tag>"
+      "ssrSnapshot": "<div class=\"snapshot-preview\"><span style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-tag</span></div>"
     },
     {
       "tagName": "sl-textarea",
       "compatibility": "client-only",
       "validationErrors": 0,
       "validationWarnings": 1,
-      "ssrSnapshot": "<sl-textarea style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-textarea</sl-textarea>"
+      "ssrSnapshot": "<div class=\"snapshot-preview\"><span style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-textarea</span></div>"
     },
     {
       "tagName": "sl-tooltip",
       "compatibility": "client-only",
       "validationErrors": 0,
       "validationWarnings": 1,
-      "ssrSnapshot": "<sl-tooltip style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-tooltip</sl-tooltip>"
+      "ssrSnapshot": "<div class=\"snapshot-preview\"><span style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-tooltip</span></div>"
     },
     {
       "tagName": "sl-tree",
       "compatibility": "client-only",
       "validationErrors": 0,
       "validationWarnings": 1,
-      "ssrSnapshot": "<sl-tree style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-tree</sl-tree>"
+      "ssrSnapshot": "<div class=\"snapshot-preview\"><span style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-tree</span></div>"
     },
     {
       "tagName": "sl-tree-item",
       "compatibility": "client-only",
       "validationErrors": 0,
       "validationWarnings": 1,
-      "ssrSnapshot": "<sl-tree-item style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-tree-item</sl-tree-item>"
+      "ssrSnapshot": "<div class=\"snapshot-preview\"><span style=\"display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;\">sl-tree-item</span></div>"
     }
   ],
   "reports": {
@@ -300,7 +300,7 @@
     ],
     "ssrCapable": false
   },
-  "submittedAt": "2026-05-17T10:14:14.731Z",
+  "submittedAt": "2026-05-17T10:21:36.631Z",
   "submittedBy": "hub-scanner",
   "validatorVersion": "0.19.0"
 }

@@ -134,8 +134,14 @@ export async function renderSnapshotLit(
       htmlString = templateResultToString(templateResult, tagName);
     }
 
-    // Wrap in tag for display
-    const html = `<${tagName}>${htmlString}</${tagName}>`;
+    // Wrap in tag for display — strip DSD template wrapper since
+    // this snapshot is embedded in another SSG page where DSD
+    // polyfill won't process nested templates.
+    const innerHtml = stripDsdTemplate(htmlString);
+
+    // Wrap in a live-like preview: just the outer tag so the
+    // rendered content (button, card, etc.) is visible inline
+    const html = `<div class="snapshot-preview">${innerHtml}</div>`;
 
     return { html, success: true };
   } catch (err) {
@@ -229,7 +235,7 @@ function htmlEscape(str: string): string {
  * Generate a placeholder snapshot for client-only components.
  */
 function renderPlaceholder(tagName: string, reason?: string): SnapshotRenderResult {
-  const html = `<${tagName} class="client-only-placeholder" style="display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;">${tagName}</${tagName}>`;
+  const html = `<div class="snapshot-preview"><span style="display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;">${tagName}</span></div>`;
   return { html, success: true };
 }
 
@@ -252,4 +258,35 @@ export async function renderComponentSnapshot(
  */
 export function formatSnapshotForDisplay(html: string): string {
   return html.trim();
+}
+
+/**
+ * Strip DSD template wrapper from Lit SSR output.
+ *
+ * Lit SSR produces: <tag><template shadowrootmode="open">...content...</template></tag>
+ * For snapshot previews, we only want the inner rendered HTML without DSD syntax.
+ */
+function stripDsdTemplate(html: string): string {
+  // Strip <template shadowrootmode="open" ...> and </template> tags
+  let result = html.replace(/<template\s+shadowrootmode[^>]*>/gi, '');
+  result = result.replace(/<\/template>/gi, '');
+
+  // Strip <style> blocks (they pollute the preview with host styles)
+  result = result.replace(/<style>[\s\S]*?<\/style>/gi, '');
+
+  // Strip duplicate wrapping tag names (the <less-button> that wraps the template)
+  const tagMatch = html.match(/^<([a-z][a-z0-9-]*)>/i);
+  if (tagMatch) {
+    const tagName = tagMatch[1];
+    const closeTag = `</${tagName}>`;
+    // Remove outermost wrapper tag  
+    result = result.replace(new RegExp(`^<${tagName}[^>]*>`, 'i'), '');
+    result = result.replace(new RegExp(escapeRegex(closeTag) + '$'), '');
+  }
+
+  return result.trim();
+}
+
+function escapeRegex(str: string): string {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }

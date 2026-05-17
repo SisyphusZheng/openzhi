@@ -195,7 +195,7 @@ export async function scanInstalledPackages(): Promise<ScanResult> {
 
       // For client-only, generate placeholder snapshot
       if (!ssrSnapshot && pkg.compatibility === 'client-only') {
-        ssrSnapshot = `<${tag} style="display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;">${tag}</${tag}>`;
+        ssrSnapshot = `<div class="snapshot-preview"><span style="display:inline-block;padding:0.75rem 1.25rem;border:1px dashed #d0d0d0;border-radius:6px;font-family:monospace;font-size:0.8125rem;color:#999;background:#fafafa;">${tag}</span></div>`;
       }
 
       tags.push({
