@@ -346,9 +346,10 @@ export default class DocsRegistryDetail extends LitElement {
   override async connectedCallback() {
     super.connectedCallback();
 
-    // Parse package name from route
+    // Parse package name from route: @scope~name → @scope/name
     const path = window.location.pathname;
-    const pkgPath = path.replace('/registry/', '');
+    const rawPkgPath = path.replace('/registry/', '');
+    const pkgPath = rawPkgPath.replace('~', '/'); // decode scoped package
     this.packageName = pkgPath;
 
     try {

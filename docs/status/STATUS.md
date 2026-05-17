@@ -6,15 +6,20 @@
 
 ## Next Planned Version: 0.19.0 (Platform + Hub)
 
-v0.19.0 is building the Registry Hub MVP with:
+v0.19.0 is building the Registry Hub MVP:
 
-- `packages/hub/` — Hub data schema, builder, indexer, submission bundler
-- `less hub submit` CLI — local validation → bundle → GitHub PR
-- Hub CI pipeline — auto-validate + conditional auto-merge
-- Registry UI (www) — search, package detail, compatibility evidence
-- Fixture data: Shoelace, Media Chrome, React showcase
+- `packages/hub/` - Hub schema, builder, indexer, submission bundler, and
+  snapshot utilities
+- `less hub submit` CLI - local validation, artifact bundling, and GitHub PR
+  submission
+- Hub CI pipeline - schema, artifact, duplicate-tag, and index validation
+- Registry UI - search, package detail, compatibility evidence, install
+  guidance, and snapshots
+- Fixture/demo data - first-party UI, Shoelace, Media Chrome, and selected
+  examples
 
-v0.19.0 is a **one-shot release** covering the full Hub subsystem (no v0.19.x splitting).
+v0.19.0 is a **one-shot release** covering the full Hub subsystem. It is not
+Done yet.
 
 ## Branch Status
 
@@ -39,22 +44,43 @@ v0.19.0 is a **one-shot release** covering the full Hub subsystem (no v0.19.x sp
 
 ## Current Release: 0.19.0 (Active)
 
-### Registry Hub MVP — In Progress
+### 2026-05-17 Audit Override
 
-- **`packages/hub/`**: Hub data schema, builder, indexer, submission bundler ✅
-- **`less hub submit` CLI**: local validation → artifact bundling → GitHub PR ✅
-- **Hub CI**: `.github/workflows/hub-ci.yml` — auto-validation + conditional auto-merge ✅
-- **Registry UI**: www search + package detail with compatibility evidence ✅
-- **Fixture data**: Shoelace, Media Chrome, React showcase pre-loaded ✅
-- **ADR-0030**: Static-index + CLI-submission-pipeline architecture ✅
-- **28 new tests, 706 total** (+25 from v0.18.3)
+The current Hub work must be treated as **In Progress**, not release-ready.
+`packages/hub/` and the Registry list UI exist, but the evidence-backed
+submission pipeline, CI trust gate, static package detail pages, and
+release/publish integration are still incomplete.
+
+Primary blocker report:
+
+- [Registry Hub v0.19 Audit Gaps](../conversation/registry-hub-v019-audit-gaps.md)
+
+Do not mark v0.19.0 as Done until that report is closed and the v0.19.0 SOP
+verification checklist passes.
+
+### Current Hub State
+
+- Present: Hub package skeleton, schema/builder/indexer/submitter tests, demo
+  `hub-index`, registry list page, `www/public/hub` data.
+- Incomplete: real `less validate-manifest` integration, real build/DSD/snapshot
+  artifact ingestion, manifest hash generation, PR-mode CLI path, Hub CI
+  validator tasks, static registry detail pages, root CI/publish coverage for
+  `@lessjs/hub`.
+- Known validation state from 2026-05-17:
+  - Passing: `deno audit`, `deno task typecheck`, explicit Hub `deno check`,
+    `deno test packages/hub/__tests__/`, `deno task test`, `deno task build`,
+    `deno task test:e2e`.
+  - Failing: `deno task lint`, `deno task fmt:check`.
 
 ## Last Completed Release: 0.18.3 (2026-05-17)
 
-- **DOM Simulation Experiment**: Happy DOM integration for client-only WC rendering
-- **Config**: `ssr.domSimulation: 'off' | 'explicit'`, `ssr.domSimulationTimeoutMs`
+- **DOM Simulation Experiment**: Happy DOM integration for client-only Web
+  Component rendering
+- **Config**: `ssr.domSimulation: 'off' | 'explicit'`,
+  `ssr.domSimulationTimeoutMs`
 - **Report**: `dsd-report.json.domSimulation` section with per-attempt results
-- **Safety**: Timeout-bound, isolated env, failure degrades to client-only
+- **Safety**: timeout-bound, isolated environment, failure degrades to
+  client-only
 - **ADR-0029**: Happy DOM chosen over JSDOM and self-implementation
 - **8 new tests, 681 total**
 
@@ -62,10 +88,12 @@ v0.19.0 is a **one-shot release** covering the full Hub subsystem (no v0.19.x sp
 
 ## Known Issues
 
+- v0.19 Hub blockers are tracked in
+  [Registry Hub v0.19 Audit Gaps](../conversation/registry-hub-v019-audit-gaps.md).
 - 3 JSR `unanalyzable-dynamic-import` warnings in adapter-vite are expected for
   runtime-only deps and do not block publish.
 - Docs showcase chunks intentionally exceed the old 200KB total JS budget. The
-  gate now tracks core and showcase budgets separately; v0.18+ should add
+  gate tracks core and showcase budgets separately; v0.19+ should add
   package-level bundle classification.
 
 ## Active Rule
@@ -83,38 +111,39 @@ Third-party package handling is conservative:
 | ------- | ------------------------------------------------------ | ---------- | -------------------------------------------------------------------- | --------------------------------------------------------- |
 | v0.17.3 | `docs/sop/v0.17.3-multi-framework-adapters.md`         | Done       | v0.17.2 SSR filtering exists                                         | Vanilla/React adapters documented; no universal SSR claim |
 | v0.17.4 | `docs/sop/v0.17.4-compatibility-boundary-hardening.md` | Done       | v0.17.3 docs closed                                                  | Client-only modules excluded before SSR entry generation  |
-| v0.18.0 | `docs/sop/v0.18.0-universal-wc-engine.md`              | **Done**   | v0.17.4 admission planner complete + package SSR admission validated | CEM parser + compatibility tiers + report reasons         |
-| v0.18.1 | `docs/sop/v0.18.1-validate-manifest-cli.md`            | **Done**   | v0.18.0 classifier stable                                            | `less validate-manifest` emits stable diagnostics         |
-| v0.18.2 | `docs/sop/v0.18.2-less-add-install-flow.md`            | Planned    | validation CLI stable                                                | `less add` dry-run/install is validation-gated            |
-| v0.18.3 | `docs/sop/v0.18.3-dom-simulation-experiment.md`        | **Done**   | client-only fallback stable                                          | opt-in DOM simulation decision recorded                   |
-| v0.19.0 | `docs/sop/v0.19.0-platform-hub.md`                     | **Active** | validation/build reports stable + ADR-0030 accepted                  | Hub ingests artifacts, CLI submit pipeline, search UI     |
+| v0.18.0 | `docs/sop/v0.18.0-universal-wc-engine.md`              | Done       | v0.17.4 admission planner complete + package SSR admission validated | CEM parser + compatibility tiers + report reasons         |
+| v0.18.1 | `docs/sop/v0.18.1-validate-manifest-cli.md`            | Done       | v0.18.0 classifier stable                                            | `less validate-manifest` emits stable diagnostics         |
+| v0.18.2 | `docs/sop/v0.18.2-less-add-install-flow.md`            | Done       | validation CLI stable                                                | `less add` dry-run/install is validation-gated            |
+| v0.18.3 | `docs/sop/v0.18.3-dom-simulation-experiment.md`        | Done       | client-only fallback stable                                          | opt-in DOM simulation decision recorded                   |
+| v0.19.0 | `docs/sop/v0.19.0-platform-hub.md`                     | Active     | validation/build reports stable + ADR-0030 accepted                  | Hub ingests artifacts, CLI submit pipeline, search UI     |
 | v1.0.0  | `docs/sop/v1.0.0-general-purpose-engine.md`            | Vision     | engine, reports, add flow, Hub records stable                        | API/schema freeze with deterministic package outcomes     |
 
 ## Operator Checklist
 
-Before starting any version:
+Before starting or continuing a version:
 
 1. Read this STATUS file.
 2. Read the target version SOP.
-3. Confirm entry criteria are true.
-4. Implement only the target SOP scope.
-5. Run verification commands listed in the SOP.
-6. Update changelog and STATUS only after exit criteria pass.
+3. Read any linked `docs/conversation/` blocker reports.
+4. Confirm entry criteria are true.
+5. Implement only the target SOP scope.
+6. Run verification commands listed in the SOP.
+7. Update changelog and STATUS only after exit criteria pass.
 
 ## JSR Publish Order
 
 1. `@lessjs/rpc` (no LessJS deps)
 2. `@lessjs/signals` (no LessJS deps)
 3. `@lessjs/core` (no LessJS deps) - must be published before all others
-4. `@lessjs/adapter-lit` (depends on core only)
-5. `@lessjs/adapter-vanilla` (depends on core only)
-6. `@lessjs/adapter-react` (depends on core only)
-7. `@lessjs/content` (depends on core only)
-8. `@lessjs/i18n` (depends on core only)
-9. `@lessjs/adapter-vite` (depends on core only; sitemap via dynamic import at
+4. `@lessjs/adapter-vite` (depends on core only; sitemap via dynamic import at
    runtime)
+5. `@lessjs/content` (depends on core only)
+6. `@lessjs/i18n` (depends on core only)
+7. `@lessjs/adapter-lit` (depends on core only)
+8. `@lessjs/adapter-vanilla` (depends on core only)
+9. `@lessjs/adapter-react` (depends on core only)
 10. `@lessjs/ui` (depends on core + adapter-lit)
-11. `@lessjs/app` (depends on core + adapter-vite + content + i18n)
+11. `@lessjs/app` (depends on adapter-vite + content + i18n)
 12. `@lessjs/create` (JSR only)
 13. `@lessjs/hub` (JSR only; depends on core)
 

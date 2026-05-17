@@ -351,7 +351,7 @@ export default class DocsRegistryHome extends LitElement {
 
   private _packageLink(pkg: HubIndexEntry): string {
     const name = pkg.scope ? `${pkg.scope}/${pkg.name}` : pkg.name;
-    return `/registry/${name}`;
+    return `/registry/${name.replace('/', '~')}`;
   }
 
   override render() {
