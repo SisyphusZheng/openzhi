@@ -2,78 +2,38 @@
 
 > AI assistant: read this file first on every session start.
 
-## Current Version: 0.17.5
+## Current Version: 0.18.0
 
-## Next Planned Version: 0.18.0 (in progress)
+## Next Planned Version: 0.18.1 (planned)
 
-v0.17.5 closed the lint fix. v0.18.0 is actively in progress.
-All 5 SOP items are implemented on `dev` branch. CEM plugin integration also complete (2026-05-17).
+v0.18.0 Universal WC Engine is complete. v0.18.1 validate-manifest CLI is next on the roadmap.
 
 ## Branch Status
 
-| Branch        | HEAD      | Status                                                         |
-| ------------- | --------- | -------------------------------------------------------------- |
-| `origin/dev`  | `fecdbb1` | v0.18.0 SOP items 1-5 + CEM plugin integration complete       |
-| `origin/main` | `c71a662` | v0.17.5 release                                                |
+| Branch        | HEAD      | Status                                                                  |
+| ------------- | --------- | ----------------------------------------------------------------------- |
+| `origin/dev`  | `de78fdd` | v0.18.0 release (CEM parser + compatibility tiers + plugin integration) |
+| `origin/main` | `de78fdd` | v0.18.0 release                                                         |
 
 ## Tags
 
-| Tag      | Commit    | Date       |
-| -------- | --------- | ---------- |
-| v0.17.5  | `c71a662` | 2026-05-17 |
-| v0.17.4  | `3b5db70` | 2026-05-16 |
-| v0.17.3  | `be3cf0c` | 2026-05-16 |
-| v0.17.2  | pending   | 2026-05-16 |
-| v0.17.1  | `08f267d` | 2026-05-16 |
-| v0.17.0  | `1f93fa2` | 2026-05-16 |
-| v0.16.0  | `a02feb6` | 2026-05-16 |
-| v0.15.3  | `5e06fc9` | 2026-05-16 |
+| Tag     | Commit    | Date       |
+| ------- | --------- | ---------- |
+| v0.18.0 | `de78fdd` | 2026-05-17 |
+| v0.17.5 | `c71a662` | 2026-05-17 |
+| v0.17.4 | `3b5db70` | 2026-05-16 |
+| v0.17.3 | `be3cf0c` | 2026-05-16 |
+| v0.17.2 | pending   | 2026-05-16 |
+| v0.17.1 | `08f267d` | 2026-05-16 |
+| v0.17.0 | `1f93fa2` | 2026-05-16 |
+| v0.16.0 | `a02feb6` | 2026-05-16 |
+| v0.15.3 | `5e06fc9` | 2026-05-16 |
 
-## v0.18.0 Development: In Progress (2026-05-17)
+## Last Completed Release: 0.18.0 (2026-05-17)
 
-All 5 SOP items implemented on `dev`:
-
-### SOP Item 1: CEM Parser ✅
-- `packages/core/src/cem-parser.ts` — parses standard `custom-elements.json`
-- `packages/core/src/types.ts` — CEM types (CustomElementsManifest, CemCustomElement, etc.)
-- 19 tests passing
-
-### SOP Item 2: Compatibility Classifier ✅
-- `packages/core/src/compatibility.ts` — 4-tier classification engine
-- Tiers: ssr-capable, client-only, rejected, experimental-dom
-- Conservative defaults: CEM without Less extension → client-only
-- 29 tests passing
-
-### SOP Item 3: SSR/client-only Planner ✅
-- `packages/adapter-vite/src/entry-descriptor.ts` — buildSsrAdmissionPlan() now accepts CompatibilityClassification[]
-- CEM classifications take precedence over island metadata
-- SsrAdmissionPlan.cemClassifications added
-- 9 new tests (18 total in ssr-admission.test.ts)
-
-### SOP Item 4: Report Schema Extension ✅
-- `packages/core/src/types.ts` — CemCompatibilityReport interface added to DsdBuildReport
-- `packages/adapter-vite/src/cli/ssg-render.ts` — buildCemCompatibilityReport() builder
-- `packages/adapter-vite/src/build-context.ts` — Phase1Meta.cemClassifications field
-- Report schema version bumped to 1.1.0
-- cemCompatibility section in dsd-report.json
-
-### SOP Item 5: Fixtures and Tests ✅
-- 4 new tests for CEM compatibility in ssg-report.test.ts
-- 6 new tests for CEM auto-detection in route-scanner.test.ts
-- Total: 630 tests passing
-
-### CEM Plugin Integration ✅ (v0.18.0 completion — 2026-05-17)
-- `packages/adapter-vite/src/route-scanner.ts` — `scanCemManifests()` + `detectAndClassifyCemPackages()`
-  - Scans node_modules for `custom-elements.json` without executing package code
-  - Handles scoped packages (@org/pkg), skips invalid JSON (non-fatal)
-  - Calls `parseCem()` + `classifyCemManifest()` pipeline
-- `packages/adapter-vite/src/index.ts` — `buildStart()` now calls `detectAndClassifyCemPackages()`
-  - Stores results in `ctx.phase1.cemClassifications`
-  - Passes `cemClassifications` to `buildEntryDescriptor()`
-  - Failure is non-fatal (best-effort, debug log only)
-- `packages/core/deno.json` — added `./compatibility` subpath export
-
-## Last Completed Release: 0.17.5 (2026-05-17)
+- **Universal WC Engine**: CEM parser + compatibility classifier + SSR admission planner + report schema + CEM plugin auto-detection
+- **Conservative defaults**: CEM without Less extension → client-only (safe default)
+- **630 tests passing**
 
 - **Lint fix**: removed `any` type from parent-with-client-child fixture
 
@@ -100,8 +60,8 @@ Third-party package handling is conservative:
 | ------- | ------------------------------------------------------ | ------------ | -------------------------------------------------------------------- | --------------------------------------------------------- |
 | v0.17.3 | `docs/sop/v0.17.3-multi-framework-adapters.md`         | Done         | v0.17.2 SSR filtering exists                                         | Vanilla/React adapters documented; no universal SSR claim |
 | v0.17.4 | `docs/sop/v0.17.4-compatibility-boundary-hardening.md` | Done         | v0.17.3 docs closed                                                  | Client-only modules excluded before SSR entry generation  |
-| v0.18.0 | `docs/sop/v0.18.0-universal-wc-engine.md`              | **Active**   | v0.17.4 admission planner complete + package SSR admission validated | CEM parser + compatibility tiers + report reasons         |
-| v0.18.1 | `docs/sop/v0.18.1-validate-manifest-cli.md`            | Planned      | v0.18.0 classifier stable                                            | `less validate-manifest` emits stable diagnostics         |
+| v0.18.0 | `docs/sop/v0.18.0-universal-wc-engine.md`              | **Done**     | v0.17.4 admission planner complete + package SSR admission validated | CEM parser + compatibility tiers + report reasons         |
+| v0.18.1 | `docs/sop/v0.18.1-validate-manifest-cli.md`            | **Planned**  | v0.18.0 classifier stable                                            | `less validate-manifest` emits stable diagnostics         |
 | v0.18.2 | `docs/sop/v0.18.2-less-add-install-flow.md`            | Planned      | validation CLI stable                                                | `less add` dry-run/install is validation-gated            |
 | v0.18.3 | `docs/sop/v0.18.3-dom-simulation-experiment.md`        | Experimental | client-only fallback stable                                          | opt-in DOM simulation decision recorded                   |
 | v0.19.0 | `docs/sop/v0.19.0-platform-hub.md`                     | Planned      | validation/build reports stable                                      | Hub ingests artifacts and shows compatibility             |
