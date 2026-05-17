@@ -352,7 +352,7 @@ export default class DocsRegistryDetail extends LitElement {
     this.packageName = pkgPath;
 
     try {
-      const res = await fetch(`/registry/packages/${pkgPath}.json`);
+      const res = await fetch(`/hub/packages/${pkgPath}.json`);
       if (!res.ok) {
         throw new Error(`Package not found (${res.status})`);
       }

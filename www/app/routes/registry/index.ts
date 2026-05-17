@@ -39,7 +39,7 @@ let _indexData: HubIndexData | null = null;
 
 async function loadIndex(): Promise<HubIndexData> {
   if (_indexData) return _indexData;
-  const res = await fetch('/registry/index.json');
+  const res = await fetch('/hub/index.json');
   _indexData = await res.json() as HubIndexData;
   return _indexData;
 }
