@@ -37,8 +37,10 @@ architectural decision, its context, and consequences.
 | 0026 | Structured Render Pipeline (v0.16)        | Proposed                                 |
 | 0027 | Roadmap Reorder: Engine Before Hub        | Accepted                                 |
 | 0028 | Conservative Third-Party WC SSR Admission | Proposed                                 |
-| 0029 | Happy DOM for v0.18.3 DOM Simulation      | Proposed                                 |
+| 0029 | Happy DOM for v0.18.3 DOM Simulation      | Superseded by ADR-0032                   |
 | 0030 | Hub Architecture + Submission Pipeline    | Proposed                                 |
+| 0031 | Hub v2 Component Browser Workflow         | Proposed                                 |
+| 0032 | Real Browser Snapshot Rendering            | Proposed                                 |
 
 ## Superseded / Historical
 
