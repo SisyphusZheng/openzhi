@@ -24,10 +24,10 @@ LessJS 的当前和可预见的唯一消费者是其作者本人。
 
 **两层渲染模型**（本次讨论的关键认知更新）：
 
-| 层级 | 行为 | 条件 | 覆盖范围 | 价值 |
-|------|------|------|----------|------|
-| **Tier 2（默认）** | 输出 `<my-comp>` 标签，浏览器 JS 升级后渲染 | 无条件 | 所有 WC，100% | 可用性兜底 |
-| **Tier 1（增强）** | 预渲染 shadow DOM 为 DSD 模板 | 通过 adapter 或 Hub 验证 | 已验证组件 | JS 加载前有视觉 |
+| 层级               | 行为                                        | 条件                     | 覆盖范围      | 价值            |
+| ------------------ | ------------------------------------------- | ------------------------ | ------------- | --------------- |
+| **Tier 2（默认）** | 输出 `<my-comp>` 标签，浏览器 JS 升级后渲染 | 无条件                   | 所有 WC，100% | 可用性兜底      |
+| **Tier 1（增强）** | 预渲染 shadow DOM 为 DSD 模板               | 通过 adapter 或 Hub 验证 | 已验证组件    | JS 加载前有视觉 |
 
 **诚实的评估**：
 
@@ -44,10 +44,10 @@ LessJS 的当前和可预见的唯一消费者是其作者本人。
 
 **两种定位**：
 
-| 定位 | 体验 | 价值 | 可行性 |
-|------|------|------|--------|
+| 定位              | 体验                                           | 价值     | 可行性                 |
+| ----------------- | ---------------------------------------------- | -------- | ---------------------- |
 | **A. 安装即渲染** | `less install @scope/pkg` → 自动 Tier 1/2 渲染 | 差异化强 | 依赖引擎 Tier 1 覆盖率 |
-| **B. 展示型目录** | 类 webcomponents.org → 浏览、搜索 | 差异化弱 | 技术简单 |
+| **B. 展示型目录** | 类 webcomponents.org → 浏览、搜索              | 差异化弱 | 技术简单               |
 
 **诚实的评估**：
 
@@ -76,10 +76,10 @@ Web Standards First, Deno Second
 
 **任务分层**：
 
-| 任务类型 | 技术组合 | 场景 |
-|----------|----------|------|
-| **轻量（博客/文档站）** | WC UI 库 + Hono + LessJS SSG/SSR/Signals | 内容为主，交互为辅 |
-| **重型（CRM/仪表盘）** | 部分 Islands → React/Vue + Supabase | 复杂交互 + 数据驱动 |
+| 任务类型                | 技术组合                                 | 场景                |
+| ----------------------- | ---------------------------------------- | ------------------- |
+| **轻量（博客/文档站）** | WC UI 库 + Hono + LessJS SSG/SSR/Signals | 内容为主，交互为辅  |
+| **重型（CRM/仪表盘）**  | 部分 Islands → React/Vue + Supabase      | 复杂交互 + 数据驱动 |
 
 **Supabase 定位**：生态伙伴，不自建。Supabase Edge Functions 基于 Deno + Hono，和 LessJS 天然对齐。LessJS 提供前端渲染，Supabase 提供 DB + Auth + Realtime + Storage。
 
@@ -93,24 +93,24 @@ Web Standards First, Deno Second
 
 ## 二、当前真实状态（不美化）
 
-| 能力 | 状态 | 诚实评分 |
-|------|------|----------|
-| SSG 静态站点生成 | ✅ 稳定 | 9/10 |
-| Lit adapter DSD SSR | ✅ 稳定 | 8/10 |
-| Vanilla adapter | ✅ 可用 | 7/10 |
-| React adapter | ✅ 可用 | 6/10 |
-| 第三方 WC Tier 2（标签输出） | ✅ 零配置 | 10/10（但无差异化） |
-| 第三方 WC Tier 1（DSD 预渲染） | ⚠️ 脆弱 | 4/10 |
-| Signals（通信层） | ✅ 可用 | 6/10 |
-| Signals（渲染层渗透） | ❌ 未做 | 2/10 |
-| Islands 架构 | ✅ 稳定 | 7/10 |
-| Registry Hub（基础设施） | ✅ 可用 | 6/10 |
-| Registry Hub（快照稳定性） | ⚠️ 刚修了好几轮 bug | 4/10 |
-| API Route（Hono） | ❌ 不存在 | 0/10 |
-| 请求时 SSR | ❌ 不存在 | 0/10 |
-| Vue adapter | ❌ 不存在 | 0/10 |
-| Supabase 集成 | ❌ 不存在 | 0/10 |
-| Edge runtime 适配 | ❌ 仅静态 CDN | 1/10 |
+| 能力                           | 状态                | 诚实评分            |
+| ------------------------------ | ------------------- | ------------------- |
+| SSG 静态站点生成               | ✅ 稳定             | 9/10                |
+| Lit adapter DSD SSR            | ✅ 稳定             | 8/10                |
+| Vanilla adapter                | ✅ 可用             | 7/10                |
+| React adapter                  | ✅ 可用             | 6/10                |
+| 第三方 WC Tier 2（标签输出）   | ✅ 零配置           | 10/10（但无差异化） |
+| 第三方 WC Tier 1（DSD 预渲染） | ⚠️ 脆弱             | 4/10                |
+| Signals（通信层）              | ✅ 可用             | 6/10                |
+| Signals（渲染层渗透）          | ❌ 未做             | 2/10                |
+| Islands 架构                   | ✅ 稳定             | 7/10                |
+| Registry Hub（基础设施）       | ✅ 可用             | 6/10                |
+| Registry Hub（快照稳定性）     | ⚠️ 刚修了好几轮 bug | 4/10                |
+| API Route（Hono）              | ❌ 不存在           | 0/10                |
+| 请求时 SSR                     | ❌ 不存在           | 0/10                |
+| Vue adapter                    | ❌ 不存在           | 0/10                |
+| Supabase 集成                  | ❌ 不存在           | 0/10                |
+| Edge runtime 适配              | ❌ 仅静态 CDN       | 1/10                |
 
 **加权平均：~4.5/10**
 
@@ -118,13 +118,13 @@ Web Standards First, Deno Second
 
 ## 三、竞品格局（精简）
 
-| 产品 | WC 原生 | 全栈 | DSD | Signals | Islands |
-|------|---------|------|-----|---------|---------|
-| **Astro** | ❌ 当普通元素 | ✅ 成熟 | ❌ | ❌ | ✅ |
-| **Enhance** | ✅ | 部分 | ❌ | ❌ | 部分 |
-| **Lit SSR** | ✅ 仅 Lit | ❌ 库 | ❌ | ❌ | ❌ |
-| **Next.js** | ❌ | ✅ | ❌ | ❌ | 部分（RSC） |
-| **webcomponents.org** | ✅ 展示 | ❌ | ❌ | ❌ | ❌ |
+| 产品                  | WC 原生       | 全栈    | DSD | Signals | Islands     |
+| --------------------- | ------------- | ------- | --- | ------- | ----------- |
+| **Astro**             | ❌ 当普通元素 | ✅ 成熟 | ❌  | ❌      | ✅          |
+| **Enhance**           | ✅            | 部分    | ❌  | ❌      | 部分        |
+| **Lit SSR**           | ✅ 仅 Lit     | ❌ 库   | ❌  | ❌      | ❌          |
+| **Next.js**           | ❌            | ✅      | ❌  | ❌      | 部分（RSC） |
+| **webcomponents.org** | ✅ 展示       | ❌      | ❌  | ❌      | ❌          |
 
 **市场空白**：没有人同时做到 WC 原生 + DSD + 全栈能力。LessJS 的目标位置。
 
@@ -194,12 +194,12 @@ Web Standards First, Deno Second
 
 **已知陷阱**（从 Shoelace 修复中学到的）：
 
-| 问题 | 原因 | 解决方案 |
-|------|------|----------|
-| CSS 变量缺失 → 组件透明 | Playwright 只捕获元素标记，不含外部 CSS | 注入 `light.css` |
-| 嵌套 `<button>` → 渲染崩坏 | shadowHtml 中的 `<button>` 和 WC 自身的 `<button>` 冲突 | 降级 `<button>` → `<div>` |
-| slot 内容为空 | demoAttrs/demoSlots 丢失 | 在最终 HTML 中恢复 |
-| 快照体积膨胀 | shadow DOM 深度嵌套 | button→div 降级显著减小体积 |
+| 问题                       | 原因                                                    | 解决方案                    |
+| -------------------------- | ------------------------------------------------------- | --------------------------- |
+| CSS 变量缺失 → 组件透明    | Playwright 只捕获元素标记，不含外部 CSS                 | 注入 `light.css`            |
+| 嵌套 `<button>` → 渲染崩坏 | shadowHtml 中的 `<button>` 和 WC 自身的 `<button>` 冲突 | 降级 `<button>` → `<div>`   |
+| slot 内容为空              | demoAttrs/demoSlots 丢失                                | 在最终 HTML 中恢复          |
+| 快照体积膨胀               | shadow DOM 深度嵌套                                     | button→div 降级显著减小体积 |
 
 **关键认知**：Tier 1 对每个第三方库都是一件一个案的手工活。不是"验证通过就自动跑"，是"每个新库都可能冒出新问题"。这不是 bug，是第三方 WC 的 shadow DOM 内部结构天然不可预测。
 
@@ -240,12 +240,14 @@ Tier 2 标签输出 + 浏览器升级  →  总是能用的
 **是什么**：`app/api/**/*.ts` → 自动注册为 Hono 路由 → Edge Function 执行
 
 **为什么最先做**：
+
 - Hono 已在依赖里
 - CF Pages Functions 原生支持 `functions/` 目录
 - Supabase 官方有 Deno + Hono 集成模板
 - 没有 API Route 就没有 CRM
 
 **需要做的事**：
+
 - 路由扫描识别 `api/` 目录
 - 将 `.ts` 文件注册为 Hono route handler
 - 构建时将 API route 编译为 CF Pages Function
@@ -256,11 +258,13 @@ Tier 2 标签输出 + 浏览器升级  →  总是能用的
 **是什么**：动态路由在请求时调用 `renderRoute()`，而非构建时
 
 **为什么需要**：
+
 - CRM 的用户数据页面不能构建时生成（每个人看到的内容不同）
 - 权限控制必须在请求时执行
 - 构建时 SSG + 请求时 SSR 共存是全栈框架的标配
 
 **需要做的事**：
+
 - 路由声明区分 static/dynamic（约定或配置）
 - dynamic 路由在 Edge Function 中执行 renderRoute()
 - 请求上下文传递到渲染层（用户身份、请求参数等）
@@ -270,11 +274,13 @@ Tier 2 标签输出 + 浏览器升级  →  总是能用的
 **是什么**：Auth / DB / Realtime / Storage 的集成模板和工具函数
 
 **为什么是生态伙伴而非自建**：
+
 - Supabase Edge Functions 已基于 Deno + Hono
 - Auth/DB/Realtime/Storage 自建成本巨大
 - 和 LessJS 的技术栈天然对齐
 
 **需要做的事**：
+
 - `@lessjs/supabase` 或内建集成：环境变量注入、client 工厂函数
 - Auth 中间件：请求拦截 → 验证 JWT → 注入用户信息
 - 数据获取工具：server-side query → 注入页面数据
@@ -308,16 +314,19 @@ Web APIs        Web APIs           Web APIs
 ### 中期：v0.20.x — WC 渲染 + 全栈地基
 
 **渲染引擎**：
+
 - Tier 2 默认行为在文档和 CLI 中明确化
 - Tier 1 快照对 Shoelace 全量验证
 - 更多 WC 库的 Playwright 快照（Material Web 等）
 
 **全栈地基**：
+
 - Hono API Route 原型（`app/api/` 目录 → CF Pages Function）
 - 请求上下文注入机制
 - `less dev` 支持 API route 热重载
 
 **博客验证**：
+
 - 用 LessJS 构建个人博客
 - 页面混用 Shoelace + Media Chrome + @lessjs/ui
 - 发现并修复真实使用中的问题
@@ -378,13 +387,13 @@ Web APIs        Web APIs           Web APIs
 
 本节记录战略讨论中形成的关键决策，供未来参考。
 
-| 日期 | 决策 | 上下文 |
-|------|------|--------|
-| 2026-05-18 | WC 渲染重构为 Tier 1/2 两层模型 | 之前把"自动 SSR"理解为单一目标，实际应分层：Tier 2 兜底、Tier 1 增强 |
-| 2026-05-18 | DSD 搞不定可回退 SD | "实在不行拉倒回 SD 也行"——回退链条：DSD → SD → Tier 2 client-only |
-| 2026-05-18 | 消费者是作者本人 | "真实消费者就我一个"——产品决策以"我自己够不够用"为准 |
-| 2026-05-18 | 近期目标是个人博客 | 博客验证引擎能力，页面上自如混用多种 WC UI 库 |
-| 2026-05-18 | 远期目标是 CRM 等数据驱动应用 | CRM 需要 API Route + SSR + Auth + DB → 驱动全栈能力生长 |
-| 2026-05-18 | 全栈路径：API Route → SSR → Supabase | 严格排序，三条线不能并行推进 |
-| 2026-05-18 | Supabase 是生态伙伴不自建 | Deno + Hono 技术栈对齐，不自建 Auth/DB/Realtime |
-| 2026-05-18 | 不急着做全栈，先稳固引擎 | "先把 DSD 引擎做到真正稳定、Hub 做到真正可用" |
+| 日期       | 决策                                 | 上下文                                                               |
+| ---------- | ------------------------------------ | -------------------------------------------------------------------- |
+| 2026-05-18 | WC 渲染重构为 Tier 1/2 两层模型      | 之前把"自动 SSR"理解为单一目标，实际应分层：Tier 2 兜底、Tier 1 增强 |
+| 2026-05-18 | DSD 搞不定可回退 SD                  | "实在不行拉倒回 SD 也行"——回退链条：DSD → SD → Tier 2 client-only    |
+| 2026-05-18 | 消费者是作者本人                     | "真实消费者就我一个"——产品决策以"我自己够不够用"为准                 |
+| 2026-05-18 | 近期目标是个人博客                   | 博客验证引擎能力，页面上自如混用多种 WC UI 库                        |
+| 2026-05-18 | 远期目标是 CRM 等数据驱动应用        | CRM 需要 API Route + SSR + Auth + DB → 驱动全栈能力生长              |
+| 2026-05-18 | 全栈路径：API Route → SSR → Supabase | 严格排序，三条线不能并行推进                                         |
+| 2026-05-18 | Supabase 是生态伙伴不自建            | Deno + Hono 技术栈对齐，不自建 Auth/DB/Realtime                      |
+| 2026-05-18 | 不急着做全栈，先稳固引擎             | "先把 DSD 引擎做到真正稳定、Hub 做到真正可用"                        |

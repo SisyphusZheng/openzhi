@@ -420,7 +420,8 @@ export async function scanInstalledPackages(): Promise<ScanResult> {
   }
 
   // ── Phase 3: Render client-only components via Playwright ───────────
-  let playwrightResults: Map<string, { html: string; success: boolean; error?: string }> = new Map();
+  let playwrightResults: Map<string, { html: string; success: boolean; error?: string }> =
+    new Map();
   if (playwrightItems.length > 0) {
     console.log(`\n🎬 Rendering ${playwrightItems.length} components via Playwright...`);
     try {

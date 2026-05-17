@@ -17,16 +17,16 @@ is generated.
 
 ## Phase Overview
 
-| Phase | Version | Name                | Goal                                                           | Status |
-| ----- | ------- | ------------------- | -------------------------------------------------------------- | ------ |
-| 1     | v0.15.x | Renderer Kernel     | Structured render output, hooks, build report                  | Done   |
-| 2     | v0.16.x | WC Package Protocol | Manifest + local registry                                      | Done   |
-| 3     | v0.17.x | Ecosystem Entry     | Manifest-native pipeline, filtering, multi-adapter boundary    | Done   |
-| 4     | v0.18.x | Universal WC Engine | CEM parser, compatibility tiers, validation CLI, safe add flow | Done   |
-| 5     | v0.19.x | Registry Hub MVP    | Searchable validated package index with reports and snapshots  | Active |
-| 6     | v0.20.x | Full-Stack Groundwork | Hono API Route, request-time SSR, Supabase integration      | Planned|
-| 7     | v0.21.x | Full-Stack Framework | Vue adapter, Signals rendering, ISR/DPR, edge runtime       | Vision |
-| 8     | v1.0.x  | Stable Engine       | API freeze and deterministic package admission guarantees      | Vision |
+| Phase | Version | Name                  | Goal                                                           | Status  |
+| ----- | ------- | --------------------- | -------------------------------------------------------------- | ------- |
+| 1     | v0.15.x | Renderer Kernel       | Structured render output, hooks, build report                  | Done    |
+| 2     | v0.16.x | WC Package Protocol   | Manifest + local registry                                      | Done    |
+| 3     | v0.17.x | Ecosystem Entry       | Manifest-native pipeline, filtering, multi-adapter boundary    | Done    |
+| 4     | v0.18.x | Universal WC Engine   | CEM parser, compatibility tiers, validation CLI, safe add flow | Done    |
+| 5     | v0.19.x | Registry Hub MVP      | Searchable validated package index with reports and snapshots  | Active  |
+| 6     | v0.20.x | Full-Stack Groundwork | Hono API Route, request-time SSR, Supabase integration         | Planned |
+| 7     | v0.21.x | Full-Stack Framework  | Vue adapter, Signals rendering, ISR/DPR, edge runtime          | Vision  |
+| 8     | v1.0.x  | Stable Engine         | API freeze and deterministic package admission guarantees      | Vision  |
 
 ## Compatibility Admission Model
 
@@ -169,10 +169,10 @@ both static and dynamic rendering with API routes.
 
 The WC rendering model is restructured into two tiers:
 
-| Tier | Behavior | Condition | Coverage |
-| ---- | -------- | --------- | -------- |
-| Tier 2 (default) | Output `<my-comp>` tag, browser upgrades via JS | None required | All WC, 100% |
-| Tier 1 (enhanced) | Pre-render shadow DOM as DSD template | Adapter or Hub validation | Verified components |
+| Tier              | Behavior                                        | Condition                 | Coverage            |
+| ----------------- | ----------------------------------------------- | ------------------------- | ------------------- |
+| Tier 2 (default)  | Output `<my-comp>` tag, browser upgrades via JS | None required             | All WC, 100%        |
+| Tier 1 (enhanced) | Pre-render shadow DOM as DSD template           | Adapter or Hub validation | Verified components |
 
 Tier 2 is the baseline — any WC tag in SSG output is valid HTML that the
 browser will always upgrade. Tier 1 (DSD pre-rendering) is a performance
@@ -187,12 +187,12 @@ analysis.
 
 ### Full-Stack Capabilities
 
-| Capability | Priority | Description |
-| ---------- | -------- | ----------- |
-| Hono API Route | P0 | `app/api/**/*.ts` → Hono route → CF Pages Function |
-| Request-time SSR | P1 | Dynamic routes render at request time, not build time |
-| Supabase integration | P1 | Auth + DB + Realtime via Deno-native client |
-| Request context | P0 | Environment variables, Supabase client, user identity |
+| Capability           | Priority | Description                                           |
+| -------------------- | -------- | ----------------------------------------------------- |
+| Hono API Route       | P0       | `app/api/**/*.ts` → Hono route → CF Pages Function    |
+| Request-time SSR     | P1       | Dynamic routes render at request time, not build time |
+| Supabase integration | P1       | Auth + DB + Realtime via Deno-native client           |
+| Request context      | P0       | Environment variables, Supabase client, user identity |
 
 ### Blog Validation
 
@@ -264,16 +264,16 @@ v1.0 exit criteria:
 
 ## Cross-Phase Concerns
 
-| Concern                      | Current State            | Target                                      |
-| ---------------------------- | ------------------------ | ------------------------------------------- |
+| Concern                      | Current State            | Target                                               |
+| ---------------------------- | ------------------------ | ---------------------------------------------------- |
 | Third-party UI compatibility | Active v0.17.3 issue     | Tier 1/2 model with DSD pre-render for verified libs |
-| Full-stack capabilities      | SSG only                 | API Route + request-time SSR + Supabase     |
-| Documentation sync           | Manual                   | Release checklist and changelog index       |
-| Test coverage                | Strong unit/e2e baseline | Add compatibility fixtures + API route tests |
-| Open source governance       | Partial                  | Complete before public Hub                  |
-| Security                     | Basic audit              | Package admission and Hub policy            |
-| Build reports                | `dsd-report.json` exists | Include skip reasons and compatibility tier |
-| Vue ecosystem support        | None                     | adapter-vue with DSD hydration              |
+| Full-stack capabilities      | SSG only                 | API Route + request-time SSR + Supabase              |
+| Documentation sync           | Manual                   | Release checklist and changelog index                |
+| Test coverage                | Strong unit/e2e baseline | Add compatibility fixtures + API route tests         |
+| Open source governance       | Partial                  | Complete before public Hub                           |
+| Security                     | Basic audit              | Package admission and Hub policy                     |
+| Build reports                | `dsd-report.json` exists | Include skip reasons and compatibility tier          |
+| Vue ecosystem support        | None                     | adapter-vue with DSD hydration                       |
 
 ## Document Cross-Reference
 

@@ -40,7 +40,7 @@ architectural decision, its context, and consequences.
 | 0029 | Happy DOM for v0.18.3 DOM Simulation      | Superseded by ADR-0032                   |
 | 0030 | Hub Architecture + Submission Pipeline    | Proposed                                 |
 | 0031 | Hub v2 Component Browser Workflow         | Proposed                                 |
-| 0032 | Real Browser Snapshot Rendering            | Proposed                                 |
+| 0032 | Real Browser Snapshot Rendering           | Proposed                                 |
 
 ## Superseded / Historical
 
