@@ -164,6 +164,18 @@ export default class DocsRegistryDetail extends LitElement {
     catch { return json; }
   }
 
+  /** Build link to a component in this package */
+  private _componentLink(tagName: string): string {
+    return `/registry/${this.package}/${tagName}`;
+  }
+
+  /** Package name display */
+  private _getFullName(): string {
+    if (!this._record) return this.package?.replace('~', '/') || 'unknown';
+    const pkg = this._record;
+    return pkg.scope ? `${pkg.scope}/${pkg.name}` : pkg.name;
+  }
+
   override render() {
     const pkg = this._getRecord();
     const fullName = pkg
@@ -208,10 +220,10 @@ export default class DocsRegistryDetail extends LitElement {
           </div>
 
           <div class="section">
-            <div class="section-title">📦 Install</div>
+            <div class="section-title">Install</div>
             <div class="install-box ${pkg.installGuidance.safeToInstall ? 'install-safe' : 'install-unsafe'}">
               <div style="font-weight:600;font-size:0.875rem;margin-bottom:0.25rem;">
-                ${pkg.installGuidance.safeToInstall ? '✅ Safe to install' : '❌ Not installable'}
+                ${pkg.installGuidance.safeToInstall ? 'Safe to install' : 'Not installable'}
               </div>
               <div style="font-size:0.8125rem;color:var(--less-text-secondary);margin-bottom:0.5rem;">
                 ${pkg.installGuidance.ssrCapable ? 'SSR-capable. Server-rendered.' : 'Client-only rendering.'}
@@ -246,31 +258,51 @@ export default class DocsRegistryDetail extends LitElement {
             </table>
           </div>
 
+          <!-- Usage -->
           <div class="section">
-            <div class="section-title">🏷️ Components (${pkg.tags.length})</div>
+            <div class="section-title">Usage</div>
+            <div style="margin-bottom:0.5rem;font-size:0.8125rem;color:var(--less-text-secondary);">
+              Add this package to your LessJS project:
+            </div>
+            <div class="install-cmd">${pkg.installGuidance.command}</div>
+            <div style="margin-top:0.75rem;font-size:0.8125rem;color:var(--less-text-secondary);">
+              Then import it in your route:
+            </div>
+            <div class="install-cmd" style="margin-top:0.375rem;">import '${fullName}';</div>
+            <div style="margin-top:0.5rem;font-size:0.8125rem;">
+              Click a component below for usage examples and rendered previews.
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="section-title">Components (${pkg.tags.length})</div>
+            <div style="font-size:0.8125rem;color:var(--less-text-tertiary);margin-bottom:0.75rem;">
+              Click a component to see its rendered preview, usage example, and compatibility details.
+            </div>
             <div class="tag-list">
               ${pkg.tags.map(tag => {
                 const tagColor = tag.validationErrors > 0 ? '#ef4444' : tag.compatibility === 'ssr-capable' ? '#22c55e' : '#f59e0b';
                 return html`
-                  <div class="tag-item">
+                  <a class="tag-item" href="${this._componentLink(tag.tagName)}" style="text-decoration:none;color:inherit;transition:border-color 0.15s;border:0.5px solid transparent;">
                     <span class="tag-status" style="background:${tagColor}"></span>
                     &lt;${tag.tagName}&gt;
                     ${tag.validationErrors > 0 ? html`<span style="color:#ef4444;font-size:0.6875rem;">(${tag.validationErrors} err)</span>` : ''}
                     ${tag.validationWarnings > 0 ? html`<span style="color:#f59e0b;font-size:0.6875rem;">(${tag.validationWarnings} warn)</span>` : ''}
-                  </div>
+                    <span style="font-size:0.625rem;color:var(--less-text-tertiary);margin-left:0.25rem;">→</span>
+                  </a>
                 `;
               })}
             </div>
           </div>
 
           <div class="section">
-            <div class="section-title">🖼️ Previews</div>
-            ${hasSnapshots ? html`<div class="no-snapshot">SSR snapshots available.</div>`
-            : html`<div class="no-snapshot">No preview available.</div>`}
+            <div class="section-title">Previews</div>
+            ${hasSnapshots ? html`<div style="font-size:0.875rem;color:var(--less-text-secondary);">SSR snapshots available for ${Object.keys(pkg.snapshotPaths).length} component(s). Visit component detail pages to view them.</div>`
+            : html`<div style="font-size:0.875rem;color:var(--less-text-secondary);">No preview available. Previews are generated during package validation.</div>`}
           </div>
 
           <div class="section">
-            <div class="section-title">📋 Validation Report</div>
+            <div class="section-title">Validation Report</div>
             <button class="accordion-toggle" @click="${this._toggleValidation}">${this._showValidation ? 'Hide' : 'Show'} validation details</button>
             ${this._showValidation ? html`<div class="accordion-content">${this._formatJson(pkg.reports.validation)}</div>` : ''}
           </div>

@@ -111,23 +111,41 @@ Primary validation targets:
 - selected third-party WC libraries, initially as compatibility fixtures rather
   than marketing claims
 
-## Phase 5: Registry Hub MVP (v0.19.x) - Active
+## Phase 5: Registry Hub (v0.19.x) - Active
 
-Goal: move from local registry to a public, searchable registry index that is
-fed by validation artifacts.
+Goal: move from local registry to a public, searchable registry index with a
+complete discovery-to-usage workflow.
 
-MVP scope:
+### v0.19.0 — Hub MVP + Component Browser (Active)
+
+Phase 1 — Hub MVP (Completed 2026-05-17):
 
 - package search and detail pages
 - manifest/compatibility report ingestion
-- SSR/SSG snapshot previews only for packages that pass admission
 - bundle size and hydration metadata
 - security/audit status from lockfiles and package metadata
 - duplicate tag and version conflict reporting
 - `less hub submit` CLI submission pipeline
 - GitHub Actions CI gate for incoming submissions
 
-Deferred until after MVP:
+Phase 2 — Component Browser + Usage Workflow (In Progress):
+
+Goal: close the gap between "finding a package" and "using a component."
+
+Scope:
+
+- `less add <package>` CLI implementation (from v0.18.2 SOP spec)
+- Component detail pages: `/registry/:package/:component` with rendered previews
+- Usage example code snippets on package and component detail pages
+- SSR snapshot generation for per-component previews during `hub:scan`
+- Component-level API reference from CEM manifest (attributes, events, slots)
+- Enhanced package list with badges, metrics, and sort options
+- Component → Component drill-down navigation links
+
+See [ADR-0031](../adr/0031-hub-v2-component-browser-workflow.md) for full
+architecture.
+
+### Deferred until after v0.19.x
 
 - publisher accounts
 - package signing

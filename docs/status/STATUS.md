@@ -2,17 +2,31 @@
 
 > AI assistant: read this file first on every session start.
 
-## Current Version: 0.19.0 (Done)
+## Current Version: 0.19.0 (In Progress)
 
-## Next Planned Version: 1.0.0 (Stable Engine)
+## Next Planned Version: 0.19.0 (Component Browser + Usage Workflow)
 
-### v0.19.0 — Registry Hub MVP (Completed 2026-05-17)
+### v0.19.0 — Registry Hub MVP (Phase 1: Completed 2026-05-17)
 
 `@lessjs/hub` package with schema, builder, indexer, submitter, snapshot utilities.
 `less hub submit` CLI with dry-run and PR submission modes.
 Hub CI pipeline (Deno-based validator + index drift checker).
 Registry UI (www) with static SSG pages for all packages.
 CLI submission pipeline: `--dry-run` (default) + `--submit` (PR mode).
+
+### v0.19.0 — Component Browser + Full-Stack Usage Workflow (Phase 2: In Progress)
+
+**Goal**: Transform the Hub from a "package list" into a complete discovery →
+evaluation → installation → usage pipeline.
+
+**Key deliveries**:
+
+- `less add <package>` CLI implementation (from v0.18.2 SOP, never coded)
+- Component detail pages: `/registry/:package/:component` with rendered previews
+- Usage example code snippets on detail pages
+- SSR snapshot generation for component previews
+- Enhanced package list with badges and metrics
+- 4-tier user persona support (builder, author, evaluator, browser)
 
 ### Verification
 
@@ -25,13 +39,15 @@ CLI submission pipeline: `--dry-run` (default) + `--submit` (PR mode).
 - `deno task hub:check-index` — ✅ index up to date
 
 See [Audit Gaps Report](../conversation/registry-hub-v019-audit-gaps.md) for blocker close evidence.
+See [Hub v2 Design](../conversation/registry-hub-v2-design.md) for v0.19.0 Phase 2 planning context.
+See [ADR-0031](../adr/0031-hub-v2-component-browser-workflow.md) for architecture decisions.
 
 ## Branch Status
 
-| Branch        | HEAD     | Status                                              |
-| ------------- | -------- | --------------------------------------------------- |
-| `origin/dev`  | `latest` | v0.19.0 active (Registry Hub + submission pipeline) |
-| `origin/main` | `latest` | v0.18.3 release                                     |
+| Branch        | HEAD     | Status                                                         |
+| ------------- | -------- | -------------------------------------------------------------- |
+| `origin/dev`  | `latest` | v0.19.0 Phase 2 active (Component Browser + Usage Workflow) |
+| `origin/main` | `latest` | v0.18.3 release                                                |
 
 ## Tags
 
@@ -91,6 +107,8 @@ Third-party package handling is conservative:
 | v0.18.2 | `docs/sop/v0.18.2-less-add-install-flow.md`            | Done     | validation CLI stable                                                | `less add` dry-run/install is validation-gated            |
 | v0.18.3 | `docs/sop/v0.18.3-dom-simulation-experiment.md`        | Done     | client-only fallback stable                                          | opt-in DOM simulation decision recorded                   |
 | v0.19.0 | `docs/sop/v0.19.0-platform-hub.md`                     | **Done** | validation/build reports stable + ADR-0030 accepted                  | Hub ingests artifacts, CLI submit pipeline, search UI     |
+| v0.19.0 | `docs/sop/v0.19.0-platform-hub.md`                     | **Done (Phase 1)**  | validation/build reports stable + ADR-0030 accepted                  | Hub ingests artifacts, CLI submit pipeline, search UI     |
+| v0.19.0 | `docs/sop/v0.19.0-component-browser.md`                | **Active (Phase 2)** | v0.19.0 Phase 1 deployed + fixture packages indexed                     | Component drill-down, rendered previews, `less add` CLI   |
 | v1.0.0  | `docs/sop/v1.0.0-general-purpose-engine.md`            | Vision   | engine, reports, add flow, Hub records stable                        | API/schema freeze with deterministic package outcomes     |
 
 ## Operator Checklist
