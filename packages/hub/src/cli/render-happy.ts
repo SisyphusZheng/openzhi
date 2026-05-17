@@ -73,6 +73,52 @@ const DEMO_ATTRS: Record<string, Record<string, string>> = {
   'media-loading-indicator': {},
 };
 
+/** Demo slot content so components show meaningful structure in previews */
+const DEMO_SLOTS: Record<string, string> = {
+  'sl-card':
+    '<div slot="header">Card Header</div><div>This is the card body content.</div><div slot="footer">Card Footer</div>',
+  'sl-alert': 'This is an alert message with important information.',
+  'sl-dialog': '<div slot="label">Dialog Title</div><div>This is the dialog content.</div>',
+  'sl-drawer': '<div slot="label">Drawer Title</div><div>This is the drawer content.</div>',
+  'sl-details':
+    '<div slot="summary">Click to expand</div><div>Here is the hidden detail content.</div>',
+  'sl-dropdown':
+    '<sl-button slot="trigger" caret>Dropdown</sl-button><sl-menu><sl-menu-item>Option 1</sl-menu-item><sl-menu-item>Option 2</sl-menu-item></sl-menu>',
+  'sl-tooltip': '<sl-button>Hover me</sl-button>',
+  'sl-input': '',
+  'sl-textarea': '',
+  'sl-select':
+    '<sl-menu-item value="a">Option A</sl-menu-item><sl-menu-item value="b">Option B</sl-menu-item>',
+  'sl-button': 'Button',
+  'sl-badge': 'Badge',
+  'sl-tag': 'Tag',
+  'sl-avatar': '',
+  'sl-icon': '',
+  'sl-icon-button': '',
+  'sl-menu': '<sl-menu-item>Item 1</sl-menu-item><sl-menu-item>Item 2</sl-menu-item>',
+  'sl-menu-item': 'Menu Item',
+  'sl-tab-group':
+    '<sl-tab slot="nav" panel="a">Tab A</sl-tab><sl-tab slot="nav" panel="b">Tab B</sl-tab><sl-tab-panel name="a">Panel A</sl-tab-panel><sl-tab-panel name="b">Panel B</sl-tab-panel>',
+  'sl-tree': '<sl-tree-item expanded>Branch<sl-tree-item>Leaf</sl-tree-item></sl-tree-item>',
+  'sl-tree-item': 'Tree Item',
+};
+
+async function loadPackageTheme(impSpec: string): Promise<string> {
+  try {
+    if (impSpec.includes('@shoelace-style/shoelace')) {
+      const resolved = await import.meta.resolve(
+        'npm:@shoelace-style/shoelace/dist/themes/light.css',
+      );
+      const cssText = Deno.readTextFileSync(new URL(resolved));
+      const rootMatch = cssText.match(/:root,\s*:host,\s*\.sl-theme-light\s*\{([\s\S]*?)\n\}/);
+      if (rootMatch) {
+        return `<style>:root, :host, .sl-theme-light {\n${rootMatch[1]}\n}</style>`;
+      }
+    }
+  } catch { /* ignore — theme not critical for all previews */ }
+  return '';
+}
+
 async function render(impSpec: string, tag: string): Promise<string> {
   const { Window } = await import('npm:happy-dom@^20.8.9');
   const hWin = new Window({ url: 'https://localhost:8080' });
@@ -139,6 +185,12 @@ async function render(impSpec: string, tag: string): Promise<string> {
       }
     }
 
+    // Append demo slot content
+    const demoSlots = DEMO_SLOTS[tag];
+    if (demoSlots) {
+      el.innerHTML = demoSlots;
+    }
+
     // Append to trigger lifecycle
     if (hDoc.body) {
       hDoc.body.appendChild(el);
@@ -163,20 +215,54 @@ async function render(impSpec: string, tag: string): Promise<string> {
       }
     }
 
-    // Serialize — keep <style> tags so the preview has scoped component styles
-    let html = '';
+    // Serialize shadow DOM and interpolate slots with demo content
+    let shadowHtml = '';
     if (el.shadowRoot) {
-      html = el.shadowRoot.innerHTML.trim();
-    } else {
-      html = el.innerHTML || '';
+      shadowHtml = el.shadowRoot.innerHTML.trim();
     }
+
+    // Extract slot content from light DOM children
+    const slotMap = new Map<string, string>();
+    const defaultSlots: string[] = [];
+    for (const child of el.children) {
+      const slotName = child.getAttribute('slot');
+      if (slotName) {
+        slotMap.set(slotName, (child as HTMLElement).outerHTML);
+      } else {
+        defaultSlots.push((child as HTMLElement).outerHTML);
+      }
+    }
+    if (defaultSlots.length) {
+      slotMap.set('default', defaultSlots.join(''));
+    }
+
+    // Insert demo content as <slot> fallback so CSS classes on <slot> are preserved.
+    // Use placeholder tags to avoid the default-slot regex matching named slots.
+    shadowHtml = shadowHtml.replace(/<slot name="([^"]*)"([^>]*)><\/slot>/gi, (_m, name, attrs) => {
+      const content = slotMap.get(name) || '';
+      return `<SLOT-FALLBACK name="${name}"${attrs}>${content}</SLOT-FALLBACK>`;
+    });
+    shadowHtml = shadowHtml.replace(/<slot(?![a-z0-9-])([^>]*)><\/slot>/gi, (_m, attrs) => {
+      const content = slotMap.get('default') || '';
+      return `<SLOT-FALLBACK${attrs}>${content}</SLOT-FALLBACK>`;
+    });
+    shadowHtml = shadowHtml.replace(/<SLOT-FALLBACK/g, '<slot').replace(
+      /<\/SLOT-FALLBACK>/g,
+      '</slot>',
+    );
+
+    // Make :host selectors work outside shadow DOM
+    shadowHtml = shadowHtml.replace(/:host\b/g, tag);
+
+    // Load package theme CSS variables (e.g. Shoelace light.css)
+    const themeCss = await loadPackageTheme(impSpec);
 
     // Detach
     if (el.parentNode) {
       el.parentNode.removeChild(el);
     }
 
-    return `<div class="snapshot-preview">${html}</div>`;
+    return `<div class="snapshot-preview">${themeCss}<${tag}>${shadowHtml}</${tag}></div>`;
   } finally {
     // Restore globals
     const g = globalThis as Record<string, unknown>;

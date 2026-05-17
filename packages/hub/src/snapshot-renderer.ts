@@ -299,6 +299,35 @@ export async function renderSnapshotWithHappyDom(
       }
     }
 
+    // Add demo slot content for meaningful previews
+    const DEMO_SLOTS: Record<string, string> = {
+      'sl-card':
+        '<div slot="header">Card Header</div><div>This is the card body content.</div><div slot="footer">Card Footer</div>',
+      'sl-alert': 'This is an alert message with important information.',
+      'sl-dialog': '<div slot="label">Dialog Title</div><div>This is the dialog content.</div>',
+      'sl-drawer': '<div slot="label">Drawer Title</div><div>This is the drawer content.</div>',
+      'sl-details':
+        '<div slot="summary">Click to expand</div><div>Here is the hidden detail content.</div>',
+      'sl-dropdown':
+        '<sl-button slot="trigger" caret>Dropdown</sl-button><sl-menu><sl-menu-item>Option 1</sl-menu-item><sl-menu-item>Option 2</sl-menu-item></sl-menu>',
+      'sl-tooltip': '<sl-button>Hover me</sl-button>',
+      'sl-select':
+        '<sl-menu-item value="a">Option A</sl-menu-item><sl-menu-item value="b">Option B</sl-menu-item>',
+      'sl-button': 'Button',
+      'sl-badge': 'Badge',
+      'sl-tag': 'Tag',
+      'sl-menu': '<sl-menu-item>Item 1</sl-menu-item><sl-menu-item>Item 2</sl-menu-item>',
+      'sl-menu-item': 'Menu Item',
+      'sl-tab-group':
+        '<sl-tab slot="nav" panel="a">Tab A</sl-tab><sl-tab slot="nav" panel="b">Tab B</sl-tab><sl-tab-panel name="a">Panel A</sl-tab-panel><sl-tab-panel name="b">Panel B</sl-tab-panel>',
+      'sl-tree': '<sl-tree-item expanded>Branch<sl-tree-item>Leaf</sl-tree-item></sl-tree-item>',
+      'sl-tree-item': 'Tree Item',
+    };
+    const demoSlots = DEMO_SLOTS[tagName];
+    if (demoSlots) {
+      el.innerHTML = demoSlots;
+    }
+
     // Polyfill ElementInternals for components that use it
     const elRecord = el as Record<string, unknown>;
     if (typeof elRecord.attachInternals !== 'function') {
@@ -339,20 +368,69 @@ export async function renderSnapshotWithHappyDom(
       }
     }
 
-    // 8. Serialize rendered HTML — keep <style> tags for preview styling
-    let html = '';
+    // 8. Serialize shadow DOM and interpolate slots with demo content
+    let shadowHtml = '';
     if (el.shadowRoot) {
-      html = el.shadowRoot.innerHTML.trim();
-    } else {
-      html = el.innerHTML || `<${tagName}></${tagName}>`;
+      shadowHtml = el.shadowRoot.innerHTML.trim();
     }
+
+    // Extract slot content from light DOM children
+    const slotMap = new Map<string, string>();
+    const defaultSlots: string[] = [];
+    for (const child of el.children) {
+      const slotName = child.getAttribute('slot');
+      if (slotName) {
+        slotMap.set(slotName, (child as HTMLElement).outerHTML);
+      } else {
+        defaultSlots.push((child as HTMLElement).outerHTML);
+      }
+    }
+    if (defaultSlots.length) {
+      slotMap.set('default', defaultSlots.join(''));
+    }
+
+    // Insert demo content as <slot> fallback so CSS classes on <slot> are preserved.
+    // Use placeholder tags to avoid the default-slot regex matching named slots.
+    shadowHtml = shadowHtml.replace(/<slot name="([^"]*)"([^>]*)><\/slot>/gi, (_m, name, attrs) => {
+      const content = slotMap.get(name) || '';
+      return `<SLOT-FALLBACK name="${name}"${attrs}>${content}</SLOT-FALLBACK>`;
+    });
+    shadowHtml = shadowHtml.replace(/<slot(?![a-z0-9-])([^>]*)><\/slot>/gi, (_m, attrs) => {
+      const content = slotMap.get('default') || '';
+      return `<SLOT-FALLBACK${attrs}>${content}</SLOT-FALLBACK>`;
+    });
+    shadowHtml = shadowHtml.replace(/<SLOT-FALLBACK/g, '<slot').replace(
+      /<\/SLOT-FALLBACK>/g,
+      '</slot>',
+    );
+
+    // Make :host selectors work outside shadow DOM
+    shadowHtml = shadowHtml.replace(/:host\b/g, tagName);
+
+    // Load package theme CSS variables (e.g. Shoelace light.css)
+    let themeCss = '';
+    try {
+      if (importSpec.includes('@shoelace-style/shoelace')) {
+        const resolved = await import.meta.resolve(
+          'npm:@shoelace-style/shoelace/dist/themes/light.css',
+        );
+        const cssText = Deno.readTextFileSync(new URL(resolved));
+        const rootMatch = cssText.match(/:root,\s*:host,\s*\.sl-theme-light\s*\{([\s\S]*?)\n\}/);
+        if (rootMatch) {
+          themeCss = `<style>:root, :host, .sl-theme-light {\n${rootMatch[1]}\n}</style>`;
+        }
+      }
+    } catch { /* ignore — theme not critical for all previews */ }
 
     // 9. Detach element
     if (el.parentNode) {
       el.parentNode.removeChild(el);
     }
 
-    return { html: `<div class="snapshot-preview">${html}</div>`, success: true };
+    return {
+      html: `<div class="snapshot-preview">${themeCss}<${tagName}>${shadowHtml}</${tagName}></div>`,
+      success: true,
+    };
   } catch (err) {
     // Throw so the caller sees the failure (scanner's own try/catch will handle it)
     throw new Error(
