@@ -26,7 +26,9 @@ export interface HubTagRecord {
   compatibility: CompatibilityTier;
   validationErrors: number;
   validationWarnings: number;
-  ssrSnapshot?: string; // relative path to SSR snapshot (HTML)
+  ssrSnapshot?: string; // relative path to SSR snapshot (HTML) — legacy, being replaced by snapshotMeta
+  /** v0.19.1 Phase 6: Structured snapshot metadata (ADR-0035 A3) */
+  snapshotMeta?: HubSnapshotMeta;
 
   // CEM API reference data (from custom-elements.json)
   attributes?: CemAttribute[];
@@ -55,6 +57,32 @@ export interface CemEvent {
 export interface CemSlot {
   name: string; // empty string for default slot
   description?: string;
+}
+
+// ─── Hub Snapshot Metadata (ADR-0035 A3) ────────────────────────────────
+
+/**
+ * Structured snapshot metadata replacing serialized shadow DOM dumps.
+ *
+ * Instead of storing hundreds of KB of serialized HTML/CSS, this compact
+ * structure lets the consumer (component detail page) construct an
+ * `<iframe srcdoc="...">` that renders the component in isolation.
+ */
+export interface HubSnapshotMeta {
+  /** Custom element tag name */
+  tagName: string;
+  /** Package import specifier (e.g. '@shoelace-style/shoelace') */
+  importSpec: string;
+  /** Full import URL for ESM loading (e.g. 'https://esm.sh/@shoelace-style/shoelace@2.20.1') */
+  importUrl: string;
+  /** Demo attributes to render (e.g. { variant: 'primary', size: 'medium' }) */
+  demoAttrs: Record<string, string>;
+  /** Demo slot content (e.g. 'Click me' or '<span>Content</span>') */
+  demoSlots: string;
+  /** Optional theme CSS URL (e.g. Shoelace light theme CDN) */
+  themeCssUrl?: string;
+  /** Compatibility tier */
+  compatibility: 'ssr-capable' | 'client-only';
 }
 
 // ─── Install Guidance ────────────────────────────────────────────────────

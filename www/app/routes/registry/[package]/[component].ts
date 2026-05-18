@@ -202,6 +202,12 @@ export default class DocsRegistryComponentDetail extends LitElement {
         justify-content: center;
         overflow: auto;
       }
+      .preview-iframe {
+        width: 100%;
+        border: none;
+        min-height: 80px;
+        background: #fff;
+      }
       .preview-placeholder {
         color: var(--less-text-tertiary);
         font-size: 0.8125rem;
@@ -317,6 +323,29 @@ export default class DocsRegistryComponentDetail extends LitElement {
     return lines.join('\n');
   }
 
+  /** v0.19.1 Phase 6: Build iframe srcdoc from HubSnapshotMeta (ADR-0035 A3) */
+  private _buildSrcdoc(meta: { tagName: string; importUrl: string; demoAttrs: Record<string, string>; demoSlots: string; themeCssUrl?: string }): string {
+    const attrs = Object.entries(meta.demoAttrs)
+      .map(([k, v]) => v === '' ? k : `${k}="${v}"`)
+      .join(' ');
+    const attrStr = attrs ? ` ${attrs}` : '';
+    const themeLink = meta.themeCssUrl
+      ? `<link rel="stylesheet" href="${meta.themeCssUrl}">`
+      : '';
+    return `<!DOCTYPE html><html><head>${themeLink}<script type="module" src="${meta.importUrl}"></script><style>body{margin:0;padding:16px;font-family:system-ui,-apple-system,sans-serif;font-size:14px;line-height:1.5;color:#1a1a2e;background:#fff}</style></head><body><${meta.tagName}${attrStr}>${meta.demoSlots}</${meta.tagName}></body></html>`;
+  }
+
+  /** v0.19.1 Phase 6: Resize iframe to fit content after load (ADR-0035 A3) */
+  private _resizeIframe(e: Event) {
+    const iframe = e.target as HTMLIFrameElement;
+    try {
+      const doc = iframe.contentDocument;
+      if (doc?.body) {
+        iframe.style.height = doc.body.scrollHeight + 32 + 'px';
+      }
+    } catch { /* cross-origin — skip */ }
+  }
+
   override render() {
     const pkg = this._getRecord();
 
@@ -427,23 +456,31 @@ export default class DocsRegistryComponentDetail extends LitElement {
             <div class="section-title">Rendered Preview</div>
             <div class="preview-label">Pre-rendered at build time</div>
             <div class="preview-frame">
-              ${hasSnapshot
+              ${tag.snapshotMeta
                 ? html`
-                  <div style="width:100%;">${unsafeHTML(sanitizeSnapshot(tag.ssrSnapshot))}</div>
+                  <iframe
+                    class="preview-iframe"
+                    .srcdoc=${this._buildSrcdoc(tag.snapshotMeta)}
+                    @load=${this._resizeIframe}
+                  ></iframe>
                 `
-                : html`
-                  <div class="preview-placeholder">
-                    <div style="font-size:0.875rem;margin-bottom:0.25rem;">&lt;${tagName}&gt;</div>
-                    <div>No preview snapshot available.</div>
-                    ${tag.compatibility === 'client-only'
-                      ? html`
-                        <div style="margin-top:0.5rem;font-size:0.75rem;">
-                          Client-only components require a browser to render.
-                        </div>
-                      `
-                      : ''}
-                  </div>
-                `}
+                : hasSnapshot
+                  ? html`
+                    <div style="width:100%;">${unsafeHTML(sanitizeSnapshot(tag.ssrSnapshot))}</div>
+                  `
+                  : html`
+                    <div class="preview-placeholder">
+                      <div style="font-size:0.875rem;margin-bottom:0.25rem;">&lt;${tagName}&gt;</div>
+                      <div>No preview snapshot available.</div>
+                      ${tag.compatibility === 'client-only'
+                        ? html`
+                          <div style="margin-top:0.5rem;font-size:0.75rem;">
+                            Client-only components require a browser to render.
+                          </div>
+                        `
+                        : ''}
+                    </div>
+                  `}
             </div>
             <div class="preview-note">
               ${tag.compatibility === 'ssr-capable'

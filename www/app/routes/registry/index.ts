@@ -167,30 +167,32 @@ export default class DocsRegistryHome extends LitElement {
         margin-bottom: 1rem;
       }
 
-      /* Package List */
+      /* Package List — grid layout (v0.19.1 Phase 6, ADR-0035 B3) */
       .package-list {
-        display: flex;
-        flex-direction: column;
-        gap: 0.75rem;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1rem;
       }
 
       .package-card {
         display: flex;
-        align-items: flex-start;
-        gap: 1rem;
-        padding: 1rem 1.25rem;
+        flex-direction: column;
+        gap: 0.5rem;
+        padding: 1.25rem;
         border: 0.5px solid var(--less-border);
-        border-radius: 8px;
+        border-radius: 6px;
         background: var(--less-bg-surface);
-        transition: border-color 0.15s, box-shadow 0.15s;
+        box-shadow: var(--less-shadow-sm);
+        transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
         cursor: pointer;
         text-decoration: none;
         color: inherit;
       }
 
       .package-card:hover {
-        border-color: var(--less-accent);
-        box-shadow: 0 1px 6px rgba(0, 0, 0, 0.08);
+        border-color: var(--less-brand, #534ab7);
+        box-shadow: var(--less-shadow-md);
+        transform: translateY(-2px);
       }
 
       .package-info {

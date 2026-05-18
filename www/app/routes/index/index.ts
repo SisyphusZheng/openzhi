@@ -82,7 +82,7 @@ export default class DocsHome extends LitElement {
     }
     .hero h1 {
       font-size: clamp(2.6rem, 6vw, 2.875rem);
-      font-weight: 500;
+      font-weight: 700;
       color: #fff;
       line-height: 1.05;
       letter-spacing: -0.03em;
@@ -90,7 +90,10 @@ export default class DocsHome extends LitElement {
     }
     .hero h1 em {
       font-style: normal;
-      color: #636363;
+      background: linear-gradient(135deg, #534ab7, #7c3aed);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
     .hero-desc {
       color: #a1a1aa;

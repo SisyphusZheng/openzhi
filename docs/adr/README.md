@@ -42,6 +42,8 @@ architectural decision, its context, and consequences.
 | 0031 | Hub v2 Component Browser Workflow         | Proposed                                 |
 | 0032 | Real Browser Snapshot Rendering           | Proposed                                 |
 | 0033 | Architecture Positioning: SSG Islands     | Accepted                                 |
+| 0034 | Hermetic Hub Snapshots                    | Proposed                                 |
+| 0035 | SSG Resilient Rendering + Visual Overhaul | Accepted                                 |
 
 ## Superseded / Historical
 

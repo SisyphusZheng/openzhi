@@ -22,10 +22,14 @@ export const lessSpacingTokens: ReturnType<typeof css> = css`
     --less-size-9: 2.5rem; /* 40px */
     --less-size-10: 3rem; /* 48px */
 
-    /* === Border Radius (Swiss: minimal) === */
-    --less-radius-sm: 2px;
-    --less-radius-md: 4px;
-    --less-radius-lg: 6px;
+    /* === Extended Spacing (v0.19.1 Phase 6, ADR-0035 B1) === */
+    --less-size-12: 3.75rem; /* 60px */
+    --less-size-16: 5rem; /* 80px */
+
+    /* === Border Radius (v0.19.1: slightly larger for softer feel) === */
+    --less-radius-sm: 4px;
+    --less-radius-md: 6px;
+    --less-radius-lg: 8px;
 
     /* === Transitions === */
     --less-transition-fast: 0.1s ease;

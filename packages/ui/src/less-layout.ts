@@ -140,13 +140,19 @@ export class LessLayout extends DsdLitElement {
         flex: 1;
       }
 
-      /* === Header === */
+      /* === Header (v0.19.1: frosted glass) === */
       .app-header {
         position: sticky;
         top: 0;
         z-index: var(--less-z-sticky);
-        background: var(--less-bg-base);
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
         border-bottom: 0.5px solid var(--less-border);
+      }
+
+      :host([data-theme="dark"]) .app-header {
+        background: rgba(18, 18, 26, 0.85);
       }
 
       .header-inner {
