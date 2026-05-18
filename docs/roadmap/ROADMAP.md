@@ -212,7 +212,12 @@ best case, not a prerequisite.
 See [Vision & Strategy](../strategy/vision-and-differentiation.md) for full
 analysis.
 
-### ISR (Stale-While-Revalidate)
+### ISR (Stale-While-Revalidate) — P0
+
+ISR is promoted from P1 to **P0** because a "full-stack framework" with only
+build-time rendering is a contradiction. ISR bridges SSG → SSR without
+requiring a persistent server, making it the most impactful change for
+LessJS's credibility as a full-stack framework.
 
 ISR is preferred over request-time SSR for LessJS because `renderDSD()` is
 pure string concatenation (~1-5ms per component). ISR logic:
@@ -226,15 +231,32 @@ This is more efficient than request-time SSR for most pages.
 | Capability           | Priority | Description                                           | Status |
 | -------------------- | -------- | ----------------------------------------------------- | ------ |
 | Hydration strategies | P0       | `client:load/idle/visible/only` directives            | New    |
-| ISR cache layer      | P1       | Stale-while-revalidate for static pages               | New    |
+| ISR cache layer      | **P0**   | Stale-while-revalidate for static pages               | New    |
 | Hono API Route       | P1       | `app/api/**/*.ts` → Hono route → CF Pages Function    | Exists |
-| Request context      | P1       | Environment variables, Supabase client, user identity | New    |
+| Request context      | P1       | Environment variables, user identity (no Supabase)   | New    |
+| Hub ecosystem building | **P1** | Attract 10+ packages via outreach + self-service submit | New  |
 | Request-time SSR     | P2       | Dynamic routes render at request time, not build time | New    |
-| Supabase integration | P2       | Auth + DB + Realtime via Deno-native client           | New    |
+| Supabase integration | **P3**   | Auth + DB + Realtime via Deno-native client           | Deferred |
 
 Note: Hono API Route is already implemented (route scanner, entry renderer,
 `/api/term` working). The P1 work is formalizing dev/build parity and
 adding request context injection.
+
+### Hub Ecosystem Building (P1 — after Hydration ships)
+
+Hub's value depends on package count. After Hydration strategies ship:
+
+1. **Manual outreach**: Contact 5-10 WC library authors (Shoelace alternatives,
+   Material Web, etc.) and offer to index their packages
+2. **Self-service submission**: Ensure `less hub submit` works end-to-end
+3. **Hub onboarding guide**: Write a guide for WC library authors
+4. **Quality badges**: Implement SSR-compatible / client-only / snapshot-verified badges
+5. **Target: 10+ packages by end of Phase 6**
+
+This is not primarily a technical task — it's community/operational work.
+The technical prerequisite is that Hydration + ISR must work first, so
+authors see a reason to list on Hub ("your component gets SSR/ISR support
+on LessJS").
 
 ### Blog Validation
 
@@ -257,19 +279,39 @@ advanced rendering capabilities.
 
 Scope:
 
-- `@lessjs/adapter-vue`: Vue 3 WC wrapper + SSR bridge
 - Signals → rendering layer penetration (signal-to-DOM binding)
-- ISR / DPR support for incremental static regeneration
 - Deno Deploy runtime adapter (parity with CF Workers)
 - Hub community submission workflow maturity
 - Tier 1 expansion to more WC libraries (Material Web, etc.)
 
+### adapter-vue (P2 — Deferred)
+
+Vue adapter should not be pursued until:
+
+1. Hydration strategies (Phase 6) are shipped and stable
+2. ISR is working in production
+3. Lit + Vanilla path has real-world validation (blog + at least 1 other site)
+
+Rationale: In a framework where Lit + Vanilla adoption is unvalidated,
+adding Vue expands the maintenance surface without demonstrating demand.
+
+### @lessjs/ui: DSD-native Evolution (v0.21+)
+
+Goal: evolve @lessjs/ui from Lit-based to DSD-native:
+
+- Pure CSS + CSS Parts (no Lit runtime)
+- Streaming SSR via renderDSD()
+- Zero-JS initial paint for static UI
+
+Prerequisite: Hydration strategies (Phase 6) must ship first.
+
 ### Exit Criteria
 
-- adapter-vue renders Vue SFC as WC with DSD hydration
 - Signals drive DOM updates (not just island-to-island communication)
 - ISR regenerates stale pages without full rebuild
-- Blog and at least one data-driven app (CRM prototype) running on LessJS
+- adapter-vue available if P2 prerequisites are met (deferred until validated)
+- @lessjs/ui has DSD-native component prototypes
+- Blog and at least one data-driven app running on LessJS
 
 ## Phase 8: Stable Engine (v1.0) - Vision
 
