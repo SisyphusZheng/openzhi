@@ -146,11 +146,12 @@ export default class DocsRegistryComponentDetail extends LitElement {
         text-decoration: underline;
       }
       .section {
-        border: 0.5px solid var(--less-border);
-        border-radius: 8px;
-        padding: 1.25rem;
-        margin-bottom: 1.25rem;
+        border: 1px solid var(--less-border);
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
         background: var(--less-bg-surface);
+        box-shadow: 0 1px 3px rgba(0,0,0,0.03);
       }
       .section-title {
         font-size: 1rem;
@@ -192,8 +193,8 @@ export default class DocsRegistryComponentDetail extends LitElement {
 
       /* Preview area */
       .preview-frame {
-        border: 0.5px solid var(--less-border);
-        border-radius: 6px;
+        border: 1px solid var(--less-border);
+        border-radius: 10px;
         padding: 1.5rem;
         background: #fff;
         min-height: 80px;
@@ -201,12 +202,14 @@ export default class DocsRegistryComponentDetail extends LitElement {
         align-items: center;
         justify-content: center;
         overflow: auto;
+        box-shadow: inset 0 1px 3px rgba(0,0,0,0.04);
       }
       .preview-iframe {
         width: 100%;
         border: none;
         min-height: 80px;
         background: #fff;
+        border-radius: 6px;
       }
       .preview-placeholder {
         color: var(--less-text-tertiary);
@@ -323,7 +326,7 @@ export default class DocsRegistryComponentDetail extends LitElement {
     return lines.join('\n');
   }
 
-  /** v0.19.1 Phase 6: Build iframe srcdoc from HubSnapshotMeta (ADR-0035 A3) */
+  /** Build iframe srcdoc from HubSnapshotMeta (ADR-0035 A3) */
   private _buildSrcdoc(meta: { tagName: string; importUrl: string; demoAttrs: Record<string, string>; demoSlots: string; themeCssUrl?: string }): string {
     const attrs = Object.entries(meta.demoAttrs)
       .map(([k, v]) => v === '' ? k : `${k}="${v}"`)
@@ -332,7 +335,7 @@ export default class DocsRegistryComponentDetail extends LitElement {
     const themeLink = meta.themeCssUrl
       ? `<link rel="stylesheet" href="${meta.themeCssUrl}">`
       : '';
-    return `<!DOCTYPE html><html><head>${themeLink}<script type="module" src="${meta.importUrl}"></script><style>body{margin:0;padding:16px;font-family:system-ui,-apple-system,sans-serif;font-size:14px;line-height:1.5;color:#1a1a2e;background:#fff}</style></head><body><${meta.tagName}${attrStr}>${meta.demoSlots}</${meta.tagName}></body></html>`;
+    return `<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">${themeLink}<script type="module" src="${meta.importUrl}"></script><style>*,*::before,*::after{box-sizing:border-box}body{margin:0;padding:20px;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-size:14px;line-height:1.5;color:#1a1a2e;background:#fff;overflow:hidden}</style></head><body><${meta.tagName}${attrStr}>${meta.demoSlots}</${meta.tagName}></body></html>`;
   }
 
   /** v0.19.1 Phase 6: Resize iframe to fit content after load (ADR-0035 A3) */

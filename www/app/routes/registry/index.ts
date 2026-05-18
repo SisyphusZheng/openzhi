@@ -179,10 +179,10 @@ export default class DocsRegistryHome extends LitElement {
         flex-direction: column;
         gap: 0.5rem;
         padding: 1.25rem;
-        border: 0.5px solid var(--less-border);
-        border-radius: 6px;
+        border: 1px solid var(--less-border);
+        border-radius: 10px;
         background: var(--less-bg-surface);
-        box-shadow: var(--less-shadow-sm);
+        box-shadow: 0 1px 4px rgba(0,0,0,0.04);
         transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
         cursor: pointer;
         text-decoration: none;
@@ -191,8 +191,8 @@ export default class DocsRegistryHome extends LitElement {
 
       .package-card:hover {
         border-color: var(--less-brand, #534ab7);
-        box-shadow: var(--less-shadow-md);
-        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(83,74,183,0.12);
+        transform: translateY(-3px);
       }
 
       .package-info {

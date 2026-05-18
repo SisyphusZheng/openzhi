@@ -323,9 +323,8 @@ function buildSnapshotMeta(pkg: KnownWcPackage, tag: string): HubSnapshotMeta {
   if (pkg.source === 'npm') {
     importUrl = `https://esm.sh/${versionedSpec}`;
   } else {
-    // Local packages use their module path
-    const modPath = pkg.modulePaths?.[tag] || `packages/${pkg.name}/src/${tag}.ts`;
-    importUrl = modPath;
+    // Local/JSR packages: use esm.sh with jsr: prefix for iframe srcdoc
+    importUrl = `https://esm.sh/jsr/${versionedSpec}`;
   }
 
   // Special: Shoelace theme CSS

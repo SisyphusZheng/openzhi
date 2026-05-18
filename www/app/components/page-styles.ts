@@ -118,12 +118,13 @@ export const pageStyles = css`
     background: #1a1a2e;
     color: #e0e0e0;
     padding: 1.25rem 1.5rem;
-    border-radius: 6px;
+    border-radius: 8px;
     overflow-x: auto;
     font-size: 0.8125rem;
     line-height: 1.7;
     margin: 1rem 0;
-    border: 0.5px solid rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
   }
 
   code {
@@ -154,8 +155,8 @@ export const pageStyles = css`
     font-size: 0.8125rem;
   }
   th, td {
-    border: 0.5px solid var(--less-border);
-    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--less-border);
+    padding: 0.625rem 0.875rem;
     text-align: left;
   }
   th {
@@ -174,9 +175,9 @@ export const pageStyles = css`
   .callout {
     padding: 1rem 1.25rem;
     margin: 1rem 0;
-    border-left: 2px solid var(--less-brand, #534ab7);
+    border-left: 3px solid var(--less-brand, #534ab7);
     background: var(--less-bg-surface);
-    border-radius: 0 6px 6px 0;
+    border-radius: 0 8px 8px 0;
   }
   .callout.warn {
     border-left-color: #f59e0b;
@@ -185,9 +186,9 @@ export const pageStyles = css`
   .pillar {
     padding: 1.25rem 1.5rem;
     margin: 1rem 0;
-    border-left: 2px solid var(--less-brand, #534ab7);
+    border-left: 3px solid var(--less-brand, #534ab7);
     background: var(--less-bg-surface);
-    border-radius: 0 6px 6px 0;
+    border-radius: 0 8px 8px 0;
   }
   .pillar .num {
     font-size: 0.6875rem;

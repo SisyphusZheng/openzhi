@@ -6,8 +6,10 @@
  * dark demo cards, quick start, footer CTA.
  */
 import { css, html, LitElement } from 'lit';
+import { headerNav, navSections } from 'virtual:less-nav';
 import '@lessjs/ui/less-layout';
 import '@lessjs/ui/less-code-block';
+import '../../islands/less-search.js';
 import '../../islands/less-term.js';
 import '../../islands/shoelace-showcase.js';
 import '../../islands/react-showcase.js';
@@ -53,15 +55,28 @@ export default class DocsHome extends LitElement {
 
     /* ── Hero ── */
     .hero {
-      background: #09090b;
+      background: linear-gradient(170deg, #09090b 0%, #111127 50%, #0d0d1a 100%);
       color: #fff;
       width: 100vw;
       margin-left: calc(-50vw + 50%);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -30%;
+      width: 80%;
+      height: 80%;
+      background: radial-gradient(ellipse, rgba(83,74,183,0.12) 0%, transparent 70%);
+      pointer-events: none;
     }
     .hero-inner {
       max-width: 960px;
       margin: 0 auto;
-      padding: 3rem 1.5rem 2.5rem;
+      padding: 4rem 1.5rem 3rem;
+      position: relative;
     }
     .hero-lockup {
       display: flex;
@@ -81,26 +96,26 @@ export default class DocsHome extends LitElement {
       letter-spacing: -0.01em;
     }
     .hero h1 {
-      font-size: clamp(2.6rem, 6vw, 2.875rem);
-      font-weight: 700;
+      font-size: clamp(2.6rem, 6vw, 3rem);
+      font-weight: 800;
       color: #fff;
-      line-height: 1.05;
-      letter-spacing: -0.03em;
-      margin: 0 0 10px;
+      line-height: 1.08;
+      letter-spacing: -0.035em;
+      margin: 0 0 12px;
     }
     .hero h1 em {
       font-style: normal;
-      background: linear-gradient(135deg, #534ab7, #7c3aed);
+      background: linear-gradient(135deg, #8b7cf6, #a78bfa, #c084fc);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
     .hero-desc {
-      color: #a1a1aa;
-      font-size: 14px;
-      line-height: 1.7;
-      max-width: 460px;
-      margin: 0 0 20px;
+      color: #b4b4c0;
+      font-size: 15px;
+      line-height: 1.75;
+      max-width: 520px;
+      margin: 0 0 24px;
     }
     .hero-actions {
       display: flex;
@@ -111,28 +126,41 @@ export default class DocsHome extends LitElement {
     .hero-actions a {
       display: inline-flex;
       align-items: center;
-      height: 38px;
-      padding: 0 18px;
-      border-radius: 6px;
-      font-size: 13px;
-      font-weight: 500;
+      height: 40px;
+      padding: 0 22px;
+      border-radius: 8px;
+      font-size: 13.5px;
+      font-weight: 600;
       text-decoration: none;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .hero-actions a:hover {
+      transform: translateY(-1px);
     }
     .hero-pri {
-      background: #fff;
-      color: #09090b;
+      background: linear-gradient(135deg, #534ab7, #6d5ce8);
+      color: #fff;
+      box-shadow: 0 2px 12px rgba(83,74,183,0.35);
+    }
+    .hero-pri:hover {
+      box-shadow: 0 4px 20px rgba(83,74,183,0.5);
     }
     .hero-sec {
-      border: 0.5px solid #333;
+      border: 1px solid rgba(255,255,255,0.15);
       color: #d4d4d8;
+      background: rgba(255,255,255,0.04);
+    }
+    .hero-sec:hover {
+      border-color: rgba(255,255,255,0.25);
+      background: rgba(255,255,255,0.08);
     }
 
     /* ── Code comparison (full-width dark strip) ── */
     .code-strip {
-      background: #09090b;
+      background: linear-gradient(180deg, #09090b 0%, #0f0f1a 100%);
       width: 100vw;
       margin-left: calc(-50vw + 50%);
-      padding: 2.5rem 0;
+      padding: 3rem 0;
     }
     .code-strip-inner {
       max-width: 960px;
@@ -144,9 +172,10 @@ export default class DocsHome extends LitElement {
       grid-template-columns: 1fr 1fr;
       gap: 1px;
       background: #09090b;
-      border-radius: 8px;
+      border-radius: 12px;
       overflow: hidden;
-      border: 0.5px solid #27272a;
+      border: 1px solid #27272a;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.3);
     }
     .code-pane {
       background: #09090b;
@@ -243,37 +272,41 @@ export default class DocsHome extends LitElement {
     .cards {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
+      gap: 20px;
       margin-bottom: 2.5rem;
     }
     .card {
-      border: 0.5px solid var(--less-border);
-      border-radius: 10px;
-      padding: 1.25rem;
+      border: 1px solid var(--less-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      background: var(--less-bg-surface);
+      transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
     }
     .card:hover {
       border-color: var(--less-border-hover);
+      box-shadow: 0 4px 16px rgba(83,74,183,0.08);
+      transform: translateY(-2px);
     }
     .card-icon {
-      width: 32px;
-      height: 32px;
-      border-radius: 8px;
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 14px;
-      font-weight: 600;
-      margin-bottom: 12px;
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 14px;
     }
     .card h3 {
-      margin: 0 0 5px;
-      font-size: 14px;
-      font-weight: 600;
+      margin: 0 0 6px;
+      font-size: 15px;
+      font-weight: 650;
       color: var(--less-text-primary);
     }
     .card p {
       margin: 0;
-      font-size: 12.5px;
+      font-size: 13px;
       color: var(--less-text-secondary);
       line-height: 1.7;
     }
@@ -378,8 +411,10 @@ export default class DocsHome extends LitElement {
     }
     .demo-card {
       background: #18181b;
-      border-radius: 10px;
-      padding: 1.25rem;
+      border-radius: 12px;
+      padding: 1.5rem;
+      border: 1px solid #27272a;
+      transition: border-color 0.2s;
     }
     .demo-card h4 {
       margin: 0 0 12px;
@@ -561,10 +596,11 @@ export default class DocsHome extends LitElement {
     /* ── CTA ── */
     .cta {
       text-align: center;
-      padding: 2.5rem;
+      padding: 3.5rem 2.5rem;
       width: 100vw;
       margin-left: calc(-50vw + 50%);
-      border-top: 0.5px solid var(--less-border);
+      border-top: 1px solid var(--less-border);
+      background: var(--less-bg-surface);
     }
     .cta-inner {
       max-width: 960px;
@@ -573,14 +609,14 @@ export default class DocsHome extends LitElement {
     .cta code {
       display: inline-block;
       background: var(--less-brand-subtle, #eeedfe);
-      border: 0.5px solid #cecbf6;
-      border-radius: 8px;
-      padding: 10px 20px;
+      border: 1px solid #cecbf6;
+      border-radius: 10px;
+      padding: 12px 24px;
       font-family: "SF Mono", "Fira Code", "Consolas", monospace;
-      font-size: 13px;
+      font-size: 14px;
       color: var(--less-brand, #534ab7);
-      font-weight: 500;
-      margin-bottom: 10px;
+      font-weight: 600;
+      margin-bottom: 12px;
     }
     .cta p {
       margin: 0;
@@ -629,13 +665,16 @@ export default class DocsHome extends LitElement {
       margin-bottom: 1rem;
     }
     .mfa-card {
-      border: 0.5px solid var(--less-border);
-      border-radius: 10px;
-      padding: 1.25rem;
+      border: 1px solid var(--less-border);
+      border-radius: 12px;
+      padding: 1.5rem;
       background: var(--less-bg-surface);
+      transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
     }
     .mfa-card:hover {
       border-color: var(--less-border-hover);
+      box-shadow: 0 4px 16px rgba(83,74,183,0.08);
+      transform: translateY(-2px);
     }
     .mfa-tag {
       display: inline-block;
@@ -816,7 +855,8 @@ export default class DocsHome extends LitElement {
 
   private _renderZh() {
     return html`
-      <less-layout locale="${this.locale || 'zh'}" .locales="${['en', 'zh']}" current-path="/" home>
+      <less-layout locale="${this.locale || 'zh'}" .locales="${['en', 'zh']}" .navItems="${navSections}" .headerNav="${headerNav}" current-path="/" home>
+        <less-search slot="header-actions"></less-search>
         <section class="hero">
           <div class="hero-inner">
             <div class="hero-lockup">
@@ -1165,7 +1205,8 @@ export default class DocsHome extends LitElement {
       <less-layout locale="${this.locale || 'en'}" .locales="${[
         'en',
         'zh',
-      ]}" current-path="/en/" home>
+      ]}" .navItems="${navSections}" .headerNav="${headerNav}" current-path="/en/" home>
+        <less-search slot="header-actions"></less-search>
         <section class="hero">
           <div class="hero-inner">
             <div class="hero-lockup">

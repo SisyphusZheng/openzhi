@@ -145,14 +145,14 @@ export class LessLayout extends DsdLitElement {
         position: sticky;
         top: 0;
         z-index: var(--less-z-sticky);
-        background: rgba(255, 255, 255, 0.85);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border-bottom: 0.5px solid var(--less-border);
+        background: rgba(255, 255, 255, 0.82);
+        backdrop-filter: blur(16px) saturate(180%);
+        -webkit-backdrop-filter: blur(16px) saturate(180%);
+        border-bottom: 1px solid var(--less-border);
       }
 
       :host([data-theme="dark"]) .app-header {
-        background: rgba(18, 18, 26, 0.85);
+        background: rgba(18, 18, 26, 0.82);
       }
 
       .header-inner {

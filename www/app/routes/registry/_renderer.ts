@@ -76,8 +76,20 @@ const SEARCH_SCRIPT = `<script>
 
 const renderer: LessRenderer = {
   wrap(html: string, ctx: { req: { path: string } }) {
-    // Only inject search script on the registry index page
     const path = ctx.req.path || '';
+
+    // Inject search button into header slot (like guide/engine renderers)
+    const layoutOpen = html.indexOf('<less-layout');
+    if (layoutOpen >= 0) {
+      const closeGt = html.indexOf('>', layoutOpen);
+      if (closeGt > 0) {
+        html = html.slice(0, closeGt + 1) +
+          '<less-search slot="header-actions"></less-search>' +
+          html.slice(closeGt + 1);
+      }
+    }
+
+    // Only inject search script on the registry index page
     if (
       path === '/registry' || path === '/registry/' || path === '/en/registry' ||
       path === '/en/registry/'
