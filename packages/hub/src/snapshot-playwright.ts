@@ -422,7 +422,9 @@ export async function renderBatchWithPlaywright(
         results.set(item.tagName, {
           html: placeholderHtml,
           success: false,
-          error: result.error ? `Snapshot failed: ${result.error}` : 'Snapshot failed — placeholder, not real render',
+          error: result.error
+            ? `Snapshot failed: ${result.error}`
+            : 'Snapshot failed — placeholder, not real render',
         });
         if (verbose) {
           console.log(`  ⚠️  <${item.tagName}> snapshot failed: ${result.error}`);

@@ -62,17 +62,17 @@ LessJS 三支柱
 
 **不是SSG框架**。SSG只是渲染引擎的当前使用方式。框架层提供的是：
 
-| 能力 | 状态 | 说明 |
-|------|------|------|
-| 文件约定路由 | ✅ | `app/routes/` 自动扫描 + Hono 挂载 |
-| API Route | ✅ | `app/routes/api/*.ts` → Hono sub-app，`/api/term` 已在运行 |
-| 开发服务器 | ✅ | Vite HMR + Hono 中间件 |
-| 构建管线 | ✅ | Phase 1 SSR → Phase 2 client → Phase 3 SSG |
-| Serverless 部署 | ✅ | CF Pages Functions 天然支持 |
-| `@lessjs/rpc` | ✅ | 客户端 fetch 抽象 + retry + abort |
-| 请求上下文 | ❌ | 缺 env/auth/DB 注入 |
-| ISR | ❌ | 缺 stale-while-revalidate 缓存层 |
-| Supabase 集成 | ❌ | 缺 auth/DB/realtime |
+| 能力            | 状态 | 说明                                                       |
+| --------------- | ---- | ---------------------------------------------------------- |
+| 文件约定路由    | ✅   | `app/routes/` 自动扫描 + Hono 挂载                         |
+| API Route       | ✅   | `app/routes/api/*.ts` → Hono sub-app，`/api/term` 已在运行 |
+| 开发服务器      | ✅   | Vite HMR + Hono 中间件                                     |
+| 构建管线        | ✅   | Phase 1 SSR → Phase 2 client → Phase 3 SSG                 |
+| Serverless 部署 | ✅   | CF Pages Functions 天然支持                                |
+| `@lessjs/rpc`   | ✅   | 客户端 fetch 抽象 + retry + abort                          |
+| 请求上下文      | ❌   | 缺 env/auth/DB 注入                                        |
+| ISR             | ❌   | 缺 stale-while-revalidate 缓存层                           |
+| Supabase 集成   | ❌   | 缺 auth/DB/realtime                                        |
 
 **vs Fresh**：Fresh 也是全栈框架（Deno + Preact + Island）。LessJS 的差异在
 Pillar 2（WC渲染引擎）和 Pillar 3（Hub），不在框架层本身。
@@ -97,27 +97,27 @@ renderDSD(component, props) → DSD HTML string
 
 **已有的引擎能力**：
 
-| 能力 | 状态 |
-|------|------|
-| DSD字符串渲染 | ✅ `renderDSD()` — 纯字符串拼接 |
-| 命名适配器协议 | ✅ `registerAdapter()` + `RendererProtocol` |
-| Lit adapter | ✅ 完整 SSR + hydration |
-| React adapter | ✅ `renderToStaticMarkup()` + `DsdReactElement` |
-| Vanilla adapter | ✅ `render(): string` 组件 |
-| Tier 1/2 分类 | ✅ DSD预渲染 vs 标签输出 |
-| 嵌套组件渲染 | ✅ `renderNestedCustomElements()` |
-| 兼容性分类 | ✅ ssr-capable / client-only / rejected / experimental-dom |
-| Vue adapter | ❌ |
-| Hydration 策略 | ❌ 只有 ssr:true/false |
-| Streaming output | ❌ |
+| 能力             | 状态                                                       |
+| ---------------- | ---------------------------------------------------------- |
+| DSD字符串渲染    | ✅ `renderDSD()` — 纯字符串拼接                            |
+| 命名适配器协议   | ✅ `registerAdapter()` + `RendererProtocol`                |
+| Lit adapter      | ✅ 完整 SSR + hydration                                    |
+| React adapter    | ✅ `renderToStaticMarkup()` + `DsdReactElement`            |
+| Vanilla adapter  | ✅ `render(): string` 组件                                 |
+| Tier 1/2 分类    | ✅ DSD预渲染 vs 标签输出                                   |
+| 嵌套组件渲染     | ✅ `renderNestedCustomElements()`                          |
+| 兼容性分类       | ✅ ssr-capable / client-only / rejected / experimental-dom |
+| Vue adapter      | ❌                                                         |
+| Hydration 策略   | ❌ 只有 ssr:true/false                                     |
+| Streaming output | ❌                                                         |
 
 **ISR vs SSR vs SSG — 引擎视角**：
 
-| 模式 | 何时调用 renderDSD() | 数据新鲜度 | 需要服务器 |
-|------|----------------------|------------|-----------|
-| SSG（当前） | build 时 | 构建时快照 | ❌ |
-| ISR | 缓存过期时 | 可配置 stale 时间 | ✅ edge fn |
-| SSR | 每次请求 | 实时 | ✅ always-on |
+| 模式        | 何时调用 renderDSD() | 数据新鲜度        | 需要服务器   |
+| ----------- | -------------------- | ----------------- | ------------ |
+| SSG（当前） | build 时             | 构建时快照        | ❌           |
+| ISR         | 缓存过期时           | 可配置 stale 时间 | ✅ edge fn   |
+| SSR         | 每次请求             | 实时              | ✅ always-on |
 
 **决策**：ISR 是最自然的下一步，因为 `renderDSD()` 是纯字符串拼接
 （~1-5ms），ISR 的 99% 缓存命中 / 1% 重新渲染模式非常匹配。
@@ -126,31 +126,32 @@ renderDSD(component, props) → DSD HTML string
 
 **定位**：Web Component 发现、验证、安装的一站式服务。
 
-| 能力 | 状态 |
-|------|------|
-| 包搜索 + 过滤 | ✅ |
-| 兼容性验证 + 报告 | ✅ |
-| 组件预览（Playwright snapshots） | ✅ |
-| `less add` 一键安装 | ✅ |
-| 组件详情页 + API reference | ✅ |
-| SSR/client 分层显示 | ✅ |
-| 公开 Hub 服务 | ❌ 本地 MVP |
-| 社区提交流程 | ⚠️ submitter 存在，缺 CI 自动化 |
+| 能力                             | 状态                            |
+| -------------------------------- | ------------------------------- |
+| 包搜索 + 过滤                    | ✅                              |
+| 兼容性验证 + 报告                | ✅                              |
+| 组件预览（Playwright snapshots） | ✅                              |
+| `less add` 一键安装              | ✅                              |
+| 组件详情页 + API reference       | ✅                              |
+| SSR/client 分层显示              | ✅                              |
+| 公开 Hub 服务                    | ❌ 本地 MVP                     |
+| 社区提交流程                     | ⚠️ submitter 存在，缺 CI 自动化 |
 
 ### Honest Completion Assessment
 
-| Pillar | Completion | Key gap |
-|--------|-----------|---------|
-| 1. 全栈框架 | **60%** | Hono+API ✅; 缺 ISR/auth/DB/context |
-| 2. WC渲染引擎 | **75%** | DSD+3 adapters ✅; 缺 Vue/hydration策略/streaming |
-| 3. Registry Hub | **65%** | 本地 MVP 完整; 缺公开服务 |
-| **Overall** | **~65%** | |
+| Pillar          | Completion | Key gap                                           |
+| --------------- | ---------- | ------------------------------------------------- |
+| 1. 全栈框架     | **60%**    | Hono+API ✅; 缺 ISR/auth/DB/context               |
+| 2. WC渲染引擎   | **75%**    | DSD+3 adapters ✅; 缺 Vue/hydration策略/streaming |
+| 3. Registry Hub | **65%**    | 本地 MVP 完整; 缺公开服务                         |
+| **Overall**     | **~65%**   |                                                   |
 
 ### Positioning Statement
 
 > **LessJS = 全栈框架 + 通用WC渲染引擎 + Registry Hub**
 >
 > 以 Web Components 为一等公民的全栈开发平台：
+>
 > - 全栈框架提供路由、API、部署
 > - WC渲染引擎提供 DSD 零JS首屏 + 多框架适配
 > - Hub 提供组件发现与一键安装
@@ -163,20 +164,21 @@ renderDSD(component, props) → DSD HTML string
 **vs Next.js**：Next = 全栈框架（React绑定）。LessJS = 全栈框架 + WC跨框架引擎
 
 **"为什么选WC不选React"的三个答案**：
+
 1. **样式隔离** — Shadow DOM 是浏览器机制，不是约定
 2. **跨框架** — Shoelace/Material Web 写一次，React/Vue/Angular/Svelte 都能用
 3. **零JS首屏** — DSD 是浏览器原生 HTML，不需要任何 runtime
 
 ### Path to Completion
 
-| Priority | Pillar | What | Why |
-|----------|--------|------|-----|
-| P0 | 2 | Hydration strategies (`client:load/idle/visible/only`) | 引擎从能用变好用 |
-| P1 | 1 | ISR (stale-while-revalidate cache layer) | 框架从SSG到全栈的关键一步 |
-| P1 | 2 | Vue adapter | 引擎完成主流框架覆盖 |
-| P2 | 1 | Request context (auth/env/DB) | 框架全栈能力闭环 |
-| P2 | 1 | Supabase integration | 框架后端集成 |
-| P3 | 3 | Public Hub service | 生态从本地到社区 |
+| Priority | Pillar | What                                                   | Why                       |
+| -------- | ------ | ------------------------------------------------------ | ------------------------- |
+| P0       | 2      | Hydration strategies (`client:load/idle/visible/only`) | 引擎从能用变好用          |
+| P1       | 1      | ISR (stale-while-revalidate cache layer)               | 框架从SSG到全栈的关键一步 |
+| P1       | 2      | Vue adapter                                            | 引擎完成主流框架覆盖      |
+| P2       | 1      | Request context (auth/env/DB)                          | 框架全栈能力闭环          |
+| P2       | 1      | Supabase integration                                   | 框架后端集成              |
+| P3       | 3      | Public Hub service                                     | 生态从本地到社区          |
 
 ## Consequences
 

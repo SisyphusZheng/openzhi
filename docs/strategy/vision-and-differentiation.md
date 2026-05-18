@@ -115,15 +115,15 @@ Web Standards First, Deno Second
 
 ### 后端能力：已有（不是零）
 
-| 能力 | 状态 | 证据 |
-|------|------|------|
-| Hono 开发服务器 | ✅ | `entry-renderer.ts` |
-| API 路由约定 | ✅ | `app/routes/api/*.ts` → Hono sub-app |
-| 路由扫描 API 发现 | ✅ | `getRouteType()` 检测 `api/` 前缀 |
-| API 路由渲染 | ✅ | `renderApiRoute()` 挂载 Hono sub-app |
-| 运行中的 API | ✅ | `/api/term` |
-| `@lessjs/rpc` | ✅ | 客户端 fetch 抽象 |
-| CF Pages 部署 | ✅ | 静态资源 + serverless functions |
+| 能力              | 状态 | 证据                                 |
+| ----------------- | ---- | ------------------------------------ |
+| Hono 开发服务器   | ✅   | `entry-renderer.ts`                  |
+| API 路由约定      | ✅   | `app/routes/api/*.ts` → Hono sub-app |
+| 路由扫描 API 发现 | ✅   | `getRouteType()` 检测 `api/` 前缀    |
+| API 路由渲染      | ✅   | `renderApiRoute()` 挂载 Hono sub-app |
+| 运行中的 API      | ✅   | `/api/term`                          |
+| `@lessjs/rpc`     | ✅   | 客户端 fetch 抽象                    |
+| CF Pages 部署     | ✅   | 静态资源 + serverless functions      |
 
 缺少的：数据库客户端、认证、ISR 缓存层、请求上下文注入。
 
@@ -135,26 +135,26 @@ Web Standards First, Deno Second
 
 ### 能力评分
 
-| 能力                           | 状态                | 诚实评分            |
-| ------------------------------ | ------------------- | ------------------- |
-| SSG 静态站点生成               | ✅ 稳定             | 9/10                |
-| Lit adapter DSD SSR            | ✅ 稳定             | 8/10                |
-| Vanilla adapter                | ✅ 可用             | 7/10                |
-| React adapter                  | ✅ 可用             | 6/10                |
-| 第三方 WC Tier 2（标签输出）   | ✅ 零配置           | 10/10（但无差异化） |
-| 第三方 WC Tier 1（DSD 预渲染） | ⚠️ 脆弱             | 4/10                |
-| Signals（通信层）              | ✅ 可用             | 6/10                |
-| Signals（渲染层渗透）          | ❌ 未做             | 2/10                |
-| Islands 架构                   | ✅ 稳定             | 7/10                |
-| Islands hydration 策略         | ❌ 只有 ssr:true/false | 2/10             |
-| Registry Hub（基础设施）       | ✅ 可用             | 6/10                |
-| Registry Hub（快照稳定性）     | ⚠️ 刚修了好几轮 bug | 4/10                |
-| API Route（Hono）              | ✅ 已有             | 6/10                |
-| ISR 缓存层                     | ❌ 不存在           | 0/10                |
-| 请求时 SSR                    | ❌ 不存在           | 0/10                |
-| Vue adapter                    | ❌ 不存在           | 0/10                |
-| Supabase 集成                  | ❌ 不存在           | 0/10                |
-| Edge runtime 适配              | ❌ 仅静态 CDN       | 1/10                |
+| 能力                           | 状态                   | 诚实评分            |
+| ------------------------------ | ---------------------- | ------------------- |
+| SSG 静态站点生成               | ✅ 稳定                | 9/10                |
+| Lit adapter DSD SSR            | ✅ 稳定                | 8/10                |
+| Vanilla adapter                | ✅ 可用                | 7/10                |
+| React adapter                  | ✅ 可用                | 6/10                |
+| 第三方 WC Tier 2（标签输出）   | ✅ 零配置              | 10/10（但无差异化） |
+| 第三方 WC Tier 1（DSD 预渲染） | ⚠️ 脆弱                | 4/10                |
+| Signals（通信层）              | ✅ 可用                | 6/10                |
+| Signals（渲染层渗透）          | ❌ 未做                | 2/10                |
+| Islands 架构                   | ✅ 稳定                | 7/10                |
+| Islands hydration 策略         | ❌ 只有 ssr:true/false | 2/10                |
+| Registry Hub（基础设施）       | ✅ 可用                | 6/10                |
+| Registry Hub（快照稳定性）     | ⚠️ 刚修了好几轮 bug    | 4/10                |
+| API Route（Hono）              | ✅ 已有                | 6/10                |
+| ISR 缓存层                     | ❌ 不存在              | 0/10                |
+| 请求时 SSR                     | ❌ 不存在              | 0/10                |
+| Vue adapter                    | ❌ 不存在              | 0/10                |
+| Supabase 集成                  | ❌ 不存在              | 0/10                |
+| Edge runtime 适配              | ❌ 仅静态 CDN          | 1/10                |
 
 **加权平均：~6.5/10**（v3 三支柱模型：框架60% + 引擎75% + Hub65%）
 
@@ -162,14 +162,14 @@ Web Standards First, Deno Second
 
 ## 三、竞品格局（精简 — v3 增补 Fresh）
 
-| 产品                  | WC 原生       | 全栈    | DSD | Signals | Islands     | 框架绑定    |
-| --------------------- | ------------- | ------- | --- | ------- | ----------- | ----------- |
-| **Astro**             | ❌ 当普通元素 | ✅ 成熟 | ❌  | ❌      | ✅ 多策略   | 多框架共存  |
-| **Fresh**             | ❌ Preact-only | ✅     | ❌  | Preact  | ✅ 原生     | Preact 绑定 |
-| **Enhance**           | ✅            | 部分    | ❌  | ❌      | 部分        | WC 原生     |
-| **Lit SSR**           | ✅ 仅 Lit     | ❌ 库   | ❌  | ❌      | ❌          | Lit 绑定    |
-| **Next.js**           | ❌            | ✅      | ❌  | ❌      | 部分（RSC） | React 绑定 |
-| **webcomponents.org** | ✅ 展示       | ❌      | ❌  | ❌      | ❌          | 无框架      |
+| 产品                  | WC 原生        | 全栈    | DSD | Signals | Islands     | 框架绑定    |
+| --------------------- | -------------- | ------- | --- | ------- | ----------- | ----------- |
+| **Astro**             | ❌ 当普通元素  | ✅ 成熟 | ❌  | ❌      | ✅ 多策略   | 多框架共存  |
+| **Fresh**             | ❌ Preact-only | ✅      | ❌  | Preact  | ✅ 原生     | Preact 绑定 |
+| **Enhance**           | ✅             | 部分    | ❌  | ❌      | 部分        | WC 原生     |
+| **Lit SSR**           | ✅ 仅 Lit      | ❌ 库   | ❌  | ❌      | ❌          | Lit 绑定    |
+| **Next.js**           | ❌             | ✅      | ❌  | ❌      | 部分（RSC） | React 绑定  |
+| **webcomponents.org** | ✅ 展示        | ❌      | ❌  | ❌      | ❌          | 无框架      |
 
 **市场空白**：没有人同时做到 WC 原生 + DSD + 全栈能力。LessJS 的目标位置。
 
@@ -320,6 +320,7 @@ SSR:  每次访问 → 都渲染 → 永远最新但最慢
 ```
 
 `renderDSD()` 是纯字符串拼接，一次渲染 ~1-5ms。ISR 逻辑：
+
 1. 访问页面 → 返回缓存 HTML
 2. 检查 `revalidate: 60` → 超过60秒则后台重新 `renderDSD()`
 3. 下次访问返回新 HTML
@@ -328,14 +329,14 @@ SSR:  每次访问 → 都渲染 → 永远最新但最慢
 
 ### 缺失能力（修正版）
 
-| 能力 | 当前状态 | 优先级 | 说明 |
-|------|---------|--------|------|
+| 能力           | 当前状态               | 优先级 | 说明                            |
+| -------------- | ---------------------- | ------ | ------------------------------- |
 | Hydration 策略 | ❌ 只有 ssr:true/false | **P0** | `client:load/idle/visible/only` |
-| ISR 缓存层 | ❌ 不存在 | P1 | stale-while-revalidate |
-| Vue adapter | ❌ 不存在 | P1 | 完成主流框架覆盖 |
-| Supabase 集成 | ❌ 不存在 | P2 | Auth + DB + Realtime |
-| 请求时 SSR | ❌ 不存在 | P2 | 仅限需要实时数据的页面 |
-| 公开 Hub 服务 | ❌ 本地 MVP | P3 | 基础设施 + 社区 |
+| ISR 缓存层     | ❌ 不存在              | P1     | stale-while-revalidate          |
+| Vue adapter    | ❌ 不存在              | P1     | 完成主流框架覆盖                |
+| Supabase 集成  | ❌ 不存在              | P2     | Auth + DB + Realtime            |
+| 请求时 SSR     | ❌ 不存在              | P2     | 仅限需要实时数据的页面          |
+| 公开 Hub 服务  | ❌ 本地 MVP            | P3     | 基础设施 + 社区                 |
 
 ### 技术对齐优势
 
@@ -450,19 +451,19 @@ Web APIs        Web APIs           Web APIs
 
 本节记录战略讨论中形成的关键决策，供未来参考。
 
-| 日期       | 决策                                 | 上下文                                                               |
-| ---------- | ------------------------------------ | -------------------------------------------------------------------- |
-| 2026-05-18 | WC 渲染重构为 Tier 1/2 两层模型      | 之前把"自动 SSR"理解为单一目标，实际应分层：Tier 2 兜底、Tier 1 增强 |
-| 2026-05-18 | DSD 搞不定可回退 SD                  | "实在不行拉倒回 SD 也行"——回退链条：DSD → SD → Tier 2 client-only    |
-| 2026-05-18 | 消费者是作者本人                     | "真实消费者就我一个"——产品决策以"我自己够不够用"为准                 |
-| 2026-05-18 | 近期目标是个人博客                   | 博客验证引擎能力，页面上自如混用多种 WC UI 库                        |
-| 2026-05-18 | 远期目标是 CRM 等数据驱动应用        | CRM 需要 ISR + API + Auth + DB → 驱动全栈能力生长                    |
-| 2026-05-18 | 全栈路径：Hydration策略 → ISR → Vue → Supabase | 严格排序，四条线不能并行推进                               |
-| 2026-05-18 | Supabase 是生态伙伴不自建            | Deno + Hono 技术栈对齐，不自建 Auth/DB/Realtime                      |
-| 2026-05-18 | 不急着做全栈，先稳固引擎             | "先把 DSD 引擎做到真正稳定、Hub 做到真正可用"                        |
-| 2026-05-18 | 定位为 SSG Islands（非 streaming SSR）| ADR-0033：当前是 build-time SSR，不是 request-time                    |
-| 2026-05-18 | 承认已有后端能力（Hono + API Route）| ADR-0033：纠正"后端零基础"误判                                       |
-| 2026-05-18 | 承认已是混合岛屿（缺策略选择）       | ADR-0033：Lit+React+Vanilla 共存，但只有 ssr:true/false              |
-| 2026-05-18 | ISR 优于 request-time SSR           | ADR-0033：renderDSD() 是纯字符串拼接，ISR 的 99%/1% 缓存模式更匹配   |
-| 2026-05-18 | Hydration 策略是 P0 优先级           | ADR-0033：从二值模型到 client:load/idle/visible/only                  |
-| 2026-05-18 | 定位声明：全栈框架 + 通用WC渲染引擎 + Registry Hub | ADR-0033 v3：三支柱模型取代"SSG框架"标签 |
+| 日期       | 决策                                               | 上下文                                                               |
+| ---------- | -------------------------------------------------- | -------------------------------------------------------------------- |
+| 2026-05-18 | WC 渲染重构为 Tier 1/2 两层模型                    | 之前把"自动 SSR"理解为单一目标，实际应分层：Tier 2 兜底、Tier 1 增强 |
+| 2026-05-18 | DSD 搞不定可回退 SD                                | "实在不行拉倒回 SD 也行"——回退链条：DSD → SD → Tier 2 client-only    |
+| 2026-05-18 | 消费者是作者本人                                   | "真实消费者就我一个"——产品决策以"我自己够不够用"为准                 |
+| 2026-05-18 | 近期目标是个人博客                                 | 博客验证引擎能力，页面上自如混用多种 WC UI 库                        |
+| 2026-05-18 | 远期目标是 CRM 等数据驱动应用                      | CRM 需要 ISR + API + Auth + DB → 驱动全栈能力生长                    |
+| 2026-05-18 | 全栈路径：Hydration策略 → ISR → Vue → Supabase     | 严格排序，四条线不能并行推进                                         |
+| 2026-05-18 | Supabase 是生态伙伴不自建                          | Deno + Hono 技术栈对齐，不自建 Auth/DB/Realtime                      |
+| 2026-05-18 | 不急着做全栈，先稳固引擎                           | "先把 DSD 引擎做到真正稳定、Hub 做到真正可用"                        |
+| 2026-05-18 | 定位为 SSG Islands（非 streaming SSR）             | ADR-0033：当前是 build-time SSR，不是 request-time                   |
+| 2026-05-18 | 承认已有后端能力（Hono + API Route）               | ADR-0033：纠正"后端零基础"误判                                       |
+| 2026-05-18 | 承认已是混合岛屿（缺策略选择）                     | ADR-0033：Lit+React+Vanilla 共存，但只有 ssr:true/false              |
+| 2026-05-18 | ISR 优于 request-time SSR                          | ADR-0033：renderDSD() 是纯字符串拼接，ISR 的 99%/1% 缓存模式更匹配   |
+| 2026-05-18 | Hydration 策略是 P0 优先级                         | ADR-0033：从二值模型到 client:load/idle/visible/only                 |
+| 2026-05-18 | 定位声明：全栈框架 + 通用WC渲染引擎 + Registry Hub | ADR-0033 v3：三支柱模型取代"SSG框架"标签                             |

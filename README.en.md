@@ -39,12 +39,14 @@ LessJS
 ### Pillar 1: Full-Stack Framework
 
 > ⚠️ Early stage: routing, dev server, and API Routes are production-ready. Hydration strategies, ISR, and SSR are planned for v0.20.
+
 - **File-convention routing** — `app/routes/` auto-scan + Hono mounting
 - **API Routes** — `app/routes/api/*.ts` → Hono sub-app, serverless deployment
 - **Hono runtime** — Fetch API aligned, Deno / Node / Edge multi-runtime
 - **ISR (planned)** — stale-while-revalidate cache layer, `renderDSD()` ~1-5ms natural fit
 
 ### Pillar 2: Universal WC Rendering Engine
+
 - **Declarative Shadow DOM** — WHATWG standard, zero-JS first paint
 - **Island upgrade** — client JS loaded only for interactive components (`client:load/idle/visible/only` — planned)
 - **Multi-adapter** — Lit / React / Vanilla adapters, multi-framework coexistence on same page
@@ -52,12 +54,14 @@ LessJS
 - **Renderer Protocol** — structured render output, error taxonomy, DSD metrics
 
 ### Pillar 3: Registry Hub
+
 - **Package search + filtering** — discover compatible Web Component libraries
 - **Compatibility validation + reporting** — check SSR capability before installing
 - **Component previews** — Playwright-rendered real component snapshots
 - **One-click install** — `less add @scope/pkg` auto-configuration
 
 ### General
+
 - **Deno workspace** — pure ESM, no `package.json`
 - **validate-manifest CLI** — validate CEM manifest compatibility before install
 - **less add safe install** — dry-run + validation gate + plan generation
@@ -103,11 +107,11 @@ render() → RenderAdapter → renderDSD() → DSD HTML → browser parses
 
 **Rendering-timing-agnostic**: the same `renderDSD()` engine invoked at different times:
 
-| Mode | When renderDSD() is called | Data freshness | Server required |
-|------|---------------------------|----------------|-----------------|
-| SSG (current) | Build time | Build-time snapshot | ❌ |
-| ISR (planned) | Cache expiry | Configurable stale time | ✅ edge fn |
-| SSR (far term) | Every request | Real-time | ✅ always-on |
+| Mode           | When renderDSD() is called | Data freshness          | Server required |
+| -------------- | -------------------------- | ----------------------- | --------------- |
+| SSG (current)  | Build time                 | Build-time snapshot     | ❌              |
+| ISR (planned)  | Cache expiry               | Configurable stale time | ✅ edge fn      |
+| SSR (far term) | Every request              | Real-time               | ✅ always-on    |
 
 ## Third-Party Compatibility Pipeline (v0.18.x)
 
@@ -121,29 +125,29 @@ node_modules/*/custom-elements.json → CEM Parser → 4-tier classifier → SSR
 
 ## Competitive Positioning
 
-| Dimension | LessJS | Astro | Fresh | Next.js |
-|-----------|--------|-------|-------|---------|
-| **Positioning** | Full-stack + WC Engine + Hub | Full-stack (multi-framework) | Full-stack (Preact) | Full-stack (React) |
-| **WC Native** | ✅ DSD first-class | ❌ treated as plain elements | ❌ Preact-only | ❌ |
-| **First-paint JS** | 0 KB | 0 KB | ~23 KB | ~90 KB |
-| **Cross-framework** | Lit/React/Vanilla coexist | Multi-framework coexist | Preact only | React only |
-| **Registry** | ✅ Built-in Hub | ❌ | ❌ | ❌ |
-| **Backend** | Hono + Serverless | Built-in | Oak | Built-in |
+| Dimension           | LessJS                       | Astro                        | Fresh               | Next.js            |
+| ------------------- | ---------------------------- | ---------------------------- | ------------------- | ------------------ |
+| **Positioning**     | Full-stack + WC Engine + Hub | Full-stack (multi-framework) | Full-stack (Preact) | Full-stack (React) |
+| **WC Native**       | ✅ DSD first-class           | ❌ treated as plain elements | ❌ Preact-only      | ❌                 |
+| **First-paint JS**  | 0 KB                         | 0 KB                         | ~23 KB              | ~90 KB             |
+| **Cross-framework** | Lit/React/Vanilla coexist    | Multi-framework coexist      | Preact only         | React only         |
+| **Registry**        | ✅ Built-in Hub              | ❌                           | ❌                  | ❌                 |
+| **Backend**         | Hono + Serverless            | Built-in                     | Oak                 | Built-in           |
 
 **Core differentiation**: LessJS makes DSD and Web Components the primary rendering contract, rather than an optimization layered on top of a framework-specific component model.
 
 ## Roadmap
 
-| Version | Target                                | Status      |
-| ------- | ------------------------------------- | ----------- |
-| v0.15   | Renderer Kernel Protocol              | ✅ Done     |
-| v0.16   | WC Package Protocol                   | ✅ Done     |
-| v0.17   | Ecosystem Entry + SSR Boundary        | ✅ Done     |
-| v0.18   | Universal WC Engine                    | ✅ Done     |
-| v0.19   | **Registry Hub + Component Browser**   | **Current** |
-| v0.20   | Islands Strategy + Full-Stack Foundation | 📋 Planned |
-| v0.21   | Full-Stack Framework (ISR + Vue + Supabase) | 📋 Planned |
-| v1.0    | API Freeze                            | 🚀 Far term |
+| Version | Target                                      | Status      |
+| ------- | ------------------------------------------- | ----------- |
+| v0.15   | Renderer Kernel Protocol                    | ✅ Done     |
+| v0.16   | WC Package Protocol                         | ✅ Done     |
+| v0.17   | Ecosystem Entry + SSR Boundary              | ✅ Done     |
+| v0.18   | Universal WC Engine                         | ✅ Done     |
+| v0.19   | **Registry Hub + Component Browser**        | **Current** |
+| v0.20   | Islands Strategy + Full-Stack Foundation    | 📋 Planned  |
+| v0.21   | Full-Stack Framework (ISR + Vue + Supabase) | 📋 Planned  |
+| v1.0    | API Freeze                                  | 🚀 Far term |
 
 See [ADR docs](docs/adr/) and [lessjs.org](https://lessjs.org) for details.
 

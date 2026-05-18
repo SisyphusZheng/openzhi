@@ -36,12 +36,12 @@ Gap: only binary `ssr:true/false`, no `client:load/idle/visible/only`.
 
 ### Completion by pillar
 
-| Pillar | Completion |
-|--------|-----------|
-| 1. Full-Stack Framework | 45% |
-| 2. WC Rendering Engine | 75% |
-| 3. Registry Hub | 55% |
-| **Overall** | **~55%** |
+| Pillar                  | Completion |
+| ----------------------- | ---------- |
+| 1. Full-Stack Framework | 45%        |
+| 2. WC Rendering Engine  | 75%        |
+| 3. Registry Hub         | 55%        |
+| **Overall**             | **~55%**   |
 
 ### Completion Methodology
 
@@ -49,20 +49,20 @@ Percentages use a weighted capability model. Each pillar has N capabilities
 with weights; each capability is scored 0–100%. Pillar score is the weighted
 average. Key deductions for Pillar 1 (Full-Stack Framework):
 
-| Capability | Weight | Status | Score |
-|-----------|--------|--------|-------|
-| Routing (file + dynamic) | 15% | ✅ Complete | 15% |
-| Dev server + HMR | 10% | ✅ Complete | 10% |
-| Build pipeline | 10% | ✅ Complete | 10% |
-| API routes (Hono) | 10% | ⚠️ Basic | 5% |
-| Hydration strategies | 15% | ❌ Binary only | 3% |
-| SSR (request-time) | 10% | ❌ Not implemented | 0% |
-| ISR | 10% | ❌ Not implemented | 0% |
-| DB/Auth | 5% | ❌ Not implemented | 0% |
-| Deployment adapters | 5% | ⚠️ CF Pages only | 2% |
-| Request context | 5% | ❌ Not implemented | 0% |
-| Documentation | 5% | ⚠️ Partial | 2% |
-| **Total** | **100%** | | **47% → ~45%** |
+| Capability               | Weight   | Status             | Score          |
+| ------------------------ | -------- | ------------------ | -------------- |
+| Routing (file + dynamic) | 15%      | ✅ Complete        | 15%            |
+| Dev server + HMR         | 10%      | ✅ Complete        | 10%            |
+| Build pipeline           | 10%      | ✅ Complete        | 10%            |
+| API routes (Hono)        | 10%      | ⚠️ Basic           | 5%             |
+| Hydration strategies     | 15%      | ❌ Binary only     | 3%             |
+| SSR (request-time)       | 10%      | ❌ Not implemented | 0%             |
+| ISR                      | 10%      | ❌ Not implemented | 0%             |
+| DB/Auth                  | 5%       | ❌ Not implemented | 0%             |
+| Deployment adapters      | 5%       | ⚠️ CF Pages only   | 2%             |
+| Request context          | 5%       | ❌ Not implemented | 0%             |
+| Documentation            | 5%       | ⚠️ Partial         | 2%             |
+| **Total**                | **100%** |                    | **47% → ~45%** |
 
 Pillar 3 (Registry Hub) reduced from 65% to 55%: 3 packages do not yet
 constitute an ecosystem-grade registry. Core pipeline is solid, but
@@ -114,29 +114,29 @@ See [ADR-0031](../adr/0031-hub-v2-component-browser-workflow.md) for architectur
 
 ## Branch Status
 
-| Branch        | HEAD     | Status                                                      |
-| ------------- | -------- | ----------------------------------------------------------- |
+| Branch        | HEAD     | Status                                                                  |
+| ------------- | -------- | ----------------------------------------------------------------------- |
 | `origin/dev`  | `latest` | v0.19.0 Phase 1/2/3 complete (Component Browser + Playwright Snapshots) |
-| `origin/main` | `latest` | v0.18.3 release                                             |
+| `origin/main` | `latest` | v0.18.3 release                                                         |
 
 ## Tags
 
 > Last verified: 2026-05-18 via `git tag -l`. Tags not listed here do not
 > exist in the repository.
 
-| Tag     | Commit    | Date       | Note |
-| ------- | --------- | ---------- | ---- |
-| v0.19.0 | `d933851` | 2026-05-18 | ✅ Created |
-| v0.18.3 | `1d3c003` | 2026-05-17 | ✅ Created |
-| v0.18.0 | `0322699` | 2026-05-17 | ✅ Created |
-| v0.17.5 | `ed88eaa` | 2026-05-17 | ✅ Created |
-| v0.17.4 | `3b5db70` | 2026-05-16 | ✅ Existing |
-| v0.17.3 | `be3cf0c` | 2026-05-16 | ✅ Existing |
+| Tag     | Commit    | Date       | Note                    |
+| ------- | --------- | ---------- | ----------------------- |
+| v0.19.0 | `d933851` | 2026-05-18 | ✅ Created              |
+| v0.18.3 | `1d3c003` | 2026-05-17 | ✅ Created              |
+| v0.18.0 | `0322699` | 2026-05-17 | ✅ Created              |
+| v0.17.5 | `ed88eaa` | 2026-05-17 | ✅ Created              |
+| v0.17.4 | `3b5db70` | 2026-05-16 | ✅ Existing             |
+| v0.17.3 | `be3cf0c` | 2026-05-16 | ✅ Existing             |
 | v0.17.2 | pending   | 2026-05-16 | Commit not identifiable |
-| v0.17.1 | `08f267d` | 2026-05-16 | ✅ Existing |
-| v0.17.0 | `1f93fa2` | 2026-05-16 | ✅ Existing |
-| v0.16.0 | `a02feb6` | 2026-05-16 | ✅ Existing |
-| v0.15.3 | `5e06fc9` | 2026-05-16 | ✅ Existing |
+| v0.17.1 | `08f267d` | 2026-05-16 | ✅ Existing             |
+| v0.17.0 | `1f93fa2` | 2026-05-16 | ✅ Existing             |
+| v0.16.0 | `a02feb6` | 2026-05-16 | ✅ Existing             |
+| v0.15.3 | `5e06fc9` | 2026-05-16 | ✅ Existing             |
 
 ## Last Completed Release: 0.19.0 (2026-05-17)
 
@@ -186,17 +186,17 @@ Third-party package handling is conservative:
 
 ## Version Ladder With Admission And Exit Gates
 
-| Version | SOP                                                    | Status               | Entry Gate                                                           | Exit Gate                                                 |
-| ------- | ------------------------------------------------------ | -------------------- | -------------------------------------------------------------------- | --------------------------------------------------------- |
-| v0.17.3 | `docs/sop/v0.17.3-multi-framework-adapters.md`         | Done                 | v0.17.2 SSR filtering exists                                         | Vanilla/React adapters documented; no universal SSR claim |
-| v0.17.4 | `docs/sop/v0.17.4-compatibility-boundary-hardening.md` | Done                 | v0.17.3 docs closed                                                  | Client-only modules excluded before SSR entry generation  |
-| v0.18.0 | `docs/sop/v0.18.0-universal-wc-engine.md`              | Done                 | v0.17.4 admission planner complete + package SSR admission validated | CEM parser + compatibility tiers + report reasons         |
-| v0.18.1 | `docs/sop/v0.18.1-validate-manifest-cli.md`            | Done                 | v0.18.0 classifier stable                                            | `less validate-manifest` emits stable diagnostics         |
-| v0.18.2 | `docs/sop/v0.18.2-less-add-install-flow.md`            | Done                 | validation CLI stable                                                | `less add` dry-run/install is validation-gated            |
-| v0.18.3 | `docs/sop/v0.18.3-dom-simulation-experiment.md`        | Done                 | client-only fallback stable                                          | opt-in DOM simulation decision recorded                   |
-| v0.19.0 | `docs/sop/v0.19.0-platform-hub.md` + `v0.19.0-component-browser.md` | **Done** | validation/build reports stable + ADR-0030 accepted | Hub ingests artifacts, CLI submit, component browser, Playwright snapshots |
-| v0.19.0 | `docs/sop/v0.19.0-component-browser.md`                | **Done**           | v0.19.0 Phase 1 deployed + fixture packages indexed                  | Component drill-down, rendered previews, `less add` CLI   |
-| v1.0.0  | `docs/sop/v1.0.0-general-purpose-engine.md`            | Vision               | engine, reports, add flow, Hub records stable                        | API/schema freeze with deterministic package outcomes     |
+| Version | SOP                                                                 | Status   | Entry Gate                                                           | Exit Gate                                                                  |
+| ------- | ------------------------------------------------------------------- | -------- | -------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| v0.17.3 | `docs/sop/v0.17.3-multi-framework-adapters.md`                      | Done     | v0.17.2 SSR filtering exists                                         | Vanilla/React adapters documented; no universal SSR claim                  |
+| v0.17.4 | `docs/sop/v0.17.4-compatibility-boundary-hardening.md`              | Done     | v0.17.3 docs closed                                                  | Client-only modules excluded before SSR entry generation                   |
+| v0.18.0 | `docs/sop/v0.18.0-universal-wc-engine.md`                           | Done     | v0.17.4 admission planner complete + package SSR admission validated | CEM parser + compatibility tiers + report reasons                          |
+| v0.18.1 | `docs/sop/v0.18.1-validate-manifest-cli.md`                         | Done     | v0.18.0 classifier stable                                            | `less validate-manifest` emits stable diagnostics                          |
+| v0.18.2 | `docs/sop/v0.18.2-less-add-install-flow.md`                         | Done     | validation CLI stable                                                | `less add` dry-run/install is validation-gated                             |
+| v0.18.3 | `docs/sop/v0.18.3-dom-simulation-experiment.md`                     | Done     | client-only fallback stable                                          | opt-in DOM simulation decision recorded                                    |
+| v0.19.0 | `docs/sop/v0.19.0-platform-hub.md` + `v0.19.0-component-browser.md` | **Done** | validation/build reports stable + ADR-0030 accepted                  | Hub ingests artifacts, CLI submit, component browser, Playwright snapshots |
+| v0.19.0 | `docs/sop/v0.19.0-component-browser.md`                             | **Done** | v0.19.0 Phase 1 deployed + fixture packages indexed                  | Component drill-down, rendered previews, `less add` CLI                    |
+| v1.0.0  | `docs/sop/v1.0.0-general-purpose-engine.md`                         | Vision   | engine, reports, add flow, Hub records stable                        | API/schema freeze with deterministic package outcomes                      |
 
 ## Operator Checklist
 

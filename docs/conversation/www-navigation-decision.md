@@ -25,6 +25,7 @@ WWW navigation will use 5 sections, matching the project's five product pillars:
 ## Current Implementation Status
 
 Route migration is partially complete:
+
 - `/engine/` — created from `/guide/` engine-related pages (architecture, comparison, dsd, islands, etc.)
 - `/guide/` — retained for framework-related pages (getting-started, routing, configuration, etc.)
 - Need to rename `/guide/` → `/framework/` to complete the 5-section model
@@ -41,6 +42,7 @@ Route migration is partially complete:
 
 The audit recommended 4 sections (/docs/ + /hub/ + /blog/) for user-centric organization.
 The 5-section model was chosen because:
+
 - It reflects the project's strategic pillars
 - Each pillar is a distinct product with different audiences
 - The /engine/ section contains the core differentiation content

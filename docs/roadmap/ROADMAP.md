@@ -142,7 +142,7 @@ Phase 3 — Real Browser Snapshot Rendering (Completed 2026-05-18):
 
 - Replaced happy-dom with Playwright for client-only component snapshots (ADR-0032)
 - 47/48 components render via Playwright (was 49/53 with happy-dom;
-1 sl-table timeout; may vary by environment)
+  1 sl-table timeout; may vary by environment)
 - `renderSnapshotLit()` retained for SSR-capable @lessjs/ui components
 - XSS sanitizer, slot whitespace fix, `--skip-snapshots` flag
 
@@ -182,12 +182,12 @@ ISR and SSR are Phase 6/7 planned work.
 Current islands model is binary: `ssr:true` (DSD pre-render + hydrate) or
 `ssr:false` (client-only). This needs to become nuanced:
 
-| Strategy | Behavior | Equivalent |
-|----------|----------|------------|
-| `client:load` | Hydrate immediately | ≈ current `ssr:true` |
-| `client:idle` | Hydrate when browser is idle | New |
-| `client:visible` | Hydrate when entering viewport | New |
-| `client:only` | Client-only, no SSR | ≈ current `ssr:false` |
+| Strategy         | Behavior                       | Equivalent            |
+| ---------------- | ------------------------------ | --------------------- |
+| `client:load`    | Hydrate immediately            | ≈ current `ssr:true`  |
+| `client:idle`    | Hydrate when browser is idle   | New                   |
+| `client:visible` | Hydrate when entering viewport | New                   |
+| `client:only`    | Client-only, no SSR            | ≈ current `ssr:false` |
 
 This is the highest-ROI change: transforms islands from "works" to "works well"
 without architectural changes.
@@ -221,6 +221,7 @@ LessJS's credibility as a full-stack framework.
 
 ISR is preferred over request-time SSR for LessJS because `renderDSD()` is
 pure string concatenation (~1-5ms per component). ISR logic:
+
 1. Serve cached HTML → check revalidation window → regenerate in background
 2. 99% of requests hit cache, 1% trigger re-render
 
@@ -228,15 +229,15 @@ This is more efficient than request-time SSR for most pages.
 
 ### Full-Stack Capabilities
 
-| Capability           | Priority | Description                                           | Status |
-| -------------------- | -------- | ----------------------------------------------------- | ------ |
-| Hydration strategies | P0       | `client:load/idle/visible/only` directives            | New    |
-| ISR cache layer      | **P0**   | Stale-while-revalidate for static pages               | New    |
-| Hono API Route       | P1       | `app/api/**/*.ts` → Hono route → CF Pages Function    | Exists |
-| Request context      | P1       | Environment variables, user identity (no Supabase)   | New    |
-| Hub ecosystem building | **P1** | Attract 10+ packages via outreach + self-service submit | New  |
-| Request-time SSR     | P2       | Dynamic routes render at request time, not build time | New    |
-| Supabase integration | **P3**   | Auth + DB + Realtime via Deno-native client           | Deferred |
+| Capability             | Priority | Description                                             | Status   |
+| ---------------------- | -------- | ------------------------------------------------------- | -------- |
+| Hydration strategies   | P0       | `client:load/idle/visible/only` directives              | New      |
+| ISR cache layer        | **P0**   | Stale-while-revalidate for static pages                 | New      |
+| Hono API Route         | P1       | `app/api/**/*.ts` → Hono route → CF Pages Function      | Exists   |
+| Request context        | P1       | Environment variables, user identity (no Supabase)      | New      |
+| Hub ecosystem building | **P1**   | Attract 10+ packages via outreach + self-service submit | New      |
+| Request-time SSR       | P2       | Dynamic routes render at request time, not build time   | New      |
+| Supabase integration   | **P3**   | Auth + DB + Realtime via Deno-native client             | Deferred |
 
 Note: Hono API Route is already implemented (route scanner, entry renderer,
 `/api/term` working). The P1 work is formalizing dev/build parity and
@@ -353,7 +354,7 @@ v1.0 exit criteria:
 | ---------------------------- | ------------------------ | ---------------------------------------------------- |
 | Third-party UI compatibility | Active v0.17.3 issue     | Tier 1/2 model with DSD pre-render for verified libs |
 | Full-stack capabilities      | Hono+API Route exists    | ISR + request context + Supabase                     |
-| Islands hydration            | Binary ssr:true/false     | client:load/idle/visible/only strategies             |
+| Islands hydration            | Binary ssr:true/false    | client:load/idle/visible/only strategies             |
 | Documentation sync           | Manual                   | Release checklist and changelog index                |
 | Test coverage                | Strong unit/e2e baseline | Add compatibility fixtures + API route tests         |
 | Open source governance       | Partial                  | Complete before public Hub                           |

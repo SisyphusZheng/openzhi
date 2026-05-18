@@ -11,34 +11,34 @@
 
 三份报告共发现 **33 个问题**，按严重度分布：
 
-| 严重度 | 数量 | 说明 |
-|--------|------|------|
-| 🔴 严重 | 11 | 事实错误、产品缺失、构建失败 |
-| 🟡 中等 | 13 | 语义误导、内部矛盾、CI 缺口 |
-| 🟢 轻微 | 9 | 时效性、遗漏、语义优化 |
+| 严重度  | 数量 | 说明                         |
+| ------- | ---- | ---------------------------- |
+| 🔴 严重 | 11   | 事实错误、产品缺失、构建失败 |
+| 🟡 中等 | 13   | 语义误导、内部矛盾、CI 缺口  |
+| 🟢 轻微 | 9    | 时效性、遗漏、语义优化       |
 
 按类别分布：
 
-| 类别 | 数量 |
-|------|------|
-| 事实错误/偏差 | 10 |
-| 产品/代码缺陷 | 5 |
-| CI/工程缺口 | 4 |
-| 叙事/语义误导 | 8 |
-| 文档遗漏/过时 | 6 |
+| 类别          | 数量 |
+| ------------- | ---- |
+| 事实错误/偏差 | 10   |
+| 产品/代码缺陷 | 5    |
+| CI/工程缺口   | 4    |
+| 叙事/语义误导 | 8    |
+| 文档遗漏/过时 | 6    |
 
 ---
 
 ## 执行阶段总览
 
-| 阶段 | 名称 | 问题覆盖 | 预计时间 |
-|------|------|---------|---------|
-| A | 事实修正（STATUS.md + ROADMAP.md） | 8 个 | 30 min |
-| B | Git 卫生（tags、workspace、ADR） | 4 个 | 45 min |
-| C | 代码/产品修复 | 6 个 | 3-4 hr |
-| D | CI/基础设施补齐 | 4 个 | 2 hr |
-| E | 叙事与定位修正 | 6 个 | 1 hr |
-| F | 战略路线图调整 | 5 个 | 1 hr |
+| 阶段 | 名称                               | 问题覆盖 | 预计时间 |
+| ---- | ---------------------------------- | -------- | -------- |
+| A    | 事实修正（STATUS.md + ROADMAP.md） | 8 个     | 30 min   |
+| B    | Git 卫生（tags、workspace、ADR）   | 4 个     | 45 min   |
+| C    | 代码/产品修复                      | 6 个     | 3-4 hr   |
+| D    | CI/基础设施补齐                    | 4 个     | 2 hr     |
+| E    | 叙事与定位修正                     | 6 个     | 1 hr     |
+| F    | 战略路线图调整                     | 5 个     | 1 hr     |
 
 **执行顺序**：A → B → C → D → E → F（严格顺序，后续阶段依赖前序修复）
 
@@ -160,20 +160,20 @@
    ```markdown
    ### Completion Methodology
 
-   | Capability | Weight | Status | Score |
-   |-----------|--------|--------|-------|
-   | Routing (file + dynamic) | 15% | ✅ Complete | 15% |
-   | Dev server + HMR | 10% | ✅ Complete | 10% |
-   | Build pipeline | 10% | ✅ Complete | 10% |
-   | API routes (Hono) | 10% | ⚠️ Basic | 5% |
-   | Hydration strategies | 15% | ❌ Binary only | 3% |
-   | SSR (request-time) | 10% | ❌ Not implemented | 0% |
-   | ISR | 10% | ❌ Not implemented | 0% |
-   | DB/Auth | 5% | ❌ Not implemented | 0% |
-   | Deployment adapters | 5% | ⚠️ CF Pages only | 2% |
-   | Request context | 5% | ❌ Not implemented | 0% |
-   | Documentation | 5% | ⚠️ Partial | 2% |
-   | **Total** | **100%** | | **47%** → **~45%** |
+   | Capability               | Weight   | Status             | Score              |
+   | ------------------------ | -------- | ------------------ | ------------------ |
+   | Routing (file + dynamic) | 15%      | ✅ Complete        | 15%                |
+   | Dev server + HMR         | 10%      | ✅ Complete        | 10%                |
+   | Build pipeline           | 10%      | ✅ Complete        | 10%                |
+   | API routes (Hono)        | 10%      | ⚠️ Basic           | 5%                 |
+   | Hydration strategies     | 15%      | ❌ Binary only     | 3%                 |
+   | SSR (request-time)       | 10%      | ❌ Not implemented | 0%                 |
+   | ISR                      | 10%      | ❌ Not implemented | 0%                 |
+   | DB/Auth                  | 5%       | ❌ Not implemented | 0%                 |
+   | Deployment adapters      | 5%       | ⚠️ CF Pages only   | 2%                 |
+   | Request context          | 5%       | ❌ Not implemented | 0%                 |
+   | Documentation            | 5%       | ⚠️ Partial         | 2%                 |
+   | **Total**                | **100%** |                    | **47%** → **~45%** |
    ```
 5. 同步调整 Overall 为 ~55%
 
@@ -461,17 +461,17 @@
 4. 如果 `./src/cli/validate.ts` 不存在，先创建一个 re-export 或空壳：
    ```typescript
    // packages/hub/src/cli/validate.ts
-   export { validateManifest } from "../schema.ts";
+   export { validateManifest } from '../schema.ts';
    ```
 5. 为 less-add 添加 smoke test：
    ```typescript
    // packages/hub/tests/cli/less-add.test.ts
-   import { describe, it } from "@std/testing/bdd";
-   import { assertExists } from "@std/assert";
+   import { describe, it } from '@std/testing/bdd';
+   import { assertExists } from '@std/assert';
 
-   describe("less-add CLI", () => {
-     it("should be importable from JSR subpath", async () => {
-       const mod = await import("../src/cli/less-add.ts");
+   describe('less-add CLI', () => {
+     it('should be importable from JSR subpath', async () => {
+       const mod = await import('../src/cli/less-add.ts');
        assertExists(mod);
      });
    });
@@ -504,10 +504,10 @@
    ```typescript
    // 不写文件，只比较
    if (currentJson !== newIndexJson) {
-     console.error("❌ Index drift detected. Run `deno task hub:index:update` to sync.");
+     console.error('❌ Index drift detected. Run `deno task hub:index:update` to sync.');
      Deno.exit(1);
    }
-   console.log("✅ Index is up to date.");
+   console.log('✅ Index is up to date.');
    ```
 
    **新建 update-index.ts**：
@@ -515,7 +515,7 @@
    // 写入文件
    if (currentJson !== newIndexJson) {
      Deno.writeTextFileSync(indexPath, newIndexJson);
-     console.log("✅ Index updated.");
+     console.log('✅ Index updated.');
    }
    ```
 
@@ -578,16 +578,18 @@
    - 添加阈值检查：
    ```typescript
    interface DsdReportThreshold {
-     maxNonRecoverableErrors: number;  // 默认 0
-     maxRecoverableErrors: number;     // 默认 Infinity
+     maxNonRecoverableErrors: number; // 默认 0
+     maxRecoverableErrors: number; // 默认 Infinity
    }
 
    function checkDsdReport(report: DsdReport, threshold: DsdReportThreshold): void {
      const nonRecoverable = (report.errors || []).filter(
-       e => e.error?.includes("Failed to instantiate")
+       (e) => e.error?.includes('Failed to instantiate'),
      );
      if (nonRecoverable.length > threshold.maxNonRecoverableErrors) {
-       console.error(`❌ ${nonRecoverable.length} non-recoverable SSR errors exceed threshold (${threshold.maxNonRecoverableErrors})`);
+       console.error(
+         `❌ ${nonRecoverable.length} non-recoverable SSR errors exceed threshold (${threshold.maxNonRecoverableErrors})`,
+       );
        Deno.exit(1);
      }
    }
@@ -626,7 +628,7 @@
 3. **方案 A**：增加超时时间
    ```typescript
    // packages/hub/src/snapshot-playwright.ts
-   const SNAPSHOT_TIMEOUT_MS = 30_000;  // 从默认增加到 30s
+   const SNAPSHOT_TIMEOUT_MS = 30_000; // 从默认增加到 30s
    ```
 4. **方案 B**：将 sl-table 标记为 client-only，跳过 SSR 快照
 5. **方案 C**：使用本地 node_modules 替代 esm.sh（长期方案，见 D-1）
@@ -657,7 +659,7 @@
    return {
      html: placeholder,
      success: false,
-     error: "Playwright import failed — snapshot is placeholder, not real render",
+     error: 'Playwright import failed — snapshot is placeholder, not real render',
    };
    ```
 4. 确保调用方能处理 `success: false` 的情况
@@ -741,16 +743,16 @@
      steps:
        - uses: denoland/setup-deno@v2
        - uses: actions/checkout@v4
-       - run: deno task hub:scan --skip-snapshots  # 只跑 schema 验证
+       - run: deno task hub:scan --skip-snapshots # 只跑 schema 验证
 
    hub-scan-full:
      runs-on: ubuntu-latest
-     if: github.ref == 'refs/heads/main'  # nightly 或 main 分支
+     if: github.ref == 'refs/heads/main' # nightly 或 main 分支
      steps:
        - uses: denoland/setup-deno@v2
        - uses: actions/checkout@v4
        - run: deno run -A npm:playwright install chromium
-       - run: deno task hub:scan  # 含 Playwright 快照
+       - run: deno task hub:scan # 含 Playwright 快照
    ```
 
 **验证**：CI workflow 文件中存在 hub:scan 相关 step
@@ -771,10 +773,12 @@
    ## Status: Proposed
 
    ## Context
+
    Current Hub snapshot pipeline uses esm.sh CDN and hardcoded versions.
    This is not hermetic — results vary by CDN availability and version drift.
 
    ## Decision
+
    Migrate to local node_modules + temporary static server:
 
    1. Install packages via `npm install` to local node_modules
@@ -784,6 +788,7 @@
    5. Fail if resolved version differs from lockfile
 
    ## Consequences
+
    - Snapshots become deterministic and reproducible
    - CI no longer depends on esm.sh availability
    - Requires node_modules in CI (already present for Vite builds)
@@ -795,9 +800,9 @@
    ```typescript
    // packages/hub/src/snapshot-playwright.ts
    const SNAPSHOT_META = {
-     shoelaceVersion: "2.x.x",  // 从 package.json 读取
-     mediaChromeVersion: "1.x.x",
-     esmShBase: "https://esm.sh",
+     shoelaceVersion: '2.x.x', // 从 package.json 读取
+     mediaChromeVersion: '1.x.x',
+     esmShBase: 'https://esm.sh',
      snapshotDate: new Date().toISOString(),
    };
    // 将 SNAPSHOT_META 写入 snapshot 输出
@@ -1028,18 +1033,21 @@
    # WWW Navigation Structure Decision
 
    ## Option A: 5 Sections (User's Proposal)
+
    /framework/ + /hub/ + /engine/ + /ui/ + /blog/
 
    Pros: Matches internal architecture, each pillar gets visibility
    Cons: /framework/ and /engine/ split confuses users, /ui/ too thin
 
    ## Option B: 4 Sections (Audit Recommendation)
+
    /docs/ + /hub/ + /blog/ + 首页
 
    Pros: User-centric organization, aligns with Astro/Next.js
    Cons: Internal architecture not reflected in navigation
 
    ## Option C: 4 Sections (Hybrid)
+
    /docs/ + /hub/ + /engine/ + /blog/
 
    Pros: /engine/ as the differentiated content, /docs/ for framework docs
@@ -1238,6 +1246,7 @@
    ### Completion Methodology
 
    Completion percentages are calculated as:
+
    - **Weighted capability model**: Each pillar has N capabilities with weights
    - **Score per capability**: 0% (not started) / 25% (planned) / 50% (partial) / 75% (functional) / 100% (production-ready)
    - **Pillar score**: Σ(capability_weight × capability_score) / Σ(capability_weight)
@@ -1264,41 +1273,41 @@
 
 三份报告的所有问题及其在本 SOP 中的处理步骤：
 
-| # | 来源 | 严重度 | 问题摘要 | SOP 步骤 | 状态 |
-|---|------|--------|---------|---------|------|
-| 1 | thefullreview | 🔴 | STATUS.md 测试数 715→729 | A-1 | ⬜ |
-| 2 | thefullreview | 🔴 | STATUS.md git tag 不存在 | A-2, B-1 | ⬜ |
-| 3 | thefullreview | 🔴 | renderDSD() 渲染时机无关声称 | A-3 | ⬜ |
-| 4 | thefullreview | 🟡 | 全栈框架完成度 60% 偏高 | A-4 | ⬜ |
-| 5 | thefullreview | 🟡 | STATUS.md Phase 2 active 矛盾 | A-5 | ⬜ |
-| 6 | thefullreview | 🟢 | v0.19.0 DOM Simulation 归属 | A-6 参考 | ⬜ |
-| 7 | thefullreview | 🟢 | dsd-report 72 错误未入 Known Issues | A-8 | ⬜ |
-| 8 | thefullreview | 🟢 | v0.19.0 Version Ladder 重复行 | A-7 | ⬜ |
-| 9 | thefullreview | 🟡 | ROADMAP hub:scan 52/53 vs 47/48 | A-6 | ⬜ |
-| 10 | thefullreview | 🟡 | ROADMAP renderDSD() 误导 | A-3 | ⬜ |
-| 11 | thefullreview | 🟢 | ROADMAP 未提及 dsd-report 对 Phase 6 影响 | A-8 关联 | ⬜ |
-| 12 | 文件A | 🔴 | 未提及 dsd-report 72 错误 | C-3 | ⬜ |
-| 13 | 文件A | 🔴 | 未提及 less-add 未导出 | C-1 | ⬜ |
-| 14 | 文件A | 🟡 | "全栈框架v0.17后没推进" 不完全准确 | E-3 参考 | ⬜ |
-| 15 | 文件A | 🟡 | /docs/ 建议未评估迁移成本 | E-5 | ⬜ |
-| 16 | 文件A | 🟢 | 未提及 git tag 缺失 | B-1 | ⬜ |
-| 17 | 文件A | 🟢 | 未提及工作区脏状态 | B-2 | ⬜ |
-| 18 | 文件A | 🟢 | SvelteKit/Astro 文档结构不精确 | E-5 参考 | ⬜ |
-| 19 | 文件B | 🔴 | fmt:check 结论已过时 | D-4（记录） | ⬜ |
-| 20 | 文件B | 🔴 | e2e 4 failed 可能已过时 | D-3 | ⬜ |
-| 21 | 文件B | 🟡 | 77 个未提交变更 | B-2 | ⬜ |
-| 22 | 文件B | 🟡 | ADR-0033 未 git 跟踪 | B-3 | ⬜ |
-| 23 | 文件B | 🟢 | "护城河等级：早期技术楔子" 语义 | 无需修复（表述准确） | ✅ |
-| 24 | 文件B | 🟢 | 未提及 STATUS.md tag 不存在 | B-1 | ⬜ |
-| 25 | 文件B | 🟢 | 建议一句话定位用英文 | E-3 | ⬜ |
-| 26 | thefullreview | 🔴 | git tag 全部不存在 | B-1 | ⬜ |
-| 27 | thefullreview | 🔴 | 77 个未提交变更 | B-2 | ⬜ |
-| 28 | thefullreview | 🟡 | ADR-0033 未跟踪 | B-3 | ⬜ |
-| 29 | thefullreview | 🟡 | hub:scan 结果不一致 | A-6, C-4 | ⬜ |
-| 30 | thefullreview | 🟢 | deno fmt panic | D-4 | ⬜ |
-| 31 | thefullreview | 🟡 | v0.19.0 无 git tag | B-4 | ⬜ |
-| 32 | 文件B | P0 | Hub snapshot 非 hermetic | D-2 | ⬜ |
-| 33 | 文件B | P1 | CI 不含 hub:scan | D-1 | ⬜ |
+| #  | 来源          | 严重度 | 问题摘要                                  | SOP 步骤             | 状态 |
+| -- | ------------- | ------ | ----------------------------------------- | -------------------- | ---- |
+| 1  | thefullreview | 🔴     | STATUS.md 测试数 715→729                  | A-1                  | ⬜   |
+| 2  | thefullreview | 🔴     | STATUS.md git tag 不存在                  | A-2, B-1             | ⬜   |
+| 3  | thefullreview | 🔴     | renderDSD() 渲染时机无关声称              | A-3                  | ⬜   |
+| 4  | thefullreview | 🟡     | 全栈框架完成度 60% 偏高                   | A-4                  | ⬜   |
+| 5  | thefullreview | 🟡     | STATUS.md Phase 2 active 矛盾             | A-5                  | ⬜   |
+| 6  | thefullreview | 🟢     | v0.19.0 DOM Simulation 归属               | A-6 参考             | ⬜   |
+| 7  | thefullreview | 🟢     | dsd-report 72 错误未入 Known Issues       | A-8                  | ⬜   |
+| 8  | thefullreview | 🟢     | v0.19.0 Version Ladder 重复行             | A-7                  | ⬜   |
+| 9  | thefullreview | 🟡     | ROADMAP hub:scan 52/53 vs 47/48           | A-6                  | ⬜   |
+| 10 | thefullreview | 🟡     | ROADMAP renderDSD() 误导                  | A-3                  | ⬜   |
+| 11 | thefullreview | 🟢     | ROADMAP 未提及 dsd-report 对 Phase 6 影响 | A-8 关联             | ⬜   |
+| 12 | 文件A         | 🔴     | 未提及 dsd-report 72 错误                 | C-3                  | ⬜   |
+| 13 | 文件A         | 🔴     | 未提及 less-add 未导出                    | C-1                  | ⬜   |
+| 14 | 文件A         | 🟡     | "全栈框架v0.17后没推进" 不完全准确        | E-3 参考             | ⬜   |
+| 15 | 文件A         | 🟡     | /docs/ 建议未评估迁移成本                 | E-5                  | ⬜   |
+| 16 | 文件A         | 🟢     | 未提及 git tag 缺失                       | B-1                  | ⬜   |
+| 17 | 文件A         | 🟢     | 未提及工作区脏状态                        | B-2                  | ⬜   |
+| 18 | 文件A         | 🟢     | SvelteKit/Astro 文档结构不精确            | E-5 参考             | ⬜   |
+| 19 | 文件B         | 🔴     | fmt:check 结论已过时                      | D-4（记录）          | ⬜   |
+| 20 | 文件B         | 🔴     | e2e 4 failed 可能已过时                   | D-3                  | ⬜   |
+| 21 | 文件B         | 🟡     | 77 个未提交变更                           | B-2                  | ⬜   |
+| 22 | 文件B         | 🟡     | ADR-0033 未 git 跟踪                      | B-3                  | ⬜   |
+| 23 | 文件B         | 🟢     | "护城河等级：早期技术楔子" 语义           | 无需修复（表述准确） | ✅   |
+| 24 | 文件B         | 🟢     | 未提及 STATUS.md tag 不存在               | B-1                  | ⬜   |
+| 25 | 文件B         | 🟢     | 建议一句话定位用英文                      | E-3                  | ⬜   |
+| 26 | thefullreview | 🔴     | git tag 全部不存在                        | B-1                  | ⬜   |
+| 27 | thefullreview | 🔴     | 77 个未提交变更                           | B-2                  | ⬜   |
+| 28 | thefullreview | 🟡     | ADR-0033 未跟踪                           | B-3                  | ⬜   |
+| 29 | thefullreview | 🟡     | hub:scan 结果不一致                       | A-6, C-4             | ⬜   |
+| 30 | thefullreview | 🟢     | deno fmt panic                            | D-4                  | ⬜   |
+| 31 | thefullreview | 🟡     | v0.19.0 无 git tag                        | B-4                  | ⬜   |
+| 32 | 文件B         | P0     | Hub snapshot 非 hermetic                  | D-2                  | ⬜   |
+| 33 | 文件B         | P1     | CI 不含 hub:scan                          | D-1                  | ⬜   |
 
 ---
 
@@ -1340,14 +1349,14 @@ A-8 ──┘                          B-4 ──┘                     C-3 ─
 
 以下问题在本 SOP 中无法由执行者独立决定，需要用户确认：
 
-| 决策项 | 选项 | 影响 | 紧急度 |
-|--------|------|------|--------|
-| WWW 导航结构 | 4区(/docs/+/hub/+/blog/) vs 5区(/framework/+/hub/+/engine/+/ui/+/blog/) vs 混合 | 全站路由迁移方向 | 高 |
-| @lessjs/ui DSD-native 时间线 | v0.21 开始 vs 更晚 | 产品叙事和资源分配 | 中 |
-| Hub 主打定位 | 保持"主打" vs 降为"重点" vs "引擎优先" | 资源分配和叙事 | 高 |
-| 是否打回退 tag | 对无法确认 commit 的版本打 tag vs 移除 STATUS 中的引用 | 仓库历史完整性 | 低 |
-| E2E timeout 容忍度 | 必须全部通过 vs 允许 flaky 标记 | 发布门禁严格度 | 中 |
+| 决策项                       | 选项                                                                            | 影响               | 紧急度 |
+| ---------------------------- | ------------------------------------------------------------------------------- | ------------------ | ------ |
+| WWW 导航结构                 | 4区(/docs/+/hub/+/blog/) vs 5区(/framework/+/hub/+/engine/+/ui/+/blog/) vs 混合 | 全站路由迁移方向   | 高     |
+| @lessjs/ui DSD-native 时间线 | v0.21 开始 vs 更晚                                                              | 产品叙事和资源分配 | 中     |
+| Hub 主打定位                 | 保持"主打" vs 降为"重点" vs "引擎优先"                                          | 资源分配和叙事     | 高     |
+| 是否打回退 tag               | 对无法确认 commit 的版本打 tag vs 移除 STATUS 中的引用                          | 仓库历史完整性     | 低     |
+| E2E timeout 容忍度           | 必须全部通过 vs 允许 flaky 标记                                                 | 发布门禁严格度     | 中     |
 
 ---
 
-*SOP 创建完毕。共 6 个阶段、24 个步骤、33 个问题全覆盖。*
+_SOP 创建完毕。共 6 个阶段、24 个步骤、33 个问题全覆盖。_

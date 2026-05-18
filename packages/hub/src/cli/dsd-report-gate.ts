@@ -39,30 +39,30 @@ interface DsdReport {
 const KNOWN_ERROR_PATTERNS: Array<{ pattern: RegExp; description: string }> = [
   {
     pattern: /this\.host\.querySelector is not a function/,
-    description: "Shoelace component accessing DOM during SSR",
+    description: 'Shoelace component accessing DOM during SSR',
   },
   {
     pattern: /Cannot read properties of undefined/,
-    description: "Shoelace component reading undefined property during SSR",
+    description: 'Shoelace component reading undefined property during SSR',
   },
   {
     pattern: /Failed to instantiate/,
-    description: "Shoelace component constructor failure in SSR",
+    description: 'Shoelace component constructor failure in SSR',
   },
   {
     pattern: /Cannot set properties of undefined/,
-    description: "Shoelace component setting property on undefined during SSR",
+    description: 'Shoelace component setting property on undefined during SSR',
   },
   {
     pattern: /Components must return a string from render\(\)/,
-    description: "Shoelace component returning non-string from render()",
+    description: 'Shoelace component returning non-string from render()',
   },
 ];
 
 const MAX_NON_RECOVERABLE = Infinity; // TODO: tighten to 10 in v0.20.0, 0 in v0.21.0
 
 function main() {
-  const reportPath = "www/dist/dsd-report.json";
+  const reportPath = 'www/dist/dsd-report.json';
 
   let report: DsdReport;
   try {
@@ -102,14 +102,16 @@ function main() {
   }
 
   console.log(`\n  Error breakdown:`);
-  for (const [msg, info] of Object.entries(errorGroups).sort(
-    (a, b) => b[1].count - a[1].count,
-  )) {
-    const status = info.known ? "✅ known" : "⚠️ UNKNOWN";
+  for (
+    const [msg, info] of Object.entries(errorGroups).sort(
+      (a, b) => b[1].count - a[1].count,
+    )
+  ) {
+    const status = info.known ? '✅ known' : '⚠️ UNKNOWN';
     console.log(
       `  ${status} [${info.count}x] ${msg.substring(0, 80)}`,
     );
-    console.log(`      Tags: ${[...info.tags].slice(0, 5).join(", ")}`);
+    console.log(`      Tags: ${[...info.tags].slice(0, 5).join(', ')}`);
   }
 
   // Check for unknown errors

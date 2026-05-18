@@ -29,16 +29,19 @@ Migrate to local `node_modules` + temporary static server:
 ## Implementation Phases
 
 ### Phase 1 (v0.19.x): Metadata enrichment
+
 - Add version/source metadata to snapshot output
 - Log `esm.sh` base URL and resolved versions
 - No behavior change, just observability
 
 ### Phase 2 (v0.20.0): Local server migration
+
 - Start a temporary `deno serve` or Vite dev server for ESM resolution
 - Point Playwright at local server instead of `esm.sh`
 - Keep `esm.sh` as fallback with warning
 
 ### Phase 3 (v0.21.0): Remove CDN dependency
+
 - Remove `esm.sh` fallback entirely
 - All snapshots must resolve locally
 - CI enforces hermetic builds only
