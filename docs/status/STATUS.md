@@ -126,7 +126,7 @@ See [ADR-0031](../adr/0031-hub-v2-component-browser-workflow.md) for architectur
 
 | Tag     | Commit    | Date       | Note |
 | ------- | --------- | ---------- | ---- |
-| v0.19.0 | `6a5edcd` | 2026-05-18 | Pending (workspace not yet committed) |
+| v0.19.0 | `d933851` | 2026-05-18 | ✅ Created |
 | v0.18.3 | `1d3c003` | 2026-05-17 | ✅ Created |
 | v0.18.0 | `0322699` | 2026-05-17 | ✅ Created |
 | v0.17.5 | `ed88eaa` | 2026-05-17 | ✅ Created |
