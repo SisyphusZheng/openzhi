@@ -1,16 +1,14 @@
-#!/usr/bin/env -S deno run --allow-read
+#!/usr/bin/env -S deno run --allow-read --allow-write
 /**
- * Hub Index Checker — read-only check for index drift.
+ * Hub Index Updater — regenerates and writes hub-index/index.json.
  *
  * Usage:
- *   deno task hub:check-index
+ *   deno task hub:index:update
  *
  * Reads all package records from hub-index/packages/, regenerates the
- * index, and compares it against the existing hub-index/index.json.
- * Exits with 1 if drift is detected, so CI can fail.
+ * index, and writes it to hub-index/index.json if drift is detected.
  *
- * This command is read-only — it does NOT write files.
- * Use `deno task hub:index:update` to write.
+ * This is the write counterpart to `hub:check-index` (read-only).
  */
 
 import { buildIndex } from '../indexer.ts';
@@ -52,7 +50,7 @@ function main() {
   const baseDir = `${cwd}/hub-index`;
   const indexPath = `${baseDir}/index.json`;
 
-  console.log(`\n  Hub Index Checker (read-only)`);
+  console.log(`\n  Hub Index Updater`);
   console.log(`  Base: ${baseDir}\n`);
 
   // Load records
@@ -72,7 +70,6 @@ function main() {
     const existingIndex = Deno.readTextFileSync(indexPath);
     const existingParsed = JSON.parse(existingIndex);
     const newParsed = JSON.parse(newIndexJson);
-    // Compare content excluding updatedAt
     existingParsed.updatedAt = '';
     newParsed.updatedAt = '';
     if (JSON.stringify(existingParsed) === JSON.stringify(newParsed)) {
@@ -83,13 +80,11 @@ function main() {
   }
 
   if (needsUpdate) {
-    console.log(
-      `  ❌ Index drift detected: ${records.length} package(s).` +
-        ` Run \`deno task hub:index:update\` to sync.\n`,
-    );
-    Deno.exit(1);
+    Deno.writeTextFileSync(indexPath, newIndexJson);
+    console.log(`  🔄 Index updated: ${records.length} package(s)\n`);
+    Deno.exit(0);
   } else {
-    console.log(`  ✅ Index is up to date (${records.length} package(s))\n`);
+    console.log(`  ✅ Index already up to date (${records.length} package(s))\n`);
     Deno.exit(0);
   }
 }

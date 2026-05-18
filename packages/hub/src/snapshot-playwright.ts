@@ -391,8 +391,8 @@ export async function renderBatchWithPlaywright(
     for (const item of items) {
       results.set(item.tagName, {
         html: renderPlaceholder(item.tagName, 'Playwright not available'),
-        success: true,
-        error: 'Playwright not available',
+        success: false,
+        error: 'Playwright not available — snapshot is placeholder, not real render',
       });
     }
     return results;
@@ -421,8 +421,8 @@ export async function renderBatchWithPlaywright(
         const placeholderHtml = renderPlaceholder(item.tagName, result.error);
         results.set(item.tagName, {
           html: placeholderHtml,
-          success: true,
-          error: result.error,
+          success: false,
+          error: result.error ? `Snapshot failed: ${result.error}` : 'Snapshot failed — placeholder, not real render',
         });
         if (verbose) {
           console.log(`  ⚠️  <${item.tagName}> snapshot failed: ${result.error}`);

@@ -8,7 +8,10 @@
     "./indexer": "./src/indexer.ts",
     "./submitter": "./src/submitter.ts",
     "./snapshot": "./src/snapshot.ts",
-    "./cli/hub-submit": "./src/cli/hub-submit.ts"
+    "./cli/hub-submit": "./src/cli/hub-submit.ts",
+    "./cli/less-add": "./src/cli/less-add.ts",
+    "./cli/validate": "./src/cli/validate.ts",
+    "./cli/check-index": "./src/cli/check-index.ts"
   },
   "imports": {
     "@lessjs/core": "../core/src/index.ts",
