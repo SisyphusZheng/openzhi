@@ -4,10 +4,15 @@
  * Full-text search using FlexSearch.
  * Loads a pre-built search index JSON and performs client-side search.
  * Triggered by Cmd+K or clicking the search icon.
+ *
+ * v0.19.0: Extends DsdLitElement to prevent duplicate rendering.
+ * When DSD pre-populates the shadow root, render() returns nothing
+ * until user interaction (opening the search panel) requires a re-render.
  */
 
-import { css, html, LitElement } from 'lit';
+import { css, html, nothing } from 'lit';
 import { live } from 'lit-html/directives/live.js';
+import { DsdLitElement } from '@lessjs/adapter-lit';
 
 interface SearchEntry {
   path: string;
@@ -18,7 +23,12 @@ interface SearchEntry {
 
 export const tagName = 'less-search';
 
-export default class LessSearch extends LitElement {
+export default class LessSearch extends DsdLitElement {
+  /** DSD hydration: bind click on the search-trigger button */
+  static hydrateEvents = [
+    { selector: '.search-trigger', event: 'click', method: '_handleTriggerClick' },
+  ];
+
   static override styles = css`
     :host {
       display: inline-flex;
@@ -140,6 +150,18 @@ export default class LessSearch extends LitElement {
   private _entries: SearchEntry[] = [];
   private _loaded = false;
 
+  /** DSD hydration: handle click on the trigger button */
+  private _handleTriggerClick() {
+    this._open = true;
+    this._loadIndex();
+    this.requestUpdate();
+    // Focus input after render
+    requestAnimationFrame(() => {
+      const input = this.renderRoot?.querySelector<HTMLInputElement>('.search-input');
+      input?.focus();
+    });
+  }
+
   override connectedCallback() {
     super.connectedCallback();
     // Global keyboard shortcut
@@ -228,6 +250,10 @@ export default class LessSearch extends LitElement {
   }
 
   override render() {
+    // DSD hydration: skip rendering when shadow root is pre-populated
+    // and no interactive state requires a re-render.
+    if (this._dsdHydrated && !this._open) return nothing;
+
     return html`
       <button class="search-trigger" @click="${() => {
         this._open = true;
