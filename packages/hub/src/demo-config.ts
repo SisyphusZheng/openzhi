@@ -51,13 +51,13 @@ export const DEMO_ATTRS: Record<string, Record<string, string>> = {
   'sl-divider': {},
   'sl-menu': {},
   'sl-menu-item': { checked: '' },
-  // Media Chrome
-  'media-controller': {},
-  'media-play-button': {},
-  'media-time-range': {},
-  'media-volume-range': {},
-  'media-poster-image': { src: 'https://placehold.co/400x225/111/fff?text=Video' },
-  'media-loading-indicator': {},
+  // LessJS UI
+  'less-button': { variant: 'primary' },
+  'less-card': {},
+  'less-input': { placeholder: 'Type here...' },
+  'less-dialog': { open: '', label: 'Dialog' },
+  'less-code-block': {},
+  'less-hero-ping': {},
 };
 
 /** Demo slot content so components show meaningful structure in previews */
@@ -83,4 +83,10 @@ export const DEMO_SLOTS: Record<string, string> = {
     '<sl-tab slot="nav" panel="a">Tab A</sl-tab> <sl-tab slot="nav" panel="b">Tab B</sl-tab><sl-tab-panel name="a">Panel A</sl-tab-panel> <sl-tab-panel name="b">Panel B</sl-tab-panel>',
   'sl-tree': '<sl-tree-item expanded>Branch<sl-tree-item>Leaf</sl-tree-item></sl-tree-item>',
   'sl-tree-item': 'Tree Item',
+  // LessJS UI
+  'less-button': 'Click Me',
+  'less-card': '<div slot="header">Card Title</div><div>Card content goes here.</div>',
+  'less-input': '',
+  'less-dialog': '<div>Dialog body content</div>',
+  'less-code-block': '<code>console.log("Hello LessJS!")</code>',
 };

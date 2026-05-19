@@ -188,37 +188,6 @@ const WC_PACKAGES: KnownWcPackage[] = [
       'sl-tree-item': '@shoelace-style/shoelace/dist/components/tree-item/tree-item.js',
     },
   },
-
-  // ── Media Chrome (npm, client-only) ──
-  {
-    name: 'media-chrome',
-    scope: '',
-    version: '4.19.0',
-    source: 'npm',
-    description: 'Custom elements for building media player UIs. Browser-dependent media APIs.',
-    repository: 'https://github.com/muxinc/media-chrome',
-    homepage: 'https://media-chrome.mux.dev',
-    compatibility: 'client-only',
-    justification:
-      'Media Chrome components depend on browser-specific HTMLMediaElement APIs. Not available in SSR.',
-    cemPath: 'node_modules/media-chrome/dist/custom-elements.json',
-    tagNames: [
-      'media-controller',
-      'media-play-button',
-      'media-time-range',
-      'media-volume-range',
-      'media-poster-image',
-      'media-loading-indicator',
-    ],
-    modulePaths: {
-      'media-controller': 'media-chrome/dist/media-controller.js',
-      'media-play-button': 'media-chrome/dist/media-play-button.js',
-      'media-time-range': 'media-chrome/dist/media-time-range.js',
-      'media-volume-range': 'media-chrome/dist/media-volume-range.js',
-      'media-poster-image': 'media-chrome/dist/media-poster-image.js',
-      'media-loading-indicator': 'media-chrome/dist/media-loading-indicator.js',
-    },
-  },
 ];
 
 // ─── Scanner ────────────────────────────────────────────────────────────
@@ -318,13 +287,19 @@ function buildSnapshotMeta(pkg: KnownWcPackage, tag: string): HubSnapshotMeta {
   const versionedSpec = pkg.scope ? `${pkg.scope}/${pkg.name}@${pkg.version}` : `${pkg.name}@${pkg.version}`;
 
   // Determine import URL based on source
+  // IMPORTANT: For local/JSR packages (like @lessjs/ui), use per-component
+  // subpath imports instead of the full package bundle, because importing the
+  // full @lessjs/ui pulls in less-layout which depends on @lessjs/core/navigation
+  // and can fail in iframe srcdoc contexts. For npm packages (like Shoelace),
+  // the full bundle import works fine in iframes.
   let importUrl = '';
   let themeCssUrl: string | undefined;
   if (pkg.source === 'npm') {
+    // npm packages: full bundle import works in iframe
     importUrl = `https://esm.sh/${versionedSpec}`;
   } else {
-    // Local/JSR packages: use esm.sh with jsr: prefix for iframe srcdoc
-    importUrl = `https://esm.sh/jsr/${versionedSpec}`;
+    // Local/JSR packages: per-component subpath to avoid heavy dependencies
+    importUrl = `https://esm.sh/jsr/${versionedSpec}/${tag}`;
   }
 
   // Special: Shoelace theme CSS

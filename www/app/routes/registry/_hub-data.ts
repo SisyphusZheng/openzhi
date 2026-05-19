@@ -22,7 +22,7 @@ export interface HubIndexData {
 
 const _data: HubIndexData = {
   schema: "hub-index-v1",
-  updatedAt: "2026-05-18T18:07:30.365Z",
+  updatedAt: "2026-05-19T02:38:21.424Z",
   packages: [
   {
     "name": "ui",
@@ -43,7 +43,7 @@ const _data: HubIndexData = {
     "source": "local",
     "safeToInstall": true,
     "ssrCapable": true,
-    "submittedAt": "2026-05-18T18:06:44.328Z"
+    "submittedAt": "2026-05-19T02:38:21.412Z"
   },
   {
     "name": "shoelace",
@@ -95,26 +95,7 @@ const _data: HubIndexData = {
     "source": "npm",
     "safeToInstall": true,
     "ssrCapable": false,
-    "submittedAt": "2026-05-18T18:07:30.327Z"
-  },
-  {
-    "name": "media-chrome",
-    "scope": "",
-    "version": "4.19.0",
-    "description": "Custom elements for building media player UIs. Browser-dependent media APIs.",
-    "compatibility": "client-only",
-    "tags": [
-      "media-controller",
-      "media-play-button",
-      "media-time-range",
-      "media-volume-range",
-      "media-poster-image",
-      "media-loading-indicator"
-    ],
-    "source": "npm",
-    "safeToInstall": true,
-    "ssrCapable": false,
-    "submittedAt": "2026-05-18T18:07:30.337Z"
+    "submittedAt": "2026-05-19T02:38:21.418Z"
   }
 ],
 };
